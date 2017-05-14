@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Supervisor 监控进程 - yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/2015/02/24/Supervisor监控进程/Supervisor 进程持久化监控工具 /">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Supervisor" title="Supervisor">Supervisor</a>
+                        
+                    </div>
+                    <h1>Supervisor 监控进程</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by yangc on
+                        2015-02-24
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="Supervisor-监控进程"><a href="#Supervisor-监控进程" class="headerlink" title="Supervisor 监控进程"></a>Supervisor 监控进程</h1><p>在重要的一些服务运行时间较长有时候，进程突然终止服务，可能是没有资源了，也可能是意外，比如说：因为 OOM 被杀；或者由于 BUG 导致崩溃；亦或者误操作等等，此时，我们需要重新启动进程。</p>
+<h2 id="使用-Supervisor-的原因"><a href="#使用-Supervisor-的原因" class="headerlink" title="使用 Supervisor 的原因"></a>使用 Supervisor 的原因</h2><ul>
+<li>如果你有很多进程在跑，不时还需要 start/stop/restart 一下进程</li>
+<li>如果哪天由于某种原因，进程挂了，你需要重启进程或定时执行脚本</li>
+<li>如果有多个进程，有些是同一项目，尽量可以同时启动/停止等</li>
+<li>如果你有以上任意一种情况，那用 Supervisor 管理进程无疑再合适不过了，把你所有 *nix 进程都配置进 ini 文件中，这样所有的进程就变成了 Supervisor 的子进程。对于子进程，Supervisor 可以做到准确管理（有 web 界面），可以进行分组，一组组的 或者授权非 root 用户。</li>
+</ul>
+<p>在linux下监控进程，可以使用inittab，最近找到了supervisor，也很好用，记录一下：</p>
+<h2 id="安装依赖python"><a href="#安装依赖python" class="headerlink" title="安装依赖python"></a>安装依赖python</h2><p>1、系统要安装python，最低版本2.7以上 并安装与之对应的setuptools，<a href="https://pypi.python.org/pypi/setuptools#files" target="_blank" rel="external">下载地址在此</a></p>
+<p>2、安装：</p>
+<pre><code># wget https://pypi.python.org/packages/6b/dd/a7de8caeeffab76bacf56972b3f090c12e0ae6932245abbce706690a6436/setuptools-28.3.0.tar.gz#md5=a46750b6bd90a1343466bd57b0e2721a
+
+解压安装#  python setup.py install
+</code></pre><p>3、查看Python版本</p>
+<pre><code># python -V
+Python 2.7.5
+</code></pre><h2 id="yum-安装Supervisor"><a href="#yum-安装Supervisor" class="headerlink" title="yum 安装Supervisor"></a>yum 安装Supervisor</h2><p> 环境Centos6.7，安装方法执行：</p>
+<pre><code>yum install supervisor
+</code></pre><h2 id="pip-install-supervisor"><a href="#pip-install-supervisor" class="headerlink" title="pip install supervisor"></a>pip install supervisor</h2><p><a href="http://supervisord.org/installing.html" target="_blank" rel="external">官网安装方法</a></p>
+<h2 id="编译安装Supervisor"><a href="#编译安装Supervisor" class="headerlink" title="编译安装Supervisor"></a>编译安装Supervisor</h2><ul>
+<li>setuptools的（最新）来自<a href="http://pypi.python.org/pypi/setuptools。" target="_blank" rel="external">http://pypi.python.org/pypi/setuptools。</a></li>
+</ul>
+<p>1、安装supervisor，<a href="https://pypi.python.org/pypi/supervisor" target="_blank" rel="external">下载地址在此</a>，解压缩后</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># wget https://pypi.python.org/packages/80/37/964c0d53cbd328796b1aeb7abea4c0f7b0e8c7197ea9b0b9967b7d004def/supervisor-3.3.1.tar.gz</span></div><div class="line"><span class="comment"># tar -zxvf supervisor-3.3.1.tar.gz -C /opt/.</span></div><div class="line"><span class="comment"># cd /opt/supervisor-3.3.1/</span></div><div class="line"><span class="comment"># python setup.py install</span></div></pre></td></tr></table></figure>
+<p>这就ok了，然后创建配置文件这将打印一个“样本”超级配置文件到终端的标准输出。</p>
+<p>创建目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># mkdir -m 755 -p /etc/supervisor/</span></div><div class="line"><span class="comment"># mkdir -m 755 conf.d</span></div><div class="line"><span class="comment"># echo_supervisord_conf &gt; /etc/supervisor/supervisord.conf</span></div></pre></td></tr></table></figure>
+<p>如果你没有root访问权限，或者你不想把 <code>supervisord.conf文件中的/ etc / supervisord.conf</code>，你可以将它放在当前目录<code>（echo_supervisord_conf &gt; supervisord.conf）</code>，并开始<code>supervisord</code>与<code>-c</code>标志，以指定配置文件的位置。</p>
+<h2 id="配置文件详解"><a href="#配置文件详解" class="headerlink" title="配置文件详解"></a>配置文件详解</h2><p><code>supervisor</code> 通过对应的配置文件来进行进程的监控和管理，因此安装完成之后我们需要给将要监控的进程写一个配置文件。每个进程的配置文件都建议单独分拆，放在 <code>/etc/supervisor/conf.d/</code> 目录下，以 <code>.conf</code> 作为扩展名。如我们的 <code>redis.conf</code> 配置文件。</p>
+<p>下面是配置文件的格式和支持的参数，只需要写我们需要配置的参数即可。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line">[supervisorctl]</div><div class="line">serverurl=unix:///tmp/supervisor.sock ; use a unix:// URL  <span class="keyword">for</span> a unix socket</div><div class="line">;serverurl=http://127.0.0.1:9001 ; use an http:// url to specify an inet socket</div><div class="line">;username=chris              ; should be same as http_username <span class="keyword">if</span> <span class="built_in">set</span></div><div class="line">;password=123                ; should be same as http_password <span class="keyword">if</span> <span class="built_in">set</span></div><div class="line">;prompt=mysupervisor         ; cmd line prompt (default <span class="string">"supervisor"</span>)</div><div class="line">;history_file=~/.sc_history  ; use readline <span class="built_in">history</span> <span class="keyword">if</span> available</div><div class="line">添加单个进程</div><div class="line"></div><div class="line">; 管理单个进程的配置，可创建多个，下面是所有可能的配置选项</div><div class="line">;[program:theprogramname]</div><div class="line">;<span class="built_in">command</span>=/bin/cat              ; 启动进程的命令 使用相对路径，可以加参数</div><div class="line">;process_name=%(program_name)s ; 进程名称 表达式 (默认 %(program_name)s)</div><div class="line">;numprocs=1                    ; 进程数目 (def 1)</div><div class="line">;directory=/tmp                ; 执行命令所在的目录 (def no cwd)</div><div class="line">;<span class="built_in">umask</span>=022                     ; 进程默认权限 (default None)</div><div class="line">;priority=999                  ; 进程启动相对优先权 (default 999)</div><div class="line">;autostart=<span class="literal">true</span>                ; 跟随supervisor启动时启动 (default: <span class="literal">true</span>)</div><div class="line">;autorestart=unexpected        ; 计划启动 (default: unexpected)</div><div class="line">;startsecs=1                   ; 延时启动 (def. 1)</div><div class="line">;startretries=3                ; 最多连续启动失败 (default 3)</div><div class="line">;exitcodes=0,2                 ; 进程结束代码 (default 0,2)</div><div class="line">;stopsignal=QUIT               ; signal used to <span class="built_in">kill</span> process (default TERM)</div><div class="line">;stopwaitsecs=10               ; 最长结束等待时间，否则使用 SIGKILL (default 10)</div><div class="line">;stopasgroup=<span class="literal">false</span>             ; 是否想UNIX进程组发送结束信号 (default <span class="literal">false</span>)</div><div class="line">;killasgroup=<span class="literal">false</span>             ; SIGKILL UNIX 进程组 (def <span class="literal">false</span>)</div><div class="line">;user=chrism                   ; 设置启动此程序的用户</div><div class="line">;redirect_stderr=<span class="literal">true</span>          ; 重定向程序的标准错误到标准输出 (default <span class="literal">false</span>)</div><div class="line">;stdout_logfile=/a/path        ; 标准输出的日志路径, NONE <span class="keyword">for</span> none; default AUTO</div><div class="line">;stdout_logfile_maxbytes=1MB   ; 日志文件最大值，否则循环写入 (default 50MB)</div><div class="line">;stdout_logfile_backups=10     ; 标准输出日志备份数目 (default 10)</div><div class="line">;stdout_capture_maxbytes=1MB   ; number of bytes <span class="keyword">in</span> <span class="string">'capturemode'</span> (default 0)</div><div class="line">;stdout_events_enabled=<span class="literal">false</span>   ; emit events on stdout writes (default <span class="literal">false</span>)</div><div class="line">;stderr_logfile=/a/path        ; 标准错误输出日志路径, NONE <span class="keyword">for</span> none; default AUTO</div><div class="line">;stderr_logfile_maxbytes=1MB   ; 日志文件最大值，否则循环写入 (default 50MB)</div><div class="line">;stderr_logfile_backups=10     ; 标准错误日志备份数目 (default 10)</div><div class="line">;stderr_capture_maxbytes=1MB   ; number of bytes <span class="keyword">in</span> <span class="string">'capturemode'</span> (default 0)</div><div class="line">;stderr_events_enabled=<span class="literal">false</span>   ; emit events on stderr writes (default <span class="literal">false</span>)</div><div class="line">;environment=A=<span class="string">"1"</span>,B=<span class="string">"2"</span>       ; 进程附加环境 (def no adds)</div><div class="line">;serverurl=AUTO</div></pre></td></tr></table></figure>
+<p>例如，可以简单的配置成:</p>
+<p>打开/etc/supervisor/supervisord.conf 文件，到最后一行可以看到</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">;[include]</div><div class="line">;files = /relative/dictory/*.ini</div></pre></td></tr></table></figure>
+<p>删除这里的分号，然后添加我们配置文件/etc/supervisor/conf.d/*.conf，修改后如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[include]</div><div class="line">files = /etc/supervisor/conf.d/*.conf</div></pre></td></tr></table></figure>
+<p>修改完后，便可以将项目的配置文件命名为 .conf 放置在 /etc/supervisor/conf.d/ 下面。<br>多个路径用空格隔开就可以了</p>
+<ul>
+<li>以下是我的redis配置文件redis.conf</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[program:redis]</div><div class="line"><span class="built_in">command</span>=/usr/<span class="built_in">local</span>/bin/redis-server /var/lib/redis/redis.conf   <span class="comment">#被监控的进程路径</span></div><div class="line">autostart=<span class="literal">true</span></div><div class="line">autorestart=<span class="literal">true</span></div><div class="line">user=redis</div><div class="line">stdout_logfile=/var/<span class="built_in">log</span>/redis/redis-stdout.log</div><div class="line">stderr_logfile=/var/<span class="built_in">log</span>/redis/redis-stderr.log</div><div class="line">[supervisord]</div></pre></td></tr></table></figure>
+<ul>
+<li>注解：</li>
+</ul>
+<p>program:后面表示服务名字， 会显示在管理工具里面，我给它命名为redis</p>
+<p>command表示需要运行的命令，每次start都会执行这个命令</p>
+<p>autostart表示服务是否需要跟随supervisor启动</p>
+<p>autorestart表示当服务挂掉的时候是否需要自动重启</p>
+<p>user表示使用哪个用户运行该命令。</p>
+<p>stdout_logfile和stderr_logfile用户存储标准输出和错误的日志文件</p>
+<h2 id="启动supervisor"><a href="#启动supervisor" class="headerlink" title="启动supervisor"></a>启动supervisor</h2><p><code>supervisor</code>有两个命令，<code>supervisord</code>和<code>supervisorctl</code>，通过<code>supervisord</code>管理启动和配置<code>supervisor</code>本身，通过<code>supervisorctl</code>来管理使用supervisor启动和管理的自身的一些应用，如我们的这里的redis.conf</p>
+<p> 运行命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">supervisord   //运行supervisor</div><div class="line">supervisorctl   //打开supervisord命令行，会显示出当前监控的程序</div></pre></td></tr></table></figure>
+<p>【注意】：当supervisord以非daemon方式运行时，杀掉supervisord后，被监控的进程也退出了。<br>而以daemon方式运行，杀掉supervisord对被监控进程无影响。</p>
+<ul>
+<li>启动supervisor 用命令</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">supervisord -c /etc/supervisor/supervisord.conf</div></pre></td></tr></table></figure>
+<ul>
+<li>关闭supervisor 用命令</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">supervisorctl shutdown</div></pre></td></tr></table></figure>
+<p> 如果先建的redis.conf(控制文件)，在使用启动命令后这些经过配置的程序也会启动</p>
+<ul>
+<li>启动程序redis</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">supervisorctl start program_name</div></pre></td></tr></table></figure>
+<p>这里的program的name是配置文件<code>ini中的[program:name]</code>，所以这里的<code>program_name</code>是redis</p>
+<ul>
+<li>关闭程序redis.conf</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">supervisorctl stop program_name</div></pre></td></tr></table></figure>
+<ul>
+<li><p>刷新配置文件 如果启动后，修改了ini文件，可以通过reload命令来刷新</p>
+<pre><code>supervisorctl reload  
+</code></pre></li>
+<li><p>查看supervisor的运行状态</p>
+<pre><code>ps -efH|grep supervisor  
+</code></pre></li>
+</ul>
+<h3 id="这里提醒一下如果按以上操作出现以下error"><a href="#这里提醒一下如果按以上操作出现以下error" class="headerlink" title="这里提醒一下如果按以上操作出现以下error:"></a>这里提醒一下如果按以上操作出现以下error:</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Error: .ini file does not include supervisorctl section  </div><div class="line">For <span class="built_in">help</span>, use /usr/<span class="built_in">local</span>/bin/supervisorctl -h</div></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">error: &lt;class <span class="string">'socket.error'</span>&gt;, [Errno 101] Network is unreachable: file: /usr/lib/python2.7/socket.py line: 571  </div><div class="line">```  </div><div class="line">切换到/etc/supervisor目录执行以上的命令</div><div class="line"></div><div class="line"></div><div class="line">执行supervisorctl start APP_NAME 或者执行 supervisorctl 的相关命令，如果出现</div><div class="line"></div><div class="line">```bash</div><div class="line">unix:///tmp/supervisor.sock no such file</div></pre></td></tr></table></figure>
+<p>说明 Supervisord 服务还没有启动，检查你的 supervisord.conf 文件最后的注释 ; 取消，files 路径没有问题</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[<span class="keyword">include</span>]</div><div class="line">files = <span class="regexp">/conf.d/</span>*.ini  </div><div class="line"><span class="string">``</span><span class="string">`bash</span></div><div class="line"></div><div class="line">之后在目录 /etc/supervisor 下重新运行</div><div class="line"></div><div class="line">`<span class="string">``</span>bash</div><div class="line">supervisord -c /etc/supervisor/supervisord.conf</div></pre></td></tr></table></figure>
+<p>其实，可以通过supervisorctl打开supervisor的命令行控制台，然后输入help可以查看看用的命令，然后help+命令可以查看每个命令的具体功能.</p>
+<p>这里启动服务了查看下进程：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@LAN_redis1 supervisor]<span class="comment">#  ps -efH|grep supervisor</span></div><div class="line">     root     20843  8465  0 15:19 pts/0    00:00:00           grep supervisor</div><div class="line">     root     20837     1  0 15:18 ?        00:00:00   /usr/<span class="built_in">local</span>/bin/python /usr/<span class="built_in">local</span>/bin/supervisord -c /etc/supervisor/supervisord.conf</div></pre></td></tr></table></figure>
+<p>遇到的问题：</p>
+<p>1 redis出现的不是running而是FATAL 状态 应该要去查看log</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">log</span>在/tmp/supervisord.log</div></pre></td></tr></table></figure>
+<p>2 日志中显示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">gave up: redis entered FATAL state, too many start retries too quickly</div></pre></td></tr></table></figure>
+<p>修改redis.conf的daemonize为no</p>
+<p>事实证明webdis也有这个问题，webdis要修改的是webdis.json这个配置文件</p>
+<ul>
+<li><p>最后附上 supervisord 服务运行命令</p>
+</li>
+<li><p>重新 read 配置文件: supervisorctl reread</p>
+</li>
+<li><p>重启服务: supervisorctl reload</p>
+</li>
+<li><p>关闭服务: supervisorctl shutdown</p>
+</li>
+</ul>
+<p> 参考：<a href="https://www.izixia.cn/2016/01/03/supervisor-pei-zhi-guo-cheng/" target="_blank" rel="external">https://www.izixia.cn/2016/01/03/supervisor-pei-zhi-guo-cheng/</a></p>
+<h3 id="设置web管理页面"><a href="#设置web管理页面" class="headerlink" title="设置web管理页面"></a>设置web管理页面</h3><p>直接修改：vim supervisord.conf</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[inet_http_server]         ; inet (TCP) server disabled by default</div><div class="line">port=192.168.1.173:9001        ; (ip_address:port specifier, *:port <span class="keyword">for</span> all iface)</div><div class="line">username=admin              ; (default is no username (open server))</div><div class="line">password=admin             ; (default is no password (open server))</div></pre></td></tr></table></figure>
+<p>这里设置IP是监控服务器的地址。后面端口可以自己设置。<br>用户名和密码自己设置。</p>
+<p>这里如果有设置防火墙需要写个iptables 规则语句。</p>
+<pre><code>-A INPUT -p tcp -m state --state NEW -m tcp --dport 9001 -j ACCEPT
+</code></pre><ul>
+<li>如果报如下错误<br>redis: ERROR (no such process) </li>
+</ul>
+<p>说明找不到配置的文件, 配置路径错误.</p>
+<p>使用进入控制台后, 可以使用:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">status 查看所有supervisor进程运行状态</div><div class="line">start &#123;your process name&#125; 启动进程</div><div class="line">stop &#123;your process name&#125; 停止进程</div><div class="line">restart &#123;your process name&#125; 重启进程</div></pre></td></tr></table></figure>
+<h3 id="开机启动"><a href="#开机启动" class="headerlink" title="开机启动"></a>开机启动</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"> sudo curl https://gist.githubusercontent.com/howthebodyworks/176149/raw/d60b505a585dda836fadecca8f6b03884153196b/supervisord.sh &gt; /etc/init.d/supervisord</div><div class="line">chmod +x /etc/init.d/supervisord</div></pre></td></tr></table></figure>
+<p>安装开启启动控制程序: rcconf<br>然后启动rcconf设置启动程序.</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2015/02/25/Vsftpd/建立虚拟用户的vsftpd安装配置报错问题收集/" data-toggle="tooltip" data-placement="top" title="建立虚拟用户的vsftpd安装配置报错问题收集">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2015/02/23/性能与架构/CDN加速助力高并发网站架构/" data-toggle="tooltip" data-placement="top" title="CDN加速助力高并发网站架构">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Supervisor" title="Supervisor">Supervisor</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yangcvo-me";
+    var disqus_identifier = "http://blog.yangcvo.me/2015/02/24/Supervisor监控进程/Supervisor 进程持久化监控工具 /";
+    var disqus_url = "http://blog.yangcvo.me/2015/02/24/Supervisor监控进程/Supervisor 进程持久化监控工具 /";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/PandaJuesha">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yangcvo.me">yangc</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

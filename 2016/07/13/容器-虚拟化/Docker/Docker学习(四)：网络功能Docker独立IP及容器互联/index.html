@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Docker学习(四)：网络功能Docker独立IP及容器互联 - yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/2016/07/13/容器-虚拟化/Docker/Docker学习(四)：网络功能Docker独立IP及容器互联/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Virtualization-Docker" title="Virtualization-Docker">Virtualization-Docker</a>
+                        
+                    </div>
+                    <h1>Docker学习(四)：网络功能Docker独立IP及容器互联</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by yangc on
+                        2016-07-13
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="Docker-独立IP及容器互联"><a href="#Docker-独立IP及容器互联" class="headerlink" title="Docker 独立IP及容器互联"></a>Docker 独立IP及容器互联</h2><h4 id="内置bridge-nat"><a href="#内置bridge-nat" class="headerlink" title="内置bridge (nat)"></a>内置bridge (nat)</h4><ul>
+<li>缺点：</li>
+</ul>
+<blockquote>
+<p>需要配置服务注册/发现，否则宿主机端口分配困难，容易冲突。</p>
+<p>由于每个容器暴露的端口都不一致，造成前端路由层nginx配置（proxy_pass）里面无法使用dns方式。</p>
+<p>端口映射要在容器启动时指定好，后期无法变更。</p>
+<p>测试发现nat不支持websocket.</p>
+</blockquote>
+<h4 id="自建桥接网络"><a href="#自建桥接网络" class="headerlink" title="自建桥接网络"></a>自建桥接网络</h4><ul>
+<li>优点：</li>
+</ul>
+<blockquote>
+<p>每个容器都有自己的独立IP，对外提供服务，如：nginx+php ，nginx-resin ，都可以使用默认的80端口。</p>
+<p>由于容器保罗端口都可以使用80端口，因此前端路由层nginx配置（proxy_pass）里可以使用dns方式。</p>
+<p>无需为后期端口映射添加而烦恼</p>
+</blockquote>
+<h3 id="配置bridge桥接网络："><a href="#配置bridge桥接网络：" class="headerlink" title="配置bridge桥接网络："></a>配置bridge桥接网络：</h3><p>这里操作系统centos 7.1：</p>
+<p>这里我的宿主机：IP：192.168.1.183</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">第一步：先关闭docker</div><div class="line">service docker stop</div><div class="line"></div><div class="line">第二步：关闭docker0 </div><div class="line">ifconfig docker0 down </div><div class="line"></div><div class="line">第三步：删除docker0</div><div class="line">brct1 delbr docker0</div></pre></td></tr></table></figure>
+<p>删除以后需要到这个目录下面创建网卡。</p>
+<p>在/etc/sysconfig/network-scripts下，修改ifcfg-eth0<br>网卡配置，同时增加ifcfg-br0桥接网卡配置如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">[root@docker1 ~]<span class="comment"># cd /etc/sysconfig/network-scripts/</span></div><div class="line">[root@docker1 network-scripts]<span class="comment"># cp ifcfg-eth0  ifcfg-br0</span></div><div class="line">[root@docker1 network-scripts]<span class="comment"># vim ifcfg-br0</span></div><div class="line"> </div><div class="line">TYPE=Bridge</div><div class="line">DEVICE=br0</div><div class="line">NM_CONTROLLED=no</div><div class="line">BOOTPROTO=static</div><div class="line">ONBOOT=yes</div><div class="line">IPADDR=192.168.1.183</div><div class="line">NETMASK=255.255.255.0</div><div class="line">GATEWAY=192.168.1.1</div><div class="line"></div><div class="line">[root@docker1 network-scripts]<span class="comment"># vim ifcfg-eth0</span></div><div class="line"></div><div class="line"></div><div class="line">TYPE=Ethernet</div><div class="line">BOOTPROTO=static</div><div class="line">DEVICE=eth0</div><div class="line">ONBOOT=yes</div><div class="line">BRIDGE=<span class="string">"br0"</span></div><div class="line">BOOTPROTO=none</div></pre></td></tr></table></figure>
+<p>重启network</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[root@docker1 network-scripts]<span class="comment"># /etc/init.d/network restart</span></div></pre></td></tr></table></figure>
+<p>docker0没有了。只看到br0 </p>
+<p>用的最多的是映射端口。docker映射到虚拟机上面外网端口。</p>
+<p> 1.查看启动容器状态: <code>docker ps -l</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># docker ps -l</span></div><div class="line">    CONTAINER ID        IMAGE                          COMMAND              CREATED             STATUS              PORTS               NAMES</div><div class="line">     c05467856f8f        docker.io/jdeathe/centos-ssh   <span class="string">"/bin/bash"</span>         5 weeks ago         Up 5 weeks          22/tcp              sleepy_brattain</div></pre></td></tr></table></figure>
+<p> 2.查看启动容器需要映射端口必须先结束容器: <code>docker kill</code><br> 将 ps 列出的 container id 传入 docker kill 中即可:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># docker kill c05467856f8f</span></div><div class="line">c05467856f8f</div></pre></td></tr></table></figure>
+<p> 3.容器端口映射<br> 可以将tomcat容器的端口映射到主机上,比如 8080-&gt; 80 端口,这样可以直接被外网访问到:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># docker run -itd -p 8080:10001 docker.io/   jdeathe/centos-ssh</span></div><div class="line">    87606f687a3fdc0e9dfe4f7a5a7ebc64961bd0d70d263d5462c1b9060c882725</div></pre></td></tr></table></figure>
+<p>在查看运行状态：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># docker ps -l</span></div><div class="line">     CONTAINER ID        IMAGE                          COMMAND                    CREATED             STATUS              PORTS                                NAMES</div><div class="line">    87606f687a3f        docker.io/jdeathe/centos-ssh   <span class="string">"/usr/bin/supervisord"</span>   16 seconds ago      Up 15 seconds       22/tcp, 0.0.0.0:8080-&gt;10001/tcp   elated_meitner</div></pre></td></tr></table></figure>
+<div class="tip"><br>这里还有点需要注意：就是如果出现docker端口映射错误<br><br>COMMAND_FAILED: ‘/sbin/iptables -t nat -A DOCKER -p tcp -d 0/0 –dport 8111 -j DNAT –to-destination 172.17.0.6:8111 ! -i docker0’ failed: iptables: No chain/target/match by that name.<br></div>
+
+<p>解决方法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">pkill docker 关闭docker</div><div class="line"></div><div class="line">iptables -t nat -F 清除防火墙规则-如果没有写可以不用。</div><div class="line">ifconfig docker0 down  docker 网卡关闭</div><div class="line">brctl delbr docker0</div><div class="line"></div><div class="line">重启docker后解决</div></pre></td></tr></table></figure>
+<p>报错二：<br>线上端口被占用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># docker run -itd -p 10001:8080 tomcat-account/centos /bin/bash</span></div><div class="line">60a67031b61c2b4b4e6573e479c53d260e70bf4b461d2c7a35031d736db05025</div><div class="line">docker: Error response from daemon: failed to create endpoint condescending_kare on network bridge: Error starting userland proxy: listen tcp 0.0.0.0:8080: <span class="built_in">bind</span>: address already <span class="keyword">in</span> use.</div></pre></td></tr></table></figure>
+<p>需要kill当前的8080 重新定义</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># docker run -itd -p 10001:8080 tomcat-account/centos /bin/bash</span></div><div class="line">411db35<span class="built_in">cd</span>3c7af171a822257888a657abdfff277a0302435521df4bdd618867f</div><div class="line">[root@docker ~]<span class="comment"># docker ps -a</span></div><div class="line">CONTAINER ID        IMAGE                   COMMAND             CREATED             STATUS              PORTS                     NAMES</div><div class="line">411db35<span class="built_in">cd</span>3c7        tomcat-account/centos   <span class="string">"/bin/bash"</span>         9 seconds ago       Up 8 seconds        0.0.0.0:8080-&gt;10001/tcp   small_wescoff</div></pre></td></tr></table></figure>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/07/13/容器-虚拟化/Docker/Docker学习(六)：部署nginx/" data-toggle="tooltip" data-placement="top" title="Docker学习(六)：部署nginx">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/07/13/容器-虚拟化/Docker/Docker学习(五)：容器内多进程管理/" data-toggle="tooltip" data-placement="top" title="Docker学习(五)：容器内多进程管理">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Virtualization-Docker" title="Virtualization-Docker">Virtualization-Docker</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yangcvo-me";
+    var disqus_identifier = "http://blog.yangcvo.me/2016/07/13/容器-虚拟化/Docker/Docker学习(四)：网络功能Docker独立IP及容器互联/";
+    var disqus_url = "http://blog.yangcvo.me/2016/07/13/容器-虚拟化/Docker/Docker学习(四)：网络功能Docker独立IP及容器互联/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/PandaJuesha">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yangcvo.me">yangc</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

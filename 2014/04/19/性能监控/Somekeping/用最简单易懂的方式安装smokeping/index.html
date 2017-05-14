@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          用最简单的方式安装smokeping - yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/2014/04/19/性能监控/Somekeping/用最简单易懂的方式安装smokeping/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Performance monitoring" title="Performance monitoring">Performance monitoring</a>
+                        
+                          <a class="tag" href="/tags/#Smokeping" title="Smokeping">Smokeping</a>
+                        
+                          <a class="tag" href="/tags/#IDC监控" title="IDC监控">IDC监控</a>
+                        
+                    </div>
+                    <h1>用最简单的方式安装smokeping</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by yangc on
+                        2014-04-19
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>smokeping这个监控还是很强大的，用这个监控是在第一家公司做IDC起家后面转型CDN云计算云加速。<br>这个也是我学的最早的一款监控，在这里我用编译安装方式。也有脚本安装不过需要了解过somkeping安装过程会比较看的懂脚本。</p>
+<p>适用于宽带运营商维护和IDC机房维护可以检测本地网络的到上级运营商出口这段路由各个节点的稳定性            可以检测本地网络到各主要门户网站的<code>延时，丢包率，稳定性</code><br>可以检测本地网络到各地游戏服务器的<code>延时，丢包率，稳定性</code></p>
+<p>smokeping缺点：不能在前台Web页面添加要检测的节点，必须在后台smokeping的配置文件中添加 </p>
+<h3 id="安装前的准备："><a href="#安装前的准备：" class="headerlink" title="安装前的准备："></a>安装前的准备：</h3><ol>
+<li>操作系统：选择centOS6.5最小化版， 里面的RPM包基本上都是最新的。   </li>
+<li>注1: centOS 5.6版本在安装rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm包是会遇到依赖性问题，要求安装rpmlib包，但centOS5.6版本中的rpmlib版本较低，无法直接安装   </li>
+<li>注2：在安装centOS6.5时，要注意设置系统的IP地址，如下图,点击【configure network】按钮，选择【system eth0】, 点击 【IPv4Seting】,设置IP地址    </li>
+<li>注3: 选择安装包时，点选【Basic Server】, 要安装621个基本包 注4: 其他安装步骤，按照正常的安装流程操作即可 </li>
+</ol>
+<h3 id="二-安装过程"><a href="#二-安装过程" class="headerlink" title="二. 安装过程"></a>二. 安装过程</h3><p>修改时区</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">\cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</div></pre></td></tr></table></figure>
+<p>同步时间</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ntpdate time.nist.gov</div></pre></td></tr></table></figure>
+<p>写入BIOS</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hwclock -w</div></pre></td></tr></table></figure>
+<p>关闭防火墙</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">service iptables stop</div></pre></td></tr></table></figure>
+<h3 id="1-安装第三方软件源"><a href="#1-安装第三方软件源" class="headerlink" title="1. 安装第三方软件源"></a>1. 安装第三方软件源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">64位系统 </div><div class="line">rpm  -Uvh http://apt.sw.be/redhat/el6/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm</div><div class="line">32位系统</div><div class="line">rpm  -Uvh http://apt.sw.be/redhat/el6/en/i386/rpmforge/RPMS/rpmforge-release-0.5.3-1.el6.rf.i686.rpm</div></pre></td></tr></table></figure>
+<p>注：安装这个源后，接下来要安装的大量的依赖包就不会报错</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">rpm -Uvh  http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm </div><div class="line">sed -i <span class="string">'s/^#baseurl/baseurl/g'</span> /etc/yum.repos.d/epel.repo</div><div class="line">sed -i <span class="string">'s/mirrorlist/#mirrorlist/g'</span> /etc/yum.repos.d/epel.repo</div></pre></td></tr></table></figure>
+<h3 id="2-安装rrdtool与依赖库"><a href="#2-安装rrdtool与依赖库" class="headerlink" title="2. 安装rrdtool与依赖库"></a>2. 安装rrdtool与依赖库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum -y install perl perl-Net-Telnet perl-Net-DNS perl-LDAP perl-libwww-perl perl-RadiusPerl perl-IO-Socket-SSL perl-Socket6 perl-CGI-SpeedyCGI perl-FCGI perl-CGI-SpeedCGI perl-Time-HiRes perl-ExtUtils-MakeMaker perl-RRD-Simple rrdtool rrdtool-perl curl fping echoping  httpd httpd-devel gcc make  wget libxml2-devel libpng-devel glib pango pango-devel freetype freetype-devel fontconfig cairo cairo-devel libart_lgpl libart_lgpl-devel mod_fastcgi screen wqy-zenhei-fonts.noarch wqy-zenhei-fonts-common.noarch lrzsz nginx</div></pre></td></tr></table></figure>
+<p>注：<code>perl-CGI-SpeedyCGI，perl-CGI-SpeedCGI</code>这两个包在安装过程中会提示找不到，但没关系<br>注：用yum安装大量的依赖包还是很方便的，而百度上有些关于安装smokeping的文档要求使用wget下载后再用<code>make,make install</code>方式安装，虽然make方式不复杂，但通过make编译再安装几十个包就显得有点繁锁了。</p>
+<h3 id="3-下载与安装smokeping"><a href="#3-下载与安装smokeping" class="headerlink" title="3.下载与安装smokeping"></a>3.下载与安装smokeping</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">wget http://oss.oetiker.ch/smokeping/pub/smokeping-2.6.8.tar.gz</div><div class="line">wget http://oss.oetiker.ch/smokeping/pub/smokeping-2.6.11.tar.gz    </div><div class="line">tar zxvf smokeping-2.6.8.tar.gz</div><div class="line"><span class="built_in">cd</span> smokeping-2.6.8</div><div class="line">./configure --prefix=/usr/<span class="built_in">local</span>/smokeping</div></pre></td></tr></table></figure>
+<p>出现问题是因为需要安装perl的模块，所以运行下面内容即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">如果只出现 Config::Grammar<span class="string">' ... Failed</span></div><div class="line">解决 'Config::Grammar<span class="string">' ... Failed</span></div><div class="line">wget http://search.cpan.org/CPAN/authors/id/D/DS/DSCHWEI/Config-Grammar-1.10.tar.gz</div><div class="line">tar zxvf Config-Grammar-1.10.tar.gz</div><div class="line">cd Config-Grammar-1.10</div><div class="line">perl Makefile.PL</div><div class="line">make &amp;&amp; make install</div></pre></td></tr></table></figure>
+<p>如果出现很多个failed，就用下面的方法</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">./setup/build-perl-modules.sh /usr/<span class="built_in">local</span>/smokeping/thirdparty  这个是为前面failed做安装  </div><div class="line">./co nfigure --prefix=/usr/<span class="built_in">local</span>/smokeping   </div><div class="line">                                                                      </div><div class="line">如果还出现问题可以看下这里面的参考。http://bbs.51cto.com/thread-1106181-1.html</div><div class="line">/usr/bin/gmake install</div><div class="line"></div><div class="line">安装下yum install cpan     perl -MCPAN <span class="_">-e</span> <span class="string">'install CGI'</span>           perl -MCPAN <span class="_">-e</span> <span class="string">'install CGI::Fast '</span>  这个安装好了然后再执行这一步。</div></pre></td></tr></table></figure>
+<p>如果上面提示CGI 没有安装成功。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">wgethttp://www.cpan.org/authors/id/M/MA/MARKSTOS/</div><div class="line">CGI.pm-3.65.tar.gz</div><div class="line">tar zxvf CGI.pm-3.65.tar.gz</div><div class="line"><span class="built_in">cd</span> CGI.pm-3.65</div><div class="line">perl Makefile.PL</div><div class="line">make &amp;&amp; make install</div><div class="line">然后再执行下 ./configure --prefix=/usr/<span class="built_in">local</span>/smokeping</div></pre></td></tr></table></figure>
+<p>现在smokeping安装完成</p>
+<h3 id="4-配置smokeping"><a href="#4-配置smokeping" class="headerlink" title="4. 配置smokeping"></a>4. 配置smokeping</h3><h2 id="第一种-使用nginx"><a href="#第一种-使用nginx" class="headerlink" title="第一种 使用nginx"></a>第一种 使用nginx</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">1.安装nginx</div><div class="line">rpm -Uvh  http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm</div><div class="line">yum install -y nginx</div><div class="line">https://metacpan.org/pod/release/MSTROUT/ExtUtils-MakeMaker-6.59/lib/ExtUtils/MakeMaker.pm  下载Make 让他直接执行</div></pre></td></tr></table></figure>
+<p>2.安装基础IO </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /root</div><div class="line">wget  http://220.194.199.196/download/IO-All-0.46.tar.gz</div><div class="line">tar xvzf IO-All-0.46.tar.gz</div><div class="line"><span class="built_in">cd</span> IO-All-0.46</div><div class="line">perl Makefile.PL       <span class="comment">#  这里出现这个问题 把那个文件删了就行了。</span></div><div class="line">make &amp;&amp; make install</div></pre></td></tr></table></figure>
+<p>3.配置nginx的sock<br>创建fcgi sock 文件，配置nginx fcgi使用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#wget http://autonagios.googlecode.com/svn/trunk/autonagios-20100103/files/nginx-fcgi.txt  -O /etc/nginx-fcgi</span></div><div class="line">wget http://117.27.153.133/nginx-fcgi.txt -O /etc/nginx-fcgi </div><div class="line">chmod a+x /etc/nginx-fcgi</div><div class="line">/etc/nginx-fcgi <span class="_">-l</span> /var/<span class="built_in">log</span>/nginx-fcgi.log -pid /var/run/nginx-fcgi.pid -S /var/run/nginx-fcgi.sock</div><div class="line">chmod 777 /var/run/nginx-fcgi.sock</div></pre></td></tr></table></figure>
+<p>4.增加smokeping使用的data、var、和cache目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/smokeping</div><div class="line">mkdir data var cache</div><div class="line">mv htdocs/smokeping.fcgi.dist htdocs/smokeping.fcgi</div><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/smokeping/etc</div><div class="line">mv config.dist config</div><div class="line">chmod 600 /usr/<span class="built_in">local</span>/smokeping/etc/smokeping_secrets.dist</div></pre></td></tr></table></figure>
+<p>5.上传监控节点conf文件到smokeping的etc目录<br>6.修改smokpeing配置脚本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">vi config</div><div class="line">在如下位置修改</div><div class="line"></div><div class="line">*** Database ***</div><div class="line">step     = 300</div><div class="line">pings    = 20</div><div class="line">修改为</div><div class="line">*** Database ***</div><div class="line">step     = 60</div><div class="line">pings    = 20</div><div class="line"></div><div class="line">在如下位置添加一句话</div><div class="line">*** Presentation ***</div><div class="line">template = /usr/<span class="built_in">local</span>/smokeping/etc/basepage.html.dist</div><div class="line">charset=utf-8</div></pre></td></tr></table></figure>
+<p>在第一个加号位置下将监控节点文件引入，如下例子</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">+ testnetwork</div><div class="line">menu=测试网络状况</div><div class="line">title= 测试网络状况</div><div class="line">@include CT-IP.conf</div><div class="line">@include CN-IP.conf</div><div class="line">@include CT_IDC.conf</div><div class="line">@include CNC-IDC.conf</div></pre></td></tr></table></figure>
+<p>保存退出</p>
+<p>7.增加data、var、cache目录的软连接</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ln <span class="_">-s</span> /usr/<span class="built_in">local</span>/smokeping/data/ /usr/share/nginx/html/data</div><div class="line">ln <span class="_">-s</span>  /usr/<span class="built_in">local</span>/smokeping/cache/ /usr/share/nginx/html/cache</div><div class="line">ln <span class="_">-s</span> /usr/<span class="built_in">local</span>/smokeping/htdocs/cropper/ /usr/share/nginx/html/cropper</div></pre></td></tr></table></figure>
+<p>8.修改nginx 配置文件<br>查看下nginx的版本，使用nginx -v 查看，如下例子：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"> nginx -v</div><div class="line">nginx version: nginx/1.0.15</div></pre></td></tr></table></figure>
+<p>修改nginx配置</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">vi</span> /etc/nginx/conf.d/default.conf</div><div class="line">--增加fcgi 指向</div><div class="line">    location  <span class="regexp">~ .*\.fcgi$</span> &#123;</div><div class="line">        <span class="attribute">root</span> /usr/local/smokeping/htdocs/;</div><div class="line">        <span class="attribute">gzip</span> <span class="literal">off</span>;</div><div class="line">        <span class="attribute">fastcgi_pass</span>  unix:/var/run/nginx-fcgi.sock;</div><div class="line">        <span class="attribute">fastcgi_index</span> smokeping.fcgi;</div><div class="line">        <span class="attribute">include</span> fastcgi.conf;                 <span class="comment">#1.0.x 与0.8.x 用这个</span></div><div class="line">        <span class="comment">#include fastcgi_params;            #1.4.x版本用 fastcgi_params</span></div><div class="line">        <span class="comment">#fastcgi_param   SCRIPT_FILENAME /opt/smokeping/htdocs$fastcgi_script_name; #1.4.x版本必加</span></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>保存退出</p>
+<h2 id="第二种-使用apache"><a href="#第二种-使用apache" class="headerlink" title="第二种 使用apache"></a>第二种 使用apache</h2><p>(1) 创建cache、data、var目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/smokeping</div><div class="line">mkdir htdocs/cache data var</div></pre></td></tr></table></figure>
+<p>(2) 在创建日志</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">touch /var/<span class="built_in">log</span>/smokeping.log</div></pre></td></tr></table></figure>
+<p>(3) 上传监控节点的conf文件到smokeping的etc目录下<br>修改smokeping目录的用户和组权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">chown apache:apache -R /usr/<span class="built_in">local</span>/smokeping</div><div class="line">chown apache:apache /var/<span class="built_in">log</span>/smokeping.log</div></pre></td></tr></table></figure>
+<p>(4) 修改配置文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/smokeping/htdocs/</div><div class="line">mv smokeping.fcgi.dist smokeping.fcgi</div><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/smokeping/etc</div><div class="line">mv config.dist config</div><div class="line">vi config</div><div class="line"></div><div class="line">修改改行设置</div><div class="line">imgcache = /usr/<span class="built_in">local</span>/smokeping/cache</div><div class="line">imgcache = /usr/<span class="built_in">local</span>/smokeping/htdocs/cache</div><div class="line"></div><div class="line"> *** Database ***</div><div class="line">step  = 300</div><div class="line">pings  = 60</div><div class="line">然后修改step，从300改为60，这是检测的时间, pings 从20 改为60, 即60秒ping 60次</div><div class="line"></div><div class="line">在如下位置添加一句话</div><div class="line">*** Presentation ***</div><div class="line">template = /usr/<span class="built_in">local</span>/smokeping/etc/basepage.html.dist</div><div class="line">charset=utf-8</div><div class="line"></div><div class="line">在第一个加号位置下将监控节点文件引入，如下例子</div><div class="line">+ testnetwork</div><div class="line">menu=测试网络状况</div><div class="line">title= 测试网络状况</div><div class="line">@include CT-IP.conf</div><div class="line">@include CN-IP.conf</div><div class="line">@include CT_IDC.conf</div><div class="line">@include CNC-IDC.conf</div></pre></td></tr></table></figure>
+<p>保存退出 </p>
+<p> (5) 配置完成之后修改密码文件权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chmod 600 /usr/<span class="built_in">local</span>/smokeping/etc/smokeping_secrets.dist</div></pre></td></tr></table></figure>
+<ol>
+<li>修改apache的配置</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">vim /etc/httpd/conf/httpd.conf</div><div class="line">在DocumentRoot <span class="string">"/var/www/html"</span> 这一行之下添加如下内容：</div><div class="line"></div><div class="line">Alias /cache <span class="string">"/usr/local/smokeping/htdocs/cache"</span></div><div class="line">Alias /cropper <span class="string">"/usr/local/smokeping/htdocs/cropper"</span></div><div class="line">Alias /smokeping <span class="string">"/usr/local/smokeping/htdocs"</span></div><div class="line">&lt;Directory <span class="string">"/usr/local/smokeping/htdocs"</span>&gt;</div><div class="line">  AllowOverride None</div><div class="line">  AddHandler cgi-script .fcgi .cgi</div><div class="line">  Options ExecCGI</div><div class="line">  &lt;IfModule dir_module&gt;</div><div class="line">     DirectoryIndex smokeping.fcgi</div><div class="line">  &lt;/IfModule&gt;</div><div class="line">  Order allow,deny</div><div class="line">  Allow from all </div><div class="line">&lt;/Directory&gt;</div></pre></td></tr></table></figure>
+<ol>
+<li>设置开机启动httpd, smokeping,并关闭iptables.</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">echo</span> <span class="string">"/usr/local/smokeping/bin/smokeping --logfile=/var/log/smokeping.log 2&gt;&amp;1 &amp;"</span> &gt;&gt; /etc/rc.local</div><div class="line">chkconfig httpd on      <span class="comment">#开机启动httpd进程</span></div><div class="line">chkconfig iptables off  <span class="comment">#开机不启动iptables服务</span></div><div class="line">chkconfig nginx on</div></pre></td></tr></table></figure>
+<ol>
+<li>启动http或者nginx以及smokeping</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">service httpd start service nginx start</div><div class="line">/usr/<span class="built_in">local</span>/smokeping/bin/smokeping --debug-daemon</div><div class="line">chown apache:apache -R /usr/<span class="built_in">local</span>/smokeping</div></pre></td></tr></table></figure>
+<ol>
+<li>打开检测主机的Web页面.</li>
+</ol>
+<p>使用httpd做web，在Web浏览器里输入<code>http://您的监控主机IP/smokeping</code>      这里启动不了，看下什么原因。是不是CT-IDC.conf 没有上传到etc下面</p>
+<p>打开这里出现500  说明配置正确防火墙看下。<code>serenfroce 0</code> 有没有关闭。</p>
+<p>使用nginx做web，在Web浏览器里输入 <a href="http://您的监控主机IP/smokeping.fcgi" target="_blank" rel="external">http://您的监控主机IP/smokeping.fcgi</a>    这里启动不了，看下什么原因。是不是CT-IDC.conf 没有上传到etc下面</p>
+<p>如果遇到500错误：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">Internal Server Error</div><div class="line">The server encountered an internal error or misconfiguration and was unable to complete your request.</div><div class="line">Please contact the server administrator, root@localhost and inform them of the time the error occurred, and anything you might have <span class="keyword">done</span> that may have caused the error.</div><div class="line">More information about this error may be available <span class="keyword">in</span> the server error log.</div><div class="line">--------------------------------------------------------------------------------</div><div class="line">Apache/2.2.15 (CentOS) Server at 192.168.2.101 Port 80</div><div class="line"></div><div class="line">说明没有关闭SElinux 选项，关闭就正常了</div><div class="line">vi /etc/sysconfig/selinux</div><div class="line">SELINUX=permissive</div><div class="line">[root@localhost ~]<span class="comment"># getenforce     #查看SElinux 的命令</span></div><div class="line">Permissive                      <span class="comment">#返回的结果是Permissive, 表示已经关闭SElinux了</span></div></pre></td></tr></table></figure>
+<ol>
+<li>在Web页面增加验证用户名和密码(可选步骤)</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">(1)修改httpd.conf里的内容</div><div class="line">&lt;Directory <span class="string">"/usr/local/smokeping"</span>&gt;</div><div class="line">AllowOverride None</div><div class="line">Options All</div><div class="line">AddHandler cgi-script .fcgi .cgi</div><div class="line">AllowOverride AuthConfig</div><div class="line">Order allow,deny</div><div class="line">Allow from all</div><div class="line">AuthName <span class="string">"Smokeping"</span></div><div class="line">AuthType Basic</div><div class="line">AuthUserFile /usr/<span class="built_in">local</span>/smokeping/htdocs/htpasswd</div><div class="line">Require valid-user</div><div class="line">DirectoryIndex smokeping.fcgi</div><div class="line">&lt;/Directory&gt;</div></pre></td></tr></table></figure>
+<p>注：上面的内容部分已经添加，这里仅添加红色字体内容即可。</p>
+<p>(2) 设置登录账户与密码<br>进入cd /usr/local/smokeping/htdocs目录， 执行命令：htpasswd -c /usr/local/smokeping/htdocs/htpasswd admin<br>这个是设置登录账户为admin，密码在后面输入，然后重启httpd就可以实现密码验证登录<br>重新登录web页面，会要求输入用户名和密码.</p>
+<ol>
+<li>一定要同步好时间</li>
+</ol>
+<p>在ESXI4的虚拟机中，定期执行<code>ntpdate 210.72.145.44</code>    #或者与本地的时间服务器同步<br>在vmware workstation中，安装vmware-tools， 虚拟机的时间会自动与其宿主机时间同步</p>
+<p>注： 如果vmware workstation中的虚拟机不安装vmware-tools，则虚拟机时间会与宿主机时间相隔整整8个小时(虚拟机时间早于宿主机时间)<br> vmware-tools的安装不在此叙述</p>
+<ol>
+<li><p>特别说明: 修改/usr/local/smokeping/etc/config 文件的配置参数，必须重启动smokeping程序</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">(1)如果重启动smokeping程序失败，根据报错提示删除/usr/<span class="built_in">local</span>/smokeping/data子文件夹的rrd文件</div><div class="line">(2)中文问题：如果需要在网页里展示中文，修改/usr/<span class="built_in">local</span>/smokeping/etc的config文件</div><div class="line">*** Presentation ***</div><div class="line">charset = utf-8 //注：在这里添加</div><div class="line">然后在menu与titile里修改中文，重启即可</div></pre></td></tr></table></figure>
+<p>有一个要注意的地方就是，你输入的中文必须在utf-8的字符编码下输入的中文字符，不然会出现乱码。<br> 如果在xshel下，选择file-properities-terminal<br>如果还是不显示就看看你系统里是否安装了中文字体，或者在安装一个</p>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@smokeping data]<span class="comment"># ps -ef |grep smoke   #查找smokeping进程</span></div><div class="line">root      8740     1  0 09:08 ?        00:00:00 /usr/<span class="built_in">local</span>/smokeping/bin/smokeping [FPing]</div><div class="line">root     35552 35529  0 09:33 pts/2    00:00:00 grep smoke</div><div class="line">[root@smokeping data]<span class="comment"># kill 8740     #杀掉smokeping进程</span></div><div class="line">[root@smokeping data]<span class="comment"># ps -ef |grep smoke</span></div><div class="line">root     35554 35529  4 09:33 pts/2    00:00:00 grep smoke</div><div class="line">smokeping进程已经被杀掉</div><div class="line">[root@smokeping data]<span class="comment">#screen                    #如果通过SSH远程登录到监控主机，最后执行screen，在虚拟窗口中启动smokeping</span></div><div class="line">/usr/<span class="built_in">local</span>/smokeping/bin/smokeping --logfile=/var/<span class="built_in">log</span>/smokeping.log 2&gt;&amp;1 &amp;</div></pre></td></tr></table></figure>
+<p>三. 添加需要监控的网站和节点(在/usr/local/smokeping/etc/config中添加)</p>
+<ul>
+<li><p>smokeping就这点不好，添加节点不能在前台Web页面添加，一定要在后台的配置文件中添加,希望以后的版本中能改进一下  *</p>
+</li>
+<li><p>修改/usr/local/smokeping/etc/config 后，必须重启smokeping 程序，配置才会生效  *  </p>
+</li>
+<li><p>smokeping 会根据配置文件config 在/usr/local/smokeping/data 之下添加moniter文件夹，其下包含website子文件夹 *</p>
+</li>
+<li><p>用vmware workstation的虚拟机测试有一点好处，workstation下的虚拟网卡可以设置出入的丢包率，适合smokeping做丢包测试, 经过测试smokeping检测出的丢包率与vmware worksation虚拟网卡设置的丢包率基本相同,也就是说smokeping 能够反应网络的真实状况 *<br> 添加监控节点示例：注意+是第一层，++是第二层，+++ 是第三层</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">+ moniter                       </div><div class="line">menu = moniter</div><div class="line">++ website</div><div class="line">menu = website</div><div class="line">title = moniter website</div><div class="line"><span class="comment">#host = /moniter/website/baidu /moniter/website/sina /moniter/website/taobao /moniter/website/QQ</span></div><div class="line"></div><div class="line">+++ baidu</div><div class="line">menu = baidu</div><div class="line">title = baidu.com</div><div class="line">alerts = someloss</div><div class="line">host = www.baidu.com</div><div class="line"></div><div class="line">+++ sina</div><div class="line">menu = sina</div><div class="line">title = sina.com.cn</div><div class="line">alerts = someloss</div><div class="line">host = www.sina.com.cn</div><div class="line"></div><div class="line">+++ taobao</div><div class="line">menu = taobao</div><div class="line">title = taobao.com</div><div class="line">alerts = someloss</div><div class="line">host = www.taobao.com</div><div class="line"></div><div class="line">+++ QQ</div><div class="line">menu = QQ</div><div class="line">title = QQ</div><div class="line">alerts = someloss</div><div class="line">host = www.qq.com.cn</div><div class="line"></div><div class="line">+++ sohu</div><div class="line">menu = sohu</div><div class="line">title = sohu</div><div class="line">alerts = someloss</div><div class="line">host = www.sohu.com</div></pre></td></tr></table></figure>
+<p>效果图：当前菜单下主机延时，丢包图</p>
+<p>效果图：当前菜单下某主机延时，丢包详细图</p>
+<p>13.图例说明</p>
+<p>绿块表示不丢包，其他颜色的块表示不同程序的丢包。<br>图形越平稳，表示网络越稳定，如果图形峰值和低谷很多，则表示网络时延不稳定，忽高忽低。</p>
+<p>这里apache 如果要你做个URL的文件下载测试 </p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dd <span class="keyword">if</span>=<span class="regexp">/dev/</span><span class="keyword">null</span> bs=<span class="number">1</span>M <span class="keyword">count</span>=<span class="number">1</span> of=<span class="regexp">/var/</span>www<span class="regexp">/html/i</span>ndex.html</div></pre></td></tr></table></figure>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2014/06/16/Blog/Hexo/hexo打包提示错误：ERROR Plugin load failed:hexo-generator-json-content/" data-toggle="tooltip" data-placement="top" title="hexo打包提示错误:ERROR Plugin load failed:hexo-generator-json-content">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2014/03/21/个人生活记录/About-me/" data-toggle="tooltip" data-placement="top" title="About-me">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Performance monitoring" title="Performance monitoring">Performance monitoring</a>
+                        
+                          <a class="tag" href="/tags/#Smokeping" title="Smokeping">Smokeping</a>
+                        
+                          <a class="tag" href="/tags/#IDC监控" title="IDC监控">IDC监控</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yangcvo-me";
+    var disqus_identifier = "http://blog.yangcvo.me/2014/04/19/性能监控/Somekeping/用最简单易懂的方式安装smokeping/";
+    var disqus_url = "http://blog.yangcvo.me/2014/04/19/性能监控/Somekeping/用最简单易懂的方式安装smokeping/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/PandaJuesha">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yangcvo.me">yangc</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

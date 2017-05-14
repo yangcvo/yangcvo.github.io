@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          zabbix+Grafana安装使用监控结合 - yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/2016/06/17/性能监控/Zabbix/zabbix-Grafana安装使用结合/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#zabbix" title="zabbix">zabbix</a>
+                        
+                    </div>
+                    <h1>zabbix+Grafana安装使用监控结合</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by yangc on
+                        2016-06-17
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>做运维的很重要的基础工作就是监控去准确定位问题，之前用的是Nagios做过监控，也用过cacti，这个之前在IDC做CDN网络方面用的比较多，监控流量好帮手。</p>
+<p>为什么选择zabbix其实现在是算开源监控比较火的。更重要是几款监控做了对比。</p>
+<p>cacti、zabbix同nagios一样，都是非常优势的开源监控软件。 </p>
+<blockquote>
+<p>Nagios: 轻量级/方便/快捷是nagios最大的优势，特别是它的插件机制，你可以用自己熟悉的语言实现几乎任何自己想要实现的监控。但nagios的图标图形显示的很丑，这方面的确不敢恭维。<br>Cacti: cacti的优势表现在系统方面的监控，特别针对流量的监控功能， 以及cacti图形显示美观等，cacti在这两方面表现的都不错。<br>Zabbix: zabbix是一个基于WEB界面的提供分布式系统监视以及网络监视功能的企业级的开源解决方案。功能全面，很多公司都是基于zabbix自建的监控平台。但维护相对困难，相比没有nagios轻量及灵活。</p>
+</blockquote>
+<p>现在sass监控，也成为企业监控的选择之一了，加上<code>zabbix、Ganglia</code>等，再加上APM的兴起，监控体系也越来越完善了。从基础网络监控、硬件、服务器、应用、性能，然后端到端等方面，都可以插入，但是没有一个比较完整的监控体系是可以完全胜任的，所以还需要根据自身的应用和目标去综合做选择。</p>
+<p>前几天接触到了<code>ELK(logstash, elasticsearch, kibana)</code>这套日志收集展示工具集,的确很方便，这样对以后开发指定权限查看日志，可以很好管理。</p>
+<p>这里简单说了下为什么使用zabbix, Ganglia的功能是哪些？下面有讲到。</p>
+<h3 id="Grafana是什么？"><a href="#Grafana是什么？" class="headerlink" title="Grafana是什么？"></a>Grafana是什么？</h3><p>个人认为： Grafana是一款对后端数据进行实时展示，跟elk那种差不多，非常清晰而且灵活丰富的图形化选项，可以混合多种风格，支持白天和夜间的模式，多个数据源，而跟zabbix比起来没有那么专业监控，没有那么丰富的监控功能，就是一个图像展示。</p>
+<p>功能亮点</p>
+<ul>
+<li>丰富的图形与Grafana</li>
+<li>模板变量可以创建可重用的仪表板</li>
+</ul>
+<p>官方是怎么解释Grafana的：</p>
+<p>grafana是用于可视化大型测量数据的开源程序，他提供了强大和优雅的方式去创建、共享、浏览数据。dashboard中显示了你不同metric数据源中的数据。<br>grafana最常用于因特网基础设施和应用分析，但在其他领域也有机会用到，比如：工业传感器、家庭自动化、过程控制等等。<br>grafana有热插拔控制面板和可扩展的数据源，目前已经支持Graphite、InfluxDB、OpenTSDB、Elasticsearch。</p>
+<h3 id="Grafana功能亮点"><a href="#Grafana功能亮点" class="headerlink" title="Grafana功能亮点"></a>Grafana功能亮点</h3><figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">丰富的图形</div><div class="line">完全交互的，可编辑的图表。多个Y轴，对数刻度和选项。</div><div class="line"></div><div class="line">混合造型</div><div class="line">画出你的图形，你想怎么。混线，点和酒吧。混合堆叠瓦特/隔离系列。</div><div class="line"></div><div class="line">主题</div><div class="line">附带两个主题。如果你不喜欢默认的黑暗的主题，切换到光的主题。</div><div class="line"></div><div class="line">模板变量</div><div class="line">创建变量会自动填入值从您的数据库。</div><div class="line"></div><div class="line">一般可重复使用</div><div class="line">您可以在度量查询和面板标题中使用变量。</div><div class="line"></div><div class="line">重复面板</div><div class="line">自动重复每个选定的变量值的行或面板。</div><div class="line"></div><div class="line">数据源</div><div class="line">支持Graphite，Elasticsearch，Prometheus，InfluxDB，OpenTSDB和KairosDB开箱。或使用插件功能来添加自己的。</div><div class="line"></div><div class="line">认证</div><div class="line">管理用户，角色和组织。通过LDAP，基本验证与认证代理</div><div class="line"></div><div class="line">注释</div><div class="line">注释与datasouces包括Elasticsearch，石墨和InfluxDB丰富的活动图</div><div class="line"></div><div class="line">快照共享</div><div class="line">创建和共享在<span class="number">1</span>点击一个完全交互式图表和只有你的团队或全世界分享。</div></pre></td></tr></table></figure>
+<h3 id="Grafana官网"><a href="#Grafana官网" class="headerlink" title="Grafana官网"></a>Grafana官网</h3><p>Granfana官网：<a href="http://grafana.org" target="_blank" rel="external">http://grafana.org</a></p>
+<h3 id="Granfana官网安装参考文档"><a href="#Granfana官网安装参考文档" class="headerlink" title="Granfana官网安装参考文档"></a>Granfana官网安装参考文档</h3><p>安装文档：<a href="http://docs.grafana.org/installation/" target="_blank" rel="external">http://docs.grafana.org/installation/</a></p>
+<h3 id="grafana和LDAP集成："><a href="#grafana和LDAP集成：" class="headerlink" title="grafana和LDAP集成："></a>grafana和LDAP集成：</h3><p>LDAP集成：<a href="http://docs.grafana.org/installation/ldap/" target="_blank" rel="external">http://docs.grafana.org/installation/ldap/</a></p>
+<h3 id="grafana演示站点"><a href="#grafana演示站点" class="headerlink" title="grafana演示站点"></a>grafana演示站点</h3><p>grafana演示站点: <a href="http://play.grafana.org/" target="_blank" rel="external">http://play.grafana.org/</a></p>
+<h3 id="3-0版本关于Grafana-zabbix插件官方文档："><a href="#3-0版本关于Grafana-zabbix插件官方文档：" class="headerlink" title="3.0版本关于Grafana-zabbix插件官方文档："></a>3.0版本关于Grafana-zabbix插件官方文档：</h3><p><a href="http://docs.grafana-zabbix.org/" target="_blank" rel="external">Grafana-zabbix插件安装官方使用文档</a></p>
+<h3 id="安装Grafana"><a href="#安装Grafana" class="headerlink" title="安装Grafana"></a>安装Grafana</h3><ul>
+<li>温馨提示：</li>
+</ul>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">grafana的版本和grafana-zabbix的版本必须匹配，否则会出现异常。</div><div class="line">本文以grafana2<span class="number">.5</span>版本为例讲解，如果后面grafana和grafana-zabbix更新，需要将<span class="number">2</span>个版本匹配即可。</div></pre></td></tr></table></figure>
+<p>现在最新版本是3.0版本，我们可以试试安装在基于RPM的Linux版本（CentOS，Fedora的，OpenSuse当中，红帽）</p>
+<p>安装最新稳定版：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo yum install https://grafanarel.s3.amazonaws.com/builds/grafana-3.1.0-1468321182.x86_64.rpm</div></pre></td></tr></table></figure>
+<p>如果被墙，可以到我github上面下载：<a href="https://github.com/yangcvo/Grafana" target="_blank" rel="external">Grafana</a></p>
+<p>这里需要安装下依赖包：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ sudo yum install initscripts fontconfig</div><div class="line">$ sudo rpm -Uvh grafana-3.1.0-1468321182.x86_64.rpm</div></pre></td></tr></table></figure>
+<p>或者选择YUM方式安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">vim etc/yum.repos.d/grafana.repo</div><div class="line"></div><div class="line">[grafana]</div><div class="line">name=grafana</div><div class="line">baseurl=https://packagecloud.io/grafana/stable/el/6/<span class="variable">$basearch</span></div><div class="line">repo_gpgcheck=1</div><div class="line">enabled=1</div><div class="line">gpgcheck=1</div><div class="line">gpgkey=https://packagecloud.io/gpg.key https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana</div><div class="line">sslverify=1</div><div class="line">sslcacert=/etc/pki/tls/certs/ca-bundle.crt</div></pre></td></tr></table></figure>
+<p>还有，如果你想测试版或发布候选测试存储库。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">baseurl=https://packagecloud.io/grafana/testing/el/6/<span class="variable">$basearch</span></div></pre></td></tr></table></figure>
+<p>然后通过安装Grafana <code>yum</code>的命令。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span><span class="bash"> sudo yum install grafana</span></div></pre></td></tr></table></figure>
+<p>RPM GPG密钥<br>RPM包进行签名，可以验证这个签名公共GPG密钥。</p>
+<h3 id="包装细节"><a href="#包装细节" class="headerlink" title="包装细节"></a>包装细节</h3><ul>
+<li>安装二进制文件到 <code>/usr/sbin/grafana-server</code></li>
+<li>副本的init.d脚本<code>/etc/init.d/grafana-server</code></li>
+<li>默认的安装文件环境，以在<code>/etc/sysconfig/grafana-server</code></li>
+<li>拷贝配置文件<code>/etc/grafana/grafana.ini</code></li>
+<li>安装systemd服务（如果systemd可用）名称<code>grafana-server.service</code></li>
+<li>默认配置使用的日志文件在<code>/var/log/grafana/grafana.log</code></li>
+<li>默认配置指定以sqlite3的数据库<code>/var/lib/grafana/grafana.db</code></li>
+</ul>
+<p>启动服务（的init.d服务）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span><span class="bash"> sudo service grafana-server start</span></div></pre></td></tr></table></figure>
+<p>这将启动grafana服务进程作为grafana用户，这是包安装过程中创建。默认HTTP端口是 3000，和默认的用户和组管理。</p>
+<p>要配置服务器Grafana在启动时启动：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo /sbin/chkconfig --<span class="keyword">add</span><span class="bash"> grafana-server</span></div></pre></td></tr></table></figure>
+<p>centos 7 系统启动服务：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span><span class="bash"> systemctl daemon-reload</span></div><div class="line"><span class="meta">$</span><span class="bash"> systemctl start grafana-server</span></div><div class="line"><span class="meta">$</span><span class="bash"> systemctl status grafana-server</span></div></pre></td></tr></table></figure>
+<p>centos 7 设置开机启动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo systemctl <span class="built_in">enable</span> grafana-server.service</div></pre></td></tr></table></figure>
+<h3 id="环境文件"><a href="#环境文件" class="headerlink" title="环境文件"></a>环境文件</h3><p>该systemd服务文件和脚本的init.d都使用位于文件 在<code>/etc/sysconfig/grafana</code>服务启动后端时所使用的环境变量。<br>在这里，您可以覆盖日志目录，数据目录和其他变量。</p>
+<h3 id="记录"><a href="#记录" class="headerlink" title="记录"></a>记录</h3><p>默认情况下Grafana将记录到的<code>/var/log/grafana</code></p>
+<h3 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h3><p>默认配置指定位于一个sqlite3的数据库 <code>/var/lib/grafana/grafana.db</code>。请备份升级之前，这个数据库。你也可以使用MySQL或者Postgres作为Grafana数据库上详述配置页面。</p>
+<h3 id="组态"><a href="#组态" class="headerlink" title="组态"></a>组态</h3><p>该配置文件位于<code>/etc/grafana/grafana.ini</code>.去配置页面上的所有这些选项的详细信息。</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p><a href="http://docs.grafana.org/installation/configuration/#database" target="_blank" rel="external">http://docs.grafana.org/installation/configuration/#database</a></p>
+<p>配置文件里分段给出了非常详细的说明，非常人性化</p>
+<p>默认使用的是sqlite3的，这里我调整为自己MySQL的。</p>
+<h3 id="1-创建数据库和用户"><a href="#1-创建数据库和用户" class="headerlink" title="1.创建数据库和用户"></a>1.创建数据库和用户</h3><figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">mysql&gt; CREATE DATABASE grafana DEFAULT CHARACTER <span class="built_in">SET</span> utf8;</div><div class="line">Query OK, <span class="number">1</span> row affected (<span class="number">0.02</span> sec)</div><div class="line"></div><div class="line">mysql&gt; GRANT <span class="literal">ALL</span> <span class="keyword">ON</span> grafana.* <span class="keyword">TO</span> grafana@<span class="string">'192.168.1.%'</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">'haozhuo.com'</span> <span class="keyword">WITH</span> GRANT OPTION;</div><div class="line">Query OK, <span class="number">0</span> <span class="keyword">rows</span> affected (<span class="number">0.26</span> sec)</div><div class="line"></div><div class="line">mysql&gt; FLUSH PRIVILEGES;</div><div class="line">Query OK, <span class="number">0</span> <span class="keyword">rows</span> affected (<span class="number">0.02</span> sec)</div></pre></td></tr></table></figure>
+<h3 id="2-指定数据库及认证信息"><a href="#2-指定数据库及认证信息" class="headerlink" title="2.指定数据库及认证信息"></a>2.指定数据库及认证信息</h3><p>cp /etc/grafana/grafana.ini{,.default}<br>vim /etc/grafana/grafana.ini</p>
+<p>配置文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">[database]</div><div class="line"><span class="comment"># Either "mysql", "postgres" or "sqlite3", it's your choice</span></div><div class="line"><span class="built_in">type</span> = mysql</div><div class="line">host = 192.168.1.201:3306</div><div class="line">name = grafana</div><div class="line">user = grafana</div><div class="line">password = haozhuo.com</div><div class="line"></div><div class="line">[session]</div><div class="line"><span class="comment"># Either "memory", "file", "redis", "mysql", "postgres", default is "file"</span></div><div class="line">provider = redis</div><div class="line">provider_config = addr=127.0.0.1:6379,pool_size=100,db=grafana</div><div class="line"> </div><div class="line">cookie_name = grafana_sess</div><div class="line">cookie_secure = <span class="literal">false</span></div><div class="line"> </div><div class="line">session_life_time = 86400</div></pre></td></tr></table></figure>
+<h3 id="grafana-ini-配置文件详解"><a href="#grafana-ini-配置文件详解" class="headerlink" title="grafana.ini 配置文件详解"></a>grafana.ini 配置文件详解</h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div></pre></td><td class="code"><pre><div class="line">app_mode：应用名称，默认是production</div><div class="line"></div><div class="line">[path]</div><div class="line">data：一个grafana用来存储sqlite3、临时文件、回话的地址路径</div><div class="line">logs：grafana存储logs的路径</div><div class="line"></div><div class="line">[server]</div><div class="line">http_addr：监听的ip地址，，默认是0.0.0.0</div><div class="line">http_port：监听的端口，默认是3000</div><div class="line">protocol：http或者https，，默认是http</div><div class="line">domain：这个设置是root_url的一部分，当你通过浏览器访问grafana时的公开的domian名称，默认是localhost</div><div class="line">enforce_domain：如果主机的header不匹配domian，则跳转到一个正确的domain上，默认是false</div><div class="line"><span class="section">root_url：这是一个web上访问grafana的全路径url，默认是%(protocol)s://%(domain)s:%(http_port)s/</span></div><div class="line">router_logging：是否记录web请求日志，默认是false</div><div class="line">cert_file：如果使用https则需要设置</div><div class="line">cert_key：如果使用https则需要设置</div><div class="line"></div><div class="line">[database]</div><div class="line">grafana默认需要使用数据库存储用户和dashboard信息，默认使用sqlite3来存储，你也可以换成其他数据库</div><div class="line">type：可以是mysql、postgres、sqlite3，默认是sqlite3</div><div class="line">path：只是sqlite3需要，定义sqlite3的存储路径</div><div class="line"><span class="section">host：只是mysql、postgres需要，默认是127.0.0.1:3306</span></div><div class="line">name：grafana的数据库名称，默认是grafana</div><div class="line">user：连接数据库的用户</div><div class="line">password：数据库用户的密码</div><div class="line">ssl_mode：只是postgres使用</div><div class="line"></div><div class="line"></div><div class="line">[security]</div><div class="line">admin_user：grafana默认的admin用户，默认是admin</div><div class="line">admin_password：grafana admin的默认密码，默认是admin</div><div class="line">login_remember_days：多少天内保持登录状态</div><div class="line">secret_key：保持登录状态的签名</div><div class="line">disable_gravatar：</div><div class="line"></div><div class="line"></div><div class="line">[users]</div><div class="line">allow_sign_up：是否允许普通用户登录，如果设置为false，则禁止用户登录，默认是true，则admin可以创建用户，并登录grafana</div><div class="line">allow_org_create：如果设置为false，则禁止用户创建新组织，默认是true</div><div class="line">auto_assign_org：当设置为true的时候，会自动的把新增用户增加到id为1的组织中，当设置为false的时候，新建用户的时候会新增一个组织</div><div class="line">auto_assign_org_role：新建用户附加的规则，默认是Viewer，还可以是Admin、Editor</div><div class="line"></div><div class="line"></div><div class="line">[auth.anonymous]</div><div class="line">enabled：设置为true，则开启允许匿名访问，默认是false</div><div class="line">org_name：为匿名用户设置组织名称</div><div class="line">org_role：为匿名用户设置的访问规则，默认是Viewer</div><div class="line"></div><div class="line"></div><div class="line">[auth.github]</div><div class="line">针对github项目的，很明显，呵呵</div><div class="line">enabled = false</div><div class="line">allow_sign_up = false</div><div class="line">client_id = some_id</div><div class="line">client_secret = some_secret</div><div class="line">scopes = user:email</div><div class="line">auth_url = https://github.com/login/oauth/authorize</div><div class="line">token_url = https://github.com/login/oauth/access_token</div><div class="line">api_url = https://api.github.com/user</div><div class="line">team_ids =</div><div class="line">allowed_domains =</div><div class="line">allowed_organizations =</div><div class="line"></div><div class="line"></div><div class="line">[auth.google]</div><div class="line">针对google app的，呵呵</div><div class="line">enabled = false</div><div class="line">allow_sign_up = false</div><div class="line">client_id = some_client_id</div><div class="line">client_secret = some_client_secret</div><div class="line">scopes = https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email</div><div class="line">auth_url = https://accounts.google.com/o/oauth2/auth</div><div class="line">token_url = https://accounts.google.com/o/oauth2/token</div><div class="line">api_url = https://www.googleapis.com/oauth2/v1/userinfo</div><div class="line">allowed_domains =</div><div class="line"></div><div class="line"></div><div class="line">[auth.basic]</div><div class="line">enabled：当设置为true，则http api开启基本认证</div><div class="line"></div><div class="line"></div><div class="line">[auth.ldap]</div><div class="line">enabled：设置为true则开启LDAP认证，默认是false</div><div class="line">config_file：如果开启LDAP，指定LDAP的配置文件/etc/grafana/ldap.toml</div><div class="line"></div><div class="line"></div><div class="line">[auth.proxy]</div><div class="line">允许你在一个HTTP反向代理上进行认证设置</div><div class="line">enabled：默认是false</div><div class="line">header_name：默认是X-WEBAUTH-USER</div><div class="line">header_property：默认是个名称username</div><div class="line">auto_sign_up：默认是true。开启自动注册，如果用户在grafana DB中不存在</div><div class="line"></div><div class="line">[analytics]</div><div class="line">reporting_enabled：如果设置为true，则会发送匿名使用分析到stats.grafana.org，主要用于跟踪允许实例、版本、dashboard、错误统计。默认是true</div><div class="line">google_analytics_ua_id：使用GA进行分析，填写你的GA ID即可</div><div class="line"></div><div class="line"></div><div class="line">[dashboards.json]</div><div class="line">如果你有一个系统自动产生json格式的dashboard，则可以开启这个特性试试</div><div class="line">enabled：默认是false</div><div class="line">path：一个全路径用来包含你的json dashboard，默认是/var/lib/grafana/dashboards</div><div class="line"></div><div class="line"></div><div class="line">[session]</div><div class="line">provider：默认是file，值还可以是memory、mysql、postgres</div><div class="line"><span class="section">provider_config：这个值的配置由provider的设置来确定，如果provider是file，则是data/xxxx路径类型，如果provider是mysql，则是user:password@tcp(127.0.0.1:3306)/database_name，如果provider是postgres，则是user=a password=b host=localhost port=5432 dbname=c sslmode=disable</span></div><div class="line">cookie_name：grafana的cookie名称</div><div class="line">cookie_secure：如果设置为true，则grafana依赖https，默认是false</div><div class="line">session_life_time：session过期时间，默认是86400秒，24小时</div><div class="line"></div><div class="line"></div><div class="line">以下是官方文档没有，配置文件中有的</div><div class="line">[smtp]</div><div class="line">enabled = false</div><div class="line">host = localhost:25</div><div class="line">user =</div><div class="line">password =</div><div class="line">cert_file =</div><div class="line">key_file =</div><div class="line">skip_verify = false</div><div class="line">from_address = admin@grafana.localhost</div><div class="line"></div><div class="line">[emails]</div><div class="line">welcome_email_on_sign_up = false</div><div class="line">templates_pattern = emails/*.html</div><div class="line"></div><div class="line"></div><div class="line">[log]</div><div class="line">mode：可以是console、file，默认是console、file，也可以设置多个，用逗号隔开</div><div class="line">buffer_len：channel的buffer长度，默认是10000</div><div class="line">level：可以是<span class="string">"Trace"</span>, <span class="string">"Debug"</span>, <span class="string">"Info"</span>, <span class="string">"Warn"</span>, <span class="string">"Error"</span>, <span class="string">"Critical"</span>，默认是info</div><div class="line"></div><div class="line">[log.console]</div><div class="line">level：设置级别</div><div class="line"></div><div class="line">[log.file]</div><div class="line">level：设置级别</div><div class="line">log_rotate：是否开启自动轮转</div><div class="line">max_lines：单个日志文件的最大行数，默认是1000000</div><div class="line">max_lines_shift：单个日志文件的最大大小，默认是28，表示256MB</div><div class="line">daily_rotate：每天是否进行日志轮转，默认是true</div><div class="line">max_days：日志过期时间，默认是7,7天后删除</div></pre></td></tr></table></figure>
+<h3 id="3-重启grafana"><a href="#3-重启grafana" class="headerlink" title="3.重启grafana"></a>3.重启grafana</h3><p>service grafana-server restart<br>tail -f /var/log/grafana/grafana.log</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line">[root@LAN_zabbix ~]<span class="comment"># tail -f /var/log/grafana/grafana.log</span></div><div class="line">t=2016-07-14T00:49:01+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"Rename table dashboard to dashboard_v1 - v1"</span></div><div class="line">t=2016-07-14T00:49:01+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create dashboard v2"</span></div><div class="line">t=2016-07-14T00:49:02+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create index IDX_dashboard_org_id - v2"</span></div><div class="line">t=2016-07-14T00:49:02+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create index UQE_dashboard_org_id_slug - v2"</span></div><div class="line">t=2016-07-14T00:49:02+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"copy dashboard v1 to v2"</span></div><div class="line">t=2016-07-14T00:49:02+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"drop table dashboard_v1"</span></div><div class="line">t=2016-07-14T00:49:02+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"alter dashboard.data to mediumtext v1"</span></div><div class="line">t=2016-07-14T00:49:02+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"Add column updated_by in dashboard - v2"</span></div><div class="line">t=2016-07-14T00:49:02+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"Add column created_by in dashboard - v2"</span></div><div class="line">t=2016-07-14T00:49:02+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"Add column gnetId in dashboard"</span></div><div class="line">t=2016-07-14T00:49:02+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"Add index for gnetId in dashboard"</span></div><div class="line">t=2016-07-14T00:49:02+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create data_source table"</span></div><div class="line">t=2016-07-14T00:49:02+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"add index data_source.account_id"</span></div><div class="line">t=2016-07-14T00:49:02+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"add unique index data_source.account_id_name"</span></div><div class="line">t=2016-07-14T00:49:03+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"drop index IDX_data_source_account_id - v1"</span></div><div class="line">t=2016-07-14T00:49:03+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"drop index UQE_data_source_account_id_name - v1"</span></div><div class="line">t=2016-07-14T00:49:03+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"Rename table data_source to data_source_v1 - v1"</span></div><div class="line">t=2016-07-14T00:49:03+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create data_source table v2"</span></div><div class="line">t=2016-07-14T00:49:03+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create index IDX_data_source_org_id - v2"</span></div><div class="line">t=2016-07-14T00:49:03+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create index UQE_data_source_org_id_name - v2"</span></div><div class="line">t=2016-07-14T00:49:03+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"copy data_source v1 to v2"</span></div><div class="line">t=2016-07-14T00:49:03+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"Drop old table data_source_v1 #2"</span></div><div class="line">t=2016-07-14T00:49:03+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"Add column with_credentials"</span></div><div class="line">t=2016-07-14T00:49:03+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create api_key table"</span></div><div class="line">t=2016-07-14T00:49:03+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"add index api_key.account_id"</span></div><div class="line">t=2016-07-14T00:49:04+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"add index api_key.key"</span></div><div class="line">t=2016-07-14T00:49:04+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"add index api_key.account_id_name"</span></div><div class="line">t=2016-07-14T00:49:04+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"drop index IDX_api_key_account_id - v1"</span></div><div class="line">t=2016-07-14T00:49:04+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"drop index UQE_api_key_key - v1"</span></div><div class="line">t=2016-07-14T00:49:04+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"drop index UQE_api_key_account_id_name - v1"</span></div><div class="line">t=2016-07-14T00:49:04+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"Rename table api_key to api_key_v1 - v1"</span></div><div class="line">t=2016-07-14T00:49:04+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create api_key table v2"</span></div><div class="line">t=2016-07-14T00:49:04+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create index IDX_api_key_org_id - v2"</span></div><div class="line">t=2016-07-14T00:49:05+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create index UQE_api_key_key - v2"</span></div><div class="line">t=2016-07-14T00:49:05+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create index UQE_api_key_org_id_name - v2"</span></div><div class="line">t=2016-07-14T00:49:05+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"copy api_key v1 to v2"</span></div><div class="line">t=2016-07-14T00:49:05+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"Drop old table api_key_v1"</span></div><div class="line">t=2016-07-14T00:49:06+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create dashboard_snapshot table v4"</span></div><div class="line">t=2016-07-14T00:49:18+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"drop table dashboard_snapshot_v4 #1"</span></div><div class="line">t=2016-07-14T00:49:18+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create dashboard_snapshot table v5 #2"</span></div><div class="line">t=2016-07-14T00:49:18+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create index UQE_dashboard_snapshot_key - v5"</span></div><div class="line">t=2016-07-14T00:49:18+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create index UQE_dashboard_snapshot_delete_key - v5"</span></div><div class="line">t=2016-07-14T00:49:19+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create index IDX_dashboard_snapshot_user_id - v5"</span></div><div class="line">t=2016-07-14T00:49:19+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"alter dashboard_snapshot to mediumtext v2"</span></div><div class="line">t=2016-07-14T00:49:19+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create quota table v1"</span></div><div class="line">t=2016-07-14T00:49:19+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create index UQE_quota_org_id_user_id_target - v1"</span></div><div class="line">t=2016-07-14T00:49:19+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create plugin_setting table"</span></div><div class="line">t=2016-07-14T00:49:19+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create index UQE_plugin_setting_org_id_plugin_id - v1"</span></div><div class="line">t=2016-07-14T00:49:19+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create session table"</span></div><div class="line">t=2016-07-14T00:49:20+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"Drop old table playlist table"</span></div><div class="line">t=2016-07-14T00:49:20+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"Drop old table playlist_item table"</span></div><div class="line">t=2016-07-14T00:49:20+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create playlist table v2"</span></div><div class="line">t=2016-07-14T00:49:20+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create playlist item table v2"</span></div><div class="line">t=2016-07-14T00:49:20+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"drop preferences table v2"</span></div><div class="line">t=2016-07-14T00:49:20+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"drop preferences table v3"</span></div><div class="line">t=2016-07-14T00:49:20+0800 lvl=info msg=<span class="string">"Executing migration"</span> logger=migrator id=<span class="string">"create preferences table v3"</span></div><div class="line">t=2016-07-14T00:49:20+0800 lvl=info msg=<span class="string">"Created default admin user: [admin]"</span></div><div class="line">t=2016-07-14T00:49:20+0800 lvl=info msg=<span class="string">"Starting plugin search"</span> logger=plugins</div><div class="line">t=2016-07-14T00:49:20+0800 lvl=eror msg=<span class="string">"Plugins: Failed to load plugin json file: [/usr/share/grafana/public/app/plugins/datasource/zabbix/plugin.json invalid character '\"' after object key:value pair],  err: %!v(MISSING)"</span></div><div class="line">t=2016-07-14T00:49:20+0800 lvl=info msg=<span class="string">"Server Listening"</span> logger=server address=0.0.0.0:3000 protocol=http subUrl=</div></pre></td></tr></table></figure>
+<p>logger=server <code>address=0.0.0.0:3000</code> protocol=http</p>
+<h3 id="Dashboard"><a href="#Dashboard" class="headerlink" title="Dashboard"></a>Dashboard</h3><p>web:</p>
+<p><a href="http://192.168.1.220:3000" target="_blank" rel="external">http://192.168.1.220:3000</a></p>
+<p>默认用户名:admin</p>
+<p>默认用户名密码:admin</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-grafana1.png" alt=""></p>
+<p>登录后一片空白，所以需要安装相应插件。</p>
+<h3 id="grafana-zabbix插件"><a href="#grafana-zabbix插件" class="headerlink" title="grafana-zabbix插件"></a>grafana-zabbix插件</h3><figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">https:</span><span class="comment">//github.com/alexanderzobnin/grafana-zabbix</span></div><div class="line"><span class="symbol">http:</span><span class="comment">//play.grafana-zabbix.org/</span></div><div class="line"><span class="symbol">http:</span><span class="comment">//docs.grafana-zabbix.org/installation/</span></div><div class="line"><span class="symbol">http:</span><span class="comment">//docs.grafana-zabbix.org/installation/configuration/</span></div><div class="line"><span class="symbol">https:</span><span class="comment">//grafana.net/plugins/alexanderzobnin-zabbix-app/installation</span></div></pre></td></tr></table></figure>
+<p>1.安装插件</p>
+<p>官网讲的非常详细参考链接：<a href="http://docs.grafana-zabbix.org/installation/" target="_blank" rel="external">http://docs.grafana-zabbix.org/installation/</a></p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@LAN_zabbix ~]<span class="comment"># grafana-cli plugins install alexanderzobnin-zabbix-app</span></div><div class="line">installing alexanderzobnin-zabbix-app @ <span class="number">3.0</span>.<span class="number">0</span></div><div class="line">from <span class="symbol">url:</span> <span class="symbol">https:</span>/<span class="regexp">/grafana.net/api</span><span class="regexp">/plugins/alexanderzobnin</span>-zabbix-app/versions/<span class="number">3.0</span>.<span class="number">0</span>/download</div><div class="line"><span class="symbol">into:</span> /var/<span class="class"><span class="keyword">lib</span>/<span class="title">grafana</span>/<span class="title">plugins</span></span></div><div class="line"></div><div class="line">✔ Installed alexanderzobnin-zabbix-app successfully</div><div class="line"></div><div class="line">Restart grafana after installing plugins . &lt;service grafana-server restart&gt;</div></pre></td></tr></table></figure>
+<p>然后在登陆查看，这里已经安装上zabbix插件了。</p>
+<h3 id="三、grafana使用"><a href="#三、grafana使用" class="headerlink" title="三、grafana使用"></a>三、grafana使用</h3><p>grafana的仪表和zabbix的监控差不多，基本是先创建监控模板、监控项，然后再添加仪表。这里先建立数据源，再创建仪表对象，并添加模板，最后添加仪表。</p>
+<ul>
+<li>可参考：<a href="https://github.com/alexanderzobnin/grafana-zabbix/wiki/Usage" target="_blank" rel="external">https://github.com/alexanderzobnin/grafana-zabbix/wiki/Usage</a></li>
+</ul>
+<h3 id="组态-1"><a href="#组态-1" class="headerlink" title="组态"></a>组态</h3><p>启用插件</p>
+<p>转到Grafana侧面板插件，选择应用程序选项卡，然后选择的zabbix，打开配置 选项卡并启用插件。</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-grafana2.png" alt=""></p>
+<p>1.配置zabbix数据源</p>
+<p>启用插件后可以添加的zabbix数据源。</p>
+<p>要添加新的zabbix数据源公开数据源在侧面板中，单击添加数据源，并选择的zabbix从下拉列表中。</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-grafana3.png" alt=""></p>
+<p><a href="http://192.168.1.220/zabbix/api_jsonrpc.php" target="_blank" rel="external">http://192.168.1.220/zabbix/api_jsonrpc.php</a></p>
+<p>注意: api_jsonrpc.php是zabbix的API调用接口</p>
+<p>HTTP设置</p>
+<ul>
+<li>网址：设置的zabbix API URL（完整路径api_jsonrpc.php）。</li>
+<li>访问：<ul>
+<li>代理：通过Grafana后端访问</li>
+<li>直接：从浏览器访问。</li>
+</ul>
+</li>
+<li>HTTP认证：配置如果使用代理验证。<ul>
+<li>基本认证：</li>
+<li>凭据：<br>代理访问意味着Grafana后端将代理从浏览器的所有请求，并送他们到数据源。这是有用的，因为它可以消除CORS（跨产地站点资源）的问题，以及消除需要​​宣传认证细节数据源到浏览器。</li>
+</ul>
+</li>
+</ul>
+<p>直接访问仍然支持，因为在某些情况下，可能是有用的直接访问数据源取决于Grafana，用户，和数据源的使用情况和拓扑。</p>
+<h3 id="ZABBIX-API细节"><a href="#ZABBIX-API细节" class="headerlink" title="ZABBIX API细节"></a>ZABBIX API细节</h3><ul>
+<li>用户和密码：设置登录访问的zabbix API。同时检查用户的权限的zabbix如果你不能得到任何组和主机的Grafana。</li>
+<li><p>趋势：启用如果您使用的zabbix 3.x或补丁中的zabbix 2.x的趋势支撑（ZBXNEXT-1193）。此选项严格推荐用于显示时间长周期（超过几天，在不同的zabbix您的项目的更新间隔的），因为项目历史几天包含吨的点。使用趋势将增加Grafana性能。</p>
+<ul>
+<li>从使用趋势之后的趋势将被使用的时间。默认值是7天（7天）。您可以在Grafana格式的时间。有效时间specificators是：</li>
+</ul>
+</li>
+<li><p>^ h -小时</p>
+</li>
+<li>ð -天</li>
+<li><p>中号 -个月</p>
+</li>
+<li><p>缓存更新间隔：插件缓存提高性能的一些API请求。将该值设置为所需的缓存生存期（此选项影响类的物品列表数据）。<br>然后单击添加 -数据源将被添加，您可以使用检查连接 测试连接按钮。此功能可以帮助找到一些错误，类似于无效的用户名或密码，错误的API网址。</p>
+</li>
+</ul>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-grafana4.png" alt=""></p>
+<h3 id="导入示例仪表板"><a href="#导入示例仪表板" class="headerlink" title="导入示例仪表板"></a>导入示例仪表板</h3><p>您可以从仪表盘导入示例仪表板选项卡中的插件配置。 </p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-grafana5.png" alt=""></p>
+<h3 id="请注意有关的zabbix-2-2或更低"><a href="#请注意有关的zabbix-2-2或更低" class="headerlink" title="请注意有关的zabbix 2.2或更低"></a>请注意有关的zabbix 2.2或更低</h3><p>ZABBIX 2.4之前的zabbix API（api_jsonrpc.php）不允许跨域请求（CORS）。你可以得到HTTP错误412（预处理失败）。要修复它添加此代码的版权后，立即api_jsonrpc.php：</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">  标题（“访问控制允许来源：*<span class="string">'）;</span></div><div class="line">  </div><div class="line">标题（“访问控制允许信头：Content-Type的'）;</div><div class="line"></div><div class="line">标题（“访问控制允许的方法：POST<span class="string">'）;</span></div><div class="line"></div><div class="line">标题（“访问控制，最大年龄：1000'）;</div><div class="line"></div><div class="line">如果（<span class="variable">$ </span><span class="number">_</span> SERVER [ <span class="string">'REQUEST_METHOD'</span> ] === <span class="string">'选项'</span>）&#123;</div><div class="line"></div><div class="line">   返回 ;</div><div class="line">   </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>之前</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">require_once dirname( __FILE__ ). <span class="string">'/include/func.inc.php'</span> ;</div><div class="line">require_once dirname( __FILE__ ). <span class="string">'/include/classes/core/CHttpRequest.php'</span> ;</div></pre></td></tr></table></figure>
+<p>完全修复上市。欲了解更多详情，请参见ZABBIX发出ZBXNEXT-1377 和ZBX-8459。<br>请注意有关浏览器缓存</p>
+<p>更新插件，清除浏览器缓存和重新加载应用程序页面后。详情请参见铬， 火狐。您需要清除缓存而已，没有Cookie，历史记录和其他数据。</p>
+<h3 id="升级"><a href="#升级" class="headerlink" title="升级"></a>升级</h3><h4 id="从2-X升级"><a href="#从2-X升级" class="headerlink" title="从2.X升级"></a>从2.X升级</h4><p>后启用的zabbix应用到数据源，打开你的配置的zabbix数据源端选择的zabbix从类型列表中再次。这是必要的，因为插件ID在Grafana 3.0改变。</p>
+<p>###入门Grafana-zabbix</p>
+<p>你经过安装和配置<code>Grafana-zabbix</code>数据源，让我们创建一个简单的仪表板。</p>
+<p>下面是自带的模板，自己新建的模板在我github上面有详细的创建步骤。</p>
+<p>入门gafana创建仪表板：<a href="https://github.com/yangcvo/Grafana" target="_blank" rel="external">Grafana-github</a></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-grafana7.png" alt=""></p>
+<ul>
+<li>可参考：<a href="https://github.com/alexanderzobnin/grafana-zabbix/wiki/Usage" target="_blank" rel="external">https://github.com/alexanderzobnin/grafana-zabbix/wiki/Usage</a></li>
+</ul>
+<p><img src="https://cloud.githubusercontent.com/assets/4932851/8288883/9ec5b240-1921-11e5-9e0f-04d075b885e9.gif" alt=""></p>
+<p>zabbix-server2.4服务端编译安装 <a href="http://blog.yangcvo.me/2015/01/18/zabbix-server服务端编译安装/">zabbix-server服务端编译安装</a></p>
+<p>zabbix2.4监控80端口状态 : <a href="http://blog.yangcvo.me/2016/07/20/zabbix监控80端口状态/">zabbix监控80端口状态</a></p>
+<p>zabbix+Grafana安装使用监控结合 ：<a href="http://blog.yangcvo.me/2016/07/13/zabbix-Grafana安装使用结合/">zabbix+Grafana安装使用监控结合</a></p>
+<p>zabbix监控MySQL-添加自定义监控项 : <a href="http://blog.yangcvo.me/2015/09/29/zabbix监控MySQL-添加自定义监控项/">zabbix监控MySQL-添加自定义监控项</a></p>
+<p>zabbix的ICMP_Ping模版实现对客户端网络状态的监控 : <a href="http://blog.yangcvo.me/2015/11/18/zabbix的ICMP-Ping模版实现对客户端网络状态的监控/">zabbix的ICMP_Ping模版实现对客户端网络状态的监控</a></p>
+<p>zabbix性能监控故障总结 <a href="http://blog.yangcvo.me/2016/02/07/zabbix-故障总结/">zabbix性能监控故障总结</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/06/18/性能监控/Zabbix/zabbix-server2-4全新升级3-0版本/" data-toggle="tooltip" data-placement="top" title="zabbix-server2.4全新升级3.0版本">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/06/10/自动化+可视化/Ansible/ansible 安装出现 ImportError: No module named _text/" data-toggle="tooltip" data-placement="top" title="Ansible安装出现 ImportError/ No module named _text">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#zabbix" title="zabbix">zabbix</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yangcvo-me";
+    var disqus_identifier = "http://blog.yangcvo.me/2016/06/17/性能监控/Zabbix/zabbix-Grafana安装使用结合/";
+    var disqus_url = "http://blog.yangcvo.me/2016/06/17/性能监控/Zabbix/zabbix-Grafana安装使用结合/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/PandaJuesha">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yangcvo.me">yangc</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

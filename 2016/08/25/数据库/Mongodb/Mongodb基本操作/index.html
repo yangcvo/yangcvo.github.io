@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/2016/08/25/数据库/Mongodb/Mongodb基本操作/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                    </div>
+                    <h1></h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by yangc on
+                        2016-08-25
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="Mongodb基本命令操作"><a href="#Mongodb基本命令操作" class="headerlink" title="Mongodb基本命令操作"></a>Mongodb基本命令操作</h1><p>###MongoDB数据库基本用法</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div></pre></td><td class="code"><pre><div class="line">show dbs:显示数据库列表</div><div class="line">show collections：显示当前数据库中的集合（类似关系数据库中的表）</div><div class="line">show users：显示用户</div><div class="line">use &lt;db name&gt;：切换当前数据库，这和MS-SQL里面的意思一样</div><div class="line">db.help()：显示数据库操作命令，里面有很多的命令</div><div class="line">db.foo.help()：显示集合操作命令，同样有很多的命令，foo指的是当前数据库下，一个叫foo的集合，并非真正意义上的命令</div><div class="line">db.foo.find()：对于当前数据库中的foo集合进行数据查找（由于没有条件，会列出所有数据）</div><div class="line">db.foo.find( &#123; a : 1 &#125; )：对于当前数据库中的foo集合进行查找，条件是数据中有一个属性叫a，且a的值为1</div><div class="line">MongoDB没有创建数据库的命令，但有类似的命令。</div><div class="line">如：如果你想创建一个“myTest”的数据库，先运行use myTest命令，之后就做一些操作（如：db.createCollection(<span class="string">'user'</span>)）,这样就可以创建一个名叫“myTest”的数据库。</div><div class="line">数据库常用命令</div><div class="line"></div><div class="line">1、Help查看命令提示</div><div class="line"> <span class="built_in">help</span></div><div class="line"> db.help();</div><div class="line"> db.yourColl.help();</div><div class="line"> db.youColl.find().help();</div><div class="line"> rs.help();</div><div class="line">2、切换/创建数据库</div><div class="line"> use yourDB; 当创建一个集合(table)的时候会自动创建当前数据库</div><div class="line">3、查询所有数据库</div><div class="line"> show dbs;</div><div class="line">4、删除当前使用数据库</div><div class="line"> db.dropDatabase();</div><div class="line">5、从指定主机上克隆数据库</div><div class="line"> db.cloneDatabase(“127.0.0.1”); 将指定机器上的数据库的数据克隆到当前数据库</div><div class="line">6、从指定的机器上复制指定数据库数据到某个数据库</div><div class="line"> db.copyDatabase(<span class="string">"mydb"</span>, <span class="string">"temp"</span>, <span class="string">"127.0.0.1"</span>);将本机的mydb的数据复制到temp数据库中</div><div class="line">7、修复当前数据库</div><div class="line"> db.repairDatabase();</div><div class="line">8、查看当前使用的数据库</div><div class="line"> db.getName();</div><div class="line"> db; db和getName方法是一样的效果，都可以查询当前使用的数据库</div><div class="line">9、显示当前db状态</div><div class="line"> db.stats();</div><div class="line">10、当前db版本</div><div class="line"> db.version();</div><div class="line">11、查看当前db的链接机器地址</div><div class="line"> db.getMongo();</div><div class="line"></div><div class="line">Collection聚集集合</div><div class="line"></div><div class="line">1、创建一个聚集集合（table）</div><div class="line"> db.createCollection(“collName”, &#123;size: 20, capped: 5, max: 100&#125;);</div><div class="line">2、得到指定名称的聚集集合（table）</div><div class="line"> db.getCollection(<span class="string">"account"</span>);</div><div class="line">3、得到当前db的所有聚集集合</div><div class="line"> db.getCollectionNames();</div><div class="line">4、显示当前db所有聚集索引的状态</div><div class="line"> db.printCollectionStats();</div><div class="line"></div><div class="line">用户相关</div><div class="line"></div><div class="line">1、添加一个用户</div><div class="line"> db.addUser(<span class="string">"name"</span>);</div><div class="line"> db.addUser(<span class="string">"userName"</span>, <span class="string">"pwd123"</span>, <span class="literal">true</span>); 添加用户、设置密码、是否只读</div><div class="line">2、数据库认证、安全模式</div><div class="line"> db.auth(<span class="string">"userName"</span>, <span class="string">"123123"</span>);</div><div class="line">3、显示当前所有用户</div><div class="line"> show users;</div><div class="line">4、删除用户</div><div class="line"> db.removeUser(<span class="string">"userName"</span>);</div><div class="line"></div><div class="line">其他</div><div class="line"></div><div class="line">1、查询之前的错误信息</div><div class="line"> db.getPrevError();</div><div class="line">2、清除错误记录</div><div class="line"> db.resetError();</div></pre></td></tr></table></figure>
+<p>###shell操作数据库：</p>
+<ol>
+<li><p>超级用户相关：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"> 1. <span class="comment">#进入数据库admin</span></div><div class="line">   use admin  </div><div class="line"> 2. <span class="comment">#增加或修改用户密码</span></div><div class="line">  db.addUser(<span class="string">'name'</span>,<span class="string">'pwd'</span>)</div><div class="line"> 3. <span class="comment">#查看用户列表</span></div><div class="line">  db.system.users.find()</div><div class="line"> 4. <span class="comment">#用户认证</span></div><div class="line">  db.auth(<span class="string">'name'</span>,<span class="string">'pwd'</span>)</div><div class="line"> 5. <span class="comment">#删除用户</span></div><div class="line">  db.removeUser(<span class="string">'name'</span>)</div><div class="line"> 6. <span class="comment">#查看所有用户</span></div><div class="line">  show users</div><div class="line"> 7. <span class="comment">#查看所有数据库</span></div><div class="line">  show dbs</div><div class="line"> 8. <span class="comment">#查看所有的collection</span></div><div class="line">  show collections</div><div class="line"> 9. <span class="comment">#查看各collection的状态</span></div><div class="line">  db.printCollectionStats()</div><div class="line">10. <span class="comment">#查看主从复制状态</span></div><div class="line">  db.printReplicationInfo()</div><div class="line">11. <span class="comment">#修复数据库</span></div><div class="line">  db.repairDatabase()</div><div class="line">12. <span class="comment">#设置记录profiling，0=off 1=slow 2=all</span></div><div class="line">  db.setProfilingLevel(1)</div><div class="line">13. <span class="comment">#查看profiling</span></div><div class="line">  show profile</div><div class="line">14. <span class="comment">#拷贝数据库</span></div><div class="line">  db.copyDatabase(<span class="string">'mail_addr'</span>,<span class="string">'mail_addr_tmp'</span>)</div><div class="line">15. <span class="comment">#删除collection</span></div><div class="line">  db.mail_addr.drop()</div><div class="line">16. <span class="comment">#删除当前的数据库</span></div><div class="line">  db.dropDatabase()</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>###1. Mongodb的开启</p>
+<p>默认启动：./mongodb<br>默认数据保存路径：/data/db/<br>默认端口：27017</p>
+<p><strong>修改默认路径：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"> --dbpath</div><div class="line"><span class="comment"># ./mongdb --dbpath /mongodb/</span></div></pre></td></tr></table></figure>
+<p>把数据存储位置指向一个自己的目录/mongodb/</p>
+<p><strong>修改默认端口：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">--port</div><div class="line">$ ./mongdb --port 20111</div></pre></td></tr></table></figure>
+<p>把服务端口修改为20111，这个一方面是为了安全，使用默认端口容易被一些恶意的人发现做手脚.</p>
+<p>启动后台服务:</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">--fork</span></div></pre></td></tr></table></figure>
+<p>在后台开启Mongdb服务在使用这个方式启动的时候要注意两点：</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="number">1</span>、该功能只在<span class="number">1.1</span>之后的版本才可以使用。</div><div class="line"><span class="number">2</span>、另外通过这个方式在后台启动，如果在启动的时候像--dbpath 那样使用 --logpath 输出日志时候日志输出目录也要自己创建。</div></pre></td></tr></table></figure>
+<p>如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ./mongod --fork --logpath /var/log/mongodb.log --logappend</span></div></pre></td></tr></table></figure>
+<p>解析最后–logappend,以追加的方式创建日志防止把之前的日志删除了</p>
+<p>####2.Mongodb的关闭:</p>
+<p><strong>前台运行:</strong></p>
+<p>如果没有使用–fork，直接可以前台退出终端关闭。通过这种方式，Mongodb将会自己做清理退出，把没有写好的数据写完成，并最终关闭数据文件。要注意的是这个过程会持续到所有操作都完成。</p>
+<p><strong>后台运行:</strong></p>
+<p>如果使用–fork在后台运行mongdb服务，那么就要通过向服务器发送shutdownServer()消息来关闭。</p>
+<p>1、普通命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ./mongod</span></div><div class="line">&gt; use admin</div><div class="line">&gt; db.shutdownServer()</div></pre></td></tr></table></figure>
+<p>要注意的是，这个命令只允许在本地，或是一个经过认证的客户端。</p>
+<p>2、如果这是一个主从式的复制集群，在1.9.1版本后将按下面的步骤来关闭</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">- 检查从Mongodb的数据更新时间</div><div class="line">- 如果所有的从Mongodb和主的时间差都超过10，这个时候不会关闭mongodb（在这种情况下面，我们可以通过配置timeoutSecs的方式来让从Mongodb完成数据的更新）</div><div class="line">- 如果其中有一个从Mongodb与主服务时间差在10秒内，那么主服务器将会关闭，并且等待从Mongodb更新完成并关闭。</div></pre></td></tr></table></figure>
+<p>3、如果没有up-to-date 从Mongodb且你想强制关闭服务，可以通过添加force:true;命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt; db.adminCommand(&#123;shutdown : 1, force : <span class="literal">true</span>&#125;)</div><div class="line">&gt; //or</div><div class="line">&gt; db.shutdownServer(&#123;force : <span class="literal">true</span>&#125;)</div></pre></td></tr></table></figure>
+<p>4、指定特定超时时间的关闭服务器，命令同上，另外加上一个timeoutsec:参数</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt; db.adminCommand(<span class="string">shutdown :</span> <span class="number">1</span>, <span class="string">force :</span> <span class="literal">true</span>, <span class="string">timeoutsec :</span> <span class="number">5</span>)</div><div class="line">&gt; <span class="comment">//or</span></div><div class="line">&gt; db.shutdownServer(&#123;<span class="string">force :</span> <span class="literal">true</span>, <span class="string">timeoutsec :</span> <span class="number">5</span>&#125;)</div></pre></td></tr></table></figure>
+<p>Mongodb开机启动</p>
+<p>在/etc/rc.d/rc.local文件末尾添加下面的代码</p>
+<p>####add mongodb service</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rm -rf /data/mongodb_data/* &amp;&amp; /usr/<span class="built_in">local</span>/mongodb/bin/mongod --dbpath=/data/mongdb_data/ --logpath=/data/mongdb_log/mongodb.log --logappend &amp;</div></pre></td></tr></table></figure>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/08/31/数据库/Mongodb/centos安装MongoDB数据库、配置、主从同步、备份与恢复/" data-toggle="tooltip" data-placement="top" title="">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/08/25/数据库/Mongodb/Red Hat企业版或CentOS的Linux上安装MongoDB/" data-toggle="tooltip" data-placement="top" title="">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yangcvo-me";
+    var disqus_identifier = "http://blog.yangcvo.me/2016/08/25/数据库/Mongodb/Mongodb基本操作/";
+    var disqus_url = "http://blog.yangcvo.me/2016/08/25/数据库/Mongodb/Mongodb基本操作/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yangcvox">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yangcvo.me">yangc</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

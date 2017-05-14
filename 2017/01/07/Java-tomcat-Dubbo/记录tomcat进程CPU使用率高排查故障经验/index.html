@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          记录tomcat进程CPU使用率高排查故障经验 - yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/2017/01/07/Java-tomcat-Dubbo/记录tomcat进程CPU使用率高排查故障经验/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#performance tuning" title="performance tuning">performance tuning</a>
+                        
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                    </div>
+                    <h1>记录tomcat进程CPU使用率高排查故障经验</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by yangc on
+                        2017-01-07
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="1、故障现象"><a href="#1、故障现象" class="headerlink" title="1、故障现象"></a>1、故障现象</h3><p>运营同事反馈APP其中体检商城购买订单系统运行缓慢，访问出现超时，多次重启系统后问题依然存在，使用top命令查看服务器情况，发现CPU占用率过高。</p>
+<h3 id="2、CPU占用过高问题定位"><a href="#2、CPU占用过高问题定位" class="headerlink" title="2、CPU占用过高问题定位"></a>2、CPU占用过高问题定位</h3><h5 id="2-1、定位问题进程"><a href="#2-1、定位问题进程" class="headerlink" title="2.1、定位问题进程"></a>2.1、定位问题进程</h5><p>使用top命令查看资源占用情况，发现pid为14063的进程占用了大量的CPU资源，CPU占用率高达229.1%，内存占用率也达到了29.8%</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@account-tomcat-01 ~]$ top</div><div class="line">top - 14:51:10 up 233 days, 11:40,  2 users,  load average: 6.85, 5.62, 3.97</div><div class="line">Tasks: 192 total,   2 running, 190 sleeping,   0 stopped,   0 zombie</div><div class="line">%Cpu(s): 97.3 us,  0.3 sy,  0.0 ni,  2.5 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</div><div class="line">KiB Mem : 16268652 total,  5114392 free,  6907028 used,  4247232 buff/cache</div><div class="line">KiB Swap:  4063228 total,  3989708 free,    73520 used.  8751512 avail Mem </div><div class="line">  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND                                                                                               </div><div class="line"></div><div class="line">14063 root       20   0 9260488 4.627g  11976 S 229.1 29.8 117:41.66 java</div></pre></td></tr></table></figure>
+<h5 id="2-2、定位问题线程"><a href="#2-2、定位问题线程" class="headerlink" title="2.2、定位问题线程"></a>2.2、定位问题线程</h5><p>使用<code>ps -mp pid -o THREAD,tid,time</code>命令查看该进程的线程情况，发现该进程的多个线程占用率很高</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">[root@account-tomcat-01 ~]$ ps -mp 14063 -o THREAD,tid,time </div><div class="line">USER     %CPU PRI SCNT WCHAN  USER SYSTEM   TID     TIME</div><div class="line">        361   -    - -         -      -     - 02:05:58</div><div class="line">root       0.0  19    - futex_    -      - 14063 00:00:00</div><div class="line">root       0.0  19    - poll_s    -      - 14064 00:00:00</div><div class="line">root      44.5  19    - -         -      - 14065 00:15:30</div><div class="line">root      44.5  19    - -         -      - 14066 00:15:30</div><div class="line">root      44.4  19    - -         -      - 14067 00:15:29</div><div class="line">root      44.5  19    - -         -      - 14068 00:15:30</div><div class="line">root      44.5  19    - -         -      - 14069 00:15:30</div><div class="line">root      44.5  19    - -         -      - 14070 00:15:30</div><div class="line">root      44.5  19    - -         -      - 14071 00:15:30</div><div class="line">root      44.6  19    - -         -      - 14072 00:15:32</div><div class="line">root       2.2  19    - futex_    -      - 14073 00:00:46</div><div class="line">root       0.0  19    - futex_    -      - 14074 00:00:00</div><div class="line">root       0.0  19    - futex_    -      - 14075 00:00:00</div><div class="line">root       0.0  19    - futex_    -      - 14076 00:00:00</div><div class="line">root       0.7  19    - futex_    -      - 14077 00:00:15</div></pre></td></tr></table></figure>
+<p>从输出信息可以看出，14065~14072之间的线程CPU占用率都很高<br>2.3、查看问题线程堆栈</p>
+<p>挑选TID为14065的线程，查看该线程的堆栈情况，先将线程id转为16进制，使用printf “%x\n” tid命令进行转换</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[root@account-tomcat-<span class="number">01</span> ~]$ printf <span class="string">"%x\n"</span> <span class="number">14065</span></div><div class="line"><span class="number">36</span>f1</div><div class="line">再使用jstack命令打印线程堆栈信息，命令格式：jstack pid |grep tid -A <span class="number">30</span></div><div class="line"></div><div class="line">[root@root-web-<span class="number">01</span> ~]$ jstack <span class="number">14063</span> |grep <span class="number">36</span>f1 -A <span class="number">30</span></div><div class="line"><span class="string">"GC task thread#0 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa35001e800</span> <span class="attr">nid=0x36f1</span> runnable </div><div class="line"><span class="string">"GC task thread#1 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa350020800</span> <span class="attr">nid=0x36f2</span> runnable </div><div class="line"><span class="string">"GC task thread#2 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa350022800</span> <span class="attr">nid=0x36f3</span> runnable </div><div class="line"><span class="string">"GC task thread#3 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa350024000</span> <span class="attr">nid=0x36f4</span> runnable </div><div class="line"><span class="string">"GC task thread#4 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa350026000</span> <span class="attr">nid=0x36f5</span> runnable </div><div class="line"><span class="string">"GC task thread#5 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa350028000</span> <span class="attr">nid=0x36f6</span> runnable </div><div class="line"><span class="string">"GC task thread#6 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa350029800</span> <span class="attr">nid=0x36f7</span> runnable </div><div class="line"><span class="string">"GC task thread#7 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa35002b800</span> <span class="attr">nid=0x36f8</span> runnable </div><div class="line"><span class="string">"VM Periodic Task Thread"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa3500a8800</span> <span class="attr">nid=0x3700</span> waiting on condition </div><div class="line"></div><div class="line">JNI global references: <span class="number">392</span></div></pre></td></tr></table></figure>
+<p>从输出信息可以看出，此线程是JVM的gc线程。此时可以基本确定是内存不足或内存泄露导致gc线程持续运行，导致CPU占用过高。</p>
+<p>所以接下来我们要找的内存方面的问题</p>
+<p>3.1、使用jstat -gcutil命令查看进程的内存情况</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[root@account-tomcat-01 ~]$ jstat -gcutil 14063 2000 10</div><div class="line"></div><div class="line">  S0     S1     E      O      P     YGC     YGCT    FGC    FGCT     GCT   </div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   218 1484.830 1506.747</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   218 1484.830 1506.747</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   219 1496.567 1518.484</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   219 1496.567 1518.484</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   219 1496.567 1518.484</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   219 1496.567 1518.484</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   219 1496.567 1518.484</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   220 1505.439 1527.355</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   220 1505.439 1527.355</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   220 1505.439 1527.355</div></pre></td></tr></table></figure>
+<p>从输出信息可以看出，Eden区内存占用100%，Old区内存占用99.99%，Full GC的次数高达220次，并且频繁Full GC，Full GC的持续时间也特别长，平均每次Full GC耗时6.8秒（1505.439/220）。根据这些信息，基本可以确定是程序代码上出现了问题，可能存在不合理创建对象的地方。</p>
+<p>生产java应用，CPU使用率一直很高，经常达到100%，通过以下步骤完美解决，分享一下。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">1.jps 获取Java进程的PID。</div><div class="line"></div><div class="line">2.top -H -p PID 查看对应进程的哪个线程占用CPU过高。</div><div class="line">2.1 使用 ps -mp pid -o THREAD,tid,time 命令查看该进程的线程情况，发现该进程的多个线程占用率很高。</div><div class="line"></div><div class="line">3.jstack pid &gt;&gt; java.txt 导出CPU占用高进程的线程栈。</div><div class="line">使用jstack命令查看进程的堆栈情况</div><div class="line"></div><div class="line">4.echo “obase=16; PID” | bc 将线程的PID转换为16进制。</div><div class="line"></div><div class="line">5.在第二步导出的Java.txt中查找转换成为16进制的线程PID。找到对应的线程栈。</div><div class="line"></div><div class="line">6.分析负载高的线程栈都是什么业务操作。优化程序并处理问题。</div></pre></td></tr></table></figure>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/01/12/自动化+可视化/Phabricator/Centos7搭建配置phabricator开源的可视化代码审查工具/" data-toggle="tooltip" data-placement="top" title="Centos7搭建配置phabricator开源的可视化代码审查工具">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/12/29/日志分析平台/Elasticsearch/搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台/" data-toggle="tooltip" data-placement="top" title="搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#performance tuning" title="performance tuning">performance tuning</a>
+                        
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yangcvo-me";
+    var disqus_identifier = "http://blog.yangcvo.me/2017/01/07/Java-tomcat-Dubbo/记录tomcat进程CPU使用率高排查故障经验/";
+    var disqus_url = "http://blog.yangcvo.me/2017/01/07/Java-tomcat-Dubbo/记录tomcat进程CPU使用率高排查故障经验/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yangcvox">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yangcvo.me">yangc</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

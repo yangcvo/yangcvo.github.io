@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <meta charset="utf-8">
+    
+    <title>graylog 升级2.1 集中日志解决方案 | Cheng yang&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="graylog 升级2.1 集中日志解决方案参考官网：升级到Graylog的2.1.x
+一：为什么需要集中日志解决方案？在公司服务机子部署越来越多的情况下，让我们来想想会遇到的问题：
+
+开发人员不能登录线上服务器查看详细日志，经过运维周转费时费力
+日志数据分散在多个系统，难以查找
+日志数据量大，查询速度慢
+一个调用会涉及多个系统，难以在这些系统的日志中快速定位数据
+数据不够实时
+很难对数据进行挖掘">
+<meta property="og:type" content="article">
+<meta property="og:title" content="graylog 升级2.1 集中日志解决方案">
+<meta property="og:url" content="http://blog.yangcvo.me/2016/11/14/日志分析平台/graylog 升级2.1 集中日志解决方案/index.html">
+<meta property="og:site_name" content="Cheng yang's Blog">
+<meta property="og:description" content="graylog 升级2.1 集中日志解决方案参考官网：升级到Graylog的2.1.x
+一：为什么需要集中日志解决方案？在公司服务机子部署越来越多的情况下，让我们来想想会遇到的问题：
+
+开发人员不能登录线上服务器查看详细日志，经过运维周转费时费力
+日志数据分散在多个系统，难以查找
+日志数据量大，查询速度慢
+一个调用会涉及多个系统，难以在这些系统的日志中快速定位数据
+数据不够实时
+很难对数据进行挖掘">
+<meta property="og:image" content="https://www.graylog.org/assets/overview_dashboard-3817012f923d4a00e9bde1c0547796319cf0396149464f434cfc2ae83a9da826.png">
+<meta property="og:updated_time" content="2016-12-18T01:59:49.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="graylog 升级2.1 集中日志解决方案">
+<meta name="twitter:description" content="graylog 升级2.1 集中日志解决方案参考官网：升级到Graylog的2.1.x
+一：为什么需要集中日志解决方案？在公司服务机子部署越来越多的情况下，让我们来想想会遇到的问题：
+
+开发人员不能登录线上服务器查看详细日志，经过运维周转费时费力
+日志数据分散在多个系统，难以查找
+日志数据量大，查询速度慢
+一个调用会涉及多个系统，难以在这些系统的日志中快速定位数据
+数据不够实时
+很难对数据进行挖掘">
+<meta name="twitter:image" content="https://www.graylog.org/assets/overview_dashboard-3817012f923d4a00e9bde1c0547796319cf0396149464f434cfc2ae83a9da826.png">
+    
+
+    
+        <link rel="alternate" href="/" title="Cheng yang&#39;s Blog" type="application/atom+xml" />
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">Cheng yang&#39;s Blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="https://github.com/yangcvo">GitHub</a>
+                
+                    <a class="main-nav-link" href="http://weibo.com/yangcvo">Weibo</a>
+                
+                    <a class="main-nav-link" href="http://blog.yangcvo.me/2014/05/04/%E4%B8%AA%E4%BA%BA%E8%AE%B0%E5%BD%95/About-me/">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/yangc.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/yangcvo">GitHub</a></td>
+                
+                    <td><a class="main-nav-link" href="http://weibo.com/yangcvo">Weibo</a></td>
+                
+                    <td><a class="main-nav-link" href="http://blog.yangcvo.me/2014/05/04/%E4%B8%AA%E4%BA%BA%E8%AE%B0%E5%BD%95/About-me/">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/yangc.png" />
+            <h2 id="name">yangc</h2>
+            <h3 id="title">Operation Engineer</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>hangzhou, China</span>
+            <a id="follow" target="_blank" href="https://github.com/yangcvo/">FOLLOW</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                103
+                <span>posts</span>
+            </div>
+            <div class="article-info-block">
+                37
+                <span>tags</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/yangcvo" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://twitter.com/yangaov" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://www.facebook.com/yango88" target="_blank" title="facebook" class=tooltip>
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="dribbble" class=tooltip>
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="rss" class=tooltip>
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-日志分析平台/graylog 升级2.1 集中日志解决方案" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            graylog 升级2.1 集中日志解决方案
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2016/11/14/日志分析平台/graylog 升级2.1 集中日志解决方案/">
+            <time datetime="2016-11-14T09:56:03.000Z" itemprop="datePublished">Nov 14 2016</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a>
+    </div>
+
+                        
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h1 id="graylog-升级2-1-集中日志解决方案"><a href="#graylog-升级2-1-集中日志解决方案" class="headerlink" title="graylog 升级2.1 集中日志解决方案"></a>graylog 升级2.1 集中日志解决方案</h1><p>参考官网：<a href="http://docs.graylog.org/en/2.1/pages/upgrade/graylog-2.1.html" target="_blank" rel="external">升级到Graylog的2.1.x</a></p>
+<h3 id="一：为什么需要集中日志解决方案？"><a href="#一：为什么需要集中日志解决方案？" class="headerlink" title="一：为什么需要集中日志解决方案？"></a>一：为什么需要集中日志解决方案？</h3><p>在公司服务机子部署越来越多的情况下，让我们来想想会遇到的问题：</p>
+<ul>
+<li>开发人员不能登录线上服务器查看详细日志，经过运维周转费时费力</li>
+<li>日志数据分散在多个系统，难以查找</li>
+<li>日志数据量大，查询速度慢</li>
+<li>一个调用会涉及多个系统，难以在这些系统的日志中快速定位数据</li>
+<li>数据不够实时</li>
+<li>很难对数据进行挖掘，分析，业务告警，审计</li>
+<li>这些问题的存在让开发以及运维人员很是头痛，严重影响效率！</li>
+</ul>
+<h3 id="二：什么是graylog技术栈？"><a href="#二：什么是graylog技术栈？" class="headerlink" title="二：什么是graylog技术栈？"></a>二：什么是graylog技术栈？</h3><p>为了解决上述问题，我们需要一个日志的集中管理方案，graylog技术栈：</p>
+<ul>
+<li>java （jdk1.8.0_66/）环境</li>
+<li>Collector-sidecar（收集日志）或者syslog</li>
+<li>Mongodb（存储日志源文件）</li>
+<li>Elasticsearch（提供搜索日志）</li>
+<li>Graylog2.1.1（搜索和视图展示日志，告警和权限）</li>
+</ul>
+<p>有了这些，我们就能把日志先收集起来，进行我们想要的分析之后，web的形式展示出来，提供查询！</p>
+<h3 id="三：graylog的安装部署"><a href="#三：graylog的安装部署" class="headerlink" title="三：graylog的安装部署"></a>三：graylog的安装部署</h3><p>安装环境：linux centOS系统安装，已安装JDK1.8版本，安装启动顺序</p>
+<p>1.安装部署mongodb<br>2.安装部署elasticsearch<br>3.安装部署graylog<br>4.安装部署Graylog Collector Sidecar</p>
+<hr>
+<p> <strong>1：安装部署mongodb</strong> <strong>Java也安装</strong>  参考我博文有介绍。 </p>
+<p> <strong>2：安装部署elasticsearch</strong></p>
+<p><strong>(1)下载jar包</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wget https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/2.3.5/elasticsearch-2.3.5.tar.gz</span><br><span class="line"></span><br><span class="line">如果报错</span><br><span class="line">执行</span><br><span class="line"></span><br><span class="line">wget --no-check-certificate</span><br><span class="line"></span><br><span class="line">https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/2.3.5/elasticsearch-2.3.5.tar.gz</span><br></pre></td></tr></table></figure>
+<p><strong>(2)解压jar包</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tar -zxvf elasticsearch-2.3.5.tar.gz -C /opt/</span><br></pre></td></tr></table></figure>
+<p><strong>(3)修改elasticsearch.yml配置文件</strong></p>
+<p> 这里需要修改配置文件：配置前先创建几个目录文件</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mkdir /home/data/es-data -p</span><br><span class="line">mkdir /home/data/es-work -p</span><br></pre></td></tr></table></figure>
+<p>elasticsearch-2.3.5安装目录conf下执行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vim elasticsearch-2.3.5/config/elasticsearch.yml</span><br><span class="line"> </span><br><span class="line">cluster.name: graylog              <span class="comment">#集群名称建议命名graylog，便于识别区分</span></span><br><span class="line">node.name: elasticsearch-node-1     <span class="comment"># elasticsearch集群节点名称</span></span><br><span class="line">network.host: 192.168.1.234    <span class="comment"># 绑定节点IP</span></span><br><span class="line">http.port: 9200         <span class="comment"># 外部访问端口，默认，也可以安全考虑修改</span></span><br><span class="line">path.logs: /home/data/logs</span><br><span class="line">path.data: /home/data/es-data</span><br><span class="line">discovery.zen.ping.multicast.enabled: <span class="literal">false</span>   <span class="comment">#多播发现方式关闭，因为graylog采用单播方式发现elasticsearch集群方式</span></span><br><span class="line">discovery.zen.ping.unicast.hosts                   <span class="comment">#多个节点用逗号隔开</span></span><br><span class="line">discovery.zen.minimum_master_nodes: 3    <span class="comment"># elasticsearch集群节点，最少选举数，这个数一定要设置为整个集群节点个数的一半加1，即N/2+1，必须为奇数</span></span><br></pre></td></tr></table></figure>
+<p><strong>(4)启动elasticsearch服务</strong></p>
+<p>新建一个elasticsearch用户，出于安全考虑，elasticsearch服务不能使用root用户启动</p>
+<p>创建elasticsearch用户组及elasticsearch用户，执行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">groupadd elasticsearch</span><br><span class="line">useradd elasticsearch -g elasticsearch -p elasticsearch</span><br></pre></td></tr></table></figure>
+<p>其中-g使用户属于某个组，-p为新用户使用加密密码）<br>更改elasticsearch-2.3.5文件夹及内部文件的所属用户及组为elasticsearch:elasticsearch</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">chown -R elasticsearch:elasticsearch  /home/data/</span><br><span class="line">chown -R elasticsearch:elasticsearch  elasticsearch-2.3.5</span><br></pre></td></tr></table></figure>
+<p>切换用户</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">su elasticsearch</span><br></pre></td></tr></table></figure>
+<p>在elasticsearch-2.3.5/bin目录下执行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[elasticsearch@graylog bin]$ ps -ef | grep elasticsearch</span><br><span class="line">root     18265 16004  0 14:27 pts/1    00:00:00 su elasticsearch</span><br><span class="line">502      18405     1 62 14:27 pts/1    00:00:13 /srv/jdk1.8.0_66/bin/java -Xms256m -Xmx1g -Djava.awt.headless=<span class="literal">true</span> -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=75 -XX:+UseCMSInitiatingOccupancyOnly -XX:+HeapDumpOnOutOfMemoryError -XX:+DisableExplicitGC -Dfile.encoding=UTF-8 -Djna.nosys=<span class="literal">true</span> -Des.path.home=/opt/elasticsearch-2.3.5 -cp /opt/elasticsearch-2.3.5/lib/elasticsearch-2.3.5.jar:/opt/elasticsearch-2.3.5/lib/* org.elasticsearch.bootstrap.Elasticsearch start <span class="_">-d</span></span><br><span class="line">502      18530 18266  0 14:27 pts/1    00:00:00 grep --color=auto ela</span><br></pre></td></tr></table></figure>
+<p><strong>(5)检查elasticsearch服务状态</strong></p>
+<p>执行如下命令测试Elasticsearch是否正常运行：</p>
+<p>$ curl -XGET ‘<a href="http://localhost:9200/_cluster/health?pretty=true" target="_blank" rel="external">http://localhost:9200/_cluster/health?pretty=true</a>‘</p>
+<p>输出的信息如下表示Elasticsearch安装成功：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[elasticsearch@graylog bin]$ curl -XGET <span class="string">'http://192.168.1.234:9200/_cluster/health?pretty=true'</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"cluster_name"</span> : <span class="string">"graylog"</span>,</span><br><span class="line">  <span class="string">"status"</span> : <span class="string">"yellow"</span>,</span><br><span class="line">  <span class="string">"timed_out"</span> : <span class="literal">false</span>,</span><br><span class="line">  <span class="string">"number_of_nodes"</span> : 1,</span><br><span class="line">  <span class="string">"number_of_data_nodes"</span> : 1,</span><br><span class="line">  <span class="string">"active_primary_shards"</span> : 30,</span><br><span class="line">  <span class="string">"active_shards"</span> : 30,</span><br><span class="line">  <span class="string">"relocating_shards"</span> : 0,</span><br><span class="line">  <span class="string">"initializing_shards"</span> : 0,</span><br><span class="line">  <span class="string">"unassigned_shards"</span> : 30,</span><br><span class="line">  <span class="string">"delayed_unassigned_shards"</span> : 0,</span><br><span class="line">  <span class="string">"number_of_pending_tasks"</span> : 0,</span><br><span class="line">  <span class="string">"number_of_in_flight_fetch"</span> : 0,</span><br><span class="line">  <span class="string">"task_max_waiting_in_queue_millis"</span> : 0,</span><br><span class="line">  <span class="string">"active_shards_percent_as_number"</span> : 50.0</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3：安装部署graylog-2-1版本"><a href="#3：安装部署graylog-2-1版本" class="headerlink" title="3：安装部署graylog-2.1版本"></a>3：安装部署graylog-2.1版本</h3><p><strong>(1)下载安装包</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wget https://packages.graylog2.org/releases/graylog/graylog-2.1.1.tgz</span><br></pre></td></tr></table></figure>
+<p><strong>(2)解压安装包</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tar -zxvf graylog-2.1.1.tgz -C /opt/.</span><br></pre></td></tr></table></figure>
+<p><strong>(3)修改配置文件</strong></p>
+<p>修改安装目录下 graylog.conf.example 文件</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vim graylog.conf.example</span><br></pre></td></tr></table></figure>
+<p>web_listen_uri 值是graylog启动成功后，web服务访问地址</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">web_listen_uri = http://192.168.1.234:9000/</span><br></pre></td></tr></table></figure>
+<p>rest_listen_uri 的值，是graylog启动成功后，api访问地址</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">rest_listen_uri = http://192.168.1.234:9000/api/</span><br></pre></td></tr></table></figure>
+<p>root_timezone = UTC  #设置时区，否则默认使用的是UTC时间也就是世界时间 这里是必须改下的，因为后期收集日志显示时间是有变化的。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root_timezone = Asia/Shanghai</span><br></pre></td></tr></table></figure>
+<p>其中 password_secret 的值用命令生成</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yum install -y pwgen</span><br><span class="line">pwgen -N 1 <span class="_">-s</span> 96       H1R5v17kWtyDxj2PzxLMxu41D6HDt9JzhfZcj6QlCURVddgkLAdnUmpkdIscmmu4ELKsTrHwKvPmxFKSYyTn0YlqebbpQqyr</span><br><span class="line"></span><br><span class="line">    password_secret = H1R5v17kWtyDxj2PzxLMxu41D6HDt9JzhfZcj6QlCURVddgkLAdnUmpkdIscmmu4ELKsTrHwKvPmxFKSYyTn0YlqebbpQqyr</span><br></pre></td></tr></table></figure>
+<p>其中root_password_sha2 的值使用命令生成</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">echo</span> -n Ihaozhuo_b313 | sha256sum  (这里对密码123456哈希加密)</span><br><span class="line"></span><br><span class="line"><span class="built_in">fc</span>88c28d48b0cb97f3fb5286cc35c520409ef037acd30ec687f0c0bd3d5a5115 </span><br><span class="line">   </span><br><span class="line">root_password_sha2 = <span class="built_in">fc</span>88c28d48b0cb97f3fb5286cc35c520409ef037acd30ec687f0c0bd3d5a5115</span><br></pre></td></tr></table></figure>
+<p>elasticsearch_cluster_name 值必须是elasticsearch配置文件中的cluster_name</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">elasticsearch_cluster_name = graylog</span><br></pre></td></tr></table></figure>
+<p>elasticsearch_discovery_zen_ping_unicast_hosts 填写elasticsearch地址，如果是多个，用逗号隔开</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">elasticsearch_discovery_zen_ping_unicast_hosts = 192.168.1.234:9300</span><br></pre></td></tr></table></figure>
+<p>elasticsearch_discovery_zen_ping_multicast_enabled = false 多播模式关闭</p>
+<p>由于我们只有一个Elasticsearch shard，需要把elasticsearch_shards参数设置为1：<br>elasticsearch集群分片数量</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">elasticsearch_shards = 1</span><br></pre></td></tr></table></figure>
+<p>elasticsearch绑定的节点IP</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">299 elasticsearch_network_host = 192.168.1.234</span><br><span class="line">300 elasticsearch_network_bind_host = 192.168.1.234</span><br><span class="line">301 elasticsearch_network_publish_host = 192.168.1.234</span><br></pre></td></tr></table></figure>
+<p>mongodb安装服务的ip地址</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mongodb_uri = mongodb://192.168.1.234/graylog</span><br></pre></td></tr></table></figure>
+<p>这里mongodb是安装在我同一台服务器上面的。如果要把mongodb单独服务器跑连接方式配置文件里面也有例子说明：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mongodb_uri =mongodb://graylog:123456@160.17.2.251:27017/graylog2             <span class="comment">#连接到mongodb的服务器地址为160.17.2.251:27017，账号为graylog，密码为123456 数据库为graylog2</span></span><br></pre></td></tr></table></figure>
+<p> 设置告警邮件发送者信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"> <span class="comment"># Email transport</span></span><br><span class="line">transport_email_enabled = <span class="literal">false</span></span><br><span class="line">transport_email_hostname = smtp.exmail.qq.com</span><br><span class="line">transport_email_port = 465</span><br><span class="line">transport_email_use_auth = <span class="literal">true</span></span><br><span class="line">transport_email_use_tls = <span class="literal">true</span></span><br><span class="line">transport_email_use_ssl = <span class="literal">true</span></span><br><span class="line">transport_email_auth_username = chengyangyang@qq.cn</span><br><span class="line">transport_email_auth_password = beneTqq</span><br><span class="line">transport_email_subject_prefix = [graylog]</span><br><span class="line">transport_email_from_email = chengyangyang@qq.cn</span><br></pre></td></tr></table></figure>
+<p><strong>(4)复制配置文件</strong></p>
+<p> 因为graylog安装bin目录下，默认启动配置文件</p>
+<p>配置文件路径：<code>/etc/graylog/server/server.conf</code></p>
+<p>所以需要将<code>graylog.conf.example</code> 复制到<code>/etc/graylog/server/</code>目录下，并且改名 <code>server.conf</code></p>
+<p>执行命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mkdir -p /etc/graylog/server/ </span><br><span class="line">cp graylog.conf.example /etc/graylog/server/server.conf</span><br></pre></td></tr></table></figure>
+<p><strong>(5)启动graylog</strong></p>
+<p>在graylog安装bin目录下执行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./graylogctl start</span><br></pre></td></tr></table></figure>
+<p>查看日志，在graylog安装目录下执行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tail -200f /<span class="built_in">log</span>/graylog-server.log</span><br></pre></td></tr></table></figure>
+<p>如果报错：</p>
+<p>原因：</p>
+<p>在mongodb版本2.6之后，是需要日志journaling设置的，而默认情况下是关闭的</p>
+<p>解决办法：</p>
+<p>在mongodb启动命令加上 –journal</p>
+<p>最后启动命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./mongod --dbpath=/usr/<span class="built_in">local</span>/mongodb/data/ --fork --logpath=/usr/<span class="built_in">local</span>/mongodb/logs --storageEngine=mmapv1 --journal</span><br></pre></td></tr></table></figure>
+<p>重启mongodb后，重启graylog服务即可！</p>
+<p><strong>(6)启动graylog(报错二)</strong></p>
+<p>查看日志，在graylog安装目录下执行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">tail -200f /<span class="built_in">log</span>/graylog-server.log</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&#123;com.mongodb.MongoSocketOpenException: Exception opening socket&#125;, caused by &#123;java.net.ConnectException: 拒绝连接&#125;&#125;]&#125;. Waiting <span class="keyword">for</span> 30000 ms before timing out</span><br><span class="line">2016-11-22 15:10:29,355 INFO : org.graylog2.bootstrap.CmdLineTool - Loaded plugin: Elastic Beats Input 1.1.1 [org.graylog.plugins.beats.BeatsInputPlugin]</span><br><span class="line">2016-11-22 15:10:29,357 INFO : org.graylog2.bootstrap.CmdLineTool - Loaded plugin: Collector 1.1.1 [org.graylog.plugins.collector.CollectorPlugin]</span><br><span class="line">2016-11-22 15:10:29,357 INFO : org.graylog2.bootstrap.CmdLineTool - Loaded plugin: Enterprise Integration Plugin 1.1.1 [org.graylog.plugins.enterprise_integration.EnterpriseIntegrationPlugin]</span><br><span class="line">2016-11-22 15:10:29,358 INFO : org.graylog2.bootstrap.CmdLineTool - Loaded plugin: MapWidgetPlugin 1.1.1 [org.graylog.plugins.map.MapWidgetPlugin]</span><br><span class="line">2016-11-22 15:10:29,359 INFO : org.graylog2.bootstrap.CmdLineTool - Loaded plugin: Pipeline Processor Plugin 1.1.1 [org.graylog.plugins.pipelineprocessor.ProcessorPlugin]</span><br><span class="line">2016-11-22 15:10:29,359 INFO : org.graylog2.bootstrap.CmdLineTool - Loaded plugin: Anonymous Usage Statistics 2.1.1 [org.graylog.plugins.usagestatistics.UsageStatsPlugin]</span><br><span class="line">2016-11-22 15:10:29,487 INFO : org.graylog2.bootstrap.CmdLineTool - Running with JVM arguments: -Djava.library.path=./../lib/sigar -Xms1g -Xmx1g -XX:NewRatio=1 -XX:+ResizeTLAB -XX:+UseConcMarkSweepGC -XX:+CMSConcurrentMTEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:-OmitStackTraceInFastThrow</span><br></pre></td></tr></table></figure>
+<p>提示mongodb 拒绝连接。 这个时候需要看下端口地址是否是IP地址还是127.0.0.1 如果不是需要修改下在重启服务就可以了。</p>
+<p><strong>查看启动服务端口：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@graylog graylog-2.1.1]<span class="comment"># netstat -ntulp</span></span><br><span class="line">Active Internet connections (only servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address               Foreign Address             State       PID/Program name</span><br><span class="line">tcp        0      0 127.0.0.1:27017             0.0.0.0:*                   LISTEN      22308/mongod</span><br><span class="line">tcp        0      0 0.0.0.0:22                  0.0.0.0:*                   LISTEN      1974/sshd</span><br><span class="line">tcp        0      0 127.0.0.1:25                0.0.0.0:*                   LISTEN      1287/master</span><br><span class="line">tcp        0      0 ::ffff:192.168.1.234:9350   :::*                        LISTEN      23642/java</span><br><span class="line">tcp        0      0 ::ffff:192.168.1.234:9000   :::*                        LISTEN      23642/java</span><br><span class="line">tcp        0      0 ::ffff:192.168.1.234:9200   :::*                        LISTEN      18405/java</span><br><span class="line">tcp        0      0 ::ffff:192.168.1.234:9300   :::*                        LISTEN      18405/java</span><br><span class="line">tcp        0      0 :::22                       :::*                        LISTEN      1974/sshd</span><br><span class="line">tcp        0      0 ::1:25                      :::*                        LISTEN      1287/master</span><br></pre></td></tr></table></figure>
+<p><strong>(6)访问graylog</strong></p>
+<p>graylog启动成功后，浏览器访问：<strong>graylog安装IP:9000</strong></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog10.png" alt=""></p>
+<h3 id="四：总结"><a href="#四：总结" class="headerlink" title="四：总结"></a>四：总结</h3><p>到此，基础的集中日志管理graylog安装完毕！，后续将继续介绍：</p>
+<p>安装部署Graylog Collector Sidecar 收集应用日志</p>
+<p>采用syslog收集日志方式</p>
+<p>graylog一些使用，包括日志截取，告警等。</p>
+<p>之前也实践过ELK技术栈，后来选型graylog，是基于graylog带有的权限管理，和告警功能比较完善！</p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://blog.yangcvo.me/2016/11/14/日志分析平台/graylog 升级2.1 集中日志解决方案/" data-id="ciwxbl099002dmuvun8skfnew" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+        <a href="http://blog.yangcvo.me/2016/11/14/日志分析平台/graylog 升级2.1 集中日志解决方案/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://blog.yangcvo.me/2016/11/14/日志分析平台/graylog 升级2.1 集中日志解决方案/">Comments</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2016/12/01/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Newer</strong>
+            <div class="article-nav-title">
+                
+                    tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2016/11/13/日志分析平台/Graylog—日志分析平台完美代替Elasticsearch/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Older</strong>
+            <div class="article-nav-title">Graylog——日志分析平台完美代替Elasticsearch</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+    
+    </section>
+
+</section>
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">recent</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/12/08/大数据hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://www.51bdtime.com/uploads/allimg/140826/1-140R6103P3405.jpg)" alt="hadoop新增节点集群启动请求异常：Last contact：200" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/大数据/">大数据</a></p>
+                            <p class="item-title"><a href="/2016/12/08/大数据hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/" class="title">hadoop新增节点集群启动请求异常：Last contact：200</a></p>
+                            <p class="item-date"><time datetime="2016-12-08T09:56:03.000Z" itemprop="datePublished">Dec 8 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/12/07/Java/Sonarqube和jacoco搭建代码检查/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://px.thea.cn/Public/Upload/2759083/Intro/1442841940.png)" alt="Sonarqube和jacoco搭建代码检查" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java/">Java</a></p>
+                            <p class="item-title"><a href="/2016/12/07/Java/Sonarqube和jacoco搭建代码检查/" class="title">Sonarqube和jacoco搭建代码检查</a></p>
+                            <p class="item-date"><time datetime="2016-12-07T09:56:03.000Z" itemprop="datePublished">Dec 7 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/12/01/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://thumbs.dreamstime.com/t/tomcat-1930481.jpg)" alt="tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/tomcat/">tomcat</a></p>
+                            <p class="item-title"><a href="/2016/12/01/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/" class="title">tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0</a></p>
+                            <p class="item-date"><time datetime="2016-12-01T09:44:04.000Z" itemprop="datePublished">Dec 1 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/11/14/日志分析平台/graylog 升级2.1 集中日志解决方案/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://www.graylog.org/assets/overview_dashboard-3817012f923d4a00e9bde1c0547796319cf0396149464f434cfc2ae83a9da826.png)" alt="graylog 升级2.1 集中日志解决方案" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a></p>
+                            <p class="item-title"><a href="/2016/11/14/日志分析平台/graylog 升级2.1 集中日志解决方案/" class="title">graylog 升级2.1 集中日志解决方案</a></p>
+                            <p class="item-date"><time datetime="2016-11-14T09:56:03.000Z" itemprop="datePublished">Nov 14 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/11/13/日志分析平台/Graylog—日志分析平台完美代替Elasticsearch/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://www.graylog.org/assets/logo-graylog-6ccfb3d4f7bfd0795c80bb616719f7d2f5151283f25c62aa0a6222994af2abeb.png)" alt="Graylog——日志分析平台完美代替Elasticsearch" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a></p>
+                            <p class="item-title"><a href="/2016/11/13/日志分析平台/Graylog—日志分析平台完美代替Elasticsearch/" class="title">Graylog——日志分析平台完美代替Elasticsearch</a></p>
+                            <p class="item-date"><time datetime="2016-11-13T09:56:03.000Z" itemprop="datePublished">Nov 13 2016</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">categories</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Framework/">Framework</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/automation/">automation</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/monitoring/">monitoring</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tomcat/">tomcat</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/日志分析平台/">日志分析平台</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/测试/">测试</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/虚拟化/">虚拟化</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维安全/">运维安全</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维笔记/">运维笔记</a><span class="category-list-count">5</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">tag cloud</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/ACL/" style="font-size: 12.5px;">ACL</a> <a href="/tags/About-me/" style="font-size: 10px;">About me</a> <a href="/tags/CDN/" style="font-size: 10px;">CDN</a> <a href="/tags/Cacti/" style="font-size: 10px;">Cacti</a> <a href="/tags/Centos7-1/" style="font-size: 10px;">Centos7.1</a> <a href="/tags/DNS/" style="font-size: 15px;">DNS</a> <a href="/tags/Exsi/" style="font-size: 10px;">Exsi</a> <a href="/tags/Ghost/" style="font-size: 17.5px;">Ghost</a> <a href="/tags/Grunt/" style="font-size: 10px;">Grunt</a> <a href="/tags/Hadoop/" style="font-size: 10px;">Hadoop</a> <a href="/tags/IDC监控/" style="font-size: 10px;">IDC监控</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Jenkins/" style="font-size: 12.5px;">Jenkins</a> <a href="/tags/KVM/" style="font-size: 17.5px;">KVM</a> <a href="/tags/LAMP/" style="font-size: 12.5px;">LAMP</a> <a href="/tags/LVM/" style="font-size: 10px;">LVM</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/STF/" style="font-size: 10px;">STF</a> <a href="/tags/Smokeping/" style="font-size: 10px;">Smokeping</a> <a href="/tags/Supervisor/" style="font-size: 10px;">Supervisor</a> <a href="/tags/TOTP/" style="font-size: 10px;">TOTP</a> <a href="/tags/Vmware/" style="font-size: 10px;">Vmware</a> <a href="/tags/Vsftpd/" style="font-size: 12.5px;">Vsftpd</a> <a href="/tags/centos/" style="font-size: 12.5px;">centos</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/http/" style="font-size: 10px;">http</a> <a href="/tags/node-js/" style="font-size: 15px;">node.js</a> <a href="/tags/npm/" style="font-size: 10px;">npm</a> <a href="/tags/pm2/" style="font-size: 10px;">pm2</a> <a href="/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/tags/wkhtmltox/" style="font-size: 10px;">wkhtmltox</a> <a href="/tags/zabbix/" style="font-size: 20px;">zabbix</a> <a href="/tags/zimbra/" style="font-size: 10px;">zimbra</a> <a href="/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/tags/旅行日记/" style="font-size: 10px;">旅行日记</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">links</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://www.unixhot.com/">运维社区</a>
+                    </li>
+                
+                    <li>
+                        <a href="http://elasticsearch.cn/topic/">elk技术论坛</a>
+                    </li>
+                
+                    <li>
+                        <a href="http://openskill.cn/">开源技术社区</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2016 yangc<br>
+        </div>
+    </div>
+</footer>
+
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'http://blog.yangcvo.me/2016/11/14/日志分析平台/graylog 升级2.1 集中日志解决方案/';
+        
+        this.page.identifier = '日志分析平台/graylog 升级2.1 集中日志解决方案';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'blog-yangcvo-me' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          KVM虚拟机更改存储路径解决方法 - yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/2015/06/17/容器-虚拟化/kvm/KVM虚拟机更改存储路径解决方法/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#KVM" title="KVM">KVM</a>
+                        
+                    </div>
+                    <h1>KVM虚拟机更改存储路径解决方法</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by yangc on
+                        2015-06-17
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>玩kvm的2014年开始慢慢接触了，发现功能特别大，比vm好用，vm是基于Windows上面需要安装客户端登陆很麻烦,也有人说也有web管理端其实我觉得运维在kvm伸缩现在很火的openstack也是底层kvm去生成虚拟机的。</p>
+<p>kvm 在之前的搭建环境 一开始安装指定的虚拟机镜像没有放到挂载单独的一块硬盘路径。后果会不堪设想。</p>
+<p>kvm服务器：</p>
+<pre><code>IP：192.168.1.250
+镜像存储路径：/opt/vm/
+默认的xml文件路径：/etc/libvirt/qemu
+</code></pre><p>发现MySQL的服务器已经<code>挂了</code>。=_=</p>
+<p>登陆到kvm：</p>
+<p>一开始我MySQL跟MySQL主从存储路径都在<code>/opt/vm/mysql.img</code> 、<code>/opt/vm/mysql-2.img</code></p>
+<p>这里我看了下这两台服务器都已经挂了，因为kvm空间被根目录被吃光了，一开始就没有注意这个配置，后面我在 创建/home/vm/，分了块硬盘空间挂载到这个目录下面。</p>
+<h3 id="先不要："><a href="#先不要：" class="headerlink" title="先不要："></a>先不要：</h3><p>把/opt/vm/mysql.img  直接mv到了/home/vm/.</p>
+<h3 id="这里第一步："><a href="#这里第一步：" class="headerlink" title="这里第一步："></a>这里第一步：</h3><p>需要先停掉虚拟机。如果虚拟机已经挂了，在kvm用virsh查看下。</p>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">-<span class="ruby">     mysql                          暂停</span></div><div class="line">-<span class="ruby">     mysql-<span class="number">2</span>                        暂停</span></div></pre></td></tr></table></figure>
+<p>如果暂停说明已经卡死了。那么shutdown 也是无效的。</p>
+<p>这里可以查看我写的篇：<a href="http://blog.yangcvo.me/2015/06/18/KVM%E8%99%9A%E6%8B%9F%E5%8C%96%E5%AE%9E%E7%94%A8%E7%AF%87-%E7%AC%AC%E4%BA%8C%E7%AF%87-help%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3%E5%A4%A7%E5%85%A8/">kvm-hellp帮助篇</a>-只对kvm入门人员帮助</p>
+<pre><code>virsh undefine $1   删除虚拟机取消定义   删除虚拟机先执行这个 取消定义。
+</code></pre><p>强制关闭虚拟机：</p>
+<pre><code>virsh undefine mysql 
+virsh undefine mysql-2
+</code></pre><h3 id="这里第二步移动镜像存储目录："><a href="#这里第二步移动镜像存储目录：" class="headerlink" title="这里第二步移动镜像存储目录："></a>这里第二步移动镜像存储目录：</h3><p>然后： 把/opt/vm/mysql.img  直接mv到了/home/vm/.<br>移动指定的目录。</p>
+<h3 id="第三步需要修改xml文件"><a href="#第三步需要修改xml文件" class="headerlink" title="第三步需要修改xml文件"></a>第三步需要修改xml文件</h3><p>这里一开始遇到很多头大的问题：</p>
+<ul>
+<li>第一我直接vim /etc/libvirt/qemu/mysql.xml</li>
+<li>第一我直接vim /etc/libvirt/qemu/mysql-2.xml</li>
+</ul>
+<p>这样修改了以后是不能生效的。而且一错在错，因为如果改完了以后直接去启动MySQL</p>
+<pre><code>virsh start mysql-2
+</code></pre><p>提示：<code>/opt/vm/ 下没有 mysql-2.img</code></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/KVM3.png" alt=""></p>
+<p>这里我知道是没有生效，就取消了定义mysql-2 取消定义需要删除快照才能取消定义。</p>
+<p>这里又做错了一步：</p>
+<h3 id="如何取消定义虚拟机"><a href="#如何取消定义虚拟机" class="headerlink" title="如何取消定义虚拟机"></a>如何取消定义虚拟机</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/KVM2.png" alt=""></p>
+<p>我把自己辛辛苦苦的快照都删除了，然后取消了定义。</p>
+<h3 id="注意："><a href="#注意：" class="headerlink" title="注意："></a>注意：</h3><div class="tip"><br>发现取消了定义以后，我的/etc/libvirt/qemu/mysql-2.xml 已经被删除了，取消定义是会删除xml文件的。所以这个时候发现自己大错特错，之前忘记了一个重要的操作。<br><br>这里我发现我MySQL已经被删除了。可是镜像文件还是在/home/vm/mysql-2.img<br></div><br>还好我做了主从，删除了只是其中一台。这个时候求助了之前搞虚拟化的朋友–<code>甜橙大神</code>。<br><br><br>### 紧急修复<br><br>这里我在他的指导帮助下搞定了。<br><br>### 修复第一步：<br><br>我这里先拷贝了一份其他虚拟机的xml文件,做相应修改.<br><br>    cp nginx.xml mysql-2.xml<br><br>然后打开文件：<br><br>name uuid img 之类的都要修改<br><br><em> 先删除:uuid- uuid 可以不填-删除这行就行了<br><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;uuid&gt;876f7ff7<span class="_">-a</span>0e7<span class="_">-f</span>64d-fc3c-bc48fee28635&lt;/uuid&gt;</div></pre></td></tr></table></figure>
+
+</em> 改成自己恢复的镜像。<br><br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;<span class="keyword">source</span> <span class="keyword">file</span>=<span class="string">'/home/vm/mysql-2.img'</span><span class="regexp">/&gt;</span></div></pre></td></tr></table></figure><br><br><em> 修改网卡信息：<br><br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">mac</span> <span class="attr">address</span>=<span class="string">'52:54:00:e9:cb:c4'</span>/&gt;</span></div></pre></td></tr></table></figure><br><br>这里的是拷贝过来的，所以你稍微做下修改，我这里把F1改成了c4.
+
+</em> 修改VNC链接的端口<br><br><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;graphics <span class="class"><span class="keyword">type</span></span>=<span class="symbol">'vn</span>c' port=<span class="symbol">'595</span>0' autoport=<span class="symbol">'n</span>o' listen=<span class="symbol">'0</span><span class="number">.0</span><span class="number">.0</span><span class="number">.0</span>'&gt;</div><div class="line">      &lt;listen <span class="class"><span class="keyword">type</span></span>=<span class="symbol">'addres</span>s' address=<span class="symbol">'0</span><span class="number">.0</span><span class="number">.0</span><span class="number">.0</span>'/&gt;</div></pre></td></tr></table></figure><br><br>这里是我拷贝过来的，所以5950我改成了我之前MySQL的5941的。<br><br>改好后保存退出。。<br><br>### 启动虚拟机-加载xml文件。<br><br>重新定义xml文件<br><br><figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">virsh <span class="meta"># <span class="meta-keyword">define</span> /etc/libvirt/qemu/mysql-2.xml</span></div><div class="line">定义域 mysql<span class="number">-2</span>（从 <span class="meta-keyword">/etc/</span>libvirt<span class="meta-keyword">/qemu/</span>mysql<span class="number">-2.</span>xml）</div><div class="line">virsh <span class="meta"># start mysql</span></div><div class="line">域 mysql 已开始</div></pre></td></tr></table></figure><br><br>这里显示已经启动成功了。所以取消定义是最危险的。因为没有备份xml文件。<br><br><br>### VNC连接修改网卡信息。<br><br>这里需要用VNC连接到这台服务器，然后修改网卡信息。<br><br>这里查看网卡信息，没有IP，在查看if-eth0<br><img src="http://7xrthw.com1.z0.glb.clouddn.com/KVM4.png" alt=""><br><br>需要修改mac地址：<br><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/kvm5.png" alt=""><br><br>改完保存退出。这个时候重启网卡。会发现报错。<br><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/KVM6.png" alt=""><br><br>centos6.5，查看 <code>/etc/udev/rules.d/70-net*</code>文件，确保里面<code>eth0</code> 的mac 跟xml里 的一样<br><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/KVM7.png" alt=""><br><br>这里修改eth0 的mac 到xml里的，删了eth1<br>重启就可以了。<br><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/KVM8.png" alt=""><br><br>现在已经恢复回来了。<br><br><br><br>### 切记<br><br><div class="tip"><br>xml文件修修改改就行了，还是不要随便删了 。<br></div>
+
+<h3 id="这里的最简单解决方法："><a href="#这里的最简单解决方法：" class="headerlink" title="这里的最简单解决方法："></a>这里的最简单解决方法：</h3><hr>
+<p>修改xml 要 virsh edit，不是vi ，vi修改不生效的，所以才会报错找不到之前的镜像<br>直接关机虚拟机，virsh edit修改就不会出现找不到镜像问题了。</p>
+<p>总结了经验。以后存储方法-定义和取消定义的危险性，-正确修改配置方法。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2015/06/17/容器-虚拟化/kvm/kvm虚拟化(三)虚拟机快速克隆/" data-toggle="tooltip" data-placement="top" title="KVM虚拟机更改存储路径解决方法">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2015/06/16/容器-虚拟化/kvm/KVM虚拟化(六)调整虚拟机CPU大小,添加memory内存,添加虚拟机硬盘disk,虚拟机内存减半现象/" data-toggle="tooltip" data-placement="top" title="KVM虚拟化(六)调整虚拟机CPU大小,添加memory内存,添加虚拟机硬盘disk,虚拟机内存减半现象">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#KVM" title="KVM">KVM</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yangcvo-me";
+    var disqus_identifier = "http://blog.yangcvo.me/2015/06/17/容器-虚拟化/kvm/KVM虚拟机更改存储路径解决方法/";
+    var disqus_url = "http://blog.yangcvo.me/2015/06/17/容器-虚拟化/kvm/KVM虚拟机更改存储路径解决方法/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/PandaJuesha">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yangcvo.me">yangc</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

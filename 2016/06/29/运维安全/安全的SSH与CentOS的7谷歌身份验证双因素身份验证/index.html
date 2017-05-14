@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          安全的SSH与CentOS的7谷歌身份验证双因素身份验证 - yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/2016/06/29/运维安全/安全的SSH与CentOS的7谷歌身份验证双因素身份验证/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Operation safety" title="Operation safety">Operation safety</a>
+                        
+                    </div>
+                    <h1>安全的SSH与CentOS的7谷歌身份验证双因素身份验证</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by yangc on
+                        2016-06-29
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="安装谷歌身份验证"><a href="#安装谷歌身份验证" class="headerlink" title="安装谷歌身份验证"></a>安装谷歌身份验证</h2><ul>
+<li>什么是谷歌身份验证<a href="http://code.google.com/p/google-authenticator/" target="_blank" rel="external">官方github详细介绍</a></li>
+</ul>
+<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>谷歌身份验证项目包括一次性密码生成器为多个移动平台上的实现，以及一个可插拔的身份验证模块（PAM）整个的一次性密码是基于服务器和设备与谷歌，验证程序的时间安装在同步之中。在设备和服务器然后会知道什么一次性代码是正确的，在30秒内，然后它会改变。</p>
+<blockquote>
+<p>SSH访问始终是关键，你可能要想方设法提高你的SSH访问的安全性。在这篇文章中，我们将看到我们如何可以通过使用谷歌的Authenticator保护与简单的双因素身份验证的SSH。在使用它之前，你必须与谷歌身份验证一次性密码协议TOTP服务器上的SSH守护整合，另一个限制是，你必须有你的Andr​​oid手机与你所有的时间，或者至少你想SSH访问的时间。这是教程为CentOS 7编写的。</p>
+</blockquote>
+<ul>
+<li>首先，我们将通过在外壳执行以下命令来安装开源的谷歌身份验证PAM模块。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install google-authenticator</div></pre></td></tr></table></figure>
+<ul>
+<li>安装这步如果提示有没有可用的软件包<code>google-authenticator</code>尝试安装EPEL repo (for CentOS 6 &amp; 7):</li>
+<li>Centos 7是不会提示这个错误的，6的话会提示这个错误。下面是6的安装方法。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"> <span class="comment"># cd /tmp </span></div><div class="line"><span class="comment"># wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm </span></div><div class="line"><span class="comment"># wget http://rpms.famillecollet.com/enterprise/remi-release-6.rpm </span></div><div class="line"><span class="comment"># rpm -Uvh remi-release-6*.rpm epel-release-6*.rpm</span></div></pre></td></tr></table></figure>
+<p>Then verify the EPEL repo exists:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">yum repolist </div><div class="line">... </div><div class="line">epel            Extra Packages <span class="keyword">for</span> Enterprise Linux 6 - x86_64 </div><div class="line">...</div></pre></td></tr></table></figure>
+<p>Finally, install Google Authenticator:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum --enablerepo=epel install google-authenticator</div></pre></td></tr></table></figure>
+<ul>
+<li>现在，我们需要配置PAM身份验证的SSH</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vim /etc/pam.d/sshd</div></pre></td></tr></table></figure>
+<blockquote>
+<p>该文件更改为这一点 -基本上加入“身份验证所需的pam_google_authenticator.so”行</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">auth required pam_google_authenticator.so</div></pre></td></tr></table></figure>
+<ul>
+<li>接下来，现在，我们需要编辑ssh守护进程的配置文件（如果你愿意，你也可以做到这一点从的​​Virtualmin）</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vim /etc/ssh/sshd_config</div></pre></td></tr></table></figure>
+<p>加以下行的文件中，如果它已经放置，然后将参数更改为“yes”：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ChallengeResponseAuthentication yes</div></pre></td></tr></table></figure>
+<ul>
+<li>重新启动SSH服务</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">service sshd restart</div></pre></td></tr></table></figure>
+<ul>
+<li>然后运行服务器运行在谷歌的认证：</li>
+</ul>
+<blockquote>
+<p>此命令将在您安装谷歌认证的Centos 7服务器。下一个步骤是获得的验证码。这是一个非常简单的命令，只需回答服务器的简单的问题，他会问你要获取验证码，并暂存码。为此，您可以一步运行以下命令：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">google-authenticator</div></pre></td></tr></table></figure>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/Google-OTP2.png" alt=""></p>
+<p>记得重启ssh服务。</p>
+<blockquote>
+<p>在您的浏览器，加载的URL上面提到的; 它会显示一个QRCode的，你可以扫描到您的手机采用了谷歌身份验证器应用程序的Andr​​oid，iPhone或黑莓。如果你已经有一个谷歌身份验证令牌被您的手机上生成的，您可以添加一个新的，它会显示他们。<br>苹果手机<br>推荐软件：google authenticator 、authy 、洋葱 </p>
+</blockquote>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/Google-OTP3.png" alt=""></p>
+<p>Android的可以到我github上面下载：（Google 身份证认证器）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">启动appon您的手机：</div><div class="line">在您的手机中选择基于时间的对于考虑使用SSH使用户</div><div class="line"></div><div class="line">帐户：  根用户名@nginx</div><div class="line">重点：就是key值</div><div class="line">两种添加方法。</div></pre></td></tr></table></figure>
+<h3 id="验证测试："><a href="#验证测试：" class="headerlink" title="验证测试："></a>验证测试：</h3><p>如果一切工作正常，你应该能够通过SSH使用用户名，然后验证码从您的手机/设备，登陆需要先登陆服务器密码，然后在加动态密码即可。</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/Google-OTP4.png" alt=""></p>
+<h3 id="报错error"><a href="#报错error" class="headerlink" title="报错error"></a>报错error</h3><p>如果提示找不到这个包需要翻墙或者VPN才能下载：</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">wget https://google-authenticator.googlecode.com/files/libpam-google-authenticator-1.0-source.tar.bz2 </div><div class="line">tar -xvzf libpam-google-authenticator-1.0-source.tar.bz2 </div><div class="line"><span class="built_in">cd</span> libpam-google-authenticator-1.0 </div><div class="line">make make install</div></pre></td></tr></table></figure>
+<p>这里我已经下载好安装包了，你可以下载下来编译安装。</p>
+<h3 id="共享资料"><a href="#共享资料" class="headerlink" title="共享资料"></a>共享资料</h3><ul>
+<li>英文安装文档&amp;google-authenticator包：我github上面有安装包也上传了。<a href="https://github.com/yangcvo/Google-Authenticator" target="_blank" rel="external">github</a></li>
+</ul>
+<ul>
+<li>还有什么报错参考链接：<a href="http://blog.remibergsma.com/tag/google-authenticator/" target="_blank" rel="external">google_authenticator</a></li>
+</ul>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ol>
+<li><p>提示一点阿里云上面服务器是安装不上的。因为我都在两个系统6 &amp; 7版本试过了。</p>
+</li>
+<li><p>Selinux：需设定为disabled</p>
+</li>
+<li><p>可与rsa公私钥认证一起使用，但只差别在与电脑里有没有rsa key而已，如果没有的话才会用到。</p>
+</li>
+<li><p>同一个『.google_authenticator』可用在别台Server上，所以在安全性上仍须注意。</p>
+</li>
+<li><p>商用OTP系统一般是C/S网路版方式，有一个统一的Authentication Server，为了保证高可用性，</p>
+<p> 一般会有一主一备两台伺服器。</p>
+</li>
+<li><p>Google Authenticator是一个基于时间的产生验证码的程式，因此不管是伺服器端还是手机用户端，</p>
+<p> 对时间的要求都是非常严格的，要时刻保持与NTP伺服器同步。</p>
+</li>
+<li><p>Google Authenticator和条型码扫瞄器默认是不会产生任何GPRS和WIFI流量的。</p>
+</li>
+<li><p>如果不需要使用者登入时输入OTP密码，而是在使用者su到root时要求输入，</p>
+<p> 可以把PAM认证语句加入到『/etc/pam.d/su』中。</p>
+</li>
+<li><p>当伺服器启用PAM认证之后，所有使用者都是要求输入TOTP密码，</p>
+<p> 所以需要每个使用者在自己的目录下产生一个『.google_authenticator』档案。</p>
+</li>
+</ol>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/07/12/容器-虚拟化/Docker/Docker学习(一)：简介/" data-toggle="tooltip" data-placement="top" title="Docker学习(一)：简介">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/06/29/运维安全/ 化解自己的阿里云服务器被黑客攻击-暴力破解/" data-toggle="tooltip" data-placement="top" title="化解自己的阿里云服务器被黑客攻击-暴力破解">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Operation safety" title="Operation safety">Operation safety</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yangcvo-me";
+    var disqus_identifier = "http://blog.yangcvo.me/2016/06/29/运维安全/安全的SSH与CentOS的7谷歌身份验证双因素身份验证/";
+    var disqus_url = "http://blog.yangcvo.me/2016/06/29/运维安全/安全的SSH与CentOS的7谷歌身份验证双因素身份验证/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/PandaJuesha">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yangcvo.me">yangc</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

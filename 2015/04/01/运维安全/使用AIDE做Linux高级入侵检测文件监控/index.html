@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          使用AIDE做Linux高级入侵检测文件监控 - yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/2015/04/01/运维安全/使用AIDE做Linux高级入侵检测文件监控/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Operation safety" title="Operation safety">Operation safety</a>
+                        
+                    </div>
+                    <h1>使用AIDE做Linux高级入侵检测文件监控</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by yangc on
+                        2015-04-01
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="1、aide介绍"><a href="#1、aide介绍" class="headerlink" title="1、aide介绍"></a>1、aide介绍</h2><blockquote>
+<p>AIDE(Adevanced Intrusion Detection Environment,高级入侵检测环境)是个入侵检测工具，主要用途是检查文本的完整性。</p>
+<p>AIDE能够构造一个指定文档的数据库，他使用aide.conf作为其配置文档。AIDE数据库能够保存文档的各种属性，包括：权限(permission)、索引节点序号(inode number)、所属用户(user)、所属用户组(group)、文档大小、最后修改时间(mtime)、创建时间(ctime)、最后访问时间(atime)、增加的大小连同连接数。AIDE还能够使用下列算法：sha1、md5、rmd160、tiger，以密文形式建立每个文档的校验码或散列号。</p>
+<p>常见的入侵检测软件： tripwire–操作比较复杂,aide–用以代替tripwire,比较简单.</p>
+</blockquote>
+<h3 id="系统环境："><a href="#系统环境：" class="headerlink" title="系统环境："></a>系统环境：</h3><p>　　RHEL 6.2 [2.6.32-220.el6.i686]</p>
+<p>　　软件环境：</p>
+<h3 id="2、aide安装-配置使用"><a href="#2、aide安装-配置使用" class="headerlink" title="2、aide安装 配置使用"></a>2、aide安装 配置使用</h3><p>yum rpm二进制安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum -y install aide</div></pre></td></tr></table></figure>
+<blockquote>
+<p>我的配置文件</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div><div class="line">223</div><div class="line">224</div><div class="line">225</div><div class="line">226</div><div class="line">227</div></pre></td><td class="code"><pre><div class="line">mv /etc/aide.conf /etc/aide.conf.bak</div><div class="line">vim /etc/aide.conf</div><div class="line"> </div><div class="line"></div><div class="line"><span class="comment"># Example configuration file for AIDE.</span></div><div class="line">@@define DBDIR /var/lib/aide <span class="comment">#基准数据库目录</span></div><div class="line">@@define LOGDIR /var/<span class="built_in">log</span>/aide <span class="comment">#日志目录</span></div><div class="line"> </div><div class="line"></div><div class="line"><span class="comment"># The location of the database to be read.</span></div><div class="line">database=file:@@&#123;DBDIR&#125;/aide.db.gz <span class="comment">#基础数据库文件</span></div><div class="line"> </div><div class="line"><span class="comment"># The location of the database to be written.    #database_out=sql:host:port:database:login_name:passwd:table</span></div><div class="line"><span class="comment">#database_out=file:aide.db.new</span></div><div class="line">database_out=file:@@&#123;DBDIR&#125;/aide.db.new.gz <span class="comment">#更新数据库文件</span></div><div class="line"> </div><div class="line"><span class="comment"># Whether to gzip the output to database</span></div><div class="line">gzip_dbout=yes</div><div class="line"> </div><div class="line"><span class="comment"># Default.</span></div><div class="line">verbose=5</div><div class="line"> </div><div class="line">report_url=file:@@&#123;LOGDIR&#125;/aide.log</div><div class="line">report_url=stdout</div><div class="line"><span class="comment">#report_url=stderr</span></div><div class="line"><span class="comment">#NOT IMPLEMENTED report_url=mailto:root@foo.com</span></div><div class="line"><span class="comment">#NOT IMPLEMENTED report_url=syslog:LOG_AUTH</span></div><div class="line"> </div><div class="line"><span class="comment"># These are the default rules.</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment">#p:      permissions</span></div><div class="line"><span class="comment">#i:      inode:</span></div><div class="line"><span class="comment">#n:      number of links</span></div><div class="line"><span class="comment">#u:      user</span></div><div class="line"><span class="comment">#g:      group</span></div><div class="line"><span class="comment">#s:      size</span></div><div class="line"><span class="comment">#b:      block count</span></div><div class="line"><span class="comment">#m:      mtime</span></div><div class="line"><span class="comment">#a:      atime</span></div><div class="line"><span class="comment">#c:      ctime</span></div><div class="line"><span class="comment">#S:      check for growing size</span></div><div class="line"><span class="comment">#acl:           Access Control Lists</span></div><div class="line"><span class="comment">#selinux        SELinux security context</span></div><div class="line"><span class="comment">#xattrs:        Extended file attributes</span></div><div class="line"><span class="comment">#md5:    md5 checksum</span></div><div class="line"><span class="comment">#sha1:   sha1 checksum</span></div><div class="line"><span class="comment">#sha256:        sha256 checksum</span></div><div class="line"><span class="comment">#sha512:        sha512 checksum</span></div><div class="line"><span class="comment">#rmd160: rmd160 checksum</span></div><div class="line"><span class="comment">#tiger:  tiger checksum</span></div><div class="line"> </div><div class="line"><span class="comment">#haval:  haval checksum (MHASH only)</span></div><div class="line"><span class="comment">#gost:   gost checksum (MHASH only)</span></div><div class="line"><span class="comment">#crc32:  crc32 checksum (MHASH only)</span></div><div class="line"><span class="comment">#whirlpool:     whirlpool checksum (MHASH only)</span></div><div class="line"> </div><div class="line"> <span class="comment">#R:              p+i+n+u+g+s+m+c+acl+selinux+xattrs+md5</span></div><div class="line"><span class="comment">#L:             p+i+n+u+g+acl+selinux+xattrs</span></div><div class="line"><span class="comment">#E:             Empty group</span></div><div class="line"><span class="comment">#&gt;:             Growing logfile       p+u+g+i+n+S+acl+selinux+xattrs</span></div><div class="line">R = p+i+n+u+g+s+m+c+acl+selinux+xattrs+md5</div><div class="line">L = p+i+n+u+g+acl+selinux+xattrs</div><div class="line">&gt; = p+u+g+i+n+S+acl+selinux+xattrs</div><div class="line"> </div><div class="line"> </div><div class="line"><span class="comment"># You can create custom rules like this.</span></div><div class="line"><span class="comment"># With MHASH...</span></div><div class="line"><span class="comment"># ALLXTRAHASHES =      sha1+rmd160+sha256+sha512+whirlpool+tiger+haval+gost+crc32</span></div><div class="line">ALLXTRAHASHES = sha1+rmd160+sha256+sha512+tiger</div><div class="line"><span class="comment"># Everything but access time (Ie. all changes)</span></div><div class="line">EVERYTHING = R+ALLXTRAHASHES</div><div class="line"> </div><div class="line"><span class="comment"># Sane, with multiple hashes</span></div><div class="line"><span class="comment"># NORMAL = R+rmd160+sha256+whirlpool</span></div><div class="line">NORMAL = R+rmd160+sha256</div><div class="line"> </div><div class="line"><span class="comment"># For directories, don't bother doing hashes</span></div><div class="line">DIR = p+i+n+u+g+acl+selinux+xattrs</div><div class="line"> </div><div class="line"> <span class="comment"># Access control only</span></div><div class="line"> PERMS = p+i+u+g+acl+selinux</div><div class="line"> </div><div class="line"> <span class="comment"># Logfile are special, in that they often change</span></div><div class="line"> LOG = &gt;</div><div class="line"> </div><div class="line"> <span class="comment"># Just do md5 and sha256 hashes</span></div><div class="line"> LSPP = R+sha256</div><div class="line"> </div><div class="line"> <span class="comment"># Some files get updated automatically, so the     inode/ctime/mtime change</span></div><div class="line"> <span class="comment"># but we want to know when the data inside them   changes</span></div><div class="line"> DATAONLY =     p+n+u+g+s+acl+selinux+xattrs+md5+sha256+rmd160+tiger</div><div class="line"> </div><div class="line"> <span class="comment"># Next decide what directories/files you want in the database.</span></div><div class="line"> </div><div class="line">/boot   NORMAL</div><div class="line">/bin    NORMAL</div><div class="line">/sbin   NORMAL</div><div class="line">/lib    NORMAL</div><div class="line">/lib64  NORMAL</div><div class="line">/opt    NORMAL</div><div class="line">/usr    NORMAL</div><div class="line">/root   NORMAL</div><div class="line"><span class="comment"># These are too volatile</span></div><div class="line">!/usr/src</div><div class="line">!/usr/tmp</div><div class="line">!/usr/share <span class="comment">#通过文件路径前面加感叹号 ! 排除这个路径的监控,请自定义</span></div><div class="line"> <span class="comment"># Check only permissions, inode, user and group for /etc, but</span></div><div class="line"><span class="comment"># cover some important files closely.</span></div><div class="line">/etc    PERMS</div><div class="line">!/etc/mtab</div><div class="line"> <span class="comment"># Ignore backup files</span></div><div class="line">!/etc/.*~</div><div class="line">/etc/exports  NORMAL</div><div class="line">/etc/fstab    NORMAL</div><div class="line">/etc/passwd   NORMAL</div><div class="line">/etc/group    NORMAL</div><div class="line">/etc/gshadow  NORMAL</div><div class="line">/etc/shadow   NORMAL</div><div class="line">/etc/security/opasswd   NORMAL</div><div class="line"> </div><div class="line">/etc/hosts.allow   NORMAL</div><div class="line">/etc/hosts.deny    NORMAL</div><div class="line"> </div><div class="line">/etc/sudoers NORMAL</div><div class="line">/etc/skel NORMAL</div><div class="line"> </div><div class="line">/etc/logrotate.d NORMAL</div><div class="line"> </div><div class="line">/etc/resolv.conf DATAONLY</div><div class="line"> </div><div class="line">/etc/nscd.conf NORMAL</div><div class="line">/etc/securetty NORMAL</div><div class="line"> </div><div class="line"><span class="comment"># Shell/X starting files</span></div><div class="line">/etc/profile NORMAL</div><div class="line">/etc/bashrc NORMAL</div><div class="line">/etc/bash_completion.d/ NORMAL</div><div class="line">/etc/login.defs NORMAL</div><div class="line">/etc/zprofile NORMAL</div><div class="line">/etc/zshrc NORMAL</div><div class="line">/etc/zlogin NORMAL</div><div class="line">/etc/zlogout NORMAL</div><div class="line">/etc/profile.d/ NORMAL</div><div class="line">/etc/X11/ NORMAL</div><div class="line">  </div><div class="line"><span class="comment"># Pkg manager</span></div><div class="line">/etc/yum.conf NORMAL</div><div class="line">/etc/yumex.conf NORMAL</div><div class="line">/etc/yumex.profiles.conf NORMAL</div><div class="line">/etc/yum/ NORMAL</div><div class="line"> /etc/yum.repos.d/ NORMAL</div><div class="line"> </div><div class="line"> /var/<span class="built_in">log</span>   LOG</div><div class="line"> /var/run/utmp LOG</div><div class="line"> </div><div class="line"> <span class="comment"># This gets new/removes-old filenames daily</span></div><div class="line">!/var/<span class="built_in">log</span>/sa</div><div class="line"> <span class="comment"># As we are checking it, we've truncated     yesterdays size to zero.</span></div><div class="line"> !/var/<span class="built_in">log</span>/aide.log</div><div class="line"> </div><div class="line"><span class="comment"># LSPP rules...</span></div><div class="line"><span class="comment"># AIDE produces an audit record, so this becomes       # /var/log/audit/ LSPP</span></div><div class="line">/etc/audit/ LSPP</div><div class="line">/etc/libaudit.conf LSPP</div><div class="line">/usr/sbin/stunnel LSPP</div><div class="line">/var/spool/at LSPP</div><div class="line">/etc/at.allow LSPP</div><div class="line">/etc/at.deny LSPP</div><div class="line">/etc/cron.allow LSPP</div><div class="line">/etc/cron.deny LSPP</div><div class="line">/etc/cron.d/ LSPP</div><div class="line">/etc/cron.daily/ LSPP</div><div class="line">/etc/cron.hourly/ LSPP</div><div class="line">/etc/cron.monthly/ LSPP</div><div class="line">/etc/cron.weekly/ LSPP</div><div class="line">/etc/crontab LSPP</div><div class="line">/var/spool/cron/root LSPP</div><div class="line"> </div><div class="line">/etc/login.defs LSPP</div><div class="line">/etc/securetty LSPP</div><div class="line">/var/<span class="built_in">log</span>/faillog LSPP</div><div class="line">/var/<span class="built_in">log</span>/lastlog LSPP</div><div class="line"> </div><div class="line">/etc/hosts LSPP</div><div class="line">/etc/sysconfig LSPP</div><div class="line"> </div><div class="line">/etc/inittab LSPP</div><div class="line">/etc/grub/ LSPP</div><div class="line">/etc/rc.d LSPP</div><div class="line"> </div><div class="line">/etc/ld.so.conf LSPP</div><div class="line"> </div><div class="line"> /etc/localtime LSPP</div><div class="line"> </div><div class="line">/etc/sysctl.conf LSPP</div><div class="line"> </div><div class="line">/etc/modprobe.conf LSPP</div><div class="line"> </div><div class="line">/etc/pam.d LSPP</div><div class="line">/etc/security LSPP</div><div class="line">/etc/aliases LSPP</div><div class="line">/etc/postfix LSPP</div><div class="line"> </div><div class="line">/etc/ssh/sshd_config LSPP</div><div class="line"> /etc/ssh/ssh_config LSPP</div><div class="line"> </div><div class="line">/etc/stunnel LSPP</div><div class="line"> </div><div class="line">/etc/vsftpd.ftpusers LSPP</div><div class="line"> /etc/vsftpd LSPP</div><div class="line"> </div><div class="line">/etc/issue LSPP</div><div class="line">/etc/issue.net LSPP</div><div class="line">  </div><div class="line">/etc/cups LSPP</div><div class="line"> </div><div class="line"><span class="comment"># With AIDE's default verbosity level of 5, these would give lots of</span></div><div class="line"><span class="comment"># warnings upon tree traversal. It might change with  future version.</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment">#=/lost\+found    DIR</span></div><div class="line"><span class="comment">#=/home           DIR</span></div><div class="line"> </div><div class="line"><span class="comment"># Ditto /var/log/sa reason...</span></div><div class="line">!/var/<span class="built_in">log</span>/and-httpd</div><div class="line"> </div><div class="line"><span class="comment"># Admins dot files constantly change, just check perms</span></div><div class="line">/root/\..* PERMS</div></pre></td></tr></table></figure>
+<h4 id="下一步："><a href="#下一步：" class="headerlink" title="下一步："></a>下一步：</h4><p> 初始化监控数据库(这需要一些时间)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">  /usr/sbin/aide -c /etc/aide.conf --init</div><div class="line">``` </div><div class="line">把当前初始化的数据库作为开始的基础数据库</div><div class="line"></div><div class="line">``` bash</div><div class="line">     cp /var/lib/aide/aide.db.new.gz       /var/lib/aide/aide.db.gz</div></pre></td></tr></table></figure>
+<p>如果是正常的改动 更新改动到基础数据库</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">aide --update</div><div class="line"><span class="built_in">cd</span> /var/lib/aide/</div></pre></td></tr></table></figure>
+<p>覆盖替换旧的数据库</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mv aide.db.new.gz aide.db.gz</div></pre></td></tr></table></figure>
+<p>在终端中查看检测结果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">aide --check</div></pre></td></tr></table></figure>
+<p>检查文件改动 保存到文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">    aide --check --report=file:/tmp/aide-report-`date +%Y%m%d`.txt</div><div class="line">``` </div><div class="line">定时任务执行aide检测报告和自动邮件发送aide检测报告(如果没有mail, yum install mail,还需要有本地邮件服务支持, yum install sendmail;/etc/init.d/sendmail start)</div><div class="line">  </div><div class="line">``` bash</div><div class="line">    crontab <span class="_">-e</span></div><div class="line">    00 02 * * * /usr/sbin/aide -C -V4 | /bin/mail <span class="_">-s</span> <span class="string">"AIDE REPORT <span class="variable">$(date +%Y%m%d)</span>"</span>  root@localhost</div></pre></td></tr></table></figure>
+<h3 id="5、参考"><a href="#5、参考" class="headerlink" title="5、参考"></a>5、参考</h3><ul>
+<li><p>官网 :<a href="http://aide.sourceforge.net/" target="_blank" rel="external">http://aide.sourceforge.net/</a></p>
+</li>
+<li><p>AIDE –Linux高级入侵检测 <a href="http://gupt12.blog.51cto.com/7651206/1263183" target="_blank" rel="external">http://gupt12.blog.51cto.com/7651206/1263183</a></p>
+</li>
+<li><p>参考：<a href="http://www.iamle.com/archives/1664.html" target="_blank" rel="external">http://www.iamle.com/archives/1664.html</a></p>
+</li>
+</ul>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2015/06/16/容器-虚拟化/kvm/KVM虚拟化(六)调整虚拟机CPU大小,添加memory内存,添加虚拟机硬盘disk,虚拟机内存减半现象/" data-toggle="tooltip" data-placement="top" title="KVM虚拟化(六)调整虚拟机CPU大小,添加memory内存,添加虚拟机硬盘disk,虚拟机内存减半现象">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2015/02/26/python/python及常用工具的安装 /" data-toggle="tooltip" data-placement="top" title="python及常用工具的安装">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Operation safety" title="Operation safety">Operation safety</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yangcvo-me";
+    var disqus_identifier = "http://blog.yangcvo.me/2015/04/01/运维安全/使用AIDE做Linux高级入侵检测文件监控/";
+    var disqus_url = "http://blog.yangcvo.me/2015/04/01/运维安全/使用AIDE做Linux高级入侵检测文件监控/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/PandaJuesha">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yangcvo.me">yangc</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

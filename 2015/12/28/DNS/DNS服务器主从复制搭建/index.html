@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <meta charset="utf-8">
+    
+    <title>DNS服务器主从复制搭建 | Cheng yang&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="DNS 服务器主从复制搭建最近部署测试环境和灰度发布环境，之前已经整改过一次，因为需要扩容添加，所以这次操作就把实现的过程记录下来了。 
+实现环境：centos 6.7 x86_64
+
+主DNS服务器：192.168.1.173
+从DNS服务器：192.168.1.174
+
+实验步骤1、关闭网络防火墙及SElinux（主从DNS服务器上都要有此操作）
+[root@LAN_redis2 ~]# /e">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DNS服务器主从复制搭建">
+<meta property="og:url" content="http://blog.yangcvo.me/2015/12/28/DNS/DNS服务器主从复制搭建/index.html">
+<meta property="og:site_name" content="Cheng yang's Blog">
+<meta property="og:description" content="DNS 服务器主从复制搭建最近部署测试环境和灰度发布环境，之前已经整改过一次，因为需要扩容添加，所以这次操作就把实现的过程记录下来了。 
+实现环境：centos 6.7 x86_64
+
+主DNS服务器：192.168.1.173
+从DNS服务器：192.168.1.174
+
+实验步骤1、关闭网络防火墙及SElinux（主从DNS服务器上都要有此操作）
+[root@LAN_redis2 ~]# /e">
+<meta property="og:image" content="http://7xrthw.com1.z0.glb.clouddn.com/dns-name.conf.png">
+<meta property="og:image" content="http://7xrthw.com1.z0.glb.clouddn.com/dns-prod.test.zone.png">
+<meta property="og:updated_time" content="2016-12-15T10:24:13.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DNS服务器主从复制搭建">
+<meta name="twitter:description" content="DNS 服务器主从复制搭建最近部署测试环境和灰度发布环境，之前已经整改过一次，因为需要扩容添加，所以这次操作就把实现的过程记录下来了。 
+实现环境：centos 6.7 x86_64
+
+主DNS服务器：192.168.1.173
+从DNS服务器：192.168.1.174
+
+实验步骤1、关闭网络防火墙及SElinux（主从DNS服务器上都要有此操作）
+[root@LAN_redis2 ~]# /e">
+<meta name="twitter:image" content="http://7xrthw.com1.z0.glb.clouddn.com/dns-name.conf.png">
+    
+
+    
+        <link rel="alternate" href="/" title="Cheng yang&#39;s Blog" type="application/atom+xml" />
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">Cheng yang&#39;s Blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="https://github.com/yangcvo">GitHub</a>
+                
+                    <a class="main-nav-link" href="http://weibo.com/yangcvo">Weibo</a>
+                
+                    <a class="main-nav-link" href="http://blog.yangcvo.me/2014/05/04/%E4%B8%AA%E4%BA%BA%E8%AE%B0%E5%BD%95/About-me/">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/yangc.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/yangcvo">GitHub</a></td>
+                
+                    <td><a class="main-nav-link" href="http://weibo.com/yangcvo">Weibo</a></td>
+                
+                    <td><a class="main-nav-link" href="http://blog.yangcvo.me/2014/05/04/%E4%B8%AA%E4%BA%BA%E8%AE%B0%E5%BD%95/About-me/">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/yangc.png" />
+            <h2 id="name">yangc</h2>
+            <h3 id="title">Operation Engineer</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>hangzhou, China</span>
+            <a id="follow" target="_blank" href="https://github.com/yangcvo/">FOLLOW</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                98
+                <span>posts</span>
+            </div>
+            <div class="article-info-block">
+                34
+                <span>tags</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/yangcvo" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://twitter.com/yangaov" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://www.facebook.com/yango88" target="_blank" title="facebook" class=tooltip>
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="dribbble" class=tooltip>
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="rss" class=tooltip>
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-DNS/DNS服务器主从复制搭建" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            DNS服务器主从复制搭建
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2015/12/28/DNS/DNS服务器主从复制搭建/">
+            <time datetime="2015-12-28T03:33:07.000Z" itemprop="datePublished">Dec 28 2015</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Linux/">Linux</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/DNS/">DNS</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h2 id="DNS-服务器主从复制搭建"><a href="#DNS-服务器主从复制搭建" class="headerlink" title="DNS 服务器主从复制搭建"></a>DNS 服务器主从复制搭建</h2><p>最近部署测试环境和灰度发布环境，之前已经整改过一次，因为需要扩容添加，所以这次操作就把实现的过程记录下来了。 </p>
+<h3 id="实现环境："><a href="#实现环境：" class="headerlink" title="实现环境："></a>实现环境：</h3><p>centos 6.7 x86_64</p>
+<ul>
+<li>主DNS服务器：192.168.1.173</li>
+<li>从DNS服务器：192.168.1.174</li>
+</ul>
+<h3 id="实验步骤"><a href="#实验步骤" class="headerlink" title="实验步骤"></a>实验步骤</h3><p>1、关闭网络防火墙及SElinux（主从DNS服务器上都要有此操作）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@LAN_redis2 ~]<span class="comment"># /etc/init.d/iptables stop</span></span><br><span class="line">[root@LAN_redis2 ~]<span class="comment"># /etc/init.d/iptables status</span></span><br><span class="line">iptables: Firewall is not running.</span><br></pre></td></tr></table></figure>
+<p>（注意：此步骤不容忽略，否则会吃大亏，比如我在此就耗费大半天的时间）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@LAN_redis2 ~]<span class="comment"># setenforce 0</span></span><br><span class="line">[root@LAN_redis2 ~]<span class="comment"># getenforce </span></span><br><span class="line">Permissive（或是<span class="built_in">disable</span>也可以）</span><br></pre></td></tr></table></figure>
+<h3 id="主DNS服务器的安装及配置"><a href="#主DNS服务器的安装及配置" class="headerlink" title="主DNS服务器的安装及配置"></a>主DNS服务器的安装及配置</h3><p>2、 安装DNS服务器</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@LAN_redis1 ~]<span class="comment"># yum install bind bind-libs bind-utils -y</span></span><br><span class="line">[root@LAN_redis1 ~]<span class="comment"># yum list all | grep ^bind</span></span><br><span class="line">bind.x86_64                                 32:9.8.2-0.47.rc1.el6       @base</span><br><span class="line"><span class="built_in">bind</span>-libs.x86_64                            32:9.8.2-0.47.rc1.el6       @base</span><br><span class="line"><span class="built_in">bind</span>-utils.x86_64                           32:9.8.2-0.47.rc1.el6       @base</span><br><span class="line"><span class="built_in">bind</span>-chroot.x86_64                          32:9.8.2-0.47.rc1.el6       base</span><br><span class="line"><span class="built_in">bind</span>-devel.i686                             32:9.8.2-0.47.rc1.el6       base</span><br><span class="line"><span class="built_in">bind</span>-devel.x86_64                           32:9.8.2-0.47.rc1.el6       base</span><br><span class="line"><span class="built_in">bind</span>-dyndb-ldap.x86_64                      2.3-8.el6                   base</span><br><span class="line"><span class="built_in">bind</span>-libs.i686                              32:9.8.2-0.47.rc1.el6       base</span><br><span class="line"><span class="built_in">bind</span>-sdb.x86_64                             32:9.8.2-0.47.rc1.el6       base</span><br></pre></td></tr></table></figure>
+<p>3、修改配置文件/etc/named.conf</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@LAN_redis1 ~]<span class="comment"># cp /etc/named.conf /etc/named.conf.bak (备份原始配置文件)</span></span><br><span class="line">[root@LAN_redis1 ~]<span class="comment"># vim /etc/named.conf</span></span><br></pre></td></tr></table></figure>
+<p>对主配置文件进行编辑修改，也可以自己编写,这里是我设置的 </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">options &#123;</span><br><span class="line">        listen-on port 53 &#123; any; &#125;;</span><br><span class="line">        listen-on-v6 port 53 &#123; ::1; &#125;;</span><br><span class="line">        directory       <span class="string">"/var/named"</span>;</span><br><span class="line">        dump-file       <span class="string">"/var/named/data/cache_dump.db"</span>;</span><br><span class="line">        statistics-file <span class="string">"/var/named/data/named_stats.txt"</span>;</span><br><span class="line">        memstatistics-file <span class="string">"/var/named/data/named_mem_stats.txt"</span>;</span><br><span class="line">        allow-query     &#123; any; &#125;;</span><br><span class="line">        recursion yes;</span><br><span class="line"></span><br><span class="line">//      dnssec-enable yes;</span><br><span class="line">//      dnssec-validation yes;</span><br><span class="line"></span><br><span class="line">        /* Path to ISC DLV key */</span><br><span class="line">        pid-file <span class="string">"/var/run/named/named.pid"</span>;</span><br><span class="line"></span><br><span class="line">//      bindkeys-file <span class="string">"/etc/named.iscdlv.key"</span>;</span><br><span class="line"></span><br><span class="line">//      managed-keys-directory <span class="string">"/var/named/dynamic"</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">logging &#123;</span><br><span class="line">        channel default_debug &#123;</span><br><span class="line">                file <span class="string">"data/named.run"</span>;</span><br><span class="line">                severity dynamic;</span><br><span class="line">        &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">zone <span class="string">"."</span> IN &#123;</span><br><span class="line">        <span class="built_in">type</span> hint;</span><br><span class="line">        file <span class="string">"named.ca"</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">include <span class="string">"/etc/named.rfc1912.zones"</span>;</span><br><span class="line"><span class="comment">#include "/etc/named.root.key";</span></span><br></pre></td></tr></table></figure>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/dns-name.conf.png" alt=""></p>
+<h4 id="named-conf文件说明："><a href="#named-conf文件说明：" class="headerlink" title="named.conf文件说明："></a>named.conf文件说明：</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">上面的named.conf文件包括三部分：key,controls,logging，options,zone。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">在options中：</span><br><span class="line">directory    <span class="string">"/var/named"</span>    :定义<span class="built_in">bind</span>的工作目录为/var/named，配置文件中所有使用的相对路径，指的都是在这里配置的目录下。  </span><br><span class="line">pid-file <span class="string">"/var/run/named/named.pid"</span>;   把<span class="built_in">bind</span>程序运行的pid写入文件named.pid</span><br><span class="line">transfer-format many-answers:使用更加有效的域传输格式many-answers。</span><br><span class="line">allow-query &#123; any; &#125;:允许所有用户查询dns</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">logging:设置日志服务器和日志信息的发送地。</span><br><span class="line">options:控制服务器的全局配置选项和为其它语句设置默认值</span><br><span class="line">zone:定义一个域,比如正解析域和反解析域。</span><br><span class="line">logging是定义日志的，不需要深究，主要是options和zone。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">在zone中：</span><br><span class="line">这里定义了两个zone，一个是正解析zone qbtop.com，一个是反解析zone 81.19.23.in-addr.arpa。</span><br><span class="line">他们的参数基本相同：</span><br><span class="line"><span class="built_in">type</span> master:定义dns服务器为主dns。</span><br><span class="line">file <span class="string">"qbtop.com.zone"</span>:定义此zone的文件名。</span><br><span class="line">allow-transfer &#123; 23.19.81.194; &#125;:允许向从dns 23.19.81.194传输dns数据。</span><br><span class="line">唯一不同的是zone名称的定义，正解析zone名称的定义是受权的域名，可以是顶级域名，也可以是二级域名，或多级。反解析zone名称定义规定前部分ip倒着写。如ip 192.168.1.2,名称定义为1.168.192.in-addr.arpa。</span><br><span class="line"></span><br><span class="line">正解析qbtop.com.zone</span><br></pre></td></tr></table></figure>
+<h3 id="编辑头文件配置"><a href="#编辑头文件配置" class="headerlink" title="编辑头文件配置"></a>编辑头文件配置</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@LAN_redis1 etc]<span class="comment"># vim named.rfc1912.zones</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">zone <span class="string">"1.0.0.127.in-addr.arpa"</span> IN &#123;</span><br><span class="line">        <span class="built_in">type</span> master;</span><br><span class="line">        file <span class="string">"named.loopback"</span>;</span><br><span class="line">        allow-update &#123; none; &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">zone <span class="string">"0.in-addr.arpa"</span> IN &#123;</span><br><span class="line">        <span class="built_in">type</span> master;</span><br><span class="line">        file <span class="string">"named.empty"</span>;</span><br><span class="line">        allow-update &#123; none; &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">zone <span class="string">"prod.intranet"</span> IN &#123;</span><br><span class="line">        <span class="built_in">type</span> master;</span><br><span class="line">        file <span class="string">"prod.intranet.zone"</span>;</span><br><span class="line">         allow-transfer &#123; 192.168.1.174; &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">zone <span class="string">"1.168.192.in-addr.arpa"</span> IN &#123;</span><br><span class="line">        <span class="built_in">type</span> master;</span><br><span class="line">        file <span class="string">"192.168.1.zone"</span>;</span><br><span class="line">        allow-transfer &#123; 192.168.1.174; &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>4、新建正反向解析文件并修改权限及属组</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@LAN_redis1 named]<span class="comment"># vim prod.intranet.zone   (正向解析配置文件)</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$TTL    1200</span><br><span class="line">@               IN      SOA     ns1.prod.intranet.      admin.prod.intranet.   (  //设置SOA标记、域名、域管理邮箱</span><br><span class="line">                                                        2015120101             //更新序列号，用于标记地址数据库的变化 </span><br><span class="line">                                                        1H                //刷新时间，从域名服务器更新该地址数据库文件的间隔时间</span><br><span class="line">                                                        10M              //重试延时，从域名服务器更新地址数据库失败以后，等待多长时间再次尝试  </span><br><span class="line">                                                        7D              //失效时间，超过该时间仍无法更新地址数据库，则不再尝试</span><br><span class="line">                                                        1D            //设置无效地址解析记录（该数据库中不存在的地址）的默认缓存时间</span><br><span class="line">)</span><br><span class="line">                  IN     NS      ns1.prod.intranet.</span><br><span class="line">                  IN     NS      ns2.prod.intranet.</span><br><span class="line">                  IN     MX  10  mail.prod.intranet.</span><br><span class="line">ns1.prod.intranet.       IN      A       192.168.1.173</span><br><span class="line">ns2.prod.intranet.       IN      A       192.168.1.174</span><br><span class="line">mysql.prod.intranet.     IN      A       192.168.1.171</span><br><span class="line">mysql-2.prod.intranet.   IN      A       192.168.1.170</span><br><span class="line">sentinel.prod.intranet.  IN      A       192.168.1.175</span><br><span class="line">redis1.prod.intranet.    IN      A       192.168.1.173</span><br><span class="line">redis2.prod.intranet.    IN      A       192.168.1.174</span><br></pre></td></tr></table></figure>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/dns-prod.test.zone.png" alt=""></p>
+<h3 id="DNS正反解析："><a href="#DNS正反解析：" class="headerlink" title="DNS正反解析："></a>DNS正反解析：</h3><ul>
+<li><p>正向解析就是将我们知道的域名解析成IP地址，而反向解析就是把正向解析掉了个方向，就是通过IP地址解析域名</p>
+</li>
+<li><p>反向域名解析与通常的正向域名解析相反，提供IP地址到域名的对应，反向域名格式如：X.X.X.in-addr.arpa。目前很多网络服务提供商要求访问的IP地址具有反向域名解析的结果，否则不提供服务。</p>
+</li>
+</ul>
+<blockquote>
+<p>通俗易懂的讲：</p>
+<p>正向解析：通过域名查找ip；</p>
+<p>反向解析：通过ip查找域名；</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vim /var/named/192.168.1.zone     (逆向解析配置文件)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="variable">$TTL</span>    1200</span><br><span class="line">@               IN      SOA     ns1.prod.intranet.      admin.prod.intranet.   (</span><br><span class="line">                                                        2015120101</span><br><span class="line">                                                        1H</span><br><span class="line">                                                        10M</span><br><span class="line">                                                        7D</span><br><span class="line">                                                        1D</span><br><span class="line">)</span><br><span class="line">                  IN     NS      ns1.prod.intranet.</span><br><span class="line">                  IN     NS      ns2.prod.intranet.</span><br><span class="line">                  IN     MX  10  mail.prod.intranet.</span><br><span class="line">173       IN    PTR       ns1.prod.intranet.</span><br><span class="line">174       IN    PTR       ns2.prod.intranet.</span><br><span class="line">170       IN    PTR       mysql.prod.intranet.</span><br><span class="line">171       IN    PTR       mysql-2.prod.intranet.</span><br><span class="line">172       IN    PTR       sentinel.prod.intranet.</span><br><span class="line">173       IN    PTR       redis1.prod.intranet.</span><br><span class="line">174       IN    PTR       redis2.prod.intranet.</span><br><span class="line">175       IN    PTR       tomcatA1.prod.intranet.</span><br><span class="line">176       IN    PTR       tomcatB1.prod.intranet.</span><br></pre></td></tr></table></figure>
+<p>修改文件的属主属组和访问权限</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">[root@LAN_redis1 named]<span class="comment"># chgrp -v named prod.intranet.zone</span></span><br><span class="line"><span class="string">"prod.intranet.zone"</span> 的所属组已更改为named</span><br><span class="line">[root@LAN_redis1 named]<span class="comment"># chgrp -v named 192.168.1.zone</span></span><br><span class="line"><span class="string">"192.168.1.zone"</span> 的所属组已更改为named</span><br><span class="line"></span><br><span class="line">[root@LAN_redis1 named]<span class="comment"># chmod  o=  192.168.1.zone</span></span><br><span class="line">[root@LAN_redis1 named]<span class="comment"># chmod  o=  prod.intranet.zone</span></span><br><span class="line">[root@LAN_redis1 named]<span class="comment"># ll prod.intranet.zone 192.168.1.zone</span></span><br><span class="line">-rw-r-----. 1 root named 1700 6月  30 16:25 192.168.1.zone</span><br><span class="line">-rw-r-----. 1 root named 1922 6月  30 16:26 prod.intranet.zone</span><br></pre></td></tr></table></figure>
+<p>5、检查主配置文件和区域配置文件语法是否有错误</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@LAN_redis1 ~]<span class="comment"># named-checkconf /etc/named.conf</span></span><br><span class="line">[root@LAN_redis1 ~]<span class="comment"># named-checkzone "prod.intranet" /var/named/prod.intranet.zone</span></span><br><span class="line">[root@LAN_redis1 ~]<span class="comment">#  named-checkzone "1.168.192.in-addr.arpa" /var/named/192.168.1.zone</span></span><br><span class="line">ok</span><br></pre></td></tr></table></figure>
+<p>6、启动named的服务和进程：</p>
+<p>刚刚开始弄启动失败了。<br>启动失败：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@LAN_redis1 ~]<span class="comment"># service named start</span></span><br><span class="line">启动 named：                                               [失败]</span><br><span class="line"></span><br><span class="line">然后定位查看原因：</span><br><span class="line">[root@LAN_redis1 ~]<span class="comment"># tail /var/log/messages</span></span><br><span class="line">Jun 30 17:03:18 LAN_redis1 named[17582]: corporation.  Support and training <span class="keyword">for</span> BIND 9 are</span><br><span class="line">Jun 30 17:03:18 LAN_redis1 named[17582]: available at https://www.isc.org/support</span><br><span class="line">Jun 30 17:03:18 LAN_redis1 named[17582]: ----------------------------------------------------</span><br><span class="line">Jun 30 17:03:18 LAN_redis1 named[17582]: adjusted <span class="built_in">limit</span> on open files from 65535 to 1048576</span><br><span class="line">Jun 30 17:03:18 LAN_redis1 named[17582]: found 2 CPUs, using 2 worker threads</span><br><span class="line">Jun 30 17:03:18 LAN_redis1 named[17582]: using up to 4096 sockets</span><br><span class="line">Jun 30 17:03:18 LAN_redis1 named[17582]: loading configuration from <span class="string">'/etc/named.conf'</span></span><br><span class="line">Jun 30 17:03:18 LAN_redis1 named[17582]: none:0: open: /etc/named.conf: permission denied</span><br><span class="line">Jun 30 17:03:18 LAN_redis1 named[17582]: loading configuration: permission denied</span><br><span class="line">Jun 30 17:03:18 LAN_redis1 named[17582]: exiting (due to fatal error)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">日志上面说没有权限访问 <span class="string">'/etc/named.conf'</span></span><br><span class="line"></span><br><span class="line">查看下</span><br><span class="line">[root@LAN_redis1 ~]<span class="comment"># ll /etc/named*</span></span><br><span class="line">-rwxr-x--x. 1 root root  1019 6月  30 14:36 /etc/named.conf</span><br><span class="line">-rw-r-----. 1 root named  984 11月 20 2015 /etc/named.conf.bak</span><br><span class="line">-rw-r-----. 1 root root  1019 6月  30 16:38 /etc/named.conf.bak.2016</span><br><span class="line">-rw-r--r--. 1 root named 2389 5月  11 07:07 /etc/named.iscdlv.key</span><br><span class="line">-rw-r-----. 1 root named 1171 6月  30 15:28 /etc/named.rfc1912.zones</span><br><span class="line">-rw-r--r--. 1 root named  487 7月  19 2010 /etc/named.root.key</span><br><span class="line"></span><br><span class="line">然后修改属性和权限</span><br><span class="line">[root@LAN_redis1 ~]<span class="comment"># chown -R root:named /etc/named</span></span><br><span class="line">[root@LAN_redis1 ~]<span class="comment"># service named start</span></span><br><span class="line">启动 named：                                               [确定]</span><br><span class="line"></span><br><span class="line">就可以了。</span><br></pre></td></tr></table></figure>
+<h3 id="二、在上述前提下搭建备用从DNS服务器"><a href="#二、在上述前提下搭建备用从DNS服务器" class="headerlink" title="二、在上述前提下搭建备用从DNS服务器"></a>二、在上述前提下搭建备用从DNS服务器</h3><blockquote>
+<p>在另一台服务器上安装bind，安装方法和上述一致</p>
+<p>编辑主配置文件/etc/named.conf，和上述一致</p>
+<p> 编辑主配置文件中定义的头文件/etc/named.rfc1912.zones </p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">zone <span class="string">"1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa"</span> IN &#123;</span><br><span class="line">        <span class="built_in">type</span> master;</span><br><span class="line">        file <span class="string">"named.loopback"</span>;</span><br><span class="line">        allow-update &#123; none; &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">zone <span class="string">"1.0.0.127.in-addr.arpa"</span> IN &#123;</span><br><span class="line">        <span class="built_in">type</span> master;</span><br><span class="line">        file <span class="string">"named.loopback"</span>;</span><br><span class="line">        allow-update &#123; none; &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">zone <span class="string">"0.in-addr.arpa"</span> IN &#123;</span><br><span class="line">        <span class="built_in">type</span> slave;</span><br><span class="line">        file <span class="string">"named.empty"</span>;</span><br><span class="line">        allow-update &#123; none; &#125;;</span><br><span class="line">&#125;;</span><br><span class="line">zone <span class="string">"prod.intranet"</span> IN &#123;</span><br><span class="line">        <span class="built_in">type</span> slave;</span><br><span class="line">        file <span class="string">"slaves/prod.intranet.zone"</span>;       // 正向解析，定义服务器类型，主服务器地址以及正向解析的配置文件名</span><br><span class="line">        masters &#123; 192.168.1.173; &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">zone <span class="string">"1.168.192.in-addr.arpa"</span> IN &#123;</span><br><span class="line">        <span class="built_in">type</span> slave;</span><br><span class="line">        file <span class="string">"slaves/192.168.1.zone"</span>;</span><br><span class="line">        masters &#123; 192.168.1.173; &#125;;  // 逆向解析</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：不需要配置指定文件salaves/prod.intranet.zone和slaves/192.168.1.zone,因为这是一个从服务器，所以它的所有条目都是同步主服务器里面的。从服务器的条目存放文件存放在slaves目录的是一种安全机制。</p>
+<p>测试主配置文件和区域配置文件：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@LAN_redis2 slaves]<span class="comment"># named-checkconf /etc/named.conf</span></span><br></pre></td></tr></table></figure>
+<h3 id="启动从DNS服务器上的named服务"><a href="#启动从DNS服务器上的named服务" class="headerlink" title="启动从DNS服务器上的named服务"></a>启动从DNS服务器上的named服务</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@LAN_redis2 slaves]<span class="comment"># service named start</span></span><br><span class="line">启动 named：                                               [确定]</span><br><span class="line">[root@LAN_redis2 slaves]<span class="comment">#  chkconfig named on  （将named服务设为开机自启动）</span></span><br><span class="line">[root@LAN_redis2 ~]<span class="comment"># chkconfig --list named</span></span><br><span class="line">named          	0:关闭	1:关闭	2:启用	3:启用 4:启用 5:启用 6:关闭</span><br><span class="line">[root@LAN_redis2 ~]<span class="comment"># cd /var/named/slaves/</span></span><br><span class="line">[root@LAN_redis2 slaves]<span class="comment"># ll</span></span><br><span class="line">总用量 8</span><br><span class="line">-rw-r--r--. 1 named named 1105 6月  30 17:46 192.168.1.zone</span><br><span class="line">-rw-r--r--. 1 named named  947 6月  30 17:46 prod.intranet.zone</span><br></pre></td></tr></table></figure>
+<h3 id="查看同步结果"><a href="#查看同步结果" class="headerlink" title="查看同步结果"></a>查看同步结果</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@LAN_redis2 slaves]<span class="comment"># cat 192.168.1.zone</span></span><br><span class="line"><span class="variable">$ORIGIN</span> .</span><br><span class="line"><span class="variable">$TTL</span> 1200	; 20 minutes</span><br><span class="line">1.168.192.in-addr.arpa	IN SOA	ns1.prod.intranet. admin.prod.intranet. (</span><br><span class="line">				2016030101 ; serial</span><br><span class="line">				3600       ; refresh (1 hour)</span><br><span class="line">				600        ; retry (10 minutes)</span><br><span class="line">				604800     ; expire (1 week)</span><br><span class="line">				86400      ; minimum (1 day)</span><br><span class="line">				)</span><br><span class="line">			NS	ns1.prod.intranet.</span><br><span class="line">			NS	ns2.prod.intranet.</span><br><span class="line"><span class="variable">$ORIGIN</span> 1.168.192.in-addr.arpa.</span><br><span class="line">170			PTR	mysql.prod.intranet.</span><br><span class="line">171			PTR	mysql-2.prod.intranet.</span><br><span class="line">172			PTR	sentinel.prod.intranet.</span><br><span class="line">173			PTR	ns1.prod.intranet.</span><br><span class="line">			PTR	redis1.prod.intranet.</span><br><span class="line">174			PTR	ns2.prod.intranet.</span><br><span class="line">			PTR	redis2.prod.intranet.</span><br><span class="line"></span><br><span class="line">root@LAN_redis2 slaves]<span class="comment"># cat prod.intranet.zone</span></span><br><span class="line"><span class="variable">$ORIGIN</span> .</span><br><span class="line"><span class="variable">$TTL</span> 1200	; 20 minutes</span><br><span class="line">prod.intranet		IN SOA	ns1.prod.intranet. admin.prod.intranet. (</span><br><span class="line">				2016030101 ; serial</span><br><span class="line">				3600       ; refresh (1 hour)</span><br><span class="line">				600        ; retry (10 minutes)</span><br><span class="line">				604800     ; expire (1 week)</span><br><span class="line">				86400      ; minimum (1 day)</span><br><span class="line">				)</span><br><span class="line">			NS	ns1.prod.intranet.</span><br><span class="line">			NS	ns2.prod.intranet.</span><br><span class="line"><span class="variable">$ORIGIN</span> prod.intranet.</span><br><span class="line">10001			A	192.168.1.181</span><br><span class="line">10002			A	192.168.1.181</span><br><span class="line">10003			A	192.168.1.181</span><br><span class="line">10004			A	192.168.1.181</span><br><span class="line">10005			A	192.168.1.181</span><br><span class="line">10006			A	192.168.1.181</span><br><span class="line">10007			A	192.168.1.181</span><br><span class="line">10008			A	192.168.1.181</span><br><span class="line">10009			A	192.168.1.181</span><br><span class="line">10010			A	192.168.1.181</span><br><span class="line">10011			A	192.168.1.181</span><br></pre></td></tr></table></figure>
+<p>此时，看的以上两个文件已经自动从主服务器上同步到从服务器上，表明实验成功。</p>
+<p>以后每次，主服务器上更新正反向解析文件的话，从服务器上的解析文件会自动与之同步。<br>可以看到，在主服务器更新的数据、序列号，在从服务器上都自动更新过来了，表明验证成功。</p>
+<h3 id="其他服务器测试："><a href="#其他服务器测试：" class="headerlink" title="其他服务器测试："></a>其他服务器测试：</h3><p>我先到D1：192.168.1.178</p>
+<p>添加新的DNS：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@tomcat_D1 ~]<span class="comment"># vim  /etc/resolv.conf</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#namserver 233.5.5.5  注释掉阿里云的DNS </span></span><br><span class="line">nameserver 192.168.1.173</span><br><span class="line">nameserver 192.168.1.174</span><br></pre></td></tr></table></figure>
+<p>保存退出，测试是否可以ping外网是否可以解析设置好的内网域名。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@tomcat_D1 ~]<span class="comment"># ping www.baidu.com</span></span><br><span class="line">ping: unknown host www.baidu.com</span><br><span class="line"></span><br><span class="line">[root@tomcat_D1 ~]<span class="comment"># ping 10002.prod.intranet.</span></span><br><span class="line">ping: unknown host 10002.prod.intranet.</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>都是提示这个错误。</p>
+<p>无法解析，后面我看我做的负载均衡反向代理域名都正常的。</p>
+<p>后来定位是什么原因导致的，可是DNS上面主从正常的。</p>
+<p>回到主从：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@LAN_redis1 named]<span class="comment"># nslookup 10001.prod.intranet</span></span><br><span class="line">Server:		127.0.0.1</span><br><span class="line">Address:	127.0.0.1<span class="comment">#53</span></span><br><span class="line"></span><br><span class="line">Name:	10001.prod.intranet</span><br><span class="line">Address: 192.168.1.181</span><br><span class="line"></span><br><span class="line">[root@LAN_redis1 named]<span class="comment">#</span></span><br><span class="line">[root@LAN_redis1 named]<span class="comment"># nslookup 10002.prod.intranet</span></span><br><span class="line">Server:		127.0.0.1</span><br><span class="line">Address:	127.0.0.1<span class="comment">#53</span></span><br><span class="line"></span><br><span class="line">Name:	10002.prod.intranet</span><br><span class="line">Address: 192.168.1.181</span><br><span class="line"></span><br><span class="line">[root@LAN_redis2 slaves]<span class="comment"># nslookup 192.168.1.175</span></span><br><span class="line">Server:		127.0.0.1</span><br><span class="line">Address:	127.0.0.1<span class="comment">#53</span></span><br><span class="line"></span><br><span class="line">175.1.168.192.in-addr.arpa	name = tomcatA1.prod.intranet.</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里解析正常的，很奇怪。<br>逆解析也正常。</p>
+</blockquote>
+<h3 id="问题解决："><a href="#问题解决：" class="headerlink" title="问题解决："></a>问题解决：</h3><p>后来我看了很久，发现原来是我DNS 防火墙开启了，可是没有把DNS 端口53没有开放。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">-A INPUT -p tcp -m state --state NEW -m tcp --dport 53 -j ACCEPT</span><br><span class="line">-A INPUT -p udp -m state --state NEW -m udp --dport 53 -j ACCEPT</span><br></pre></td></tr></table></figure>
+<p>添加了防火墙规则已经可以了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@tomcat_D1 ~]# ping 10001.prod.intranet.</span><br><span class="line">PING 10001.prod.intranet (192.168.1.181) 56(84) bytes of data.</span><br><span class="line">64 bytes from 10003.prod.intranet (192.168.1.181): icmp_seq=1 ttl=64 time=0.843 ms</span><br></pre></td></tr></table></figure>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://blog.yangcvo.me/2015/12/28/DNS/DNS服务器主从复制搭建/" data-id="ciwt7u71i0005flvurl83tyje" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+        <a href="http://blog.yangcvo.me/2015/12/28/DNS/DNS服务器主从复制搭建/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://blog.yangcvo.me/2015/12/28/DNS/DNS服务器主从复制搭建/">Comments</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2015/12/28/DNS/DNS服务使用dig查询解析/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Newer</strong>
+            <div class="article-nav-title">
+                
+                    DNS服务使用dig查询解析
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2015/12/24/Node.js/使用keymetrics实时监控Node.js程序/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Older</strong>
+            <div class="article-nav-title">使用keymetrics实时监控Node.js程序</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+    
+    </section>
+
+</section>
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">recent</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/12/08/大数据hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://www.51bdtime.com/uploads/allimg/140826/1-140R6103P3405.jpg)" alt="hadoop新增节点集群启动请求异常：Last contact：200" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/大数据/">大数据</a></p>
+                            <p class="item-title"><a href="/2016/12/08/大数据hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/" class="title">hadoop新增节点集群启动请求异常：Last contact：200</a></p>
+                            <p class="item-date"><time datetime="2016-12-08T09:56:03.000Z" itemprop="datePublished">Dec 8 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/12/07/Java/Sonarqube和jacoco搭建代码检查/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://px.thea.cn/Public/Upload/2759083/Intro/1442841940.png)" alt="Sonarqube和jacoco搭建代码检查" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java/">Java</a></p>
+                            <p class="item-title"><a href="/2016/12/07/Java/Sonarqube和jacoco搭建代码检查/" class="title">Sonarqube和jacoco搭建代码检查</a></p>
+                            <p class="item-date"><time datetime="2016-12-07T09:56:03.000Z" itemprop="datePublished">Dec 7 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/12/01/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://thumbs.dreamstime.com/t/tomcat-1930481.jpg)" alt="tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/tomcat/">tomcat</a></p>
+                            <p class="item-title"><a href="/2016/12/01/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/" class="title">tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0</a></p>
+                            <p class="item-date"><time datetime="2016-12-01T09:44:04.000Z" itemprop="datePublished">Dec 1 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/11/14/日志分析平台/graylog 升级2.1 集中日志解决方案/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://www.graylog.org/assets/overview_dashboard-3817012f923d4a00e9bde1c0547796319cf0396149464f434cfc2ae83a9da826.png)" alt="graylog 升级2.1 集中日志解决方案" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a></p>
+                            <p class="item-title"><a href="/2016/11/14/日志分析平台/graylog 升级2.1 集中日志解决方案/" class="title">graylog 升级2.1 集中日志解决方案</a></p>
+                            <p class="item-date"><time datetime="2016-11-14T09:56:03.000Z" itemprop="datePublished">Nov 14 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/11/13/日志分析平台/Graylog—日志分析平台完美代替Elasticsearch/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://www.graylog.org/assets/logo-graylog-6ccfb3d4f7bfd0795c80bb616719f7d2f5151283f25c62aa0a6222994af2abeb.png)" alt="Graylog——日志分析平台完美代替Elasticsearch" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a></p>
+                            <p class="item-title"><a href="/2016/11/13/日志分析平台/Graylog—日志分析平台完美代替Elasticsearch/" class="title">Graylog——日志分析平台完美代替Elasticsearch</a></p>
+                            <p class="item-date"><time datetime="2016-11-13T09:56:03.000Z" itemprop="datePublished">Nov 13 2016</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">categories</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud-computing/">Cloud computing</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/automation/">automation</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/monitoring/">monitoring</a><span class="category-list-count">16</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tomcat/">tomcat</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/日志分析平台/">日志分析平台</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/测试/">测试</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/虚拟化/">虚拟化</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维安全/">运维安全</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维笔记/">运维笔记</a><span class="category-list-count">6</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">tag cloud</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/ACL/" style="font-size: 12.5px;">ACL</a> <a href="/tags/About-me/" style="font-size: 10px;">About me</a> <a href="/tags/CDN/" style="font-size: 10px;">CDN</a> <a href="/tags/Centos7-1/" style="font-size: 10px;">Centos7.1</a> <a href="/tags/DNS/" style="font-size: 15px;">DNS</a> <a href="/tags/Exsi/" style="font-size: 10px;">Exsi</a> <a href="/tags/Ghost/" style="font-size: 17.5px;">Ghost</a> <a href="/tags/Grunt/" style="font-size: 10px;">Grunt</a> <a href="/tags/Hadoop/" style="font-size: 10px;">Hadoop</a> <a href="/tags/IDC监控/" style="font-size: 10px;">IDC监控</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Jenkins/" style="font-size: 12.5px;">Jenkins</a> <a href="/tags/KVM/" style="font-size: 17.5px;">KVM</a> <a href="/tags/LAMP/" style="font-size: 12.5px;">LAMP</a> <a href="/tags/LVM/" style="font-size: 10px;">LVM</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Smokeping/" style="font-size: 10px;">Smokeping</a> <a href="/tags/Supervisor/" style="font-size: 10px;">Supervisor</a> <a href="/tags/TOTP/" style="font-size: 10px;">TOTP</a> <a href="/tags/Vmware/" style="font-size: 10px;">Vmware</a> <a href="/tags/Vsftpd/" style="font-size: 12.5px;">Vsftpd</a> <a href="/tags/cacti/" style="font-size: 10px;">cacti</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/http/" style="font-size: 10px;">http</a> <a href="/tags/node-js/" style="font-size: 15px;">node.js</a> <a href="/tags/npm/" style="font-size: 10px;">npm</a> <a href="/tags/pm2/" style="font-size: 10px;">pm2</a> <a href="/tags/wkhtmltox/" style="font-size: 10px;">wkhtmltox</a> <a href="/tags/zabbix/" style="font-size: 20px;">zabbix</a> <a href="/tags/zimbra/" style="font-size: 10px;">zimbra</a> <a href="/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/tags/旅行日记/" style="font-size: 10px;">旅行日记</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">links</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://www.unixhot.com/">运维社区</a>
+                    </li>
+                
+                    <li>
+                        <a href="http://elasticsearch.cn/topic/">elk技术论坛</a>
+                    </li>
+                
+                    <li>
+                        <a href="http://openskill.cn/">开源技术社区</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2016 yangc<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'http://blog.yangcvo.me/2015/12/28/DNS/DNS服务器主从复制搭建/';
+        
+        this.page.identifier = 'DNS/DNS服务器主从复制搭建';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'blog-yangcvo-me' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

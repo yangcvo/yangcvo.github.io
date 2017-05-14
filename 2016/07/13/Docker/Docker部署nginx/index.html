@@ -1,0 +1,54 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Docker部署nginx · Cheng yang's Blog</title><meta name="description" content="Docker部署nginx - yangc"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://blog.yangcvo.me/atom.xml" title="Cheng yang's Blog"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/yangcvo" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/yangcvo" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="http://blog.yangcvo.me/2014/05/04/%E4%B8%AA%E4%BA%BA%E8%AE%B0%E5%BD%95/About-me/" target="_blank" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Docker部署nginx</h1><div class="post-info">2016年7月13日</div><div class="post-content"><p>  我14年就开始接触了docker，因为那时候因为docker还不是很成熟，在测试环境上面使用也没有大大推出，经过这一两年docker容器也很受我们运维人员喜爱特别好的利器。</p>
+<p> 现在普遍都会在测试环境使用甚至在生产环境也用docker使用集群，之前搞过CDN云加速，环境部署也有在centos7.1最新系统环境部署。因为docker容器要求也比较高。</p>
+<p> 可以在我前面docker简介和docker安装都有提到这一点。</p>
+<h3 id="1、镜像环境说明"><a href="#1、镜像环境说明" class="headerlink" title="1、镜像环境说明"></a>1、镜像环境说明</h3><p> 1.1、镜像版本说明</p>
+<p>   操作系统:<code>Centos 6.5 64 位</code></p>
+<p>docker 运行环境(CentOS Linux release 7.2.1511 (Core)  64 位 | docker)</p>
+<p> 镜像版本 V1.0 软件明细: <code>docker-1.10.3</code> </p>
+<p>1.2、镜像安装说明</p>
+<p>1.2.1、镜像环境里相应软件的安装,通过脚本实现安装。在/root 下面的 install.sh</p>
+<p>1.2.2、在镜像环境中,/root/install.sh 是安装镜像环境的脚本,您可以在 Centos<br>6.5 64 位系统中自行采用此脚本安装,安装后的环境跟镜像里初始化的环境一致。值 得注意的是,如果采用此脚本安装镜像环境,需要 <code>chmod 777 -R install.sh</code> 赋予 777 安装权限。</p>
+<p>1.2.3、在镜像环境中,/root 是安装环境的主目录,镜像中的环境是在此目录下安装 的。</p>
+<h3 id="2、软件目录及配置列表"><a href="#2、软件目录及配置列表" class="headerlink" title="2、软件目录及配置列表"></a>2、软件目录及配置列表</h3><p>这里我yum安装的所以目录是默认的：</p>
+<p>配置目录 : </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/etc/sysconfig/docker</span><br><span class="line">/etc/sysconfig/docker-storage </span><br><span class="line">/etc/sysconfig/docker-network</span><br></pre></td></tr></table></figure>
+<h3 id="3、软件操作命令汇总"><a href="#3、软件操作命令汇总" class="headerlink" title="3、软件操作命令汇总"></a>3、软件操作命令汇总</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">这里的命令其实跟我们平常linux下面命令差不多：</span><br><span class="line">service docker status  查看docker现在运行的状态</span><br><span class="line">service docker start   启动docker</span><br><span class="line">chkconfig docker on    设置开机自启动docker</span><br><span class="line">注意：正在将请求转发到“systemctl <span class="built_in">enable</span> docker.service”。</span><br></pre></td></tr></table></figure>
+<h3 id="4、关于卸载"><a href="#4、关于卸载" class="headerlink" title="4、关于卸载"></a>4、关于卸载</h3><p>如何卸载镜像环境中安装的软件,可以参考如下命令完成卸载:</p>
+<pre><code>yum remove docker-io
+</code></pre><p>讲完现在基本的开始部署nginx.</p>
+<p> 1.镜像的列出: <code>docker images</code></p>
+<p> <img src="http://7xrthw.com1.z0.glb.clouddn.com/docker-nginx1.png" alt=""></p>
+<p> 2.镜像搜索: 命令：<code>docker search</code><br>  这里可以搜索出nginx的镜像:</p>
+<p> <img src="http://7xrthw.com1.z0.glb.clouddn.com/docker-nginx2.png" alt=""></p>
+<p> 3.镜像获取从 dockerhub 上面获取 nginx 的镜像这里</p>
+<p> 这里已经获取到容器，默认的就已经安装好nginx。</p>
+<p>  <img src="http://7xrthw.com1.z0.glb.clouddn.com/docker-nginx3.png" alt=""></p>
+<p> 4.启动容器<br>  启动 nginx 容器，这里启动命令之前也有提到过：<code>docker run</code> </p>
+<p> <img src="http://7xrthw.com1.z0.glb.clouddn.com/docker-nginx4.png" alt=""></p>
+<p> 5.查看容器状态: <code>docker ps</code><br>   <img src="http://7xrthw.com1.z0.glb.clouddn.com/docker-nginx5.png" alt=""></p>
+<p> 6.结束容器: <code>docker kill</code><br> 将 ps 列出的 container id 传入 docker kill 中即可:</p>
+<p> <img src="http://7xrthw.com1.z0.glb.clouddn.com/docker-nginx6.png" alt=""></p>
+<p> 这里有人说这里启动以后端口如何映射到本地端口。</p>
+<p> 7.容器端口映射<br> 可以将容器的端口映射到主机上,比如 80-&gt; 80 端口,这样可以直接被外网访问到:</p>
+<p> <img src="http://7xrthw.com1.z0.glb.clouddn.com/docker-nginx7.png" alt=""></p>
+<div class="tip"><br>这里还有点需要注意：就是如果出现docker端口映射错误<br><br>COMMAND_FAILED: ‘/sbin/iptables -t nat -A DOCKER -p tcp -d 0/0 –dport 8111 -j DNAT –to-destination 172.17.0.6:8111 ! -i docker0’ failed: iptables: No chain/target/match by that name.<br></div>
+
+<p>解决方法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pkill docker 关闭docker</span><br><span class="line"></span><br><span class="line">iptables -t nat -F 清除防火墙规则-如果没有写可以不用。</span><br><span class="line">ifconfig docker0 down  docker 网卡关闭</span><br><span class="line">brctl delbr docker0</span><br><span class="line"></span><br><span class="line">重启docker后解决</span><br></pre></td></tr></table></figure>
+<p> 8.此时访问服务器的 ip,即可看到 nginx 的页面。</p>
+<p> 具体配置就不多说了。上面也说清楚，就是你要跑什么服务，配置可以用脚本docker后台运行。</p>
+<p>  <img src="http://7xrthw.com1.z0.glb.clouddn.com/docker-nginx8.png" alt=""></p>
+<p>这里我写了几篇入门篇：</p>
+<p>Docker应用: <a href="http://blog.yangcvo.me/2016/07/12/Docker应用/">docker应用</a></p>
+<p>Docker安装篇: <a href="http://blog.yangcvo.me/2016/07/12/Docker安装篇/">Docker安装篇</a></p>
+</div></article></div></section><footer><div class="paginator"><a href="/2016/07/14/Docker/Docker总结学习积累经验/" class="prev">PREV</a><a href="/2016/07/13/Docker/Docker网络功能/" class="next">NEXT</a></div><div data-thread-key="2016/07/13/Docker/Docker部署nginx/" data-title="Docker部署nginx" data-url="http://blog.yangcvo.me/2016/07/13/Docker/Docker部署nginx/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"true"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+
+</script><div class="copyright"><p>© 2014 - 2016 <a href="http://blog.yangcvo.me">yangc</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yangcvo" target="_blank">Github-yangcvo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>

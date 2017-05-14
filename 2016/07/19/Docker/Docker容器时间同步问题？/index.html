@@ -1,0 +1,31 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Docker容器时间同步问题？ · Cheng yang's Blog</title><meta name="description" content="Docker容器时间同步问题？ - yangc"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://blog.yangcvo.me/atom.xml" title="Cheng yang's Blog"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/yangcvo" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/yangcvo" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="http://blog.yangcvo.me/2014/05/04/%E4%B8%AA%E4%BA%BA%E8%AE%B0%E5%BD%95/About-me/" target="_blank" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">Docker容器时间同步问题？</h1><div class="post-info">2016年7月19日</div><div class="post-content"><p>在使用了Docker以后，大家可能遇到的一个问题就是Docker容器的时间和宿主机时间不同步。造成这个问题的主要原因是宿主机设置了时区，而Docker容器并且设置，导致两者相差8小时。</p>
+<p>问题1： Docker中mysql时间相差八小时，java log的时间是不对的，尝试过在DockerFile中添加:</p>
+<pre><code>RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai/etc/localtime
+RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+</code></pre><p>参考：<a href="http://dockone.io/question/362" target="_blank" rel="external">Docker 运行的容器时间不对，怎么解决!</a></p>
+<pre><code>ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime &amp;&amp;      echo $TZ &gt; /etc/timezone
+</code></pre><p>参考：<a href="http://dockone.io/question/505" target="_blank" rel="external">Docker容器时间同步问题</a></p>
+<p>修改完成以后发现还是有问题。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@fb2ae4dce587 logs]# hwclock</span><br><span class="line">hwclock: Cannot access the Hardware Clock via any known method.</span><br><span class="line">hwclock: Use the --debug option to see the details of our search for an access method.</span><br></pre></td></tr></table></figure>
+<p>我参考这篇文章做了修改。</p>
+<p><a href="http://linux.it.net.cn/e/distro/Debian/2015/1010/17757.html" target="_blank" rel="external">调整时间</a></p>
+<ul>
+<li>把时区设置加入到Dockerfile中</li>
+</ul>
+<p>这里我修改：cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Ubuntu</span><br><span class="line"></span><br><span class="line">RUN echo &quot;Asia/shanghai&quot; &gt; /etc/timezone;</span><br><span class="line"></span><br><span class="line"># CentOS</span><br><span class="line"></span><br><span class="line">RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</span><br></pre></td></tr></table></figure>
+<p>系统时间是对了，可是系统的编码好像不正确。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vim /etc/sysconfig/clock</span><br><span class="line">ZONE=&quot;Asia/Shanghai&quot;</span><br></pre></td></tr></table></figure>
+<p>跑的服务日志上面在查看 时间已经对应上了。</p>
+</div></article></div></section><footer><div class="paginator"><a href="/2016/07/19/运维笔记/使用shell脚本实现ssh登录报警/" class="prev">上一篇</a><a href="/2016/07/18/Docker/ Docker虚拟容器ssh登录问题解决方法/" class="next">下一篇</a></div><div data-thread-key="2016/07/19/Docker/Docker容器时间同步问题？/" data-title="Docker容器时间同步问题？" data-url="http://blog.yangcvo.me/2016/07/19/Docker/Docker容器时间同步问题？/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"true"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+
+</script><div class="copyright"><p>© 2014 - 2016 <a href="http://blog.yangcvo.me">yangc</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yangcvo" target="_blank">Github-yangcvo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>

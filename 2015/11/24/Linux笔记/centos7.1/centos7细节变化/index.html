@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          centos7细节变化 - yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/2015/11/24/Linux笔记/centos7.1/centos7细节变化/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Cheng yang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Centos7.1" title="Centos7.1">Centos7.1</a>
+                        
+                    </div>
+                    <h1>centos7细节变化</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by yangc on
+                        2015-11-24
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="centos7-修改主机名"><a href="#centos7-修改主机名" class="headerlink" title="centos7 修改主机名"></a>centos7 修改主机名</h3><p>例如，要永久修改主机名，你可以修改静态主机名：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ sudo hostnamectl --static <span class="built_in">set</span>-hostname &lt;host-name&gt;</div><div class="line">要同时修改所有三个主机名：静态、瞬态和灵活主机名：</div><div class="line">$ sudo hostnamectl <span class="built_in">set</span>-hostname &lt;host-name&gt;</div></pre></td></tr></table></figure>
+<p>注意，你不必重启机器以激活永久主机名修改。上面的命令会立即修改内核主机名。注销并重新登入后在命令行提示来观察新的静态主机名。</p>
+<h3 id="Centos7故障"><a href="#Centos7故障" class="headerlink" title="Centos7故障"></a>Centos7故障</h3><h3 id="Centos7最小化服务器版本使用“ifconfig”命令提示没有"><a href="#Centos7最小化服务器版本使用“ifconfig”命令提示没有" class="headerlink" title="Centos7最小化服务器版本使用“ifconfig”命令提示没有"></a><code>Centos7最小化服务器版本使用“ifconfig”命令提示没有</code></h3><p>查看网卡细节，输入以下命令：</p>
+<ul>
+<li><p>ip addr<br>找不到ifconfig，net-tools包提供了ifconfig命令。因此，让我们安装net-tools包来使用ifconfig命令。</p>
+</li>
+<li><p>yum install net-tools<br>就可以实现了。</p>
+</li>
+</ul>
+<p>如果安装还是找不到的话 修复下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">修改vim /etc/profile</div><div class="line">在最后面一行添加这一条命令 <span class="built_in">export</span> PATH=/sbin:<span class="variable">$PATH</span></div><div class="line">修改用户主目录下面隐藏文件.bashrc</div><div class="line">修改只对该用户有效</div><div class="line">查看用户下面的隐藏的文件 修改.bashrc 修改以后 保存注销登陆。</div><div class="line">用<span class="built_in">echo</span> <span class="variable">$PATH</span> 查看</div><div class="line"><span class="built_in">export</span> PATH=/sbin:<span class="variable">$PATH</span>修改生效了。</div></pre></td></tr></table></figure>
+<h3 id="CentOS7默认的防火墙不是iptables-而是firewalle-找不到iptables-config文件"><a href="#CentOS7默认的防火墙不是iptables-而是firewalle-找不到iptables-config文件" class="headerlink" title="CentOS7默认的防火墙不是iptables,而是firewalle.找不到iptables config文件"></a><code>CentOS7默认的防火墙不是iptables,而是firewalle.找不到iptables config文件</code></h3><p>CentOS 7.0默认使用的是firewall作为防火墙，这里改为iptables防火墙。<br>firewall：</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">systemctl <span class="literal">start</span> firewalld.service<span class="comment">#启动firewall</span></div><div class="line">systemctl <span class="literal">stop</span> firewalld.service<span class="comment">#停止firewall</span></div></pre></td></tr></table></figure>
+<p>安装iptable iptable-service</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#先检查是否安装了iptables service iptables status </span></div><div class="line"><span class="comment">#安装iptables yum install -y iptables </span></div><div class="line"><span class="comment">#升级iptables yum update iptables</span></div><div class="line"><span class="comment">#安装iptables-services yum install iptables-services</span></div></pre></td></tr></table></figure>
+<p>设置现有规则：</p>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#查看iptables现有规则</span></div><div class="line">iptables -L -n</div><div class="line"><span class="meta">#先允许所有,不然有可能会杯具</span></div><div class="line">iptables -P INPUT ACCEPT</div><div class="line"><span class="meta">#清空所有默认规则</span></div><div class="line">iptables -F</div><div class="line"><span class="meta">#清空所有自定义规则</span></div><div class="line">iptables -X</div><div class="line"><span class="meta">#所有计数器归0</span></div><div class="line">iptables -Z</div><div class="line"><span class="meta">#允许来自于lo接口的数据包(本地访问)</span></div><div class="line">iptables -A INPUT -i lo -j ACCEPT</div><div class="line"><span class="meta">#开放22端口</span></div><div class="line">iptables -A INPUT -p tcp --dport <span class="number">22</span> -j ACCEPT</div><div class="line"><span class="meta">#开放21端口(FTP)</span></div><div class="line">iptables -A INPUT -p tcp --dport <span class="number">21</span> -j ACCEPT</div><div class="line"><span class="meta">#开放80端口(HTTP)</span></div><div class="line">iptables -A INPUT -p tcp --dport <span class="number">80</span> -j ACCEPT</div><div class="line"><span class="meta">#开放443端口(HTTPS)</span></div><div class="line">iptables -A INPUT -p tcp --dport <span class="number">443</span> -j ACCEPT</div><div class="line"><span class="meta">#允许ping</span></div><div class="line">iptables -A INPUT -p icmp --icmp-type <span class="number">8</span> -j ACCEPT</div><div class="line"><span class="meta">#允许接受本机请求之后的返回数据 RELATED,是为FTP设置的</span></div><div class="line">iptables -A INPUT -m state --state  RELATED,ESTABLISHED -j ACCEPT</div><div class="line"><span class="meta">#其他入站一律丢弃</span></div><div class="line">iptables -P INPUT DROP</div><div class="line"><span class="meta">#所有出站一律绿灯</span></div><div class="line">iptables -P OUTPUT ACCEPT</div><div class="line"><span class="meta">#所有转发一律丢弃</span></div><div class="line">iptables -P FORWARD DROP</div></pre></td></tr></table></figure>
+<p>其他规则：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#如果要添加内网ip信任（接受其所有TCP请求） iptables -A INPUT -p tcp -s 45.96.174.68 -j ACCEPT </span></div><div class="line"><span class="comment">#过滤所有非以上规则的请求 iptables -P INPUT DROP </span></div><div class="line"><span class="comment">#要封停一个IP，使用下面这条命令： iptables -I INPUT -s ***.***.***.*** -j DROP </span></div><div class="line"><span class="comment">#要解封一个IP，使用下面这条命令: iptables -D INPUT -s ***.***.***.*** -j DROP</span></div></pre></td></tr></table></figure>
+<p>保存规则设定</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#保存上述规则</span></div><div class="line">service iptables save</div></pre></td></tr></table></figure>
+<p>centos设置iptables配置规则脚本：</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">#!/bin/<span class="keyword">sh</span> iptables -P <span class="keyword">INPUT</span> ACCEPT </div><div class="line">iptables -F </div><div class="line">iptables -X </div><div class="line">iptables -Z </div><div class="line">iptables -A </div><div class="line"><span class="keyword">INPUT</span> -i lo -j ACCEPT </div><div class="line">iptables -A <span class="keyword">INPUT</span> -p tcp --dport 22 -j ACCEPT </div><div class="line">iptables -A <span class="keyword">INPUT</span> -p tcp --dport 21 -j ACCEPT </div><div class="line">iptables -A <span class="keyword">INPUT</span> -p tcp --dport 80 -j ACCEPT </div><div class="line">iptables -A <span class="keyword">INPUT</span> -p tcp --dport 443 -j ACCEPT </div><div class="line">iptables -A <span class="keyword">INPUT</span> -p icmp --icmp-<span class="keyword">type</span> 8 -j ACCEPT </div><div class="line">iptables -A <span class="keyword">INPUT</span> -<span class="keyword">m</span> state --state RELATED,ESTABLISHED -j ACCEPT iptables -P <span class="keyword">INPUT</span> <span class="keyword">DROP</span> iptables -P OUTPUT ACCEPT </div><div class="line">iptables -P FORWARD <span class="keyword">DROP</span> service iptables <span class="keyword">save</span> systemctl restart iptables.service</div></pre></td></tr></table></figure>
+<h3 id="解决Centos7-1各种yum报错Error这里我更换源"><a href="#解决Centos7-1各种yum报错Error这里我更换源" class="headerlink" title="解决Centos7.1各种yum报错Error这里我更换源"></a><code>解决Centos7.1各种yum报错Error这里我更换源</code></h3><p>第一种方法：<br>执行yum list就开始报错：</p>
+<p>1.<code>Error: Cannot retrieve metalink for repository: epel. Please verify its path and try again</code></p>
+<p>在网上查了查，解决办法是编辑<code>/etc/yum.repos.d/epel.repo</code>，把基础的恢复，镜像的地址注释掉</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="selector-id">#baseurl</span></div><div class="line">mirrorlist</div></pre></td></tr></table></figure>
+<p>改成</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">baseurl</span></div><div class="line"><span class="comment">#mirrorlist</span></div></pre></td></tr></table></figure>
+<p>这里如果还是不行，可以使用我这里贴出的源码文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># CentOS-Base.repo</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># The mirror system uses the connecting IP address of the client and the</span></div><div class="line"><span class="comment"># update status of each mirror to pick mirrors that are updated to and</span></div><div class="line"><span class="comment"># geographically close to the client.  You should use this for CentOS updates</span></div><div class="line"><span class="comment"># unless you are manually picking other mirrors.</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># If the mirrorlist= does not work for you, as a fall back you can try the</span></div><div class="line"><span class="comment"># remarked out baseurl= line instead.</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment">#</span></div><div class="line"></div><div class="line">[base]</div><div class="line">name=CentOS-<span class="variable">$releasever</span> - Base - mirrors.aliyun.com</div><div class="line">failovermethod=priority</div><div class="line">baseurl=http://mirrors.aliyun.com/centos/<span class="variable">$releasever</span>/os/<span class="variable">$basearch</span>/</div><div class="line">        http://mirrors.aliyuncs.com/centos/<span class="variable">$releasever</span>/os/<span class="variable">$basearch</span>/</div><div class="line"><span class="comment">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=os</span></div><div class="line">gpgcheck=1</div><div class="line">gpgkey=http://mirrors.aliyun.com/centos/RPM-GPG-KEY-CentOS-7</div><div class="line"></div><div class="line"><span class="comment">#released updates</span></div><div class="line">[updates]</div><div class="line">name=CentOS-<span class="variable">$releasever</span> - Updates - mirrors.aliyun.com</div><div class="line">failovermethod=priority</div><div class="line">baseurl=http://mirrors.aliyun.com/centos/<span class="variable">$releasever</span>/updates/<span class="variable">$basearch</span>/</div><div class="line">        http://mirrors.aliyuncs.com/centos/<span class="variable">$releasever</span>/updates/<span class="variable">$basearch</span>/</div><div class="line"><span class="comment">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=updates</span></div><div class="line">gpgcheck=1</div><div class="line">gpgkey=http://mirrors.aliyun.com/centos/RPM-GPG-KEY-CentOS-7</div><div class="line"></div><div class="line"><span class="comment">#additional packages that may be useful</span></div><div class="line">[extras]</div><div class="line">name=CentOS-<span class="variable">$releasever</span> - Extras - mirrors.aliyun.com</div><div class="line">failovermethod=priority</div><div class="line">baseurl=http://mirrors.aliyun.com/centos/<span class="variable">$releasever</span>/extras/<span class="variable">$basearch</span>/</div><div class="line">        http://mirrors.aliyuncs.com/centos/<span class="variable">$releasever</span>/extras/<span class="variable">$basearch</span>/</div><div class="line"><span class="comment">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=extras</span></div><div class="line">gpgcheck=1</div><div class="line">gpgkey=http://mirrors.aliyun.com/centos/RPM-GPG-KEY-CentOS-7</div><div class="line"></div><div class="line"><span class="comment">#additional packages that extend functionality of existing packages</span></div><div class="line">[centosplus]</div><div class="line">name=CentOS-<span class="variable">$releasever</span> - Plus - mirrors.aliyun.com</div><div class="line">failovermethod=priority</div><div class="line">baseurl=http://mirrors.aliyun.com/centos/<span class="variable">$releasever</span>/centosplus/<span class="variable">$basearch</span>/</div><div class="line">        http://mirrors.aliyuncs.com/centos/<span class="variable">$releasever</span>/centosplus/<span class="variable">$basearch</span>/</div><div class="line"><span class="comment">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=centosplus</span></div><div class="line">gpgcheck=1</div><div class="line">enabled=0</div><div class="line">gpgkey=http://mirrors.aliyun.com/centos/RPM-GPG-KEY-CentOS-7</div><div class="line"></div><div class="line"><span class="comment">#contrib - packages by Centos Users</span></div><div class="line">[contrib]</div><div class="line">name=CentOS-<span class="variable">$releasever</span> - Contrib - mirrors.aliyun.com</div><div class="line">failovermethod=priority</div><div class="line">baseurl=http://mirrors.aliyun.com/centos/<span class="variable">$releasever</span>/contrib/<span class="variable">$basearch</span>/</div><div class="line">        http://mirrors.aliyuncs.com/centos/<span class="variable">$releasever</span>/contrib/<span class="variable">$basearch</span>/</div><div class="line"><span class="comment">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=contrib</span></div><div class="line">gpgcheck=1</div><div class="line">enabled=0</div><div class="line">gpgkey=http://mirrors.aliyun.com/centos/RPM-GPG-KEY-CentOS-7</div></pre></td></tr></table></figure>
+<p>第二套yum源文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">[base]</div><div class="line">name=CentOS-<span class="variable">$releasever</span> - Base</div><div class="line">mirrorlist=http://mirrorlist.centos.org/?release=<span class="variable">$releasever</span>&amp;arch=<span class="variable">$basearch</span>&amp;repo=os&amp;infra=<span class="variable">$infra</span></div><div class="line"><span class="comment">#baseurl=http://mirror.centos.org/centos/$releasever/os/$basearch/</span></div><div class="line">gpgcheck=1</div><div class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7</div><div class="line"></div><div class="line"><span class="comment">#released updates </span></div><div class="line">[updates]</div><div class="line">name=CentOS-<span class="variable">$releasever</span> - Updates</div><div class="line">mirrorlist=http://mirrorlist.centos.org/?release=<span class="variable">$releasever</span>&amp;arch=<span class="variable">$basearch</span>&amp;repo=updates&amp;infra=<span class="variable">$infra</span></div><div class="line"><span class="comment">#baseurl=http://mirror.centos.org/centos/$releasever/updates/$basearch/</span></div><div class="line">gpgcheck=1</div><div class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7</div><div class="line"></div><div class="line"><span class="comment">#additional packages that may be useful</span></div><div class="line">[extras]</div><div class="line">name=CentOS-<span class="variable">$releasever</span> - Extras</div><div class="line">mirrorlist=http://mirrorlist.centos.org/?release=<span class="variable">$releasever</span>&amp;arch=<span class="variable">$basearch</span>&amp;repo=extras&amp;infra=<span class="variable">$infra</span></div><div class="line"><span class="comment">#baseurl=http://mirror.centos.org/centos/$releasever/extras/$basearch/</span></div><div class="line">gpgcheck=1</div><div class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7</div><div class="line"></div><div class="line"><span class="comment">#additional packages that extend functionality of existing packages</span></div><div class="line">[centosplus]</div><div class="line">name=CentOS-<span class="variable">$releasever</span> - Plus</div><div class="line">mirrorlist=http://mirrorlist.centos.org/?release=<span class="variable">$releasever</span>&amp;arch=<span class="variable">$basearch</span>&amp;repo=centosplus&amp;infra=<span class="variable">$infra</span></div><div class="line"><span class="comment">#baseurl=http://mirror.centos.org/centos/$releasever/centosplus/$basearch/</span></div><div class="line">gpgcheck=1</div><div class="line">enabled=0</div><div class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7</div></pre></td></tr></table></figure>
+<p>这里我弄成文件了，直接导入试试下就可以了。</p>
+<p>下载：</p>
+<p><a href="http://oak0aohum.bkt.clouddn.com/CentOS-Base.repo" target="_blank" rel="external">CentOS-Base.repo1</a></p>
+<p><a href="http://oak0aohum.bkt.clouddn.com/Centos7-CentOS-Base.repo" target="_blank" rel="external">CentOS-Base.repo2</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2015/11/24/Node.js/Node.js-Grunt工具搭建后台管理实践/" data-toggle="tooltip" data-placement="top" title="Node.js+Grunt工具搭建后台管理实践">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2015/11/21/tomcat/搭建配置tomcat环境/" data-toggle="tooltip" data-placement="top" title="搭建配置tomcat环境">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Centos7.1" title="Centos7.1">Centos7.1</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yangcvo-me";
+    var disqus_identifier = "http://blog.yangcvo.me/2015/11/24/Linux笔记/centos7.1/centos7细节变化/";
+    var disqus_url = "http://blog.yangcvo.me/2015/11/24/Linux笔记/centos7.1/centos7细节变化/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yangcvox">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/kaijun-chen-42089354">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Cheng yang&#39;s Blog 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

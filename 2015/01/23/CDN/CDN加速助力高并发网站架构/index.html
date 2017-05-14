@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> CDN加速助力高并发网站架构 · Cheng yang's Blog</title><meta name="description" content="CDN加速助力高并发网站架构 - yangc"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://blog.yangcvo.me/atom.xml" title="Cheng yang's Blog"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/yangcvo" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/yangcvo" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="http://blog.yangcvo.me/2014/05/04/%E4%B8%AA%E4%BA%BA%E8%AE%B0%E5%BD%95/About-me/" target="_blank" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">CDN加速助力高并发网站架构</h1><div class="post-info">2015年1月23日</div><div class="post-content"><h1 id="CDN加速助力高并发网站架构"><a href="#CDN加速助力高并发网站架构" class="headerlink" title="CDN加速助力高并发网站架构"></a>CDN加速助力高并发网站架构</h1><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/CDN1.png" alt=""></p>
+<p>###架构说明：</p>
+<p>用户通过互联网访问网站需要经过的节点如下：<br>一、要通过域名解析<br>在域名解析处有两种方式<br>1、自建，自建需要在域名解析前架设防火墙。</p>
+<p>2、使用现有的域名解析提供商，需要设置成CNAME,其实就是另一个域名解析，进行跳转。在刚开始的时候建议先用CNAME方式，部署不影响用户现有方式，容易被用户接受，而且不用暂时不用担心第一级dns的问题。</p>
+<p>总之，如果要建设idc加速，防止ddos攻击之类的服务，域名解析服务一定要提供，不管是直接提供dns服务还是间接通过cname转发。<br>里面的主要技术，是通过用户请求的ip来得到离用户最近的服务器的地址，并通过它来提供服务。如果要进行安全防护，比如sql注入检查，js跨站脚本等可以在这一层进行处理。</p>
+<p>###二、提供虚拟机<br>虚拟机现在主流有两种方式，一是虚拟主机，主要的软件有开源的openvz，商用的Virtuozzo等,另一类是虚拟机如vmware、xen、kvm等，这类提供虚拟操作系统，可以是异构的。他们两个的对比主要是虚拟主机的利用率比较高，可以一台主流pcserver可以虚拟几十个到上百个虚拟主机，但只能是同一类操作系统。虚拟机的运行效率相对低很多，一般主流pcserver也就十几个左右。他的有点是异构操作系统，备份管理比较方便。当然在建设的时候可以先用虚拟机，然后在虚拟机上建设虚拟主机。</p>
+<p>如果要提供对外服务，ip地址是比不可少的，对于一个用户来说，一个域名需要几个点，就需要几个ip。</p>
+<p>####三、LVS集群<br>由于要提供加速等服务，用户直接使用的openvz虚拟主机的性能和效率一般不大，又要提供高可用性，所以需要通过虚拟主机访问lvs集群的数据，通过lvs集群来提供服务。</p>
+<p>####四、Squid<br>Squid是缓存，尤其是对静态页面和文件有很好加速效果。sina、sohu等都用它来做缓存加速。</p>
+<p>####五、Nginx​<br>Nginx主要提供反向代理功能，当通过修改或者更新了页面，由nginx来负责更新缓存。还有就是动态网站，也是由nginx来提供服务。</p>
+<p>Nginx和sqid都可以提供静态缓存功能，两者还要结合起来发挥最大效果。如果要进行安全防护，比如sql注入检查，js跨站脚本等可以在这一层进行处理。<br>防DDOS</p>
+<p>####防ddos的主要内容由两个方面：<br>一、带宽这个是恨重要的地方，据我现在从网上得到的资料，现在主流的idc机房一般最大提供独立百兆端口，而且价格不菲。在这种情况下可以机柜租用。这个还需要调研是否可以提供更大的带宽。</p>
+<p>##二、防火墙设备<br>需要在接入口部署防火墙，需要根据idc接口端口来确定容量，有的idc机房也提供此服务。</p>
+<p>三、流量牵引设备<br>这个一般idc机房会提供此服务，这个根据需要是否需要购买。</p>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/04/01/使用AIDE做Linux高级入侵检测文件监控/" class="prev">PREV</a><a href="/2014/12/29/saltstack/saltstack安装部署/" class="next">NEXT</a></div><div data-thread-key="2015/01/23/CDN/CDN加速助力高并发网站架构/" data-title="CDN加速助力高并发网站架构" data-url="http://blog.yangcvo.me/2015/01/23/CDN/CDN加速助力高并发网站架构/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"true"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+
+</script><div class="copyright"><p>© 2014 - 2016 <a href="http://blog.yangcvo.me">yangc</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yangcvo" target="_blank">Github-yangcvo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>

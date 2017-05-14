@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Mac+linux安装Node.Js - yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/2016/05/16/Node.js/安装Node-Js/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Node.js" title="Node.js">Node.js</a>
+                        
+                    </div>
+                    <h1>Mac+linux安装Node.Js</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by yangc on
+                        2016-05-16
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="Linux安装"><a href="#Linux安装" class="headerlink" title="Linux安装:"></a>Linux安装:</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ wget http://nodejs.org/dist/v0.10.39/node-v0.10.39-linux-x64.tar.gz</div><div class="line">$ tar zxf node-v0.10.39-linux-x64.tar.gz &amp;&amp; <span class="built_in">cd</span> node-v0.10.39-linux-x64</div><div class="line">$ cp bin/* /usr/bin <span class="comment"># 拷贝执行目录，相当于去设置一个环境变量到用户的bin目录</span></div></pre></td></tr></table></figure>
+<p>如果出现这个报错：<br>It is showing the following error</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">npm cannot be installed without node.js.</div><div class="line">Install node first, and <span class="keyword">then</span> try again.</div><div class="line"></div><div class="line">Maybe node is installed, but not <span class="keyword">in</span> the PATH?</div><div class="line">Note that running as sudo can change envs.</div><div class="line"></div><div class="line">PATH=/home/myuser/<span class="built_in">local</span>/bin:/usr/lib/jvm/java-7-oracle/bin:/usr/lib/jvm/java-7-oracle/bin:/usr/<span class="built_in">local</span>/sbin:/usr/<span class="built_in">local</span>/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/<span class="built_in">local</span>/games</div></pre></td></tr></table></figure>
+<p>那么重新下载编译安装：<br>Download and install:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">yum -y install gcc make gcc-c++ openssl-devel wget</div><div class="line">wget http://nodejs.org/dist/v0.10.26/node-v0.10.26.tar.gz</div><div class="line">tar -zvxf node-v0.10.26.tar.gz</div><div class="line">编译及安装&amp;Compile and install:</div><div class="line">make &amp;&amp; make install</div><div class="line">验证是否安装配置成功&amp;Verify that the installation configuration is successful:</div><div class="line">node -v</div></pre></td></tr></table></figure>
+<p>There is no installation package, or there is a problem, you can node.js github download:<a href="https://github.com/yangcvo/node.js.git" target="_blank" rel="external">https://github.com/yangcvo/node.js.git</a></p>
+<p>由于centos6 默认gcc4.4 而node v4需要gcc 4.8, 因此通过安装devtools-2来解决（已经绑定gcc 4.8)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">wget http://people.centos.org/tru/devtools-2/devtools-2.repo -O /etc/yum.repos.d/devtools-2.repo</div><div class="line">yum install -y devtoolset-2-gcc devtoolset-2-binutils devtoolset-2-gcc-c++</div><div class="line">scl <span class="built_in">enable</span> devtoolset-2 bash</div><div class="line">wget https://nodejs.org/dist/v4.2.1/node-v4.2.1.tar.gz</div><div class="line">tar -xvzf node-v4.2.1.tar.gz</div><div class="line"><span class="built_in">cd</span> node-v4.2.1</div><div class="line">./configure</div><div class="line">make &amp;&amp; make install</div></pre></td></tr></table></figure>
+<h3 id="Mac-OS安装"><a href="#Mac-OS安装" class="headerlink" title="Mac OS安装:"></a>Mac OS安装:</h3><h3 id="安装报错304："><a href="#安装报错304：" class="headerlink" title="安装报错304："></a>安装报错304：</h3><p>安装Node.Js 报错 340 解决方法<br>Fixing npm On Mac OS X for Homebrew Users<br>If you just want to fix the issue quickly, scroll down to the “solution” section below.<br>Explanation of the issue<br>If you’re a Homebrew user and you installed node via Homebrew,<br>there is a major philosophical issue with the way Homebrew and NPM work together.<br>If you install node with Homebrew and then try to do  npm update npm -g, you may see an error like this:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">$ npm update npm -g npm http GET https://registry.npmjs.org/npm</div><div class="line">npm http 304 https://registry.npmjs.org/npm </div><div class="line">npm http GET https://registry.npmjs.org/npm/1.4.4 </div><div class="line">npm http 304 https://registry.npmjs.org/npm/1.4.4 </div><div class="line">npm ERR! error rolling back Error: Refusing to delete: /usr/<span class="built_in">local</span>/bin/npm not <span class="keyword">in</span> /usr/<span class="built_in">local</span>/lib/nodemodules/npm </div><div class="line">npm ERR! error rolling back at clobberFail (/usr/<span class="built_in">local</span>/Cellar/node/0.10.26/lib/nodemodules/npm/lib/utils/gently-rm.js:57:12)</div><div class="line">npm ERR! error rolling back at next (/usr/<span class="built_in">local</span>/Cellar/node/0.10.26/lib/nodemodules/npm/lib/utils/gently-rm.js:43:14)</div><div class="line">npm ERR! error rolling back at /usr/<span class="built_in">local</span>/Cellar/node/0.10.26/lib/nodemodules/npm/lib/utils/gently-rm.js:52:12</div><div class="line">npm ERR! error rolling back at Object.oncomplete (fs.js:107:15)</div><div class="line">npm ERR! error rolling back npm@1.4.4 &#123; [Error: Refusing to delete: /usr/<span class="built_in">local</span>/bin/npm not <span class="keyword">in</span> /usr/<span class="built_in">local</span>/lib/nodemodules/npm] </div><div class="line">code: <span class="string">'EEXIST'</span>, path: <span class="string">'/usr/local/bin/npm'</span> &#125; </div><div class="line">npm ERR! Refusing to delete: /usr/<span class="built_in">local</span>/bin/npm not <span class="keyword">in</span> /usr/<span class="built_in">local</span>/lib/nodemodules/npm </div><div class="line">File exists: /usr/<span class="built_in">local</span>/bin/npm </div><div class="line">Move it away, and try again.</div><div class="line">npm ERR! System Darwin 13.1.0 </div><div class="line">npm ERR! <span class="built_in">command</span> <span class="string">"/usr/local/Cellar/node/0.10.26/bin/node"</span> <span class="string">"/usr/local/bin/npm"</span> <span class="string">"update"</span> <span class="string">"npm"</span> <span class="string">"-g"</span> </div><div class="line">npm ERR! cwd /Users/dan/Google Drive/Projects/dotfiles </div><div class="line">npm ERR! node -v v0.10.26 </div><div class="line">npm ERR! npm -v 1.4.3 </div><div class="line">npm ERR! path /usr/<span class="built_in">local</span>/bin/npm </div><div class="line">npm ERR! code EEXIST </div><div class="line">npm ERR! </div><div class="line">npm ERR! Additional logging details can be found <span class="keyword">in</span>: </div><div class="line">npm ERR! /Users/dan/Google Drive/Projects/dotfiles/npm-debug.log </div><div class="line">npm ERR! not ok code 0</div></pre></td></tr></table></figure>
+<p>There’s an NPM bug for this exact problem. The bug has been “fixed”<br>by Homebrew installing npm in a way that allows it to manage itself once the install is complete. However,<br>this is error-prone and still seems to cause problems for some people.<br>The root of the the issue is really that npm is its own package manager and<br>it is therefore better to have npm manage itself and its packages completely on its own instead of letting Homebrew do it.</p>
+<p>Also, using the Homebrew installation of npm will require you to use sudo when installing global packages.<br>Since one of the core ideas behind Homebrew is that apps can be installed without giving them root access,<br>this is a bad idea.</p>
+<h3 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h3><p>This solution fixes the error caused by trying to run npm update npm -g.<br>Once you’re finished, you also won’t need to usesudo to install npm modules globally.<br>Before you start, make a note of any globally installed npm packages.<br>These instructions will have you remove all of those packages.<br>After you’re finished you’ll need to re-install them.<br>Run the following commands to remove all existing global npm modules, uninstall node &amp; npm,<br>re-install node with the right defaults, install npm as its own pacakge,<br>and configure the location for global npm modules to be installed.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">rm -rf /usr/<span class="built_in">local</span>/lib/node_modules </div><div class="line">brew uninstall node </div><div class="line">brew install node --without-npm </div><div class="line"><span class="built_in">echo</span> prefix=~/.node &gt;&gt; ~/.npmrc </div><div class="line">curl -L https://www.npmjs.com/install.sh | sh</div></pre></td></tr></table></figure>
+<p>这里的安装脚本可以down 下载<img src="https://github.com/yangcvo/node.js.git" alt=""></p>
+<p>Node and npm should be correctly installed at this point.<br>The final step is to add ~/.node/bin to your PATH so commands you install globally are usable.<br>I added this line to my ~/.path script, which gets run via ~/.bash_profile.</p>
+<h3 id="设置变量："><a href="#设置变量：" class="headerlink" title="设置变量："></a>设置变量：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">export</span> PATH=<span class="string">"<span class="variable">$HOME</span>/.node/bin:<span class="variable">$PATH</span>"</span></div></pre></td></tr></table></figure>
+<p>Now you can re-install any global packages with the command below,<br>replacing the npm modules with whatever global packages you need.</p>
+<h3 id="测试npm安装http-server："><a href="#测试npm安装http-server：" class="headerlink" title="测试npm安装http-server："></a>测试npm安装http-server：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install -g http-server node-inspector forever nodemon</div></pre></td></tr></table></figure>
+<p>版权声明：本站原创文章，于2015年5月16日，由yangc发表. 转载请注明：安装Node.Js 报错 340 解决方法</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/05/28/大数据hadoop/zookeeper/zooKeeper的配置详解/" data-toggle="tooltip" data-placement="top" title="ZooKeeper的配置详解">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/05/05/个人生活记录/黄山之旅/" data-toggle="tooltip" data-placement="top" title="黄山之旅">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Node.js" title="Node.js">Node.js</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yangcvo-me";
+    var disqus_identifier = "http://blog.yangcvo.me/2016/05/16/Node.js/安装Node-Js/";
+    var disqus_url = "http://blog.yangcvo.me/2016/05/16/Node.js/安装Node-Js/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yangcvox">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yangcvo.me">yangc</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

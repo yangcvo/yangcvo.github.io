@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          了解Cacti监控安装与配置.md - yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/2014/10/21/性能监控/cacti/了解Cacti监控安装与配置/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Performance monitoring" title="Performance monitoring">Performance monitoring</a>
+                        
+                    </div>
+                    <h1>了解Cacti监控安装与配置.md</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by yangc on
+                        2014-10-21
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="什么是Cacti"><a href="#什么是Cacti" class="headerlink" title="什么是Cacti?"></a>什么是Cacti?</h3><p>Cacti， 在英文中的意思是仙人掌的意思，Cacti是一套基于PHP,MySQL,SNMP及RRDTool开发的网络流量监测图形分析工具。它通过snmpget来获取数据，使用 RRDtool绘画图形，而且你完全可以不需要了解RRDtool复杂的参数。它提供了非常强大的数据和用户管理功能，可以指定每一个用户能查看树状结构、host以及任何一张图，还可以与LDAP结合进行用户验证，同时也能自己增加模板，功能非常强大完善。Cacti 的发展是基于让 RRDTool 使用者更方便使用该软件，除了基本的 Snmp 流量跟系统资讯监控外，Cacti 也可外挂 Scripts 及加上 Templates 来作出各式各样的监控图。</p>
+<p>Cacti是用php语言实现的一个软件，它的主要功能是用snmp服务获取数据，然后用rrdtool储存和更新数据，当用户需要查看数据的时候用rrdtool生成图表呈现给用户。因此，snmp和rrdtool是cacti的关键。Snmp关系着数据的收集，rrdtool关系着数据存储和图表的生成。</p>
+<p>Mysql配合PHP程序存储一些变量数据并对变量数据进行调用，如：主机名、主机ip、snmp团体名、端口号、模板信息等变量。</p>
+<p>snmp抓到数据不是存储在mysql中，而是存在rrdtool生成的rrd文件中（在cacti根目录的rra文件夹下）。rrdtool对数据的更新和存储就是对rrd文件的处理，rrd文件是大小固定的档案文件（Round Robin Archive），它能够存储的数据笔数在创建时就已经定义。关于RRDTool的知识请参阅RRDTool教学。</p>
+<h3 id="什么是SNMP？"><a href="#什么是SNMP？" class="headerlink" title="什么是SNMP？"></a>什么是SNMP？</h3><p>snmp(Simple Network Management Protocal, 简单网络管理协议)在架构体系的监控子系统中将扮演重要角色。大体上，其基本原理是，在每一个被监控的主机或节点上 (如交换机)都运行了一个 agent，用来收集这个节点的所有相关的信息，同时监听 snmp 的 port，也就是 UDP 161，并从这个端口接收来自监控主机的指令(查询和设置)。</p>
+<p>如果安装 net-snmp，被监控主机需要安装 <code>net-snmp(包含了 snmpd 这个 agent)</code>，而监控端需要安装 net-snmp-utils，若接受被监控端通过trap-communicate发来的信息的话，则需要安装net-snmp，并启用trap服务。如果自行编译，需要 beecrypt(libbeecrypt)和 elf(libraryelf)的库。</p>
+<h3 id="什么是RRDtools？"><a href="#什么是RRDtools？" class="headerlink" title="什么是RRDtools？"></a>什么是RRDtools？</h3><p>RRDtool是指Round Robin Database 工具（环状数据库）。Round robin是一种处理定量数据、以及当前元素指针的技术。想象一个周边标有点的圆环－－这些点就是时间存储的位置。从圆心画一条到圆周的某个点的箭头－－这就是指针。就像我们在一个圆环上一样，没有起点和终点，你可以一直往下走下去。过来一段时间，所有可用的位置都会被用过，该循环过程会自动重用原来的位置。这样，数据集不会增大，并且不需要维护。RRDtool处理RRD数据库。它用向RRD数据库存储数据、从RRD数据库中提取数据。</p>
+<p>Cacti是基于nginx，rrdtool，mysql，php，snmp来运行的.</p>
+<blockquote>
+<p>1.安装操作系统centos6.0以上版本</p>
+<p>2.配置好网络IP和DNS</p>
+<p>3.修改系统时区和时间，使用上海时区</p>
+</blockquote>
+<p>备份原有的时区文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cp /etc/localtime /etc/localtime.bak</div></pre></td></tr></table></figure>
+<p>用上海时区文件替换系统时区文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</div></pre></td></tr></table></figure>
+<p>修改/etc/sysconfig/clock文件，修改为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ZONE=<span class="string">"Asia/Shanghai"</span></div><div class="line">UTC=<span class="literal">false</span></div><div class="line">ARC=<span class="literal">false</span></div></pre></td></tr></table></figure>
+<p>同步时间</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ntpdate <span class="selector-tag">time</span><span class="selector-class">.nist</span><span class="selector-class">.gov</span></div></pre></td></tr></table></figure>
+<p>4.安装epel源</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rpm -Uvh http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm</div></pre></td></tr></table></figure>
+<p>5.安装基础支持软件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install -y openssh-clients telnet wget nginx php-cgi php-cli spawn-fcgi mysql-servermysql rrdtoolnet-snmp net-snmp-utils net-snmp-devel php-mysql php-snmp</div></pre></td></tr></table></figure>
+<p>6.配置PHP管理器</p>
+<p>（1）cd /etc/sysconfig 进入sysconfig文件夹</p>
+<p>（2）vi spawn-fcgi 在文件改位置添加如下命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#SOCKET=/var/run/php-fcgi.sock</span></div><div class="line"><span class="comment">#OPTIONS="-u apache -g apache -s $SOCKET -S -M 0600 -C 32 -F 1 -P /var/run/spawn-fcgi.pid -- /usr/bin/php-cgi"</span></div><div class="line"> SOCKET=/var/run/php-fcgi.sock</div><div class="line"> OPTIONS=<span class="string">"-u nginx -g nginx -s <span class="variable">$SOCKET</span> -S -M 0600 -C 32 -F 1 -P /var/run/spawn-fcgi.pid -- /usr/bin/php-cgi"</span></div></pre></td></tr></table></figure>
+<p>（3）/etc/init.d/spawn-fcgi restart 重启php管理器</p>
+<p>（4）chkconfig spawn-fcgi on 设置开机启动服务</p>
+<p>7.补充创建/var/lib/php下 session 目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mkdir -p /var/lib/php/session</div><div class="line">chown -R nginx.nginx /var/lib/php/session</div><div class="line">chmod 777 /var/lib/php/session</div></pre></td></tr></table></figure>
+<p>8.修改PHP文件配置</p>
+<p>vi /etc/php.ini</p>
+<p>（1）修改PHP时区为Asia/ShangHai，在文件如下位置添加该句命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">;;;;;;;;;;;;;;;;;;;</div><div class="line">; Module Settings ;</div><div class="line">;;;;;;;;;;;;;;;;;;;</div><div class="line">[Date]</div><div class="line">; Defines the default timezone used by the date <span class="built_in">functions</span></div><div class="line">; http://www.php.net/manual/en/datetime.configuration.php<span class="comment">#ini.date.timezone</span></div><div class="line">;date.timezone =</div><div class="line">date.timezone = Asia/Shanghai</div></pre></td></tr></table></figure>
+<p>（2）修改PHP调用内存限制，在文件如下位置修改如下添加：</p>
+<p><code>date.timezone = Asia/Shanghai   memory_limit = 512M</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">;;;;;;;;;;;;;;;;;;;</div><div class="line">; Resource Limits ;</div><div class="line">;;;;;;;;;;;;;;;;;;;</div><div class="line">; Maximum execution time of each script, <span class="keyword">in</span> seconds</div><div class="line">; http://www.php.net/manual/en/info.configuration.php<span class="comment">#ini.max-execution-time</span></div><div class="line">max_execution_time = 30</div><div class="line">; Maximum amount of time each script may spend parsing request data. It<span class="string">'s a good</span></div><div class="line">; idea to limit this time on productions servers in order to eliminate unexpectedly</div><div class="line">; long running scripts.</div><div class="line">; Default Value: -1 (Unlimited)</div><div class="line">; Development Value: 60 (60 seconds)</div><div class="line">; Production Value: 60 (60 seconds)</div><div class="line">; http://www.php.net/manual/en/info.configuration.php#ini.max-input-time</div><div class="line">max_input_time = 60</div><div class="line">; Maximum input variable nesting level</div><div class="line">; http://www.php.net/manual/en/info.configuration.php#ini.max-input-nesting-level</div><div class="line">;max_input_nesting_level = 64</div><div class="line">; Maximum amount of memory a script may consume (128MB)</div><div class="line">; http://www.php.net/manual/en/ini.core.php#ini.memory-limit</div><div class="line">#memory_limit = 128M</div><div class="line">memory_limit = 512M</div></pre></td></tr></table></figure>
+<p>10.修改nginx配置文件增加对cacti的支持（对应自己的nginx安装目录）<br>vi /usr/local/nginx/conf.d/nginx.conf在文件末尾大括号内添加如下配置<br>          server {<br>          listen 8080;<br>          server_name 127.0.0.1;<br>          root html;<br>          index index.html index.php;</p>
+<pre><code>   location ~ \.php$ {
+   root html;
+   fastcgi_buffer_size 128k;
+   fastcgi_buffers 8 128k;
+   fastcgi_pass unix:/var/run/php-fcgi.sock;
+   fastcgi_index index.php;
+   fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+  #fastcgi_param SCRIPT_FILENAME /usr/local/nginx/html/$fastcgi_script_name;
+  include fastcgi_params;
+  }
+       }
+chkconfig nginx on 设置nginx开机启动
+service nginx restart重启nginx服务
+</code></pre><p>11.安装catic</p>
+<p>catic是无需编译安装的，直接下载其源包解压即可使用<br>（1）下载cacti</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /tmp</div><div class="line">wget http://www.cacti.net/downloads/cacti-0.8.8b.tar.gz</div></pre></td></tr></table></figure>
+<p>（2）解压cacti</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">tar zxvf cacti-0.8.8b.tar.gz</div><div class="line">mv cacti-0.8.8b /usr/<span class="built_in">local</span>/nginx/html <span class="comment">#将解压出的cacti文件夹移动到nginx的</span></div></pre></td></tr></table></figure>
+<p>web目录下（对应自己安装的nginx）</p>
+<p>（3）修改cacti的使用者和组权限为nginx用户和nginx组</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/nginx/html</div><div class="line">chown -R nginx:nginx cacti/</div></pre></td></tr></table></figure>
+<p>12.创建数据库，存储cacti数据</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">启动mysql</div><div class="line">/etc/init.d/mysqld start</div><div class="line">chkconfig mysqld on</div></pre></td></tr></table></figure>
+<p>（1）使用root账户登录mysql</p>
+<pre><code>mysql -uroot
+</code></pre><p>（2）创建cacti数据库表</p>
+<pre><code>create database cacti;
+</code></pre><p>（3）建立用户cacti，密码cacti123(可自行定义)</p>
+<pre><code>mysql&gt; insert into mysql.user(host,user,password) values (&apos;localhost&apos;,&apos;cacti&apos;,password(&apos;cacti123&apos;));
+</code></pre><p>（4）重载mysql授权表</p>
+<pre><code>mysql&gt; flush privileges;
+</code></pre><p>（5） 把数据库cacti授权于用户cacti</p>
+<pre><code>mysql&gt; grant all on cacti.* to cacti@&apos;localhost&apos; identified by &apos;cacti123&apos;;
+mysql&gt; quit
+</code></pre><p>（6）将cacti数据库与mysql中的数据对应起来</p>
+<pre><code>cd /usr/local/nginx/html/cacti
+mysql -ucacti -pcacti123 cacti&lt;cacti.sql
+</code></pre><h3 id="13-修改CACTI配置文件"><a href="#13-修改CACTI配置文件" class="headerlink" title="13.修改CACTI配置文件"></a>13.修改CACTI配置文件</h3><p> (1) 切换至cacti下的include目录（对应自己安装的nginx）</p>
+<pre><code>cd /usr/local/nginx/html/cacti/include/
+</code></pre><p> (2)编辑config.php文件，修改如下位置的配置</p>
+<pre><code>vi config.php
+</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">/* make sure these values refect your actual database/host/user/password */</div><div class="line"><span class="variable">$database_type</span> = <span class="string">"mysql"</span>;</div><div class="line"><span class="variable">$database_default</span> = <span class="string">"cacti"</span>;<span class="comment">#mysql数据库里所创建的表名</span></div><div class="line"><span class="variable">$database_hostname</span> = <span class="string">"127.0.0.1"</span>;</div><div class="line"><span class="variable">$database_username</span> = <span class="string">"cacti"</span>;<span class="comment">#mysql数据库里为cacti数据表所创建的用户名</span></div><div class="line"><span class="variable">$database_password</span> = <span class="string">"cacti123"</span>;<span class="comment">#mysql数据库里为cacti数据表所创建的密码</span></div><div class="line"><span class="variable">$database_port</span> = <span class="string">"3306"</span>;</div><div class="line"><span class="variable">$database_ssl</span> = <span class="literal">false</span>;</div></pre></td></tr></table></figure>
+<p>14.配置cacti的循环任务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">crontab <span class="_">-e</span></div><div class="line">*/5 * * * * php /usr/<span class="built_in">local</span>/nginx/html/cacti/poller.php &gt; /dev/null 2&gt;&amp;1<span class="comment">#请对应自己的nginx安装目录</span></div></pre></td></tr></table></figure>
+<p>:wq 保存退出</p>
+<p>可直接先运行一遍php /usr/local/nginx/html/cacti/poller.php 好让cacti产生图片</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">php /usr/share/nginx/html/cacti/poller.php</div></pre></td></tr></table></figure>
+<p>15.安装完成</p>
+<pre><code>使用浏览器打开如下地址http://本机IP/cacti/install
+</code></pre><p>会显示安装向导，点击NEXT即可，到下面如下界面是，注意查看所有的文件路径是否都为绿色，不是绿色请找到自己安装的目录，一一对应点击Finsh即可到达cacti的登陆界面</p>
+<p>输入用户名密码,<code>cacti</code>默认的用户名和密码都为<code>admin</code>，输入一次后会提示在一次输入，这个时候是让你设置新的admin密码.然后就能进入cacti的图形界面了.</p>
+<p>点击左上角graphs，就能查看本机所监控的所有设备默认存在一个localhost，监控本机的内存使用，活动用户等信息.</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/cacti.png" alt=""></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2014/11/20/Blog/Ghost/Ghost博客：增加Disqus评论组件/" data-toggle="tooltip" data-placement="top" title="Ghost博客：增加Disqus评论组件">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2014/10/06/性能监控/Zabbix/zabbix监控80端口状态/" data-toggle="tooltip" data-placement="top" title="zabbix监控80端口状态">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Performance monitoring" title="Performance monitoring">Performance monitoring</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yangcvo-me";
+    var disqus_identifier = "http://blog.yangcvo.me/2014/10/21/性能监控/cacti/了解Cacti监控安装与配置/";
+    var disqus_url = "http://blog.yangcvo.me/2014/10/21/性能监控/cacti/了解Cacti监控安装与配置/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/PandaJuesha">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yangcvo.me">yangc</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

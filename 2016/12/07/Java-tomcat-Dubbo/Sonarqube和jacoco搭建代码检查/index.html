@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Sonarqube和jacoco搭建代码检查 - yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/2016/12/07/Java-tomcat-Dubbo/Sonarqube和jacoco搭建代码检查/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#performance tuning" title="performance tuning">performance tuning</a>
+                        
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                    </div>
+                    <h1>Sonarqube和jacoco搭建代码检查</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by yangc on
+                        2016-12-07
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <ol>
+<li><p>准备工作：<code>sonarqube，jacoco，git，maven，ant，sonar-runner</code><br>sonarqube 去官网下载，文件太大，不能上传<br>git，mavne，ant自己安装<br>sonarqube和sonar-runnrt安装：查看<a href="http://blog.csdn.net/u011925176/article/details/51536563" target="_blank" rel="external">链接</a></p>
+</li>
+<li><p>监控机子配置：<br>启动sonarqube，git下载源代码，进入源码路径，添加一下文件；</p>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">1）sonar-project.properties</div><div class="line"><span class="comment">#Set sonar-runner Configuration</span></div><div class="line">sonar.projectKey=haozhuo-hm-01</div><div class="line">sonar.projectVersion=6.1</div><div class="line">sonar.projectName=haozhuo-hm</div><div class="line">sonar.language=java</div></pre></td></tr></table></figure>
+<p>(1). 需要分析代码的路径</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sonar.sources=src/main/java/com/haozhuo/hm/service, src/main/java/com/haozhuo/hm/dubbo</div></pre></td></tr></table></figure>
+<p>(2). 这个地方很重要，工程class文件的位置，代码覆盖率就是根据这个不匹配的，如果线上的代码和线下的代码不同步，可能会造成覆盖率计算不精确。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">sonar.java.binaries=/Users/yejun/git/YJK-Java/haozhuo/haozhuo-hm/target</div><div class="line">sonar.test.binaries=<span class="built_in">test</span></div><div class="line">sonar.sourceEncoding=UTF-8</div><div class="line">sonar.my.property=value</div><div class="line">sonar.java.coveragePlugin=jacoco</div><div class="line"><span class="comment">#Path to the JaCoCo report file containing coverage data by unit tests. The path may be absolute or relative to the project base directory</span></div><div class="line">sonar.jacoco.reportPath=/Users/yejun/git/YJK-Java/haozhuo/haozhuo-hm/jacoco.exec</div><div class="line"><span class="comment">#Path to the JaCoCo report file containing coverage data by integration tests. The path may be absolute or relative to the project base directory</span></div><div class="line">sonar.jacoco.itReportPath=/Users/yejun/git/YJK-Java/haozhuo/haozhuo-hm/jacoco.exec</div><div class="line"><span class="comment">#sonar.jacoco.reportMissing.force.zero</span></div><div class="line">sonar.jacoco.reportMissing.force.zero=<span class="literal">false</span></div></pre></td></tr></table></figure>
+<p>(3). build.xml</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span>?&gt;</div><div class="line">&lt;project name=<span class="string">"testCodeCoveage"</span> default=<span class="string">"all"</span> basedir=<span class="string">"."</span> xmlns:jacoco=<span class="string">"antlib:org.jacoco.ant"</span>&gt;</div><div class="line">&lt;!--</div><div class="line">&lt;property name=<span class="string">"jacocoantPath"</span> value=<span class="string">"/root/jacocoant.jar"</span>/&gt; </div><div class="line">&lt;property name=<span class="string">"jacocoexecPath"</span> value=<span class="string">"."</span>/&gt;</div><div class="line">--&gt;</div><div class="line">&lt;!-- Import the JaCoCo Ant Task --&gt;</div><div class="line">&lt;taskdef uri=<span class="string">"antlib:org.jacoco.ant"</span> resource=<span class="string">"org/jacoco/ant/antlib.xml"</span>&gt;</div><div class="line">&lt;classpath path=<span class="string">"/srv/jacoco/jacocoant.jar"</span> /&gt;</div><div class="line">&lt;/taskdef&gt;</div><div class="line">&lt;target name=<span class="string">"merge"</span> depends=<span class="string">"dump"</span>&gt;</div><div class="line">&lt;jacoco:merge destfile=<span class="string">"jacoco.exec"</span>&gt;</div><div class="line">&lt;!-- 导出<span class="built_in">exec</span>文件地址，在这里统一生产一个<span class="built_in">exec</span>文件 --&gt;</div><div class="line">&lt;fileset dir=<span class="string">"/opt/haozhuo-hm/jacoco"</span> includes=<span class="string">"*.exec"</span>/&gt;</div><div class="line">&lt;/jacoco:merge&gt;</div><div class="line">&lt;/target&gt;</div><div class="line">&lt;target name=<span class="string">"dump"</span>&gt;</div><div class="line">&lt;!-- reset=<span class="string">"true"</span>是指在dump完成之后，重置jvm中的覆盖率数据为空。append=<span class="string">"true"</span>是指dump出来的<span class="built_in">exec</span>文件为增量方式 --&gt;</div><div class="line">&lt;jacoco:dump address=<span class="string">"192.168.1.19"</span> reset=<span class="string">"false"</span> destfile=<span class="string">"/opt/haozhuo-hm/jacoco/jacoco_haozhuo-hm.exec"</span> port=<span class="string">"10001"</span> append=<span class="string">"true"</span>/&gt;</div><div class="line">&lt;!-- &lt;jacoco:dump address=<span class="string">"10.199.145.117"</span> reset=<span class="string">"true"</span> destfile=<span class="string">"/srv/jacoco/target/jacoco_10.199.145.117_2.exec"</span> port=<span class="string">"10002"</span> append=<span class="string">"true"</span>/&gt;</div><div class="line">&lt;jacoco:dump address=<span class="string">"10.199.145.118"</span> reset=<span class="string">"true"</span> destfile=<span class="string">"/srv/jacoco/target/jacoco_10.199.145.118_1.exec"</span> port=<span class="string">"10001"</span> append=<span class="string">"true"</span>/&gt;</div><div class="line">&lt;jacoco:dump address=<span class="string">"10.199.145.118"</span> reset=<span class="string">"true"</span> destfile=<span class="string">"/srv/jacoco/target/jacoco_10.199.145.118_2.exec"</span> port=<span class="string">"10002"</span> append=<span class="string">"true"</span>/&gt; --&gt;</div><div class="line">&lt;!--</div><div class="line">&lt;jacoco:dump address=<span class="string">"10.199.170.26"</span> reset=<span class="string">"true"</span> destfile=<span class="string">"/Users/yejun/git/YJK-Java/haozhuo/haozhuo-hm/jacoco_10.199.170.26.exec"</span> port=<span class="string">"10001"</span> append=<span class="string">"true"</span>/&gt;</div><div class="line">--&gt;</div><div class="line">&lt;/target&gt;</div><div class="line">&lt;!-- ========= The main target <span class="string">"all"</span> ========= --&gt;</div><div class="line">&lt;target name=<span class="string">"all"</span> depends=<span class="string">"merge"</span> /&gt;</div><div class="line">&lt;/project&gt;</div></pre></td></tr></table></figure>
+<p>(4). jacoco.sh</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/sh</span></div><div class="line"><span class="comment">#加载环境变量</span></div><div class="line"><span class="built_in">source</span> /etc/profile</div><div class="line"><span class="comment">#sonar-runner 路径</span></div><div class="line"><span class="built_in">cd</span> /Users/yejun/software/sonar-runner-2.4/haozhuo-hm</div><div class="line"><span class="comment">#初始化当前时间、周</span></div><div class="line">time=`date <span class="string">'+%s'</span>`</div><div class="line">lastweek=`cat /var/run/coverage.pid`</div><div class="line">newweek=`date +%W`</div><div class="line"><span class="comment">#获取最新代码</span></div><div class="line">git pull</div><div class="line"><span class="comment">#编译最新代码，如果使用jacoco agent通过classdumpdir路径dump出来的class文件，则不需要mvn clean进行class文件编译。否则需要编译class文件。</span></div><div class="line"><span class="comment">#mvn clean install -Dmaven.test.skip=true -Ptest</span></div><div class="line"><span class="comment">#获取历史版本和最新版本</span></div><div class="line"><span class="comment">#oldVersion=`cat /var/run/coverage.pid`</span></div><div class="line">newversion=`grep -r <span class="string">"&lt;version&gt;"</span> pom.xml |awk -F <span class="string">"&lt;/"</span> <span class="string">'&#123;print $1&#125;'</span>|awk -F <span class="string">"&gt;"</span> <span class="string">'&#123;print $2&#125;'</span>`</div><div class="line"><span class="comment">#判断如果版本未发生变更，则直接合并代码覆盖率数据;如果代码发生变更，则删除历史jacoco.exe覆盖率数据，重新统计</span></div><div class="line"><span class="keyword">if</span> [ <span class="variable">$lastweek</span> = <span class="variable">$newweek</span> ];<span class="keyword">then</span></div><div class="line"><span class="comment">#sed -i '/sonar.projectVersion/d' sonar-project.properties</span></div><div class="line"><span class="comment">#sed -i "2a sonar.projectVersion=$lastVersion.$time" sonar-project.properties</span></div><div class="line">ant</div><div class="line">/Users/yejun/software/sonar-runner-2.4/bin/sonar-runner</div><div class="line"><span class="keyword">else</span></div><div class="line"><span class="built_in">echo</span> <span class="variable">$newweek</span>&gt;/var/run/coverage.pid</div><div class="line">rm -rf *.exec</div><div class="line">sed -i <span class="string">'/sonar.projectKey/d'</span> sonar-project.properties</div><div class="line">sed -i <span class="string">'/sonar.projectVersion/d'</span> sonar-project.properties</div><div class="line">sed -i <span class="string">"1a sonar.projectKey=vips-mobile-operation-key-<span class="variable">$newweek</span>"</span> sonar-project.properties</div><div class="line">sed -i <span class="string">"2a sonar.projectVersion=<span class="variable">$newversion</span>"</span> sonar-project.properties</div><div class="line">ant</div><div class="line">/Users/yejun/software/sonar-runner-2.4/bin/sonar-runner</div><div class="line"><span class="keyword">fi</span></div></pre></td></tr></table></figure>
+<h3 id="3-被监控机子配置："><a href="#3-被监控机子配置：" class="headerlink" title="3.被监控机子配置："></a>3.被监控机子配置：</h3><p>1）上传一个jacocoanget.jar文件，文件在jacoco.zip里面，放到一个目录下。例如：/srv/jacoco/jacocoagent.jar</p>
+<p>2) 修改工程tomcat/bin/下的catalina.sh，新增</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">JAVA_OPTS=<span class="string">"<span class="variable">$JAVA_OPTS</span> -javaagent:/srv/jacoco/jacocoagent.jar=includes=*,output=tcpserver,port=10001,address=192.168.1.19”</span></div></pre></td></tr></table></figure>
+<p>参数：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">port:如果一台机子有多个tomcat，注意端口号不要重复</div><div class="line">address：本机的ip地址</div><div class="line">其他参数一样。</div></pre></td></tr></table></figure>
+<p>3)配置完以后，到启动jacoco.sh然后执行mvn clean package，就可以到sonarqube上面查看想要的信息了。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/12/08/大数据hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/" data-toggle="tooltip" data-placement="top" title="hadoop新增节点集群启动请求异常：Last contact：200">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/12/02/Java-tomcat-Dubbo/记录tomcat进程CPU使用率高排查故障经验/" data-toggle="tooltip" data-placement="top" title="记录tomcat进程CPU使用率高排查故障经验">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#performance tuning" title="performance tuning">performance tuning</a>
+                        
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yangcvo-me";
+    var disqus_identifier = "http://blog.yangcvo.me/2016/12/07/Java-tomcat-Dubbo/Sonarqube和jacoco搭建代码检查/";
+    var disqus_url = "http://blog.yangcvo.me/2016/12/07/Java-tomcat-Dubbo/Sonarqube和jacoco搭建代码检查/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yangcvox">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yangcvo.me">yangc</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <meta charset="utf-8">
+    
+    <title>zabbix邮件告警 | Cheng yang&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="操作系统环境：CentOS release 6.7 (Final)
+zabbix版本2.4.7
+关于操作系统CentOS6.0 以下版本都是通过mail命令调用sendmail的sm-client发送邮件，所以如果关闭sendmail按照很多网上的文档是发不出邮件的。
+centos 6.0以上版本
+默认已经安装好sendmail默认已经安装好postfix
+sendmail和postfix只需要安">
+<meta property="og:type" content="article">
+<meta property="og:title" content="zabbix邮件告警">
+<meta property="og:url" content="http://blog.yangcvo.me/2014/10/05/Zabbix/zabbix邮件告警/index.html">
+<meta property="og:site_name" content="Cheng yang's Blog">
+<meta property="og:description" content="操作系统环境：CentOS release 6.7 (Final)
+zabbix版本2.4.7
+关于操作系统CentOS6.0 以下版本都是通过mail命令调用sendmail的sm-client发送邮件，所以如果关闭sendmail按照很多网上的文档是发不出邮件的。
+centos 6.0以上版本
+默认已经安装好sendmail默认已经安装好postfix
+sendmail和postfix只需要安">
+<meta property="og:image" content="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail1.png">
+<meta property="og:image" content="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail2.png">
+<meta property="og:image" content="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mion3.png">
+<meta property="og:image" content="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail4.png">
+<meta property="og:image" content="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail5.png">
+<meta property="og:image" content="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail7.png">
+<meta property="og:image" content="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail8.png">
+<meta property="og:updated_time" content="2016-08-03T07:54:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="zabbix邮件告警">
+<meta name="twitter:description" content="操作系统环境：CentOS release 6.7 (Final)
+zabbix版本2.4.7
+关于操作系统CentOS6.0 以下版本都是通过mail命令调用sendmail的sm-client发送邮件，所以如果关闭sendmail按照很多网上的文档是发不出邮件的。
+centos 6.0以上版本
+默认已经安装好sendmail默认已经安装好postfix
+sendmail和postfix只需要安">
+<meta name="twitter:image" content="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail1.png">
+    
+
+    
+        <link rel="alternate" href="/" title="Cheng yang&#39;s Blog" type="application/atom+xml" />
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">Cheng yang&#39;s Blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="https://github.com/yangcvo">GitHub</a>
+                
+                    <a class="main-nav-link" href="http://weibo.com/yangcvo">Weibo</a>
+                
+                    <a class="main-nav-link" href="http://blog.yangcvo.me/2014/05/04/%E4%B8%AA%E4%BA%BA%E8%AE%B0%E5%BD%95/About-me/">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/yangc.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/yangcvo">GitHub</a></td>
+                
+                    <td><a class="main-nav-link" href="http://weibo.com/yangcvo">Weibo</a></td>
+                
+                    <td><a class="main-nav-link" href="http://blog.yangcvo.me/2014/05/04/%E4%B8%AA%E4%BA%BA%E8%AE%B0%E5%BD%95/About-me/">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/yangc.png" />
+            <h2 id="name">yangc</h2>
+            <h3 id="title">Operation Engineer</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>hangzhou, China</span>
+            <a id="follow" target="_blank" href="https://github.com/yangcvo/">FOLLOW</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                91
+                <span>posts</span>
+            </div>
+            <div class="article-info-block">
+                25
+                <span>tags</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/yangcvo" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://twitter.com/yangaov" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://www.facebook.com/yango88" target="_blank" title="facebook" class=tooltip>
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="dribbble" class=tooltip>
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="rss" class=tooltip>
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-Zabbix/zabbix邮件告警" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            zabbix邮件告警
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2014/10/05/Zabbix/zabbix邮件告警/">
+            <time datetime="2014-10-05T03:11:06.000Z" itemprop="datePublished">Oct 5 2014</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/zabbix/">zabbix</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h2 id="操作系统环境："><a href="#操作系统环境：" class="headerlink" title="操作系统环境："></a>操作系统环境：</h2><p>CentOS release 6.7 (Final)</p>
+<p>zabbix版本2.4.7</p>
+<p>关于操作系统CentOS6.0 以下版本都是通过mail命令调用sendmail的sm-client发送邮件，所以如果关闭sendmail按照很多网上的文档是发不出邮件的。</p>
+<p>centos 6.0以上版本</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">默认已经安装好sendmail</span><br><span class="line">默认已经安装好postfix</span><br></pre></td></tr></table></figure>
+<p>sendmail和postfix只需要安装一个即可并开启服务即可。</p>
+<h3 id="实现目的："><a href="#实现目的：" class="headerlink" title="实现目的："></a>实现目的：</h3><p>在Zabbix服务端设置邮件报警，当被监控主机宕机或者达到触发器预设值时，会自动发送报警邮件到指定邮箱，定位哪里出现问题，可以及时的解决。</p>
+<h3 id="1-安装邮件发送工具mailx"><a href="#1-安装邮件发送工具mailx" class="headerlink" title="1.安装邮件发送工具mailx"></a>1.安装邮件发送工具mailx</h3><p>CentOS 6.x 编译安装mailx，直接yum安装的mailx版本太旧，使用外部邮件发送会有问题。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum install mailx #安装</span><br><span class="line"></span><br><span class="line">yum remove mailx #卸载系统自带的旧版mailx</span><br></pre></td></tr></table></figure>
+<p>这里我用编译安装的很简单几步就可以了。</p>
+<p>mail下载地址:<a href="http://www.linuxfromscratch.org/blfs/view/stable/basicnet/mailx.html" target="_blank" rel="external">Downloads</a></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@salt ~]<span class="comment"># curl -O http://ftp.debian.org/debian/pool/main/h/heirloom-mailx/heirloom-mailx_12.5.orig.tar.gz</span></span><br><span class="line">[root@salt ~]<span class="comment"># tar -zxvf heirloom-mailx_12.5.orig.tar.gz </span></span><br><span class="line">[root@salt ~]<span class="comment"># cd heirloom-mailx-12.5</span></span><br><span class="line">[root@salt heirloom-mailx-12.5]<span class="comment"># make</span></span><br><span class="line">[root@salt heirloom-mailx-12.5]<span class="comment"># make install UCBINSTALL=/usr/bin/install</span></span><br><span class="line">[root@salt heirloom-mailx-12.5]<span class="comment"># ln -s /usr/local/bin/mailx /bin/mail #创建mailx到mail的软连接</span></span><br><span class="line">[root@salt heirloom-mailx-12.5]<span class="comment"># ln -s /etc/nail.rc /etc/mail.rc #创建mailx配置文件软连接</span></span><br><span class="line">[root@salt heirloom-mailx-12.5]<span class="comment"># whereis mailx   #查看安装路径</span></span><br><span class="line">mailx: /bin/mailx /usr/<span class="built_in">local</span>/bin/mailx /usr/share/man/man1p/mailx.1p.gz /usr/share/man/man1/mailx.1.gz   </span><br><span class="line">[root@salt heirloom-mailx-12.5]<span class="comment"># mailx -V     #查看版本信息</span></span><br><span class="line">12.5 6/20/10</span><br></pre></td></tr></table></figure>
+<p>安装完以后我们来测试下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@salt]<span class="comment"># echo "zabbix test mail" |mail -s zabbix" it@hz-health.cn</span></span><br><span class="line">[root@salt]<span class="comment"># send-mail: warning: inet_protocols: IPv6 support is disabled: Address family not supported by protocol</span></span><br><span class="line">send-mail: warning: inet_protocols: configuring <span class="keyword">for</span> IPv4 support only</span><br><span class="line">postdrop: warning: inet_protocols: IPv6 support is disabled: Address family not supported by protocol</span><br><span class="line">postdrop: warning: inet_protocols: configuring <span class="keyword">for</span> IPv4 support only</span><br><span class="line">postdrop: warning: unable to look up public/pickup: No such file or directory</span><br></pre></td></tr></table></figure>
+<p>如果有出现这个报错，那么我们需要修改下配置文件。<br>查看当前inet_protocols</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># /usr/sbin/postconf | grep inet_protocols</span></span><br><span class="line">inet_protocols = all</span><br><span class="line">修改ipv4</span><br><span class="line"><span class="comment"># vi /etc/postfix/main.cf</span></span><br><span class="line">inet_protocols = all</span><br><span class="line">改为</span><br><span class="line">inet_protocols = ipv4</span><br><span class="line">重启postfix</span><br><span class="line">service postfix restart</span><br></pre></td></tr></table></figure>
+<p>然后在测试：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@salt]# echo &quot;zabbix test mail&quot; |mail -s &quot;zabbix&quot; it@xxxx.cn</span><br></pre></td></tr></table></figure>
+<p>测试发送邮件，标题zabbix，邮件内容：zabbix test mail，发送到的邮箱：xxx.qq.com</p>
+<p>这时候，邮箱yyy@qq.com会收到来自xxx@qq.com的测试邮件。</p>
+<h3 id="2、创建邮件告警的python脚本"><a href="#2、创建邮件告警的python脚本" class="headerlink" title="2、创建邮件告警的python脚本"></a>2、创建邮件告警的python脚本</h3><p>zabbix_server添加脚本配置:</p>
+<ol>
+<li>zabbix安装路径：cd /usr/local/zabbix/share/zabbix/alertscripts</li>
+</ol>
+<p>编写脚本：<br><code>vim /usr/local/zabbix/share/zabbix/alertscripts/zabbix_sendmail.py</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line">#coding:utf-8</span><br><span class="line">import smtplib</span><br><span class="line">from email.mime.text import MIMEText</span><br><span class="line">import sys</span><br><span class="line">LOG_FILENAME=&quot;/var/log/email_python.log&quot;</span><br><span class="line">mail_host = &apos;smtp.exmail.qq.com&apos;                  #定义smtp服务器</span><br><span class="line">mail_user = &apos;it@xxxx.cn&apos;               #发件人邮箱</span><br><span class="line">mail_pass = &apos;xxxxxxx&apos;                        #发件人邮箱密码</span><br><span class="line">mail_port = 465                            #smtp服务器的端口号，不同的邮箱服务器端口号不同</span><br><span class="line">def send_mail(to_list,subject,content):</span><br><span class="line">    me=&quot;Zabbix Monitor&quot;+&quot;&lt;&quot;+mail_user+&quot;&gt;&quot;  #定义发件人显示名称为Zabbix Monitor</span><br><span class="line">    msg=MIMEText(content,_subtype=&apos;plain&apos;,_charset=&apos;gb2312&apos;)</span><br><span class="line">    msg[&apos;Subject&apos;]=subject                 #定义邮件主题</span><br><span class="line">    msg[&apos;From&apos;]=me                         #发送方</span><br><span class="line">    msg[&apos;to&apos;]=to_list                      #接收方</span><br><span class="line">    try:</span><br><span class="line">        s=smtplib.SMTP_SSL()               #创建一个smtp对象</span><br><span class="line">        s.connect(mail_host,mail_port)     #通过connect方法连接smtp主机</span><br><span class="line">        s.login(mail_user,mail_pass)       #邮箱账户登录认证</span><br><span class="line">        s.sendmail(me,to_list,msg.as_string()) #发送邮件</span><br><span class="line">        s.close()                             #断开smtp连接</span><br><span class="line">        return True</span><br><span class="line">    except Exception,e:</span><br><span class="line">        print str(e)</span><br><span class="line">        return False</span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    send_mail(sys.argv[1],sys.argv[2],sys.argv[3])</span><br></pre></td></tr></table></figure>
+<p>2、脚本文件路径</p>
+<p>先确认下<code>zabbix_server.conf</code>文件中定义的告警脚本路径配置：</p>
+<p>如果注释了，添加一条绝对路径。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># AlertScriptsPath=$&#123;datadir&#125;/zabbix/alertscripts</span></span><br><span class="line"> AlertScriptsPath=/usr/<span class="built_in">local</span>/zabbix/share/zabbix/alertscripts</span><br></pre></td></tr></table></figure>
+<p>然后将准备好的python脚本存放到该路径下，并更改脚本文件的权限和属主属组</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">chown zabbix.zabbix   /usr/<span class="built_in">local</span>/zabbix/share/zabbix/alertscripts/zabbix_sendmail.py</span><br><span class="line">chmod +x   /usr/<span class="built_in">local</span>/zabbix/share/zabbix/alertscripts/zabbix_sendmail.py</span><br></pre></td></tr></table></figure>
+<p>注意：如果在zabbix_server.conf文件中没有设置Allow root=1，则表示zabbix是以zabbix用户启动而不是root，所以脚本的属主属组都应该设置为zabbix用户。设置为root用户启动的配置如下。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">### Option: AllowRoot</span><br><span class="line">#   Allow the server to run as &apos;root&apos;. If disabled and the server is started by &apos;root&apos;, the server</span><br><span class="line">#   will try to switch to user &apos;zabbix&apos; instead. Has no effect if started under a regular user.</span><br><span class="line">#   0 - do not allow</span><br><span class="line">#   1 - allow</span><br><span class="line">#</span><br><span class="line"># Mandatory: no</span><br><span class="line"># Default:</span><br><span class="line">AllowRoot=1</span><br></pre></td></tr></table></figure>
+<p>重启服务：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@salt alertscripts]<span class="comment"># /etc/init.d/zabbix_server restart</span></span><br><span class="line">Shutting down zabbix_server:                               [确定]</span><br><span class="line">Starting zabbix_server:                                    [确定]</span><br></pre></td></tr></table></figure>
+<p>3、测试脚本文件发送邮件是否成功，这一步很重要</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./zabbix_sendmail.py cheng@health.cn <span class="string">"subject"</span> <span class="string">"zabbix"</span></span><br></pre></td></tr></table></figure>
+<p>已经测试ok，可以收到邮件，说明写的python脚本没有问题。</p>
+<h3 id="zabbix-web端设置"><a href="#zabbix-web端设置" class="headerlink" title="zabbix-web端设置"></a>zabbix-web端设置</h3><ul>
+<li>首先web端的配置顺序如下：<br>创建用户媒介–&gt;创建用户组和用户–&gt;针对trigger（触发器）添加报警动作，设置邮件发送用户及媒介</li>
+</ul>
+<p>1.创建用户媒介</p>
+<ul>
+<li><p>创建用户媒介–&gt;创建用户组和用户–&gt;Media types–&gt;Createmediatype     </p>
+<ul>
+<li>Mediatype设置如下， Name项自定义（创建用户时会用到这个名字),我们使用脚本来发邮件，所以Type项请选择Script，Script项则是你zabbix server上的发送邮件的脚本名字</li>
+<li><p>（注：如脚本名字是snedmail.py,那此项就填sendmail，后缀不要)</p>
+</li>
+<li><p>zabbix会传给脚本三个参数：接收用户，邮件主题，邮件内容</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail1.png" alt=""></p>
+<p>2.设置Zabbix用户报警邮箱地址</p>
+<ul>
+<li>组态-用户-Admin (Zabbix Administrator)<ul>
+<li>再到Media标签下，点击Add添加用户及该用户的报警方式，然后Type项选择你所创建的邮件报警名字（Media Type），在Send to后填入用户的报警邮箱，其他默认即可。</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail2.png" alt=""></p>
+<p>3.设置Zabbix触发报警的动作</p>
+<ul>
+<li>组态-动作-创建动作</li>
+</ul>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mion3.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">名称：Action-Email</span><br><span class="line"></span><br><span class="line">默认接收人：故障&#123;TRIGGER.STATUS&#125;,服务器:&#123;HOSTNAME1&#125;发生: &#123;TRIGGER.NAME&#125;故障!</span><br><span class="line"></span><br><span class="line">默认信息：</span><br><span class="line"></span><br><span class="line">告警主机:&#123;HOSTNAME1&#125;</span><br><span class="line"></span><br><span class="line">告警时间:&#123;EVENT.DATE&#125; &#123;EVENT.TIME&#125;</span><br><span class="line"></span><br><span class="line">告警等级:&#123;TRIGGER.SEVERITY&#125;</span><br><span class="line"></span><br><span class="line">告警信息: &#123;TRIGGER.NAME&#125;</span><br><span class="line"></span><br><span class="line">告警项目:&#123;TRIGGER.KEY1&#125;</span><br><span class="line"></span><br><span class="line">问题详情:&#123;ITEM.NAME&#125;:&#123;ITEM.VALUE&#125;</span><br><span class="line"></span><br><span class="line">当前状态:&#123;TRIGGER.STATUS&#125;:&#123;ITEM.VALUE1&#125;</span><br><span class="line"></span><br><span class="line">事件ID:&#123;EVENT.ID&#125;</span><br><span class="line"></span><br><span class="line">恢复信息：打钩</span><br><span class="line"></span><br><span class="line">恢复主旨：恢复&#123;TRIGGER.STATUS&#125;, 服务器:&#123;HOSTNAME1&#125;: &#123;TRIGGER.NAME&#125;已恢复!</span><br><span class="line"></span><br><span class="line">恢复信息：</span><br><span class="line"></span><br><span class="line">告警主机:&#123;HOSTNAME1&#125;</span><br><span class="line"></span><br><span class="line">告警时间:&#123;EVENT.DATE&#125; &#123;EVENT.TIME&#125;</span><br><span class="line"></span><br><span class="line">告警等级:&#123;TRIGGER.SEVERITY&#125;</span><br><span class="line"></span><br><span class="line">告警信息: &#123;TRIGGER.NAME&#125;</span><br><span class="line"></span><br><span class="line">告警项目:&#123;TRIGGER.KEY1&#125;</span><br><span class="line"></span><br><span class="line">问题详情:&#123;ITEM.NAME&#125;:&#123;ITEM.VALUE&#125;</span><br><span class="line"></span><br><span class="line">当前状态:&#123;TRIGGER.STATUS&#125;:&#123;ITEM.VALUE1&#125;</span><br><span class="line"></span><br><span class="line">事件ID:&#123;EVENT.ID&#125;</span><br><span class="line"></span><br><span class="line">已启用：打钩</span><br></pre></td></tr></table></figure>
+<p>创建Operations</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail4.png" alt=""></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail5.png" alt=""></p>
+<p>到这里就基本配置完毕了。</p>
+<p>测试下关闭agent 1分钟左右可以收到邮件。 关闭防火墙和selinux 即可，不关闭防火墙开启10051端口和10050端口</p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>查看zabbix审计动态日志：<br>发送成功</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail7.png" alt=""></p>
+<p>邮件已接收成功。</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail8.png" alt=""></p>
+<p>微信告警也已写详细文档。文档file已上传github上面了。</p>
+<p>zabbix-server2.4服务端编译安装 <a href="http://blog.yangcvo.me/2015/01/18/zabbix-server服务端编译安装/">zabbix-server服务端编译安装</a></p>
+<p>zabbix2.4监控80端口状态 : <a href="http://blog.yangcvo.me/2016/07/20/zabbix监控80端口状态/">zabbix监控80端口状态</a></p>
+<p>zabbix+Grafana安装使用监控结合 ：<a href="http://blog.yangcvo.me/2016/07/13/zabbix-Grafana安装使用结合/">zabbix+Grafana安装使用监控结合</a></p>
+<p>zabbix监控MySQL-添加自定义监控项 : <a href="http://blog.yangcvo.me/2015/09/29/zabbix监控MySQL-添加自定义监控项/">zabbix监控MySQL-添加自定义监控项</a></p>
+<p>zabbix的ICMP_Ping模版实现对客户端网络状态的监控 : <a href="http://blog.yangcvo.me/2015/11/18/zabbix的ICMP-Ping模版实现对客户端网络状态的监控/">zabbix的ICMP_Ping模版实现对客户端网络状态的监控</a></p>
+<p>zabbix性能监控故障总结 <a href="http://blog.yangcvo.me/2016/02/07/zabbix-故障总结/">zabbix性能监控故障总结</a></p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://blog.yangcvo.me/2014/10/05/Zabbix/zabbix邮件告警/" data-id="ciws0yrt0006ftbvud17ypbuu" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+        <a href="http://blog.yangcvo.me/2014/10/05/Zabbix/zabbix邮件告警/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://blog.yangcvo.me/2014/10/05/Zabbix/zabbix邮件告警/">Comments</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2014/10/06/Zabbix/zabbix监控80端口状态/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Newer</strong>
+            <div class="article-nav-title">
+                
+                    zabbix监控80端口状态
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2014/10/04/Zabbix/zabbix-故障总结/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Older</strong>
+            <div class="article-nav-title">zabbix性能监控故障总结</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+    
+    </section>
+
+</section>
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">recent</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/12/08/大数据hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://www.51bdtime.com/uploads/allimg/140826/1-140R6103P3405.jpg)" alt="hadoop新增节点集群启动请求异常：Last contact：200" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/大数据/">大数据</a></p>
+                            <p class="item-title"><a href="/2016/12/08/大数据hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/" class="title">hadoop新增节点集群启动请求异常：Last contact：200</a></p>
+                            <p class="item-date"><time datetime="2016-12-08T09:56:03.000Z" itemprop="datePublished">Dec 8 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/12/07/Java/Sonarqube和jacoco搭建代码检查/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://px.thea.cn/Public/Upload/2759083/Intro/1442841940.png)" alt="Sonarqube和jacoco搭建代码检查" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java/">Java</a></p>
+                            <p class="item-title"><a href="/2016/12/07/Java/Sonarqube和jacoco搭建代码检查/" class="title">Sonarqube和jacoco搭建代码检查</a></p>
+                            <p class="item-date"><time datetime="2016-12-07T09:56:03.000Z" itemprop="datePublished">Dec 7 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/12/01/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://thumbs.dreamstime.com/t/tomcat-1930481.jpg)" alt="tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/tomcat/">tomcat</a></p>
+                            <p class="item-title"><a href="/2016/12/01/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/" class="title">tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0</a></p>
+                            <p class="item-date"><time datetime="2016-12-01T09:44:04.000Z" itemprop="datePublished">Dec 1 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/11/14/日志分析平台/graylog 升级2.1 集中日志解决方案/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://www.graylog.org/assets/overview_dashboard-3817012f923d4a00e9bde1c0547796319cf0396149464f434cfc2ae83a9da826.png)" alt="graylog 升级2.1 集中日志解决方案" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a></p>
+                            <p class="item-title"><a href="/2016/11/14/日志分析平台/graylog 升级2.1 集中日志解决方案/" class="title">graylog 升级2.1 集中日志解决方案</a></p>
+                            <p class="item-date"><time datetime="2016-11-14T09:56:03.000Z" itemprop="datePublished">Nov 14 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/11/13/日志分析平台/Graylog—日志分析平台完美代替Elasticsearch/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://www.graylog.org/assets/logo-graylog-6ccfb3d4f7bfd0795c80bb616719f7d2f5151283f25c62aa0a6222994af2abeb.png)" alt="Graylog——日志分析平台完美代替Elasticsearch" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a></p>
+                            <p class="item-title"><a href="/2016/11/13/日志分析平台/Graylog—日志分析平台完美代替Elasticsearch/" class="title">Graylog——日志分析平台完美代替Elasticsearch</a></p>
+                            <p class="item-date"><time datetime="2016-11-13T09:56:03.000Z" itemprop="datePublished">Nov 13 2016</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">categories</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud-computing/">Cloud computing</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/automation/">automation</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/monitoring/">monitoring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tomcat/">tomcat</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/日志分析平台/">日志分析平台</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/测试/">测试</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/虚拟化/">虚拟化</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维安全/">运维安全</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维笔记/">运维笔记</a><span class="category-list-count">6</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">tag cloud</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/ACL/" style="font-size: 12.5px;">ACL</a> <a href="/tags/About-me/" style="font-size: 10px;">About me</a> <a href="/tags/CDN/" style="font-size: 10px;">CDN</a> <a href="/tags/Centos7-1/" style="font-size: 10px;">Centos7.1</a> <a href="/tags/DNS/" style="font-size: 15px;">DNS</a> <a href="/tags/Ghost/" style="font-size: 17.5px;">Ghost</a> <a href="/tags/Hadoop/" style="font-size: 10px;">Hadoop</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Jenkins/" style="font-size: 12.5px;">Jenkins</a> <a href="/tags/KVM/" style="font-size: 17.5px;">KVM</a> <a href="/tags/LVM/" style="font-size: 10px;">LVM</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Supervisor/" style="font-size: 10px;">Supervisor</a> <a href="/tags/TOTP/" style="font-size: 10px;">TOTP</a> <a href="/tags/Vsftpd/" style="font-size: 12.5px;">Vsftpd</a> <a href="/tags/cacti/" style="font-size: 10px;">cacti</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/http/" style="font-size: 10px;">http</a> <a href="/tags/node-js/" style="font-size: 10px;">node.js</a> <a href="/tags/wkhtmltox/" style="font-size: 10px;">wkhtmltox</a> <a href="/tags/zabbix/" style="font-size: 20px;">zabbix</a> <a href="/tags/zimbra/" style="font-size: 10px;">zimbra</a> <a href="/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/tags/旅行日记/" style="font-size: 10px;">旅行日记</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">links</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://www.unixhot.com/">运维社区</a>
+                    </li>
+                
+                    <li>
+                        <a href="http://elasticsearch.cn/topic/">elk技术论坛</a>
+                    </li>
+                
+                    <li>
+                        <a href="http://openskill.cn/">开源技术社区</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2016 yangc<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'http://blog.yangcvo.me/2014/10/05/Zabbix/zabbix邮件告警/';
+        
+        this.page.identifier = 'Zabbix/zabbix邮件告警';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'blog-yangcvo-me' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

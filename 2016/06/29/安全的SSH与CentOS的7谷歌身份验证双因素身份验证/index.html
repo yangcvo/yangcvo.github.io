@@ -1,0 +1,99 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 安全的SSH与CentOS的7谷歌身份验证双因素身份验证 · Cheng yang's Blog</title><meta name="description" content="安全的SSH与CentOS的7谷歌身份验证双因素身份验证 - yangc"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://blog.yangcvo.me/atom.xml" title="Cheng yang's Blog"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/yangcvo" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/yangcvo" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="http://blog.yangcvo.me/2014/05/04/%E4%B8%AA%E4%BA%BA%E8%AE%B0%E5%BD%95/About-me/" target="_blank" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">安全的SSH与CentOS的7谷歌身份验证双因素身份验证</h1><div class="post-info">2016年6月29日</div><div class="post-content"><h2 id="安装谷歌身份验证"><a href="#安装谷歌身份验证" class="headerlink" title="安装谷歌身份验证"></a>安装谷歌身份验证</h2><ul>
+<li>什么是谷歌身份验证<a href="http://code.google.com/p/google-authenticator/" target="_blank" rel="external">官方github详细介绍</a></li>
+</ul>
+<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>谷歌身份验证项目包括一次性密码生成器为多个移动平台上的实现，以及一个可插拔的身份验证模块（PAM）整个的一次性密码是基于服务器和设备与谷歌，验证程序的时间安装在同步之中。在设备和服务器然后会知道什么一次性代码是正确的，在30秒内，然后它会改变。</p>
+<blockquote>
+<p>SSH访问始终是关键，你可能要想方设法提高你的SSH访问的安全性。在这篇文章中，我们将看到我们如何可以通过使用谷歌的Authenticator保护与简单的双因素身份验证的SSH。在使用它之前，你必须与谷歌身份验证一次性密码协议TOTP服务器上的SSH守护整合，另一个限制是，你必须有你的Andr​​oid手机与你所有的时间，或者至少你想SSH访问的时间。这是教程为CentOS 7编写的。</p>
+</blockquote>
+<ul>
+<li>首先，我们将通过在外壳执行以下命令来安装开源的谷歌身份验证PAM模块。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yum install google-authenticator</span><br></pre></td></tr></table></figure>
+<ul>
+<li>安装这步如果提示有没有可用的软件包<code>google-authenticator</code>尝试安装EPEL repo (for CentOS 6 &amp; 7):</li>
+<li>Centos 7是不会提示这个错误的，6的话会提示这个错误。下面是6的安装方法。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"> <span class="comment"># cd /tmp </span></span><br><span class="line"><span class="comment"># wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm </span></span><br><span class="line"><span class="comment"># wget http://rpms.famillecollet.com/enterprise/remi-release-6.rpm </span></span><br><span class="line"><span class="comment"># rpm -Uvh remi-release-6*.rpm epel-release-6*.rpm</span></span><br></pre></td></tr></table></figure>
+<p>Then verify the EPEL repo exists:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yum repolist </span><br><span class="line">... </span><br><span class="line">epel            Extra Packages <span class="keyword">for</span> Enterprise Linux 6 - x86_64 </span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>Finally, install Google Authenticator:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yum --enablerepo=epel install google-authenticator</span><br></pre></td></tr></table></figure>
+<ul>
+<li>现在，我们需要配置PAM身份验证的SSH</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vim /etc/pam.d/sshd</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>该文件更改为这一点 -基本上加入“身份验证所需的pam_google_authenticator.so”行</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">auth required pam_google_authenticator.so</span><br></pre></td></tr></table></figure>
+<ul>
+<li>接下来，现在，我们需要编辑ssh守护进程的配置文件（如果你愿意，你也可以做到这一点从的​​Virtualmin）</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vim /etc/ssh/sshd_config</span><br></pre></td></tr></table></figure>
+<p>加以下行的文件中，如果它已经放置，然后将参数更改为“yes”：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ChallengeResponseAuthentication yes</span><br></pre></td></tr></table></figure>
+<ul>
+<li>重新启动SSH服务</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">service sshd restart</span><br></pre></td></tr></table></figure>
+<ul>
+<li>然后运行服务器运行在谷歌的认证：</li>
+</ul>
+<blockquote>
+<p>此命令将在您安装谷歌认证的Centos 7服务器。下一个步骤是获得的验证码。这是一个非常简单的命令，只需回答服务器的简单的问题，他会问你要获取验证码，并暂存码。为此，您可以一步运行以下命令：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">google-authenticator</span><br></pre></td></tr></table></figure>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/Google-OTP2.png" alt=""></p>
+<p>记得重启ssh服务。</p>
+<blockquote>
+<p>在您的浏览器，加载的URL上面提到的; 它会显示一个QRCode的，你可以扫描到您的手机采用了谷歌身份验证器应用程序的Andr​​oid，iPhone或黑莓。如果你已经有一个谷歌身份验证令牌被您的手机上生成的，您可以添加一个新的，它会显示他们。<br>苹果手机<br>推荐软件：google authenticator 、authy 、洋葱 </p>
+</blockquote>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/Google-OTP3.png" alt=""></p>
+<p>Android的可以到我github上面下载：（Google 身份证认证器）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">启动appon您的手机：</span><br><span class="line">在您的手机中选择基于时间的对于考虑使用SSH使用户</span><br><span class="line"></span><br><span class="line">帐户：  根用户名@nginx</span><br><span class="line">重点：就是key值</span><br><span class="line">两种添加方法。</span><br></pre></td></tr></table></figure>
+<h3 id="验证测试："><a href="#验证测试：" class="headerlink" title="验证测试："></a>验证测试：</h3><p>如果一切工作正常，你应该能够通过SSH使用用户名，然后验证码从您的手机/设备，登陆需要先登陆服务器密码，然后在加动态密码即可。</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/Google-OTP4.png" alt=""></p>
+<h3 id="报错error"><a href="#报错error" class="headerlink" title="报错error"></a>报错error</h3><p>如果提示找不到这个包需要翻墙或者VPN才能下载：</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wget https://google-authenticator.googlecode.com/files/libpam-google-authenticator-1.0-source.tar.bz2 </span><br><span class="line">tar -xvzf libpam-google-authenticator-1.0-source.tar.bz2 </span><br><span class="line"><span class="built_in">cd</span> libpam-google-authenticator-1.0 </span><br><span class="line">make make install</span><br></pre></td></tr></table></figure>
+<p>这里我已经下载好安装包了，你可以下载下来编译安装。</p>
+<h3 id="共享资料"><a href="#共享资料" class="headerlink" title="共享资料"></a>共享资料</h3><ul>
+<li>英文安装文档&amp;google-authenticator包：我github上面有安装包也上传了。<a href="https://github.com/yangcvo/Google-Authenticator" target="_blank" rel="external">github</a></li>
+</ul>
+<ul>
+<li>还有什么报错参考链接：<a href="http://blog.remibergsma.com/tag/google-authenticator/" target="_blank" rel="external">google_authenticator</a></li>
+</ul>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ol>
+<li><p>提示一点阿里云上面服务器是安装不上的。因为我都在两个系统6 &amp; 7版本试过了。</p>
+</li>
+<li><p>Selinux：需设定为disabled</p>
+</li>
+<li><p>可与rsa公私钥认证一起使用，但只差别在与电脑里有没有rsa key而已，如果没有的话才会用到。</p>
+</li>
+<li><p>同一个『.google_authenticator』可用在别台Server上，所以在安全性上仍须注意。</p>
+</li>
+<li><p>商用OTP系统一般是C/S网路版方式，有一个统一的Authentication Server，为了保证高可用性，</p>
+<p> 一般会有一主一备两台伺服器。</p>
+</li>
+<li><p>Google Authenticator是一个基于时间的产生验证码的程式，因此不管是伺服器端还是手机用户端，</p>
+<p> 对时间的要求都是非常严格的，要时刻保持与NTP伺服器同步。</p>
+</li>
+<li><p>Google Authenticator和条型码扫瞄器默认是不会产生任何GPRS和WIFI流量的。</p>
+</li>
+<li><p>如果不需要使用者登入时输入OTP密码，而是在使用者su到root时要求输入，</p>
+<p> 可以把PAM认证语句加入到『/etc/pam.d/su』中。</p>
+</li>
+<li><p>当伺服器启用PAM认证之后，所有使用者都是要求输入TOTP密码，</p>
+<p> 所以需要每个使用者在自己的目录下产生一个『.google_authenticator』档案。</p>
+</li>
+</ol>
+</div></article></div></section><footer><div class="paginator"><a href="/2016/07/03/运维笔记/运维笔记/" class="prev">PREV</a><a href="/2016/06/22/Zabbix/zabbix3-0实现微信报警/" class="next">NEXT</a></div><div data-thread-key="2016/06/29/安全的SSH与CentOS的7谷歌身份验证双因素身份验证/" data-title="安全的SSH与CentOS的7谷歌身份验证双因素身份验证" data-url="http://blog.yangcvo.me/2016/06/29/安全的SSH与CentOS的7谷歌身份验证双因素身份验证/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"true"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+
+</script><div class="copyright"><p>© 2014 - 2016 <a href="http://blog.yangcvo.me">yangc</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yangcvo" target="_blank">Github-yangcvo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>

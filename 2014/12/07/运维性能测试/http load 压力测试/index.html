@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          http load 压力测试 - yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/2014/12/07/运维性能测试/http load 压力测试/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                    </div>
+                    <h1>http load 压力测试</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by yangc on
+                        2014-12-07
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="http-load-压力测试"><a href="#http-load-压力测试" class="headerlink" title="http load 压力测试"></a>http load 压力测试</h1><h4 id="一、http-load简介"><a href="#一、http-load简介" class="headerlink" title="一、http_load简介"></a>一、http_load简介</h4><p>基于linux平台的一种性能测工具。以并行复用的方式运行，用以测试web服务器的吞吐量与负载，测试web页面的性能。</p>
+<ul>
+<li><p>优点： 1.基于命令行，简单、易于上手。2.小巧轻便，解压缩后不到100k。3.开源，免费。</p>
+</li>
+<li><p>缺点：1.仅适用于web页面的性能测试，不适用于访问数据库。2.测试结果分析有限3.平台依赖linux。</p>
+</li>
+</ul>
+<h4 id="二、下载http-load"><a href="#二、下载http-load" class="headerlink" title="二、下载http_load"></a>二、下载http_load</h4><p>http_load的主页（实在是有点简陋）：<a href="http://www.acme.com/software/http_load/，点击Fetch" target="_blank" rel="external">http://www.acme.com/software/http_load/，点击Fetch</a> the software 下载。<br>或者直接在linux平台下，输入命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wget  http://www.acme.com/software/http_load/http_load-12mar2006.tar.gz</div></pre></td></tr></table></figure>
+<p>下载到目录中。</p>
+<h4 id="三、安装http-load"><a href="#三、安装http-load" class="headerlink" title="三、安装http_load"></a>三、安装http_load</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">chmod 777http_load-12mar2006.tar.gz  改变权限</div><div class="line">tar xzvf http_load-12mar2006.tar.gz</div><div class="line">make</div><div class="line">make install</div></pre></td></tr></table></figure>
+<p>注：执行make前，需要先安装gcc编辑器</p>
+<p>有时候报错如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">[root@localhost http_load-12mar2006]<span class="comment"># make install</span></div><div class="line">rm <span class="_">-f</span> /usr/<span class="built_in">local</span>/bin/http_load</div><div class="line">cp http_load /usr/<span class="built_in">local</span>/bin</div><div class="line">rm <span class="_">-f</span> /usr/<span class="built_in">local</span>/man/man1/http_load.1</div><div class="line">cp http_load.1 /usr/<span class="built_in">local</span>/man/man1</div><div class="line">cp: 无法创建一般文件‘/usr/<span class="built_in">local</span>/man/man1’: 没有那个文件或目录</div><div class="line">make: *** [install] 错误 1</div><div class="line">估计是/usr/<span class="built_in">local</span>/man这个目录不存在导致的</div><div class="line">创建目录： mkdir /usr/<span class="built_in">local</span>/man</div><div class="line">再次make install。OK啦。</div><div class="line">四、使用http_load</div><div class="line">-parallel 简写-p ：含义是并发的用户进程数。</div><div class="line">-fetches 简写<span class="_">-f</span> ：含义是总计的访问次数</div><div class="line">-rate    简写-r ：含义是每秒的访问频率</div><div class="line">-seconds简写<span class="_">-s</span> ：含义是总计的访问时间</div></pre></td></tr></table></figure>
+<p>url 是你要访问的网址名，参数可以是单个的网址也可以使包含网址的文件<br>比如输入命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./http_load -rate 5 -seconds 10 urls  这里的usls 可以分析下 是个链接</div></pre></td></tr></table></figure>
+<h4 id="五、结果分析"><a href="#五、结果分析" class="headerlink" title="五、结果分析"></a>五、结果分析</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">29 fetches, 22 max parallel, 790047 bytes, <span class="keyword">in</span> 10.0021 seconds</div><div class="line">29个请求，最大并发数22，总计传输的数据为790047bytes，运行时间10.0021秒。关注点：总请求数、最大并发进程数</div><div class="line">27243 mean bytes/connection</div><div class="line">每一连接平均传输的数据量790047/29=27243</div><div class="line">2.8994 fetches/sec, 78988.5 bytes/sec</div><div class="line">每秒的响应请求为2.8994，每秒传递的数据为78988.5btyes/sec，关注点：每秒的响应请求数（对应LR中的每秒响应用户数）</div><div class="line">msecs/connect: 10.4312 mean, 23.104 max, 2.12 min</div><div class="line">每次连接的平均响应时间是10.4312 msecs，最大响应时间23.104 msecs，最小响应时间2.12 msecs。关注点：每个连接的平均响应时间（对应QTP中的response time，每连接响应用户时间 ）</div><div class="line">msecs/first-response: 381.184 mean, 3269.51 max, 41.067 min</div><div class="line">HTTP response codes:</div><div class="line">code 200 – 29</div></pre></td></tr></table></figure>
+<p>要注意是否系统遇到了瓶颈。<br>特殊说明：<br>测试结果中主要的指标是 fetches/sec、msecs/connect 这个选项，即服务器每秒能够响应的查询次数，<br>用这个指标来衡量性能。似乎比 apache的ab准确率要高一些，也更有说服力一些。<br>Qpt-每秒响应用户数和response time，每连接响应用户时间。<br>测试的结果主要也是看这两个值。当然仅有这两个指标并不能完成对性能的分析，我们还需要对服务器的<br>cpu、men进行分析，才能得出结论</p>
+<h4 id="第二种："><a href="#第二种：" class="headerlink" title="第二种："></a>第二种：</h4><p>二、webbench</p>
+<p>webbench是Linux下的一个网站压力测试工具，最多可以模拟3万个并发连接去测试网<br>站的负载能力。下载地址可以到google搜，我这里给出一个<br>下载地址：<a href="http://soft.vpser.net/test/webbench/webbench-1.5.tar.gz" target="_blank" rel="external">http://soft.vpser.net/test/webbench/webbench-1.5.tar.gz</a><br>这个程序更小，解压后不到50K，呵呵<br>安装非常简单</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#tar zxvf webbench-1.5.tar.gz</span></div><div class="line"><span class="comment">#cd webbench-1.5</span></div><div class="line"><span class="comment">#make &amp;&amp; make install</span></div></pre></td></tr></table></figure>
+<p>会在当前目录生成webbench可执行文件，直接可以使用了<br>用法：</p>
+<pre><code>webbench -c 并发数 -t 运行测试时间 URL
+</code></pre><p>如：</p>
+<pre><code>webbench -c 5000 -t 120 http://www.vpser.net
+</code></pre><h4 id="三、ab"><a href="#三、ab" class="headerlink" title="三、ab"></a>三、ab</h4><p>ab是apache自带的一款功能强大的测试工具<br>安装了apache一般就自带了，<br>用法可以查看它的说明</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">$ ./ab</div><div class="line">./ab: wrong number of arguments</div><div class="line">Usage: ./ab [options] [http://]hostname[:port]/path</div><div class="line">Options are:</div><div class="line">-n requests Number of requests to perform</div><div class="line">-c concurrency Number of multiple requests to make</div><div class="line">-t timelimit Seconds to max. <span class="built_in">wait</span> <span class="keyword">for</span> responses</div><div class="line">-p postfile File containing data to POST</div><div class="line">-T content-type Content-type header <span class="keyword">for</span> POSTing</div><div class="line">-v verbosity How much troubleshooting info to <span class="built_in">print</span></div><div class="line">-w Print out results <span class="keyword">in</span> HTML tables</div><div class="line">-i Use HEAD instead of GET</div><div class="line">-x attributes String to insert as table attributes</div><div class="line">-y attributes String to insert as tr attributes</div><div class="line">-z attributes String to insert as td or th attributes</div><div class="line">-C attribute Add cookie, eg. ‘Apache=1234. (repeatable)</div><div class="line">-H attribute Add Arbitrary header line, eg. ‘Accept-Encoding: gzip’</div><div class="line">Inserted after all normal header lines. (repeatable)</div><div class="line">-A attribute Add Basic WWW Authentication, the attributes</div><div class="line">are a colon separated username and password.</div><div class="line">-P attribute Add Basic Proxy Authentication, the attributes</div><div class="line">are a colon separated username and password.</div><div class="line">-X proxy:port Proxyserver and port number to use</div><div class="line">-V Print version number and <span class="built_in">exit</span></div><div class="line">-k Use HTTP KeepAlive feature</div><div class="line"><span class="_">-d</span> Do not show percentiles served table.</div><div class="line">-S Do not show confidence estimators and warnings.</div><div class="line">-g filename Output collected data to gnuplot format file.</div><div class="line"><span class="_">-e</span> filename Output CSV file with percentages served</div><div class="line">-h Display usage information (this message)</div></pre></td></tr></table></figure>
+<p>参数众多，一般我们用到的是-n 和-c</p>
+<ul>
+<li>例如：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./ab -c 1000 -n 100 http://www.vpser.net/index.php</div></pre></td></tr></table></figure>
+<p>这个表示同时处理1000个请求并运行100次index.php文件.</p>
+<h4 id="四、Siege"><a href="#四、Siege" class="headerlink" title="四、Siege"></a>四、Siege</h4><p>一款开源的压力测试工具，可以根据配置对一个WEB站点进行多用户的并发访问，记录每个用户所有请求过程的相应时间，并在一定数量的并发访问下重复进行。<br>官方：<a href="http://www.joedog.org/" target="_blank" rel="external">http://www.joedog.org/</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Siege下载：http://soft.vpser.net/<span class="built_in">test</span>/siege/siege-2.67.tar.gz</div><div class="line">解压：</div><div class="line"><span class="comment"># tar -zxf siege-2.67.tar.gz</span></div><div class="line">进入解压目录：</div><div class="line"><span class="comment"># cd siege-2.67/</span></div><div class="line">安装：</div><div class="line"><span class="comment">#./configure ; make</span></div><div class="line"><span class="comment">#make install</span></div></pre></td></tr></table></figure>
+<p>使用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">siege -c 200 -r 10 <span class="_">-f</span> example.url</div></pre></td></tr></table></figure>
+<p>-c是并发量，-r是重复次数。 url文件就是一个文本，每行都是一个url，它会从里面随机访问的。<br>example.url内容:<br><a href="http://www.licess.cn" target="_blank" rel="external">http://www.licess.cn</a><br><a href="http://www.vpser.net" target="_blank" rel="external">http://www.vpser.net</a><br><a href="http://soft.vpser.net" target="_blank" rel="external">http://soft.vpser.net</a><br>结果说明</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">Lifting the server siege… done.</div><div class="line">Transactions: 3419263 hits //完成419263次处理</div><div class="line">Availability: 100.00 % //100.00 % 成功率</div><div class="line">Elapsed time: 5999.69 secs //总共用时</div><div class="line">Data transferred: 84273.91 MB //共数据传输84273.91 MB</div><div class="line">Response time: 0.37 secs //相应用时1.65秒：显示网络连接的速度</div><div class="line">Transaction rate: 569.91 trans/sec //均每秒完成 569.91 次处理：表示服务器后</div><div class="line">Throughput: 14.05 MB/sec //平均每秒传送数据</div><div class="line">Concurrency: 213.42 //实际最高并发数</div><div class="line">Successful transactions: 2564081 //成功处理次数</div><div class="line">Failed transactions: 11 //失败处理次数</div><div class="line">Longest transaction: 29.04 //每次传输所花最长时间</div><div class="line">Shortest transaction: 0.00 //每次传输所花最短时间</div></pre></td></tr></table></figure>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2014/12/07/Linux笔记/LAMP/yum一键安装与卸载LAMP环境/" data-toggle="tooltip" data-placement="top" title="yum一键安装与卸载LAMP环境">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2014/12/07/运维性能测试/at发送测压访问iptables防火墙控制并发访问/" data-toggle="tooltip" data-placement="top" title="at发送测压访问iptables防火墙控制并发访问">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yangcvo-me";
+    var disqus_identifier = "http://blog.yangcvo.me/2014/12/07/运维性能测试/http load 压力测试/";
+    var disqus_url = "http://blog.yangcvo.me/2014/12/07/运维性能测试/http load 压力测试/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/PandaJuesha">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yangcvo.me">yangc</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/page/2/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>Chengyang&#39;s Blog</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">The mountain road twists and turns, but after all, toward the peak extension.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        
+
+<!-- USE SIDEBAR -->
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                post-container
+            ">
+            
+                <!-- Main Content -->
+
+
+<div class="post-preview">
+
+    <a href="/2016/12/07/Java-Dubbo/Sonarqube和jacoco搭建代码检查/">
+        <h2 class="post-title">
+            Sonarqube和jacoco搭建代码检查
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+准备工作：sonarqube，jacoco，git，maven，ant，sonar-runnersonarqube 去官网下载，文件太大，不能上传git，mavne，ant自己安装sonarqube和sonar-runnrt安装：查看链接
+
+监控机子配置：启动sonarqube，git下载源代码，进入源码路径，添加一下文件；
+
+
+1234561）sonar-project.properti......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by yangc on
+        2016-12-07
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/12/02/Web服务技术/tomcat/记录tomcat进程CPU使用率高排查故障经验/">
+        <h2 class="post-title">
+            记录tomcat进程CPU使用率高排查故障经验
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            1、故障现象运营同事反馈APP其中体检商城购买订单系统运行缓慢，访问出现超时，多次重启系统后问题依然存在，使用top命令查看服务器情况，发现CPU占用率过高。
+2、CPU占用过高问题定位2.1、定位问题进程使用top命令查看资源占用情况，发现pid为14063的进程占用了大量的CPU资源，CPU占用率高达229.1%，内存占用率也达到了29.8%
+123456789[root@account......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by yangc on
+        2016-12-02
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/12/02/运维安全/gitlab网站被黑redis被劫持6379端口需要提交认证，如何挽救？/">
+        <h2 class="post-title">
+            gitlab网站被黑redis被劫持6379端口需要提交认证，如何挽救？
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            今天早上5点多收到阿里云的告警：服务器CPU百分百，gitlab服务器访问出现500，第一时间排查问题。毕竟这个关乎着开发今天可能无法提交代码。
+
+第一时间我查看什么原因导致我gitlab 500。根据以往经验gitlab出现500 第一：版本出现bug，第二：服务器网络不正常，请求不到。
+然后查看日志：
+1234567891011121314[root@GitLab ~]# tailf -......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by yangc on
+        2016-12-02
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/11/24/Node.js/Node.js-Grunt工具搭建后台管理实践/">
+        <h2 class="post-title">
+            Node.js+Grunt工具搭建后台管理实践
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            最近弄灰度发布系统，由于最近体检项目需要对css文件和js文件进行压缩，各种比较之后，选择了grunt进行构建。google一下，几乎都是grunt最新版的使用说明 查看gruntjs的入门 Getting started，又是云里雾里的，好吧，只能耐心看文档和不断的实践吧。
+Grunt入门入门教程:
+系统环境centos 6.6 x64
+Grunt安装过程：1、前提安装了nodejs，进入......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by yangc on
+        2016-11-24
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/11/24/Web服务技术/申请证书Https/免费 Https 证书（Let'S Encrypt）申请与配置 /">
+        <h2 class="post-title">
+            免费 Https证书（Let'S Encrypt）申请与配置
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            免费 Https 证书（Let’S Encrypt）申请与配置之前要申请免费的 https 证书操作步骤相当麻烦，今天看到有人在讨论，就搜索了一下。发现现在申请步骤简单多了。
+1. 下载 certbot123git clone https://github.com/certbot/certbotcd certbot./certbot-auto --help
+解压打开执行就会有相关提示
+2. ......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by yangc on
+        2016-11-24
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/11/23/Web服务技术/申请证书Https/如何在Nginx申请安装配置免费HTTPS证书+阿里云SLB如何配置HTTPS/">
+        <h2 class="post-title">
+            如何在Nginx申请安装配置免费HTTPS证书+阿里云SLB如何配置HTTPS
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            如何在Nginx申请安装配置免费HTTPS证书HTTPS在各大互联网站已经成为标配，就连某度也在前不久全面启用HTTPS，很多小网站也配置了HTTPS，这是未来的一种趋势.HTTPS的好处多多，可以防止各种攻击劫持，运营商广告植入，客户传输信息泄露等问题。为了让HTTPS能够全面普及，让我们加密项目应运而生，它由互联网安全研究小组ISRG（互联网安全研究小组）提供服务，很早之前我就在关注 L......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by yangc on
+        2016-11-23
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/11/23/Web服务技术/申请证书Https/解决Https请求跨域CDN资源http网站出现访问失败-证书显示不安全/">
+        <h2 class="post-title">
+            解决Https请求跨域CDN资源http网站出现访问失败-证书显示不安全
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            解决Https请求跨域CDN资源http网站出现访问失败-证书显示不安全这里讲如何解决跨域http资源请求证书出现问题， 上一篇我解决网站如何申请免费证书，实现申请免费证书在Nginx上面实现https访问。
+可是我一开始没有这么顺利实现我想要的效果，因为的确证书是有了访问可以https可是请求跨域http服务就出现问题了。这里我是在又拍云做CDN加速的，所以这里说明下如果你的公司网站比如说......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by yangc on
+        2016-11-23
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/11/14/日志分析平台/Graylog/graylog 升级2.1 集中日志解决方案/">
+        <h2 class="post-title">
+            graylog 升级2.1 集中日志解决方案
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            graylog 升级2.1 集中日志解决方案参考官网：升级到Graylog的2.1.x
+一：为什么需要集中日志解决方案？在公司服务机子部署越来越多的情况下，让我们来想想会遇到的问题：
+
+开发人员不能登录线上服务器查看详细日志，经过运维周转费时费力
+日志数据分散在多个系统，难以查找
+日志数据量大，查询速度慢
+一个调用会涉及多个系统，难以在这些系统的日志中快速定位数据
+数据不够实时
+很难对数据进......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by yangc on
+        2016-11-14
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/11/13/日志分析平台/Graylog/Graylog—日志分析平台完美代替Elasticsearch/">
+        <h2 class="post-title">
+            Graylog——日志分析平台完美代替Elasticsearch
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            摘要: 提起日志聚合工具，有开源界的ELK，商业界的Splunk，但我要介绍开源的后起之秀Graylog，可以说是龙头老大Splunk的开源版。
+Graylog——日志分析平台完美代替Elasticsearch先看看 推荐！国外程序员整理的系统管理员资源大全 中，国外程序员整理的日志聚合工具的列表：
+日志管理工具：收集，解析，可视化
+
+Elasticsearch - 一个基于Lucene的文......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by yangc on
+        2016-11-13
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/11/10/运维笔记/如何解决抽奖的性能问题和秒杀的讨论  /">
+        <h2 class="post-title">
+            如何解决秒杀的性能问题和微信推广活动的讨论
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            最近业务试水微信抽奖活动，公司现在打算推广下产品。增加些粉丝量 之前经常看到淘宝的同行们讨论秒杀，讨论电商，这次终于轮到我们自己理论结合实际一次了。
+ps：进入正文前先说一点个人感受，之前看淘宝的ppt感觉都懂了，等到自己出解决方案的时候发现还是有很多想不到的地方其实都没懂，再次验证了“细节是魔鬼”的理论。并且一个人的能力有限，只有大家一起讨论才能想的更周全，更细致。好了，闲话少说，下面进入......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by yangc on
+        2016-11-10
+    </p>
+
+</div>
+<hr>
+
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+        <li class="previous">
+            <a href="/">&larr; Newer Posts</a>
+        </li>
+    
+    
+        <li class="next">
+            <a href="/page/3/">Older Posts &rarr;</a>
+        </li>
+    
+</ul>
+
+
+
+                <!-- 如果开启评论功能 -->
+                
+
+            </div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                            
+                            <a href="/tags/#DNS" title="DNS" rel="3">DNS</a>
+                            
+                        
+                            
+                            <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="6">Java+Tomcat notes</a>
+                            
+                        
+                            
+                            <a href="/tags/#Dubbo" title="Dubbo" rel="2">Dubbo</a>
+                            
+                        
+                            
+                            <a href="/tags/#performance tuning" title="performance tuning" rel="2">performance tuning</a>
+                            
+                        
+                            
+                            <a href="/tags/#Java" title="Java" rel="2">Java</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Linux note" title="Linux note" rel="13">Linux note</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Vsftpd" title="Vsftpd" rel="2">Vsftpd</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Personal life record" title="Personal life record" rel="7">Personal life record</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="4">Big data Hadoop</a>
+                            
+                        
+                            
+                            <a href="/tags/#Performance and framework" title="Performance and framework" rel="2">Performance and framework</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Operation safety" title="Operation safety" rel="7">Operation safety</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="11">Performance monitoring</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Blog" title="Blog" rel="6">Blog</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Web Service" title="Web Service" rel="17">Web Service</a>
+                            
+                        
+                            
+                            <a href="/tags/#Nginx" title="Nginx" rel="17">Nginx</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="17">Virtualization-Docker</a>
+                            
+                        
+                            
+                            <a href="/tags/#KVM" title="KVM" rel="7">KVM</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#zabbix" title="zabbix" rel="17">zabbix</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="6">Log analysis platform</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Automation" title="Automation" rel="15">Automation</a>
+                            
+                        
+                            
+                            <a href="/tags/#Ansible" title="Ansible" rel="9">Ansible</a>
+                            
+                        
+                            
+                            <a href="/tags/#Jenkins" title="Jenkins" rel="2">Jenkins</a>
+                            
+                        
+                            
+                            <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Short About -->
+                <section class="visible-md visible-lg">
+                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
+                    <div class="short-about">
+
+                        
+                            <img src="/img/avatar.jpg" />
+                        
+
+                        
+                            <p>我要成为魔法师!</p>
+                        
+
+                        <!-- SNS Link -->
+                        <ul class="list-inline">
+                            
+                            
+                                <li>
+                                    <a target="_blank" href="https://twitter.com/PandaJuesha">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+                            
+                                <li>
+                                    <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa  fa-stack-1x fa-inverse">知</i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+
+                            
+                                <li>
+                                    <a target="_blank" href="http://weibo.com/yangcvo">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+
+                            
+
+                            
+                                <li>
+                                    <a target="_blank"  href="https://github.com/yangcvo">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+                            
+                            
+                            
+                        </ul>
+                    </div>
+                </section>
+                
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+        
+    </div>
+</div>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/PandaJuesha">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yangcvo.me">yangc</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          zabbix性能监控故障总结 - yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/2014/10/04/性能监控/Zabbix/zabbix-故障总结/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Performance monitoring" title="Performance monitoring">Performance monitoring</a>
+                        
+                          <a class="tag" href="/tags/#zabbix" title="zabbix">zabbix</a>
+                        
+                    </div>
+                    <h1>zabbix性能监控故障总结</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by yangc on
+                        2014-10-04
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="1-zabbix红色弹出报错-zabbix-server-is-not-running-the-information-displayed-may-not-be-current"><a href="#1-zabbix红色弹出报错-zabbix-server-is-not-running-the-information-displayed-may-not-be-current" class="headerlink" title="1.zabbix红色弹出报错 zabbix server is not running: the information displayed may not be current"></a>1.zabbix红色弹出报错 <code>zabbix server is not running: the information displayed may not be current</code></h3><ul>
+<li>排错:</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">1. 检查   /var/www/html/zabbix/conf/zabbix.conf.php </div><div class="line">确定 </div><div class="line"><span class="variable">$DB</span>[<span class="string">'DATABASE'</span>]  数据库</div><div class="line"><span class="variable">$DB</span>[<span class="string">'USER'</span>]    用户</div><div class="line"><span class="variable">$DB</span>[<span class="string">'PASSWORD'</span>]   密码</div><div class="line">这三个参数都是正确的。 </div><div class="line">注意：每次改了参数文件一定要记得重启zabbix_server</div><div class="line">这里都没问题。</div><div class="line"></div><div class="line">2. 关闭SELinux的方法:</div><div class="line">修改/etc/selinux/config文件中的SELINUX=<span class="string">""</span> 为 disabled ，然后重启。</div><div class="line">如果不想重启系统，使用命令setenforce 0</div><div class="line">注:</div><div class="line">setenforce 1 设置SELinux 成为enforcing模式</div><div class="line">setenforce 0 设置SELinux 成为permissive模式 </div><div class="line">在lilo或者grub的启动参数中增加：selinux=0,也可以关闭selinux</div><div class="line">selinux是否关闭。一定要关闭这个，开启selinux会引起一连串问题，甚至zabbix的discovery功能也不能正常使用</div><div class="line"></div><div class="line">3. 上面都没有问题然后在查看服务是否正常启动。</div><div class="line">查看/tmp/zabbix_server.log和/tmp/zabbix_agent.log无任何异常。</div><div class="line">如果日志提示查找不到主机名，我们看下服务是否启动。</div><div class="line"></div><div class="line">4. 看zabbix_server和zabbix_agent进程、端口都正常 </div><div class="line">   netstat -ntulp</div><div class="line">如果没有启动 需要手动启动下，这里可能服务没有启动，启动服务即可。</div></pre></td></tr></table></figure>
+<h3 id="2-安装好zabbix-agentd-监控端报错Get-value-from-agent-failed-cannot-connect-to-192-168-1-218-10050-113-No-route-to-host"><a href="#2-安装好zabbix-agentd-监控端报错Get-value-from-agent-failed-cannot-connect-to-192-168-1-218-10050-113-No-route-to-host" class="headerlink" title="2.安装好zabbix-agentd 监控端报错Get value from agent failed: cannot connect to [[192.168.1.218]:10050]: [113] No route to host"></a>2.安装好zabbix-agentd 监控端报错<code>Get value from agent failed: cannot connect to [[192.168.1.218]:10050]: [113] No route to host</code></h3><ul>
+<li>排错:</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">看提示“No route to host”，与网络连接有关。排除的方法如下:</div><div class="line"></div><div class="line">a）查看192.168.30.3这台机器是否已开机</div><div class="line"></div><div class="line">b)在zabbix server端向这台机器ping，看网络是否通</div><div class="line"></div><div class="line">c）用telnet 登录10050和10051端口，看该主机是否允许这两个端口通讯</div><div class="line"></div><div class="line">d)查看iptables防火墙规则是否拦截10050、10051端口</div></pre></td></tr></table></figure>
+<h3 id="3-时间不同步Check-if-client-local-time-is-in-sync-with-Zabbix-server-time"><a href="#3-时间不同步Check-if-client-local-time-is-in-sync-with-Zabbix-server-time" class="headerlink" title="3.时间不同步Check if client local time is in sync with Zabbix server time"></a>3.时间不同步<code>Check if client local time is in sync with Zabbix server time</code></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">因为我在我的网络中的一些NTP服务器，这将是很好能够测量主机和这些服务器之一之间的时间差。可悲的是，这几乎是不可能的。</div><div class="line">但有一个解决方案:</div><div class="line"></div><div class="line">`system.localtime.fuzzytime`，照顾这只是一个!!!触发的“fuzzytime”功能发出警报，如果被监控服务器的时间漂移。它比较报告主机的时间的zabbix服务器在触发器被处理的时间上的时间。fuzzytime（秒），可能是（浮点，整数）:</div><div class="line"></div><div class="line">返回1，如果时间戳（项目值）不从的zabbix服务器时间有所不同超过N秒，0 -否则通常用于system.localtime检查本地时间在服务器的zabbix本地时间同步。</div><div class="line">注:添加公式时，使用“添加”按钮，在右侧，这是很简单的这种方式！</div><div class="line"></div><div class="line">系统时间跟我现在北京时间不同步。</div><div class="line">date -R </div><div class="line">查看下</div><div class="line"></div><div class="line">需要手动添加计划任务同步下，设置开机启动。这里IP是zabbix-server IP</div><div class="line"></div><div class="line">00 * * * * /usr/sbin/ntpdate 192.168.47.20 &gt;/dev/null 2&gt;&amp;1</div></pre></td></tr></table></figure>
+<p>还有不懂得可以看:<a href="http://en.linuxkitchen.com/2014/11/03/zabbix-and-time-difference-from-host-to-zabbix-server/" target="_blank" rel="external">参考</a></p>
+<h3 id="4-MySQL内存不够-Lack-of-available-memory-on-server-MySQL"><a href="#4-MySQL内存不够-Lack-of-available-memory-on-server-MySQL" class="headerlink" title="4.MySQL内存不够 Lack of available memory on server MySQL"></a>4.MySQL内存不够 <code>Lack of available memory on server MySQL</code></h3><p>故障原因:Lack of available memory on server argus047072</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">需要添加内存</div><div class="line">故障原因:Redis链接数超过最大客户端数量限制。</div><div class="line">是否有大量的进程在后台运行</div></pre></td></tr></table></figure>
+<h3 id="5-Received-empty-response-from-Zabbix-Agent问题解决"><a href="#5-Received-empty-response-from-Zabbix-Agent问题解决" class="headerlink" title="5.Received empty response from Zabbix Agent问题解决"></a>5.<code>Received empty response from Zabbix Agent</code>问题解决</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">出现如下错误:</div><div class="line"></div><div class="line">Received empty response from Zabbix Agent at [192.168.1.2]. Assuming that agent dropped connection because of access permission</div><div class="line">大概意思是说没有权限访问agent端口10050，解决方法如下:</div><div class="line"></div><div class="line"><span class="comment"># cat zabbix_agentd.conf| grep Server=</span></div><div class="line">Server=192.168.1.2  <span class="comment"># zabbix server ip地址</span></div><div class="line"></div><div class="line">如果你的server有多个IP地址，使用逗号分隔多个IP地址。</div></pre></td></tr></table></figure>
+<h3 id="6-zabbix-报错磁盘不足Free-disk-space-is-less-than-20-on-volume-home"><a href="#6-zabbix-报错磁盘不足Free-disk-space-is-less-than-20-on-volume-home" class="headerlink" title="6.zabbix 报错磁盘不足Free disk space is less than 20% on volume /home"></a>6.zabbix 报错磁盘不足<code>Free disk space is less than 20% on volume /home</code></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">磁盘总共大小</div><div class="line">du -Th</div><div class="line"></div><div class="line"></div><div class="line">定位查看是什么消耗那么多磁盘空间，查看home目录。</div><div class="line">du <span class="_">-s</span> -h /srv/tomcat/tomcat_account/logs/* | sort</div><div class="line">1G localhost.2015-12-21.log</div><div class="line">2G localhost.2015-12-22.log</div><div class="line">2G localhost.2015-12-23.log</div><div class="line">.....</div><div class="line"></div><div class="line">find /srv/tomcat/tomcat_account/logs/ -mtime +1 -name <span class="string">"*.log"</span> -exec rm -rf &#123;&#125; \;</div><div class="line">这个保留前一天的日志其余都删除。</div><div class="line"></div><div class="line">1. 计划任务脚本清除前一天</div><div class="line"></div><div class="line">00 00 * * * find  /home/admin/output/ -mtime +1 -exec rm &#123;&#125; \;</div><div class="line"></div><div class="line">2. 或者使用脚本放到计划任务里面跑</div><div class="line"></div><div class="line">1 0 * * * /opt/soft/<span class="built_in">log</span>/qingli-log.sh &gt;/dev/null 2&gt;&amp;1</div><div class="line"></div><div class="line">这里的设置是每天凌晨0点1分执行qingli-log.sh .sh文件进行数据清理任务了。</div><div class="line">在查看磁盘总共大小</div></pre></td></tr></table></figure>
+<h3 id="7-zabbix监控报错zabbix-server-is-not-running-the-information-displayed-may-not-be-current的解决"><a href="#7-zabbix监控报错zabbix-server-is-not-running-the-information-displayed-may-not-be-current的解决" class="headerlink" title="7.zabbix监控报错zabbix server is not running: the information displayed may not be current的解决"></a>7.zabbix监控报错<code>zabbix server is not running: the information displayed may not be current</code>的解决</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">故障原因:Zabbix agent on labs047093 is unreachable <span class="keyword">for</span> 5 minutesZabbix使用一段时间后总是报Zabbix Agent不可到达</div><div class="line"></div><div class="line">解决结果:这三台机器网络不通，ssh连接不上，排错方法查看日志是否有报错，是否服务没有起来。</div><div class="line">如果数据库服务器是一直正常的，SELinux是事先关闭没有，修改完上述所提到的后发现问题依然。</div><div class="line"></div><div class="line">Zabbix依然报错（Zabbix Server Messages: PROBLEM: Zabbix agent on Zabbix server is unreachable <span class="keyword">for</span> 5 minutes。</div><div class="line">查看日志报什么错，定位解决问题，一般出现这个大部分数据延迟导致，在图形上面明显看到有4到5分钟数据是空白的。</div></pre></td></tr></table></figure>
+<h3 id="8-zabbix图形出现乱码或者没有文字。"><a href="#8-zabbix图形出现乱码或者没有文字。" class="headerlink" title="8.zabbix图形出现乱码或者没有文字。"></a>8.zabbix图形出现乱码或者没有文字。</h3><p>参考文档:<a href="https://github.com/yangcvo/zabbix.2.4" target="_blank" rel="external">zabbix2.4图形乱码</a></p>
+<h3 id="9-Zabbix监控之邮件告警发送失败smtp-server-错误代码550与535"><a href="#9-Zabbix监控之邮件告警发送失败smtp-server-错误代码550与535" class="headerlink" title="9.Zabbix监控之邮件告警发送失败smtp-server: 错误代码550与535"></a>9.Zabbix监控之邮件告警发送失败smtp-server: 错误代码550与535</h3><p>参考文档:<a href="http://clovemfong.blog.51cto.com/3297559/1702105/" target="_blank" rel="external">zabbix163邮件告警错误代码</a></p>
+<h3 id="10-zabbix中提示：Lack-of-free-swap-space-on-hostname"><a href="#10-zabbix中提示：Lack-of-free-swap-space-on-hostname" class="headerlink" title="10.zabbix中提示：Lack of free swap space on hostname"></a>10.zabbix中提示：<code>Lack of free swap space on hostname</code></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">提示：缺交换空间可以创建也可以不用创建。</div><div class="line"></div><div class="line">[root@xx ~]<span class="comment"># free -m</span></div><div class="line">             total       used       free     shared    buffers     cached</div><div class="line">Mem:          3832       3488        343          0        267       2389</div><div class="line">-/+ buffers/cache:        831       3000</div><div class="line">swap:            0          0          0</div><div class="line"></div><div class="line">个般物理机不可能不设交换分区，显然这样的设计没有考虑到云主机用户。只需要调节监控文件，即可解决问题：</div><div class="line">解决此问题的步骤如下:选择 Configuration-&gt;Templates(模板),在模板界面中选择Template OS Linux右侧的Triggers（触发器）,</div><div class="line">在触发器页面中打开Lack of free swap space on &#123;HOST.NAME&#125;项目,在新打开的触发器编辑页面中修改Expression（表达式）的内容,</div><div class="line">由原先的&#123;Template OS Linux:system.swap.size[,pfree].last(0)&#125;&lt;50</div><div class="line"></div><div class="line">修改为&#123;Template OS Linux:system.swap.size[,pfree].last(0)&#125;&lt;50 and &#123;Template OS Linux:system.swap.size[,free].last(0)&#125;&lt;&gt;0</div><div class="line"></div><div class="line"> 此处修改增加了“and&#123;Template OS Linux:system.swap.size[,free].last(0)&#125;&lt;&gt;0”判断系统有交换空间，当系统无交换空间&#123;Template OS</div><div class="line">Linux:system.swap.size[,free].last(0)&#125;的值为0时将不会使表达式成立，</div><div class="line">也就不会触发错误提示。保存后在下一个更新周期内zabbix之前报告“Lack of free swap space”问题就会被自动标记为Resolved.</div><div class="line"></div><div class="line">或者创建：</div><div class="line"></div><div class="line">1、首先看一下内存</div><div class="line">free -m</div><div class="line">2、然后创建一个分区添加交换文件</div><div class="line">mkdir /etc/swap/</div><div class="line">dd <span class="keyword">if</span>=/dev/zero of=/etc/swap/swap bs=1024 count=1024000  1个G</div><div class="line">3、创建交换空间</div><div class="line">mkswap /etc/swap/swap</div><div class="line">4、启动交换空间</div><div class="line">swapon /etc/swap/swap</div><div class="line">5、查看新增空间</div><div class="line">free -tom</div><div class="line">6、修改/etc/fstab文件使系统在重新启动的时候生效</div><div class="line">/etc/swap/swap         swap                    swap    defaults        0 0</div></pre></td></tr></table></figure>
+<h3 id="11-cannot-send-list-of-active-checks-to-192-168-0-1-host-Zabbix-server-not-found"><a href="#11-cannot-send-list-of-active-checks-to-192-168-0-1-host-Zabbix-server-not-found" class="headerlink" title="11.cannot send list of active checks to [192.168.0.1]: host [Zabbix server] not found"></a>11.<code>cannot send list of active checks to [192.168.0.1]: host [Zabbix server] not found</code></h3><figure class="highlight vbscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">查看被监控机上的/tmp/zabbix_agentd.<span class="built_in">log</span>，显示日志：</div><div class="line">No active checks <span class="keyword">on</span> <span class="built_in">server</span>: host [Zabbix <span class="built_in">server</span>] <span class="keyword">not</span> found</div><div class="line"></div><div class="line">这是因为，通过zabbix dashboard页面配置的被监控主机名跟被监控主机上zabbix_agentd.conf中配置的Hostname不一致。</div><div class="line"></div><div class="line">修改为一致的名字后，重启zabbix_agentd即可。</div></pre></td></tr></table></figure>
+<h3 id="12-解决CentOS-7安装zabbix-3-0-无法启动zabbix-server的问题"><a href="#12-解决CentOS-7安装zabbix-3-0-无法启动zabbix-server的问题" class="headerlink" title="12.解决CentOS 7安装zabbix 3.0 无法启动zabbix-server的问题"></a>12.解决CentOS 7安装zabbix 3.0 无法启动zabbix-server的问题</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@kvm zabbix_agentd.d]<span class="comment"># service zabbix-agent restart</span></div><div class="line">Redirecting to /bin/systemctl restart  zabbix-agent.service</div><div class="line">Job <span class="keyword">for</span> zabbix-agent.service failed because a configured resource <span class="built_in">limit</span> was exceeded. See <span class="string">"systemctl status zabbix-agent.service"</span> and <span class="string">"journalctl -xe"</span> <span class="keyword">for</span> details.</div></pre></td></tr></table></figure>
+<p>解决方案 ：<br>关闭SELinux服务 。 执行命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">setenforce 0 </div><div class="line"></div><div class="line">3. 重启zabbix</div><div class="line">systemctl  restart  zabbix-server.service</div></pre></td></tr></table></figure>
+<p>zabbix-server2.4服务端编译安装 <a href="http://blog.yangcvo.me/2014/10/03/%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7/Zabbix/zabbix2.4%E6%9C%8D%E5%8A%A1%E7%AB%AFyum-rpm%E5%BF%AB%E9%80%9F%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/">zabbix-server服务端编译安装</a></p>
+<p>zabbix邮件告警 : <a href="http://blog.yangcvo.me/2014/10/05/%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7/Zabbix/zabbix%E9%82%AE%E4%BB%B6%E5%91%8A%E8%AD%A6/">zabbix邮件告警</a></p>
+<p>zabbix3.0部署jmx监控tomcat: <a href="http://blog.yangcvo.me/2016/06/21/%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7/Zabbix/zabbix3-0%E9%83%A8%E7%BD%B2jmx%E7%9B%91%E6%8E%A7tomcat/">zabbix3.0部署jmx监控tomcat</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2014/10/05/性能监控/Zabbix/zabbix邮件告警/" data-toggle="tooltip" data-placement="top" title="zabbix邮件告警">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2014/10/03/性能监控/Zabbix/zabbix2.4服务端yum-rpm快速安装部署/" data-toggle="tooltip" data-placement="top" title="zabbix2.4服务端rpm快速安装部署">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Performance monitoring" title="Performance monitoring">Performance monitoring</a>
+                        
+                          <a class="tag" href="/tags/#zabbix" title="zabbix">zabbix</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yangcvo-me";
+    var disqus_identifier = "http://blog.yangcvo.me/2014/10/04/性能监控/Zabbix/zabbix-故障总结/";
+    var disqus_url = "http://blog.yangcvo.me/2014/10/04/性能监控/Zabbix/zabbix-故障总结/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/PandaJuesha">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yangcvo.me">yangc</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

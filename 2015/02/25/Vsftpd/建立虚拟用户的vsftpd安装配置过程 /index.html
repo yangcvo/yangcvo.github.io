@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <meta charset="utf-8">
+    
+    <title>建立虚拟用户的vsftpd安装配置报错问题收集 | Cheng yang&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="建立虚拟用户的vsftpd安装配置过程虚拟用户的特点是只能访问服务器为其提供的FTP服务，而不能访问系统的其它资源。所以，如果想让用户对FTP服务器站内具有写权限，但又不允许访问系统其它资源，可以使用虚拟用户来提高系统的安全性。在VSFTP中，认证这些虚拟用户使用的是单独的口令库文件（pam_userdb），由可插入认证模块（PAM）认证。使用这种方式更加安全，并且配置更加灵活。 下面介绍配置过程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="建立虚拟用户的vsftpd安装配置报错问题收集">
+<meta property="og:url" content="http://blog.yangcvo.me/2015/02/25/Vsftpd/建立虚拟用户的vsftpd安装配置过程 /index.html">
+<meta property="og:site_name" content="Cheng yang's Blog">
+<meta property="og:description" content="建立虚拟用户的vsftpd安装配置过程虚拟用户的特点是只能访问服务器为其提供的FTP服务，而不能访问系统的其它资源。所以，如果想让用户对FTP服务器站内具有写权限，但又不允许访问系统其它资源，可以使用虚拟用户来提高系统的安全性。在VSFTP中，认证这些虚拟用户使用的是单独的口令库文件（pam_userdb），由可插入认证模块（PAM）认证。使用这种方式更加安全，并且配置更加灵活。 下面介绍配置过程">
+<meta property="og:updated_time" content="2016-12-15T10:33:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="建立虚拟用户的vsftpd安装配置报错问题收集">
+<meta name="twitter:description" content="建立虚拟用户的vsftpd安装配置过程虚拟用户的特点是只能访问服务器为其提供的FTP服务，而不能访问系统的其它资源。所以，如果想让用户对FTP服务器站内具有写权限，但又不允许访问系统其它资源，可以使用虚拟用户来提高系统的安全性。在VSFTP中，认证这些虚拟用户使用的是单独的口令库文件（pam_userdb），由可插入认证模块（PAM）认证。使用这种方式更加安全，并且配置更加灵活。 下面介绍配置过程">
+    
+
+    
+        <link rel="alternate" href="/" title="Cheng yang&#39;s Blog" type="application/atom+xml" />
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">Cheng yang&#39;s Blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="https://github.com/yangcvo">GitHub</a>
+                
+                    <a class="main-nav-link" href="http://weibo.com/yangcvo">Weibo</a>
+                
+                    <a class="main-nav-link" href="http://blog.yangcvo.me/2014/05/04/%E4%B8%AA%E4%BA%BA%E8%AE%B0%E5%BD%95/About-me/">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/yangc.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/yangcvo">GitHub</a></td>
+                
+                    <td><a class="main-nav-link" href="http://weibo.com/yangcvo">Weibo</a></td>
+                
+                    <td><a class="main-nav-link" href="http://blog.yangcvo.me/2014/05/04/%E4%B8%AA%E4%BA%BA%E8%AE%B0%E5%BD%95/About-me/">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/yangc.png" />
+            <h2 id="name">yangc</h2>
+            <h3 id="title">Operation Engineer</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>hangzhou, China</span>
+            <a id="follow" target="_blank" href="https://github.com/yangcvo/">FOLLOW</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                98
+                <span>posts</span>
+            </div>
+            <div class="article-info-block">
+                34
+                <span>tags</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/yangcvo" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://twitter.com/yangaov" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://www.facebook.com/yango88" target="_blank" title="facebook" class=tooltip>
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="dribbble" class=tooltip>
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="rss" class=tooltip>
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-Vsftpd/建立虚拟用户的vsftpd安装配置过程 " class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            建立虚拟用户的vsftpd安装配置报错问题收集
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2015/02/25/Vsftpd/建立虚拟用户的vsftpd安装配置过程 /">
+            <time datetime="2015-02-25T04:22:10.000Z" itemprop="datePublished">Feb 25 2015</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Linux/">Linux</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Vsftpd/">Vsftpd</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h1 id="建立虚拟用户的vsftpd安装配置过程"><a href="#建立虚拟用户的vsftpd安装配置过程" class="headerlink" title="建立虚拟用户的vsftpd安装配置过程"></a>建立虚拟用户的vsftpd安装配置过程</h1><p>虚拟用户的特点是只能访问服务器为其提供的FTP服务，而不能访问系统的其它资源。所以，如果想让用户对FTP服务器站内具有写权限，但又不允许访问系统其它资源，可以使用虚拟用户来提高系统的安全性。<br>在VSFTP中，认证这些虚拟用户使用的是单独的口令库文件（pam_userdb），由可插入认证模块（PAM）认证。使用这种方式更加安全，并且配置更加灵活。 下面介绍配置过程。</p>
+<p>建立虚拟用户的vsftpd安装配置过程</p>
+<p>1.安装vsftpd服务，和测试命令ftp</p>
+<pre><code># yum -y install vsftpd ftp
+</code></pre><p>2.建立虚拟用户的用户名/密码数据库vsftpd服务的虚拟用户数据库使用的是Berkeley DB格式的数据文件。建立数据库文件要用到db_load命令工具，所以要安装db4软件包</p>
+<pre><code># yum -y install db4*
+</code></pre><p>3.生成虚拟用户口令库文件。为了建立此口令库文件，先要生成一个文本文件。该文件的格式如下，单数行为用户名，偶数行为口令：<br>建立文本格式的用户名/密码列表文件，奇数行为用户名，偶数行对应为上一行用户名密码。</p>
+<pre><code># vim /etc/vsftpd/virtual_login
+accp     虚拟用户
+123.com   虚拟用户密码
+</code></pre><p>4.用db_load工具将列表文件转化为DB数据库文件。</p>
+<pre><code># db_load -T -t hash -f /etc/vsftpd/virtual_login /etc/vsftpd/virtual_login.db
+# chown /etc/vsftpd/vuser.*  //降低文件权限以提高安全性
+</code></pre><p>5.建立PAM认证文件</p>
+<pre><code>#vi /etc/pam.d/vsftpd 添加如下内容
+#%PAM-1.0
+auth       required           pam_userdb.so  db=/etc/vsftpd/  vusers
+account    required           pam_userdb.so  db=/etc/vsftpd/vusers
+</code></pre><p>6.建立FTP访问根目录以及虚拟用户对应的系统账号  这里我给用户指定这里的虚拟用户和对应的系统账号</p>
+<pre><code>#useradd -s /sbin/nologin vsftpd
+#useradd -d /var/www/html/ftp3 -s /sbin/nologin  ftp3
+#chmod 755 /var/www/html/ftp3
+#cp /etc/vsftpd/vsftpd.conf /etc/vsftpd/vsftpd.conf.bak
+</code></pre><p>经过该步骤的设置，/var/www/html/accp就是virtual_user用户的主目录，该用户也是accp目录的拥有者。除root用户之外，只有该用户具有对该目录的读、写和执行的权限。</p>
+<p>7.修改vsftpd的主配置文件，添加对虚拟用户的支持。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#vi /etc/vsftpd/vsftpd.conf   #内容如下</span><br><span class="line">anonymous_enable=NO    这里设置禁止匿名登录</span><br><span class="line">local_enable=YES</span><br><span class="line">write_enable=YES    全局配置可写</span><br><span class="line">local_umask=022</span><br><span class="line">anon_upload_enable=NO</span><br><span class="line">anon_mkdir_write_enable=NO</span><br><span class="line">dirmessage_enable=YES</span><br><span class="line">xferlog_enable=YES</span><br><span class="line">connect_from_port_20=YES</span><br><span class="line">chown_uploads=NO</span><br><span class="line">xferlog_file=/var/log/vsftpd.log</span><br><span class="line">xferlog_std_format=YES</span><br><span class="line">nopriv_user=vsftpd</span><br><span class="line">async_abor_enable=YES</span><br><span class="line">ascii_upload_enable=YES</span><br><span class="line">ascii_download_enable=YES</span><br><span class="line">ftpd_banner=Welcome to $username FTP service</span><br><span class="line">chroot_list_enable=YES</span><br><span class="line">chroot_list_file=/etc/vsftpd/chroot_list</span><br><span class="line">listen=YES</span><br><span class="line">pam_service_name=vsftpd</span><br><span class="line">userlist_enable=YES</span><br><span class="line">tcp_wrappers=YES</span><br><span class="line">guest_enable=YES</span><br><span class="line">virtual_use_local_privs=YES</span><br><span class="line">guest_username=ftp3   这里添加你虚拟用户的支持</span><br><span class="line">user_config_dir=/etc/vsftpd/vsftpd_config</span><br></pre></td></tr></table></figure>
+<p>7.为accp和java建立独立配置目录及文件</p>
+<pre><code>mkdir /etc/vsftpd/vsftpd_config/
+touch /var/log/vsftpd.log
+chmod 600 /var/log/vsftpd.log
+chown vsftpd.vsftpd /var/log/vsftpd.log
+touch /etc/vsftpd/chroot_list
+cd /etc/vsftpd/vsftpd_config/
+</code></pre><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#vim accp   ###添加如下内容</span><br><span class="line">anon_upload_enable=YES</span><br><span class="line">anon_mkdir_write_enable=YES</span><br><span class="line">guest_enable=yes</span><br><span class="line">guest_username=$username</span><br><span class="line">local_root=/var/www/html/$username</span><br><span class="line">idle_session_timeout=600</span><br><span class="line">data_connection_timeout=120</span><br><span class="line">max_clients=10</span><br><span class="line">max_per_ip=5</span><br><span class="line">local_max_rate=0</span><br></pre></td></tr></table></figure>
+<h4 id="touch-java-建立空文件，默认配置文件中的权限"><a href="#touch-java-建立空文件，默认配置文件中的权限" class="headerlink" title="touch java 建立空文件，默认配置文件中的权限"></a>touch java 建立空文件，默认配置文件中的权限</h4><p>8.启动vsftpd服务</p>
+<pre><code>service vsftpd start
+</code></pre><p>权限：john可以登录到ftp服务器，可以浏览，下载，也可以上传文件<br>      mike可以登录到ftp服务器，可以浏览，下载，但是不可以上传</p>
+<h4 id="9-本地测试："><a href="#9-本地测试：" class="headerlink" title="9.本地测试："></a>9.本地测试：</h4><p>（一）john的测试</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@YTB-APP-1 ~]# ls</span><br><span class="line">anaconda-ks.cfg  bin  importipas.sh  install.log  install.log.syslog  my.cnf.bak</span><br><span class="line">[root@YTB-APP-1 ~]# ftp 127.0.0.1</span><br><span class="line">Trying ::1...</span><br><span class="line">ftp: connect to address ::1Connection refused</span><br><span class="line">Trying 127.0.0.1...</span><br><span class="line">Connected to localhost (127.0.0.1).</span><br><span class="line">220 (vsFTPd 2.2.2)</span><br><span class="line">Name (localhost:ytb): john</span><br><span class="line">331 Please specify the password.</span><br><span class="line">Password:</span><br><span class="line">230 Login successful.</span><br><span class="line">Remote system type is UNIX.</span><br><span class="line">Using binary mode to transfer files.</span><br><span class="line">ftp&gt; ls</span><br><span class="line">227 Entering Passive Mode (127,0,0,1,82,29).</span><br><span class="line">150 Here comes the directory listing.</span><br><span class="line">-rw-r--r--    1 0        0             574 Jul 01 14:50 vutest.file</span><br><span class="line">226 Directory send OK.</span><br><span class="line">ftp&gt; get vutest.file</span><br><span class="line">local: vutest.file remote: vutest.file</span><br><span class="line">227 Entering Passive Mode (127,0,0,1,103,164).</span><br><span class="line">150 Opening BINARY mode data connection for vutest.file (574 bytes).</span><br><span class="line">226 Transfer complete.</span><br><span class="line">574 bytes received in 3.4e-05 secs (16882.35 Kbytes/sec)</span><br><span class="line">ftp&gt; put install.log</span><br><span class="line">local: install.log remote: install.log</span><br><span class="line">227 Entering Passive Mode (127,0,0,1,115,162).</span><br><span class="line">150 Ok to send data.</span><br><span class="line">226 Transfer complete.</span><br><span class="line">29388 bytes sent in 0.024 secs (1222.97 Kbytes/sec)</span><br><span class="line">ftp&gt; quit</span><br><span class="line">221 Goodbye.</span><br><span class="line">[root@YTB-APP-1 ~]# ls</span><br><span class="line">anaconda-ks.cfg  bin  importipas.sh  install.log  install.log.syslog  my.cnf.bak  vutest.file</span><br><span class="line">[root@YTB-APP-1 ~]# ls /data/pub/</span><br><span class="line">install.log  vutest.file</span><br><span class="line">[root@YTB-APP-1 ~]#</span><br><span class="line">（二）mike的测试</span><br><span class="line">[root@YTB-APP-1 ~]# ls</span><br><span class="line">anaconda-ks.cfg  bin  importipas.sh  install.log  install.log.syslog  my.cnf.bak  vutest.file</span><br><span class="line">[root@YTB-APP-1 ~]# rm -rf vutest.file</span><br><span class="line">[root@YTB-APP-1 ~]# ftp localhost</span><br><span class="line">Trying ::1...</span><br><span class="line">ftp: connect to address ::1Connection refused</span><br><span class="line">Trying 127.0.0.1...</span><br><span class="line">Connected to localhost (127.0.0.1).</span><br><span class="line">220 (vsFTPd 2.2.2)</span><br><span class="line">Name (localhost:ytb): mike</span><br><span class="line">331 Please specify the password.</span><br><span class="line">Password:</span><br><span class="line">230 Login successful.</span><br><span class="line">Remote system type is UNIX.</span><br><span class="line">Using binary mode to transfer files.</span><br><span class="line">ftp&gt; ls</span><br><span class="line">227 Entering Passive Mode (127,0,0,1,223,141).</span><br><span class="line">150 Here comes the directory listing.</span><br><span class="line">-rw-r--r--    1 503      503         29388 Jul 03 02:23 install.log</span><br><span class="line">-rw-r--r--    1 0        0             574 Jul 01 14:50 vutest.file</span><br><span class="line">226 Directory send OK.</span><br><span class="line">ftp&gt; get vutest.file</span><br><span class="line">local: vutest.file remote: vutest.file</span><br><span class="line">227 Entering Passive Mode (127,0,0,1,154,230).</span><br><span class="line">150 Opening BINARY mode data connection for vutest.file (574 bytes).</span><br><span class="line">226 Transfer complete.</span><br><span class="line">574 bytes received in 3.8e-05 secs (15105.26 Kbytes/sec)</span><br><span class="line">ftp&gt; put install.log.syslog</span><br><span class="line">local: install.log.syslog remote: install.log.syslog</span><br><span class="line">227 Entering Passive Mode (127,0,0,1,227,247).</span><br><span class="line">550 Permission denied.</span><br><span class="line">ftp&gt; quit</span><br><span class="line">221 Goodbye.</span><br><span class="line">[root@YTB-APP-1 ~]# ls</span><br><span class="line">anaconda-ks.cfg  bin  importipas.sh  install.log  install.log.syslog  my.cnf.bak  vutest.file</span><br><span class="line">[root@YTB-APP-1 ~]# ls /dat/pub/</span><br><span class="line">ls: cannot access /dat/pub/: No such file or directory</span><br><span class="line">[root@YTB-APP-1 ~]# ls /data/pub/</span><br><span class="line">install.log  vutest.file</span><br><span class="line">[root@YTB-APP-1 ~]#</span><br></pre></td></tr></table></figure>
+<p>10.Mac连接方式使用方法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Mac连接方式：sftp ftp3@192.168.1.211</span><br><span class="line">ftp3@192.168.1.211&apos;s password: 输入密码</span><br><span class="line">查看方式：</span><br><span class="line">sftp&gt; ls -lh</span><br><span class="line">-rw-r--r-- 0 1004 1004 39.2M Apr 1 17:23  ccc.war</span><br></pre></td></tr></table></figure>
+<p>上传使用put 下载使用get<br>put /Users/jules/Downloads/haozhuo-check.war  就是把本地的时check上传。</p>
+<p>这里就连接成功了，如果后续还要添加账户只需要在vi /etc/vsftpd/vusers.list<br>然后在用db_load工具将列表文件转化为DB数据库文件。</p>
+<pre><code># cd /etc/vsftpd/
+#db_load -T -t hash -f vusers.list vusers.db
+</code></pre><p>添加好以后给该用户指定一个对应的创建目录。</p>
+<pre><code>useradd -d /data/www -s /sbin/nologin  accp 虚拟用户名
+</code></pre><p>然后就可以连接了。<br>最后给每个用户做用户权限的时候也是可以的。</p>
+<p>直接在/etc/vsftpd/vusers_dir目录下面创建用户txt 给予权限。</p>
+<p>因为我在vsftpd.conf做了配置。</p>
+<p>指定给特殊用户权限访问。</p>
+<hr>
+<ol>
+<li>help</li>
+</ol>
+<p>那么现在大家看看我的匿名服务器配置文件吧</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">anonymous_enable=YES //允许匿名访问，这是匿名服务器必须的</span><br><span class="line">write_enable=YES //全局配置可写</span><br><span class="line">no_anon_password=YES //匿名用户login时不询问口令</span><br><span class="line">anon_umask=077 //匿名用户上传的文件权限是-rw----</span><br><span class="line">anon_upload_enable=YES //允许匿名用户上传文件</span><br><span class="line">anon_mkdir_write_enable=YES //允许匿名用户建立目录</span><br><span class="line">anon_other_write_enable=YES //允许匿名用户具有建立目录，上传之外的权限，如重命名，删除</span><br><span class="line">dirmessage_enable=YES //当使用者转换目录,则会显示该目录下的.message信息</span><br><span class="line">xferlog_enable=YES //记录使用者所有上传下载信息</span><br><span class="line">xferlog_file=/var/log/vsftpd.log //将上传下载信息记录到/var/log/vsftpd.log中</span><br><span class="line">xferlog_std_format=YES //日志使用标准xferlog格式</span><br><span class="line">idle_session_timeout=600 //客户端超过600S没有动作就自动被服务器踢出</span><br><span class="line">data_connection_timeout=120 //数据传输时超过120S没有动作被服务器踢出</span><br><span class="line">chown_uploads=YES</span><br><span class="line">chown_username=daemon //上传文件的属主</span><br><span class="line">ftpd_banner=Welcome to d-1701.com FTP service. //FTP欢迎信息</span><br><span class="line">anon_max_rate=80000 //这是匿名用户的下载速度为80KBytes/s</span><br><span class="line">check_shell=NO //不检测SHELL</span><br></pre></td></tr></table></figure>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://blog.yangcvo.me/2015/02/25/Vsftpd/建立虚拟用户的vsftpd安装配置过程 /" data-id="ciwt7u73u0029flvu57yz5pf2" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+        <a href="http://blog.yangcvo.me/2015/02/25/Vsftpd/建立虚拟用户的vsftpd安装配置过程 /#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://blog.yangcvo.me/2015/02/25/Vsftpd/建立虚拟用户的vsftpd安装配置过程 /">Comments</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2015/02/25/Vsftpd/建立虚拟用户的vsftpd安装配置报错问题收集/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Newer</strong>
+            <div class="article-nav-title">
+                
+                    建立虚拟用户的vsftpd安装配置报错问题收集
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2015/02/24/Supervisor监控进程/Supervisor 进程持久化监控工具 /" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Older</strong>
+            <div class="article-nav-title">Supervisor 监控进程</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+    
+    </section>
+
+</section>
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">recent</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/12/08/大数据hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://www.51bdtime.com/uploads/allimg/140826/1-140R6103P3405.jpg)" alt="hadoop新增节点集群启动请求异常：Last contact：200" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/大数据/">大数据</a></p>
+                            <p class="item-title"><a href="/2016/12/08/大数据hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/" class="title">hadoop新增节点集群启动请求异常：Last contact：200</a></p>
+                            <p class="item-date"><time datetime="2016-12-08T09:56:03.000Z" itemprop="datePublished">Dec 8 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/12/07/Java/Sonarqube和jacoco搭建代码检查/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://px.thea.cn/Public/Upload/2759083/Intro/1442841940.png)" alt="Sonarqube和jacoco搭建代码检查" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java/">Java</a></p>
+                            <p class="item-title"><a href="/2016/12/07/Java/Sonarqube和jacoco搭建代码检查/" class="title">Sonarqube和jacoco搭建代码检查</a></p>
+                            <p class="item-date"><time datetime="2016-12-07T09:56:03.000Z" itemprop="datePublished">Dec 7 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/12/01/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://thumbs.dreamstime.com/t/tomcat-1930481.jpg)" alt="tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/tomcat/">tomcat</a></p>
+                            <p class="item-title"><a href="/2016/12/01/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/" class="title">tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0</a></p>
+                            <p class="item-date"><time datetime="2016-12-01T09:44:04.000Z" itemprop="datePublished">Dec 1 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/11/14/日志分析平台/graylog 升级2.1 集中日志解决方案/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://www.graylog.org/assets/overview_dashboard-3817012f923d4a00e9bde1c0547796319cf0396149464f434cfc2ae83a9da826.png)" alt="graylog 升级2.1 集中日志解决方案" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a></p>
+                            <p class="item-title"><a href="/2016/11/14/日志分析平台/graylog 升级2.1 集中日志解决方案/" class="title">graylog 升级2.1 集中日志解决方案</a></p>
+                            <p class="item-date"><time datetime="2016-11-14T09:56:03.000Z" itemprop="datePublished">Nov 14 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/11/13/日志分析平台/Graylog—日志分析平台完美代替Elasticsearch/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://www.graylog.org/assets/logo-graylog-6ccfb3d4f7bfd0795c80bb616719f7d2f5151283f25c62aa0a6222994af2abeb.png)" alt="Graylog——日志分析平台完美代替Elasticsearch" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a></p>
+                            <p class="item-title"><a href="/2016/11/13/日志分析平台/Graylog—日志分析平台完美代替Elasticsearch/" class="title">Graylog——日志分析平台完美代替Elasticsearch</a></p>
+                            <p class="item-date"><time datetime="2016-11-13T09:56:03.000Z" itemprop="datePublished">Nov 13 2016</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">categories</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud-computing/">Cloud computing</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/automation/">automation</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/monitoring/">monitoring</a><span class="category-list-count">16</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tomcat/">tomcat</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/日志分析平台/">日志分析平台</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/测试/">测试</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/虚拟化/">虚拟化</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维安全/">运维安全</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维笔记/">运维笔记</a><span class="category-list-count">6</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">tag cloud</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/ACL/" style="font-size: 12.5px;">ACL</a> <a href="/tags/About-me/" style="font-size: 10px;">About me</a> <a href="/tags/CDN/" style="font-size: 10px;">CDN</a> <a href="/tags/Centos7-1/" style="font-size: 10px;">Centos7.1</a> <a href="/tags/DNS/" style="font-size: 15px;">DNS</a> <a href="/tags/Exsi/" style="font-size: 10px;">Exsi</a> <a href="/tags/Ghost/" style="font-size: 17.5px;">Ghost</a> <a href="/tags/Grunt/" style="font-size: 10px;">Grunt</a> <a href="/tags/Hadoop/" style="font-size: 10px;">Hadoop</a> <a href="/tags/IDC监控/" style="font-size: 10px;">IDC监控</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Jenkins/" style="font-size: 12.5px;">Jenkins</a> <a href="/tags/KVM/" style="font-size: 17.5px;">KVM</a> <a href="/tags/LAMP/" style="font-size: 12.5px;">LAMP</a> <a href="/tags/LVM/" style="font-size: 10px;">LVM</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Smokeping/" style="font-size: 10px;">Smokeping</a> <a href="/tags/Supervisor/" style="font-size: 10px;">Supervisor</a> <a href="/tags/TOTP/" style="font-size: 10px;">TOTP</a> <a href="/tags/Vmware/" style="font-size: 10px;">Vmware</a> <a href="/tags/Vsftpd/" style="font-size: 12.5px;">Vsftpd</a> <a href="/tags/cacti/" style="font-size: 10px;">cacti</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/http/" style="font-size: 10px;">http</a> <a href="/tags/node-js/" style="font-size: 15px;">node.js</a> <a href="/tags/npm/" style="font-size: 10px;">npm</a> <a href="/tags/pm2/" style="font-size: 10px;">pm2</a> <a href="/tags/wkhtmltox/" style="font-size: 10px;">wkhtmltox</a> <a href="/tags/zabbix/" style="font-size: 20px;">zabbix</a> <a href="/tags/zimbra/" style="font-size: 10px;">zimbra</a> <a href="/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/tags/旅行日记/" style="font-size: 10px;">旅行日记</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">links</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://www.unixhot.com/">运维社区</a>
+                    </li>
+                
+                    <li>
+                        <a href="http://elasticsearch.cn/topic/">elk技术论坛</a>
+                    </li>
+                
+                    <li>
+                        <a href="http://openskill.cn/">开源技术社区</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2016 yangc<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'http://blog.yangcvo.me/2015/02/25/Vsftpd/建立虚拟用户的vsftpd安装配置过程 /';
+        
+        this.page.identifier = 'Vsftpd/建立虚拟用户的vsftpd安装配置过程 ';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'blog-yangcvo-me' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

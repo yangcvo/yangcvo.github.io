@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          记一次线上tomcat内存不足配置并发优化过程 - yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/2016/06/21/Java-tomcat-Dubbo/记一次线上tomcat内存不足配置并发优化过程/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes">Java+Tomcat notes</a>
+                        
+                    </div>
+                    <h1>记一次线上tomcat内存不足配置并发优化过程</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by yangc on
+                        2016-06-21
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="前言：tomcat的内存使用配置-最大连接数配置。"><a href="#前言：tomcat的内存使用配置-最大连接数配置。" class="headerlink" title="前言：tomcat的内存使用配置,最大连接数配置。"></a>前言：tomcat的内存使用配置,最大连接数配置。</h2><p>如何修改配置呢，在/tomcat的/bin/下面有个这个脚本文件。catailna.sh 脚本文件。 如果windows 是bat设置tomcat的使用内存，也其实就是设置jim的使用参数。</p>
+<h4 id="设置Tomcat启动的初始内存"><a href="#设置Tomcat启动的初始内存" class="headerlink" title="设置Tomcat启动的初始内存"></a>设置Tomcat启动的初始内存</h4><p>其初始空间(即-Xms)是物理内存的1/64，最大空间(-Xmx)是物理内存的1/4。可以利用JVM提供的-Xmn -Xms -Xmx等选项可</p>
+<p>要加“m”说明是MB，否则就是KB了，在启动tomcat时会 报内存不足。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">-Xms：初始值  【初始化内存大小】</div><div class="line">-Xmx：最大值  【可以使用的最大内存】</div><div class="line">-Xmn：最小值</div></pre></td></tr></table></figure>
+<p>JVM堆的设置是指java程序运行过程中JVM可以调配使用的内存空间的设置.JVM在启动的时候会自动设置Heap size的值，其初始空间(即-Xms)是物理内存的1/64，最大空间(-Xmx)是物理内存的1/4。可以利用JVM提供的-Xmn -Xms -Xmx等选项可进行设置。Heap size 的大小是Young Generation 和Tenured Generaion 之和。</p>
+<p> 提示：<code>在JVM中如果98％的时间是用于GC且可用的Heap size 不足2％的时候将抛出此异常信息.</code></p>
+<p>提示：<code>Heap Size 最大不要超过可用物理内存的80％，一般的要将-Xms和-Xmx选项设置为相同，而-Xmn为1/4的-Xmx值。</code></p>
+<p>这两个值的大小一般根据需要进行设置。初始化堆的大小执行了虚拟机在启动时向系统申请的内存的大小。一般而言，这个参数不重要。但是有的应用 程序在大负载的情况下会急剧地占用更多的内存，此时这个参数就是显得非常重要，如果虚拟机启动时设置使用的内存比较小而在这种情况下有许多对象进行初始 化，虚拟机就必须重复地增加内存来满足使用。由于这种原因，我们一般把-Xms和-Xmx设为一样大，而堆的最大值受限于系统使用的物理内存。一般使用数 据量较大的应用程序会使用持久对象，内存使用有可能迅速地增长。当应用程序需要的内存超出堆的最大值时虚拟机就会提示内存溢出，并且导致应用服务崩溃。因 此一般建议堆的最大值设置为可用内存的最大值的80%。</p>
+<p>如果系统花费很多的时间收集垃圾，请减小堆大小。一次完全的垃圾收集应该不超过 3-5 秒。如果垃圾收集成为瓶颈，那么需要指定代的大小，检查垃圾收集的详细输出，研究 垃圾收集参数对性能的影响。一般说来，你应该使用物理内存的 80% 作为堆大小。当增加处理器时，记得增加内存，因为分配可以并行进行，而垃圾收集不是并行的。<br>在重启你的Tomcat服务器之后，这些配置的更改才会有效。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Windows下，在文件&#123;tomcat_home&#125;/bin/catalina.bat，Unix下，在文件&#123;tomcat_home&#125;/bin/catalina.sh的前面，增加如下设置：</div></pre></td></tr></table></figure>
+<h4 id="Tomcat内存优化"><a href="#Tomcat内存优化" class="headerlink" title="Tomcat内存优化"></a>Tomcat内存优化</h4><p>Tomcat内存优化主要是对 tomcat 启动参数优化，我们可以在 tomcat 的启动脚本 catalina.sh 中设置JAVA_OPTS 参数。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">1.JAVA_OPTS参数说明</div><div class="line"></div><div class="line">Java代码</div><div class="line"></div><div class="line">     -server  启用jdk 的 server 版；</div><div class="line">     -Xms      java虚拟机初始化时的最小内存；</div><div class="line">     -Xmx      java虚拟机可使用的最大内存；</div><div class="line">     -XX:PermSize    内存永久保留区域</div><div class="line">     -XX:MaxPermSize   内存最大永久保留区域</div></pre></td></tr></table></figure>
+<h4 id="服务器参数配置"><a href="#服务器参数配置" class="headerlink" title="服务器参数配置"></a>服务器参数配置</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">    tomcat默认： -Xms1024m -Xmx1024m -Xss1024K -XX:PermSize=128m -XX:MaxPermSize=256m</div><div class="line"></div><div class="line">Java代码</div><div class="line"></div><div class="line">    JAVA_OPTS=<span class="string">"-Djava.awt.headless=true -Dfile.encoding=UTF-8</span></div><div class="line">    -server -Xms2048m -Xmx2048m</div><div class="line">    -XX:NewSize=512m -XX:MaxNewSize=512m -XX:PermSize=512m</div><div class="line">    -XX:MaxPermSize=512m -XX:+DisableExplicitGC"</div></pre></td></tr></table></figure>
+<p>配置完成后可重启Tomcat ，通过以下命令进行查看配置是否生效：</p>
+<h4 id="首先查看Tomcat进程号："><a href="#首先查看Tomcat进程号：" class="headerlink" title="首先查看Tomcat进程号："></a>首先查看Tomcat进程号：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ps -ef | grep tomcat</div></pre></td></tr></table></figure>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/tomcat_youhua.png" alt=""></p>
+<p>我们可以看到Tomcat 进程号是 32179 。</p>
+<ul>
+<li>实践例子：</li>
+</ul>
+<p>先查看没有优化tomcat内存前：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo jmap  – heap 32179</div></pre></td></tr></table></figure>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/tomcat_youhua2.png" alt=""></p>
+<h4 id="查看是否配置生效："><a href="#查看是否配置生效：" class="headerlink" title="查看是否配置生效："></a>查看是否配置生效：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Xml代码</div><div class="line"></div><div class="line">sudo jmap  – heap 32179</div></pre></td></tr></table></figure>
+<p>我们可以看到MaxHeapSize 等参数已经生效。</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/tomcat_youhua3.png" alt=""></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/tomcat_youhua4.png" alt=""></p>
+<p>提示：如果jdk1.8 启动服务会有警告⚠️</p>
+<p><code>Java HotSpot(TM) 64-Bit Server VM warning: ignoring option PermSize=512m; support was removed in 8.0</code></p>
+<h2 id="Tomcat并发优化"><a href="#Tomcat并发优化" class="headerlink" title="Tomcat并发优化"></a>Tomcat并发优化</h2><p>1.Tomcat连接相关参数</p>
+<p>在Tomcat 配置文件conf下面 server.xml 中的 <connector ...=""> 配置中</connector></p>
+<p>在tomcat配置文件server.xml中的<connector ...="">配置中，和连接数相关的参数有：</connector></p>
+<p><code>minProcessors</code>：最小空闲连接线程数，用于提高系统处理性能，默认值为10<br><code>maxProcessors</code>：最大连接线程数，即：并发处理的最大请求数，默认值为75<br><code>acceptCount</code>：允许的最大连接数，应大于等于maxProcessors，默认值为100<br><code>enableLookups</code>：是否反查域名，取值为：true或false。为了提高处理能力，应设置为false<br><code>connectionTimeout</code>：网络连接超时，单位：毫秒。设置为0表示永不超时，这样设置有隐患的。通常可设置为30000毫秒。</p>
+<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">默认的tomcat 参数：</div><div class="line"></div><div class="line">    &lt;Connector port=“8080<span class="string">" protocol="</span>HTTP/1.1<span class="string">"</span></div><div class="line">               connectionTimeout="20000<span class="string">"</span></div><div class="line">               redirectPort="8443<span class="string">" /&gt;</span></div><div class="line"></div><div class="line">修改：</div><div class="line">      </div><div class="line">    &lt;Connector port=“8080" protocol=<span class="string">"HTTP/1.1"</span></div><div class="line">                 maxThreads=<span class="string">"600"</span></div><div class="line">                 minSpareThreads=<span class="string">"100"</span></div><div class="line">                 maxSpareThreads=<span class="string">"500"</span></div><div class="line">                 acceptCount=<span class="string">"700"</span></div><div class="line">                 connectionTimeout=<span class="string">"20000"</span></div><div class="line">                redirectPort=<span class="string">"8443"</span> /&gt;</div><div class="line"></div><div class="line">``` </div><div class="line">这样设置以后，基本上没有再当机过。</div><div class="line"></div><div class="line">``` bash </div><div class="line">  maxThreads=“600<span class="string">" 表示最多同时处理600个连接     ///最大线程数</span></div><div class="line">  minSpareThreads=“100" 表示即使没有人使用也开这么多空线程等待   ///初始化时创建的线程数   </div><div class="line">  maxSpareThreads=“500<span class="string">" 表示如果最多可以空500个线程，例如某时刻有505人访问，之后没有人访问了，则tomcat不会保留505个空线程，而是关闭505个空的。   ///一旦创建的线程超过这个值，Tomcat就会关闭不再需要的socket线程。</span></div><div class="line">  acceptCount="700<span class="string">"//指定当所有可以使用的处理请求的线程数都被使用时，可以放到处理队列中的请求数，超过这个数的请求将不予处理</span></div><div class="line">这里是http connector的优化，如果使用apache和tomcat做集群的负载均衡，并且使用ajp协议做apache和tomcat的协议转发，那么还需要优化ajp connector。</div><div class="line">   </div><div class="line">    &lt;Connector port="8009<span class="string">" protocol="</span>AJP/1.3<span class="string">" maxThreads="</span>600<span class="string">" minSpareThreads="</span>100<span class="string">" maxSpareThreads="</span>500<span class="string">" acceptCount="</span>700<span class="string">"</span></div><div class="line">connectionTimeout="20000<span class="string">" redirectPort="</span>8443<span class="string">" /&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="报错error"><a href="#报错error" class="headerlink" title="报错error"></a>报错error</h3><h3 id="Tomcat的JVM提示内存溢出"><a href="#Tomcat的JVM提示内存溢出" class="headerlink" title="Tomcat的JVM提示内存溢出"></a>Tomcat的JVM提示内存溢出</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">查看%TOMCAT_HOME%\logs文件夹下，日志文件是否有内存溢出错误</div></pre></td></tr></table></figure>
+<h3 id="修改Tomcat的JVM"><a href="#修改Tomcat的JVM" class="headerlink" title="修改Tomcat的JVM"></a>修改Tomcat的JVM</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">1、错误提示：java.lang.OutOfMemoryError: Java heap space</div></pre></td></tr></table></figure>
+<p>Tomcat默认可以使用的内存为128MB，在较大型的应用项目中，这点内存是不够的，有可能导致系统无法运行。常见的问题是报Tomcat内存溢出错误，Out of Memory(系统内存不足)的异常，从而导致客户端显示500错误，一般调整Tomcat的使用内存即可解决此问题。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">windows环境下修改     </div><div class="line">    “%TOMCAT_HOME%\bin\catalina.bat”文件，在文件开头增加如下设置：JAVA_OPTS=-Xms2048m -Xmx2048m</div></pre></td></tr></table></figure>
+<h3 id="Linux环境下修改"><a href="#Linux环境下修改" class="headerlink" title="Linux环境下修改"></a>Linux环境下修改</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">    “%TOMCAT_HOME%\bin\catalina.sh”文件，在文件开头增加如下设置：JAVA_OPTS=-Xms2048m -Xmx2048m</div><div class="line">其中，-Xms设置初始化内存大小，-Xmx设置可以使用的最大内存。</div></pre></td></tr></table></figure>
+<p>跟我上面那么设置就可以了。</p>
+<p>2.错误提示：java.lang.OutOfMemoryError: PermGen space</p>
+<p>原因：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"> PermGen space的全称是Permanent Generation space,是指内存的永久保存区域，这块内存主要是被JVM存</div><div class="line">放Class和Meta信息的,Class在被Loader时就会被放到PermGen space中，它和存放类实例(Instance)的Heap区域不同,GC(Garbage Collection)不会在主程序运行期对PermGen space进行清理，所以如果你的应用中有很CLASS的话,就很可能出现PermGen space错误，这种错误常见在web服务器对JSP进行pre compile的时候。如果你的WEB APP下都用了大量的第三方jar, 其大小超过了jvm默认的大小(4M)那么就会产生此错误信息了。</div></pre></td></tr></table></figure>
+<p>解决方法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">在catalina.bat的第一行增加：</div><div class="line">   </div><div class="line">    <span class="built_in">set</span> JAVA_OPTS=-Xms64m -Xmx256m -XX:PermSize=128M -XX:MaxNewSize=256m - XX:MaxPermSize=256m</div><div class="line">在catalina.sh的第一行增加：</div><div class="line">    </div><div class="line">     JAVA_OPTS=-Xms64m -Xmx256m -XX:PermSize=128M -XX:MaxNewSize=256m  XX:MaxPermSize=256m</div></pre></td></tr></table></figure>
+<h3 id="查看Tomcat的JVM内存"><a href="#查看Tomcat的JVM内存" class="headerlink" title="查看Tomcat的JVM内存"></a>查看Tomcat的JVM内存</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">1. Tomcat6中没有设置任何默认用户，因而需要手动往Tomcat6的conf文件夹下的tomcat-users.xml文件中</div><div class="line">添加用户。</div><div class="line">如：       </div><div class="line">        &lt;role rolename=<span class="string">"manager"</span>/&gt;</div><div class="line">          &lt;user username=<span class="string">"tomcat"</span> password=<span class="string">"tomcat"</span> roles=<span class="string">"manager"</span>/&gt;</div><div class="line">    </div><div class="line">注：添加完需要重启Tomcat6。</div><div class="line"></div><div class="line">2. 访问http://localhost:8080/manager/status，输入上面添加的用户名和密码。</div><div class="line"></div><div class="line">3. 然后在如下面的JVM下可以看到内存的使用情况。</div></pre></td></tr></table></figure>
+<p>学习Tomcat给自己总结。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/06/21/性能监控/Zabbix/zabbix3.0 poller processes more than 75% busy警报问题解决/" data-toggle="tooltip" data-placement="top" title="Zabbix3.0 poller processes more than 75% busy警报问题解决">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/06/21/性能监控/Zabbix/zabbix监控tcp连接数/" data-toggle="tooltip" data-placement="top" title="zabbix监控tcp连接数">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes">Java+Tomcat notes</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yangcvo-me";
+    var disqus_identifier = "http://blog.yangcvo.me/2016/06/21/Java-tomcat-Dubbo/记一次线上tomcat内存不足配置并发优化过程/";
+    var disqus_url = "http://blog.yangcvo.me/2016/06/21/Java-tomcat-Dubbo/记一次线上tomcat内存不足配置并发优化过程/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yangcvox">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yangcvo.me">yangc</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

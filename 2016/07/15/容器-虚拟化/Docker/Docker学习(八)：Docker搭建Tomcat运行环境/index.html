@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Docker学习(八)：Docker搭建Tomcat运行环境 - yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/2016/07/15/容器-虚拟化/Docker/Docker学习(八)：Docker搭建Tomcat运行环境/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Virtualization-Docker" title="Virtualization-Docker">Virtualization-Docker</a>
+                        
+                    </div>
+                    <h1>Docker学习(八)：Docker搭建Tomcat运行环境</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by yangc on
+                        2016-07-15
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="Docker搭建JAVA-Tomcat运行环境"><a href="#Docker搭建JAVA-Tomcat运行环境" class="headerlink" title="Docker搭建JAVA Tomcat运行环境"></a>Docker搭建JAVA Tomcat运行环境</h1><h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>Docker在提供一种应用程序的自动化部署解决方案，在 Linux 系统上迅速创建一个容器（轻量级虚拟机）并部署和运行应用程序，并通过配置文件可以轻松实现应用程序的自动化安装、部署和升级，非常方便。</p>
+<p>因为使用了容器，所以可以很方便的把生产环境和开发环境分开，互不影响，这是 docker 最普遍的一个玩法。更多的玩法还有大规模 web 应用、数据库部署、持续部署、集群、测试环境、面向服务的云计算、虚拟桌面 VDI 等等。</p>
+<h4 id="docker部署tomcat"><a href="#docker部署tomcat" class="headerlink" title="docker部署tomcat"></a>docker部署tomcat</h4><p>第一： 可以隔离每个tomcat服务单独跑。 这样资源可以很好的利用。<br>第二： 后期用jenkins结合docker部署tomcat。 非常方便。<br>第三： tomcat重点服务扩容迁移也很方便。只需要生成镜像在其他的虚拟机上面跑就行。</p>
+<h4 id="部署tomcat环境"><a href="#部署tomcat环境" class="headerlink" title="部署tomcat环境"></a>部署tomcat环境</h4><p>这里是使用KVM 虚拟的4G内存的centos 7.1 x64位系统 ，也可以使用ubuntu-13.10以上</p>
+<h4 id="安装docker"><a href="#安装docker" class="headerlink" title="安装docker"></a>安装docker</h4><p>这个也写过文档，多种linux系统安装docker .这里不详细讲解。</p>
+<p>这里安装的Tomcat继承了之前JDK7的Docker镜像，因为运行Tomcat需要依赖JDK。</p>
+<h4 id="大概步骤："><a href="#大概步骤：" class="headerlink" title="大概步骤："></a>大概步骤：</h4><ul>
+<li>上传Tomcat/8.0.32到宿主机</li>
+<li>编写Dockerfile构建镜像</li>
+<li>编写supervisor配置文件</li>
+<li>build和run</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 方式一：可以通过ssh上传指定版本的tomcat（这里选择第一种）</span></div><div class="line"><span class="comment"># 1. 上传tomcat7到宿主机</span></div><div class="line"><span class="comment"># 2. 将tomcat7都解压到指定的目录下（和Dockerfile文件同目录）</span></div><div class="line"></div><div class="line"><span class="comment"># 方式二：从官网或者镜像网站下载Tomcat/8.0.32</span></div><div class="line"></div><div class="line"><span class="comment"># 方法三： 从官网下载好scp到docker tomcat容器指定目录</span></div></pre></td></tr></table></figure>
+<p>Dockerfile文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="comment">############################################</span></div><div class="line"><span class="comment"># version : centos/Tomcat/8.0.32</span></div><div class="line"><span class="comment"># desc : 当前版本安装的Tomcat/8.0.32</span></div><div class="line"><span class="comment">############################################</span></div><div class="line"><span class="comment"># 设置继承自我们创建的 jdk8 镜像</span></div><div class="line">FROM yangc/jdk8</div><div class="line"></div><div class="line"><span class="comment"># 下面是一些创建者的基本信息</span></div><div class="line">MAINTAINER birdben (yangcvo@gmail.com)</div><div class="line"></div><div class="line"><span class="comment"># 设置环境变量，所有操作都是非交互式的</span></div><div class="line">ENV DEBIAN_FRONTEND noninteractive</div><div class="line"></div><div class="line"><span class="comment"># 添加 supervisord 的配置文件，并复制配置文件到对应目录下面。（supervisord.conf文件和Dockerfile文件在同一路径）</span></div><div class="line">COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf</div><div class="line"></div><div class="line"><span class="comment"># 设置 tomcat 的环境变量，若读者有其他的环境变量需要设置，也可以在这里添加。</span></div><div class="line">ENV CATALINA_HOME /srv/tomcat/tomcat</div><div class="line"></div><div class="line"><span class="comment"># 复制 apache-tomcat-8.0.32 文件到镜像中（apache-tomcat-8.0.32 文件夹要和Dockerfile文件在同一路径）</span></div><div class="line">ADD apache-tomcat-8.0.32 /srv/tomcat/tomcat</div><div class="line"></div><div class="line"><span class="comment"># 容器需要开放Tomcat 8080端口</span></div><div class="line">EXPOSE 8080</div><div class="line"></div><div class="line"><span class="comment"># 容器需要开放SSH 22端口</span></div><div class="line">EXPOSE 22</div><div class="line"></div><div class="line"><span class="comment"># 执行supervisord来同时执行多个命令，使用 supervisord 的可执行路径启动服务。</span></div><div class="line">CMD [<span class="string">"/usr/bin/supervisord"</span>]</div></pre></td></tr></table></figure>
+<p>Dockerfile源文件链接：<a href="https://github.com/yangcvo/Docker/blob/master/tomcat8.0/Dockerfile" target="_blank" rel="external">dockerfile-tomcat</a></p>
+<h4 id="supervisor配置文件内容"><a href="#supervisor配置文件内容" class="headerlink" title="supervisor配置文件内容"></a>supervisor配置文件内容</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 配置文件包含目录和进程</span></div><div class="line"><span class="comment"># 第一段 supervsord 配置软件本身，使用 nodaemon 参数来运行。</span></div><div class="line"><span class="comment"># 第二段包含要控制的 2 个服务。每一段包含一个服务的目录和启动这个服务的命令。</span></div><div class="line"></div><div class="line">[supervisord]</div><div class="line">nodaemon=<span class="literal">true</span></div><div class="line"></div><div class="line">[program:sshd]</div><div class="line"><span class="built_in">command</span>=/usr/sbin/sshd -D</div><div class="line"></div><div class="line">[program:tomcat]</div><div class="line"><span class="built_in">command</span>=/bin/bash -c <span class="string">"exec <span class="variable">$&#123;CATALINA_HOME&#125;</span>/bin/catalina.sh run"</span></div></pre></td></tr></table></figure>
+<p>运行：<br>脚本写好了，需要转换成镜像：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 构建镜像</span></div><div class="line">docker build -t=<span class="string">"yangc/tomcat8"</span> .</div><div class="line"></div><div class="line">-t： 为构建的镜像制定一个标签，便于记忆/索引等</div><div class="line"></div><div class="line">. ： 指定Dockerfile文件在当前目录下</div><div class="line"></div><div class="line">网速不太好，会等待很长时间。很多操作可能需要科学上网，逼得我只能一直挂着VPN，方能畅通无阻。</div><div class="line"></div><div class="line">构建镜像完成之后，看看运行效果：</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment"># 执行已经构件好的镜像</span></div><div class="line"></div><div class="line">docker run -p 9999:22 -p 10001:8080 -t -i yangc/tomcat8</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">#这里也可以导出某个容器。不是按脚本去跑的。这里自己配置好的容器。导出</span></div><div class="line"></div><div class="line">docker <span class="built_in">export</span> 容器name  &gt; tomcat8.tar</div><div class="line"></div><div class="line"><span class="comment">#导入</span></div><div class="line"></div><div class="line">cat tomcat8.tar | docker import - yangc/tomcat8</div></pre></td></tr></table></figure>
+<p>在运行命令中，还得需要显式指定 -p 22 -p 8080:8080，否则在Docker 0.8.1版本中不会主动映射到宿主机上。据悉在Docker 0.4.8版本时，就不担心这个问题。 或者，您要有好的方式，不妨告知于我，谢谢。</p>
+<p>在Dockerfile中，若没有使用ENTRYPOINT/CMD指令，若运行多个命令，可以这样做：</p>
+<pre><code>docker run -d -p 22 -p 8080 yangc/tomcat8 /bin/sh -c &quot;service tomcat start &amp;&amp; /usr/sbin/sshd -D&quot;
+</code></pre><p>浏览器访问:</p>
+<pre><code>http://虚拟机IP:10001/
+</code></pre>
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/07/16/容器-虚拟化/Docker/ Docker学习笔记(九)如何将docker镜像上传到docker.hub仓库/" data-toggle="tooltip" data-placement="top" title="Docker学习笔记(九)如何将docker镜像上传到docker.hub仓库">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/07/14/容器-虚拟化/Docker/Docker学习(七)：Docker命令总结学习积累经验/" data-toggle="tooltip" data-placement="top" title="Docker学习(七)：Docker命令总结学习积累经验">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Virtualization-Docker" title="Virtualization-Docker">Virtualization-Docker</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yangcvo-me";
+    var disqus_identifier = "http://blog.yangcvo.me/2016/07/15/容器-虚拟化/Docker/Docker学习(八)：Docker搭建Tomcat运行环境/";
+    var disqus_url = "http://blog.yangcvo.me/2016/07/15/容器-虚拟化/Docker/Docker学习(八)：Docker搭建Tomcat运行环境/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/PandaJuesha">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yangcvo.me">yangc</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

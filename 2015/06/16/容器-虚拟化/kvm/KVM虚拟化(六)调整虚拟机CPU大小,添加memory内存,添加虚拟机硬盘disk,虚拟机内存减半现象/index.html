@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          KVM虚拟化(六)调整虚拟机CPU大小,添加memory内存,添加虚拟机硬盘disk,虚拟机内存减半现象 - yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/2015/06/16/容器-虚拟化/kvm/KVM虚拟化(六)调整虚拟机CPU大小,添加memory内存,添加虚拟机硬盘disk,虚拟机内存减半现象/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#KVM" title="KVM">KVM</a>
+                        
+                    </div>
+                    <h1>KVM虚拟化(六)调整虚拟机CPU大小,添加memory内存,添加虚拟机硬盘disk,虚拟机内存减半现象</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by yangc on
+                        2015-06-16
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="调整虚拟机CPU大小"><a href="#调整虚拟机CPU大小" class="headerlink" title="调整虚拟机CPU大小"></a>调整虚拟机CPU大小</h2><ul>
+<li>这个是我需要修改的虚拟机dataname1</li>
+<li>操作这些都需要shutdown off</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">virsh <span class="comment"># shutdown dataname1</span></div></pre></td></tr></table></figure>
+<ul>
+<li>查看你要修改的虚拟机的配置信息。 </li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">[root@kvm ~]<span class="comment"># virsh</span></div><div class="line">欢迎使用 virsh，虚拟化的交互式终端。</div><div class="line"></div><div class="line">输入：<span class="string">'help'</span> 来获得命令的帮助信息</div><div class="line">       <span class="string">'quit'</span> 退出</div><div class="line"></div><div class="line">virsh <span class="comment"># dominfo dataname1     </span></div><div class="line">Id:             29</div><div class="line">名称：       dataname1</div><div class="line">UUID:           0301d59b-5b19-40af-b0f9-063d646a38db</div><div class="line">OS 类型：    hvm</div><div class="line">状态：       running</div><div class="line">CPU：          1     </div><div class="line">CPU 时间：   14.2s</div><div class="line">最大内存： 2097152 KiB</div><div class="line">使用的内存： 2097152 KiB</div><div class="line">持久：       是</div><div class="line">自动启动： 禁用</div><div class="line">管理的保存： 否</div><div class="line">安全性模式： selinux</div><div class="line">安全性 DOI： 0</div><div class="line">安全性标签： system_u:system_r:svirt_t:s0:c903,c922 (enforcing)</div></pre></td></tr></table></figure>
+<ul>
+<li>这里很明显查看下CPU这里是1核 ，2G内存。</li>
+<li>修改dataname1的cpu</li>
+</ul>
+<p>这里需要编辑了域 dataname1 XML 配置。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">virsh <span class="comment"># edit dataname1</span></div></pre></td></tr></table></figure>
+<p>修改下CPU</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;vcpu placement=<span class="string">'static'</span>&gt;2&lt;/vcpu&gt;</div></pre></td></tr></table></figure>
+<p>大概在第六行这里改成2 就是CPU2核 ，如果需要改成4核直接改成4</p>
+<p>然后wq!保存并退出。</p>
+<p>提示：编辑了域 dataname1     XML 配置。</p>
+<p>然后在执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">virsh <span class="comment"># setvcpus dataname1 2 --config</span></div></pre></td></tr></table></figure>
+<p>然后查看已添加CPU核数。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">virsh <span class="comment"># dominfo dataname1</span></div><div class="line">Id:             -</div><div class="line">名称：       dataname1</div><div class="line">UUID:           0301d59b-5b19-40af-b0f9-063d646a38db</div><div class="line">OS 类型：    hvm</div><div class="line">状态：       关闭</div><div class="line">CPU：          2</div><div class="line">最大内存： 2097152 KiB</div><div class="line">使用的内存： 0 KiB</div><div class="line">持久：       是</div><div class="line">自动启动： 禁用</div><div class="line">管理的保存： 否</div><div class="line">安全性模式： selinux</div><div class="line">安全性 DOI： 0</div></pre></td></tr></table></figure>
+<h3 id="调整虚拟机内存大小"><a href="#调整虚拟机内存大小" class="headerlink" title="调整虚拟机内存大小"></a>调整虚拟机内存大小</h3><ul>
+<li>我们查看下dataname1 配置文件</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;memory unit=<span class="string">'KiB'</span>&gt;2097152&lt;/memory&gt;</div><div class="line">&lt;currentMemory unit=<span class="string">'KiB'</span>&gt;2097152&lt;/currentMemory&gt;</div></pre></td></tr></table></figure>
+<p>可以看到，虚拟机中实际显示的为currentMemory（minRam），即为当前内存为2G。<br>memory unit实际为最大使用内存（maxRam）。</p>
+<p>修改4G 2097152x2=4194304</p>
+<p>所以我们这里的最大内存是2G,修改配置文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">virsh <span class="comment"># edit dataname1</span></div><div class="line">  &lt;memory unit=<span class="string">'KiB'</span>&gt;4194304&lt;/memory&gt;</div><div class="line">  &lt;currentMemory unit=<span class="string">'KiB'</span>&gt;4194304&lt;/currentMemory&gt;</div></pre></td></tr></table></figure>
+<p>然后保存退出。</p>
+<p>设置生效：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">virsh setmaxmem dataname1 4194304 --config   </div><div class="line"></div><div class="line"><span class="comment">#dataname1 处于shut off状态时才能设置成功</span></div><div class="line"></div><div class="line">virsh setmem dataname1 4</div><div class="line"></div><div class="line"><span class="comment">#数值不能超过maxmem    setmem意思是改变内存的分配</span></div><div class="line"></div><div class="line">查看生效内存现在变4G内存。</div><div class="line">virsh <span class="comment"># dominfo dataname1</span></div><div class="line">Id:             -</div><div class="line">名称：       dataname1</div><div class="line">UUID:           0301d59b-5b19-40af-b0f9-063d646a38db</div><div class="line">OS 类型：    hvm</div><div class="line">状态：       关闭</div><div class="line">CPU：          2</div><div class="line">最大内存： 4194304 KiB</div><div class="line">使用的内存： 0 KiB</div><div class="line">持久：       是</div><div class="line">自动启动： 禁用</div><div class="line">管理的保存： 否</div><div class="line">安全性模式： selinux</div><div class="line">安全性 DOI： 0</div></pre></td></tr></table></figure>
+<p>这里提下还有些时候KVM虚拟机内存超配后-虚拟机内存减半现象<br>使用kvm虚拟机时，如果配置了内存超用，会发现创建的虚拟机内存为计算方案的一半。</p>
+<ul>
+<li><p>分析：</p>
+</li>
+<li><p>配置完超配系数为2以后，创建虚拟机，打开虚拟机（计算方案为2C/2G）的xml配置文件如下：</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;name&gt;i-2-32-VM&lt;/name&gt;</div><div class="line">&lt;uuid&gt;eb1a307f-ff54-4f40-aa88<span class="_">-d</span>6071535<span class="built_in">cd</span>92&lt;/uuid&gt;</div><div class="line">&lt;description&gt;dataname1&lt;/description&gt;</div><div class="line">&lt;memory unit=<span class="string">'KiB'</span>&gt;2097152&lt;/memory&gt;</div><div class="line">&lt;currentMemory unit=<span class="string">'KiB'</span>&gt;1048576&lt;/currentMemory&gt;</div></pre></td></tr></table></figure>
+<p>可以看到，虚拟机中实际显示的为currentMemory（minRam），即为当前内存为1G。<br>但memory unit实际为最大使用内存（maxRam）。<br>可以看到，2G实际被定义为虚拟机的maxRam，但实际分配为minRam，即看到的减半现象。</p>
+<ul>
+<li>解决：</li>
+</ul>
+<p>1.编辑agent配置文件，添加参数“vm.memballoon.disable=true”</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@SJCloudKVM-5 agent]<span class="comment"># cat /etc/cloudstack/agent/agent.properties| grep mem</span></div><div class="line">vm.memballoon.disable=<span class="literal">true</span></div></pre></td></tr></table></figure>
+<p>2.重启libvirtd和cloudstack-agent服务。<br>3.关闭，并重新启动虚拟机。</p>
+<p>关于vm.memballoon.disable=true的解释：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># vm.memballoon.disable=true</span></div><div class="line"><span class="comment"># Disable memory ballooning on vm guestsfor overcommit, by default overcommit feature enables balloon and setscurr</span></div><div class="line">entMemoryto a minimum value.</div></pre></td></tr></table></figure>
+<h3 id="调整虚拟机硬盘大小"><a href="#调整虚拟机硬盘大小" class="headerlink" title="调整虚拟机硬盘大小"></a>调整虚拟机硬盘大小</h3><ul>
+<li>有两种方法添加：<ul>
+<li>第一种：是要通过修改配置文件来添加硬盘，我们首先要关闭虚拟机，否则无法正常添加。通过修改虚拟机配置文件进行添加，永久生效。</li>
+<li>第二种：通过virsh attach-disk命令添加一块硬盘到系统中，即时生效，但系统重启后新硬盘会消失。</li>
+<li>第二种方法简单：现在开始使用virsh attach-disk命令把新硬盘添加到虚拟机上。<br>virsh attach-disk 虚拟机名称 /vhost/新建的硬盘.img vdb </li>
+</ul>
+</li>
+</ul>
+<p>那我们都选择第一种方法：</p>
+<ul>
+<li><p>关闭虚拟机，然后使用virsh edit命令修改虚拟机的主配置文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"> virsh <span class="comment"># shutdown dataname2</span></div><div class="line"> </div><div class="line">然后给他新建个硬盘:</div><div class="line"> </div><div class="line">  qemu-img create <span class="_">-f</span> qcow2 /opt/vm/dataname2-add.img 150G</div><div class="line"></div><div class="line">虚拟机的所有配置文件默认都存放在/etc/libvirt/qemu，如下:</div><div class="line"></div><div class="line"></div><div class="line">-rw-------. 1 root root 3868 7月   9 18:49 dataname2.xml</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>编辑虚拟机配置文件，如下:<br>默认在第32行</p>
+<p>默认配置前：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[root@kvm qemu]<span class="comment"># virsh edit dataname2</span></div><div class="line"> &lt;disk <span class="built_in">type</span>=<span class="string">'file'</span> device=<span class="string">'disk'</span>&gt;</div><div class="line">      &lt;driver name=<span class="string">'qemu'</span> <span class="built_in">type</span>=<span class="string">'qcow2'</span>/&gt;</div><div class="line">      &lt;<span class="built_in">source</span> file=<span class="string">'/opt/vm/dataname2.img'</span>/&gt;</div><div class="line">      &lt;target dev=<span class="string">'vda'</span> bus=<span class="string">'virtio'</span>/&gt;</div><div class="line">      &lt;address <span class="built_in">type</span>=<span class="string">'pci'</span> domain=<span class="string">'0x0000'</span> bus=<span class="string">'0x00'</span> slot=<span class="string">'0x06'</span> <span class="keyword">function</span>=<span class="string">'0x0'</span>/&gt;</div><div class="line">    &lt;/disk&gt;</div><div class="line">    &lt;disk <span class="built_in">type</span>=<span class="string">'block'</span> device=<span class="string">'cdrom'</span>&gt;</div><div class="line">      &lt;driver name=<span class="string">'qemu'</span> <span class="built_in">type</span>=<span class="string">'raw'</span>/&gt;</div><div class="line">      &lt;target dev=<span class="string">'hda'</span> bus=<span class="string">'ide'</span>/&gt;</div><div class="line">      &lt;<span class="built_in">readonly</span>/&gt;</div><div class="line">      &lt;address <span class="built_in">type</span>=<span class="string">'drive'</span> controller=<span class="string">'0'</span> bus=<span class="string">'0'</span> target=<span class="string">'0'</span> unit=<span class="string">'0'</span>/&gt;</div></pre></td></tr></table></figure>
+<p>配置后修改，我们找到有关硬盘的代码：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&lt;disk <span class="built_in">type</span>=<span class="string">'file'</span> device=<span class="string">'disk'</span>&gt;</div><div class="line">      &lt;driver name=<span class="string">'qemu'</span> <span class="built_in">type</span>=<span class="string">'qcow2'</span>/&gt;</div><div class="line">      &lt;<span class="built_in">source</span> file=<span class="string">'/opt/vm/dataname2.img'</span>/&gt;</div><div class="line">      &lt;target dev=<span class="string">'vda'</span> bus=<span class="string">'virtio'</span>/&gt;</div><div class="line">      &lt;address <span class="built_in">type</span>=<span class="string">'pci'</span> domain=<span class="string">'0x0000'</span> bus=<span class="string">'0x00'</span> slot=<span class="string">'0x06'</span> <span class="keyword">function</span>=<span class="string">'0x0'</span>/&gt;</div><div class="line">    &lt;/disk&gt;</div><div class="line">现在我们在&lt;/disk&gt;这之后，添加如下的代码</div><div class="line">  &lt;disk <span class="built_in">type</span>=<span class="string">'file'</span> device=<span class="string">'disk'</span>&gt;</div><div class="line">      &lt;driver name=<span class="string">'qemu'</span> <span class="built_in">type</span>=<span class="string">'qcow2'</span>/&gt;</div><div class="line">      &lt;<span class="built_in">source</span> file=<span class="string">'/opt/vm/dataname2-add.img'</span>/&gt;</div><div class="line">      &lt;target dev=<span class="string">'vdb'</span> bus=<span class="string">'virtio'</span>/&gt;</div><div class="line">      &lt;address <span class="built_in">type</span>=<span class="string">'pci'</span> domain=<span class="string">'0x0000'</span> bus=<span class="string">'0x00'</span> slot=<span class="string">'0x08'</span> <span class="keyword">function</span>=<span class="string">'0x0'</span>/&gt;</div><div class="line"> &lt;/disk&gt;</div><div class="line">保存退出。</div><div class="line">编辑了域 dataname2 XML 配置。</div></pre></td></tr></table></figure>
+<p>注意其中type表示硬盘的格式</p>
+<p>file表示硬盘所在的路径</p>
+<p>dev表示硬盘在系统中显示的硬盘名称</p>
+<p>bus表示硬盘的接线类型，如果是windows系统一般是ide。</p>
+<p>添加完毕后，我们来启动虚拟机看看实际的效果。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">[root@datanode2 ~]<span class="comment"># fdisk -l</span></div><div class="line"></div><div class="line">Disk /dev/vda: 107.4 GB, 107374182400 bytes</div><div class="line">16 heads, 63 sectors/track, 208050 cylinders</div><div class="line">Units = cylinders of 1008 * 512 = 516096 bytes</div><div class="line">Sector size (logical/physical): 512 bytes / 512 bytes</div><div class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</div><div class="line">Disk identifier: 0x000e0dd6</div><div class="line"></div><div class="line">   Device Boot      Start         End      Blocks   Id  System</div><div class="line">/dev/vda1   *           3        1018      512000   83  Linux</div><div class="line">Partition 1 does not end on cylinder boundary.</div><div class="line">/dev/vda2            1018      208051   104344576   8e  Linux LVM</div><div class="line">Partition 2 does not end on cylinder boundary.</div><div class="line"></div><div class="line">Disk /dev/vdb: 161.1 GB, 161061273600 bytes</div><div class="line">16 heads, 63 sectors/track, 312076 cylinders</div><div class="line">Units = cylinders of 1008 * 512 = 516096 bytes</div><div class="line">Sector size (logical/physical): 512 bytes / 512 bytes</div><div class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</div><div class="line">Disk identifier: 0x00000000</div></pre></td></tr></table></figure>
+<p>然后就是格式化挂载上去就可以了。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2015/06/17/容器-虚拟化/kvm/KVM虚拟机更改存储路径解决方法/" data-toggle="tooltip" data-placement="top" title="KVM虚拟机更改存储路径解决方法">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2015/04/01/运维安全/使用AIDE做Linux高级入侵检测文件监控/" data-toggle="tooltip" data-placement="top" title="使用AIDE做Linux高级入侵检测文件监控">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#KVM" title="KVM">KVM</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yangcvo-me";
+    var disqus_identifier = "http://blog.yangcvo.me/2015/06/16/容器-虚拟化/kvm/KVM虚拟化(六)调整虚拟机CPU大小,添加memory内存,添加虚拟机硬盘disk,虚拟机内存减半现象/";
+    var disqus_url = "http://blog.yangcvo.me/2015/06/16/容器-虚拟化/kvm/KVM虚拟化(六)调整虚拟机CPU大小,添加memory内存,添加虚拟机硬盘disk,虚拟机内存减半现象/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/PandaJuesha">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yangcvo.me">yangc</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> ProFTPD做虚拟化用户与OpenLDAP打通认证 · Cheng yang's Blog</title><meta name="description" content="ProFTPD做虚拟化用户与OpenLDAP打通认证 - yangc"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://blog.yangcvo.me/atom.xml" title="Cheng yang's Blog"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/yangcvo" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/yangcvo" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="http://blog.yangcvo.me/2014/05/04/%E4%B8%AA%E4%BA%BA%E8%AE%B0%E5%BD%95/About-me/" target="_blank" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">ProFTPD做虚拟化用户与OpenLDAP打通认证</h1><div class="post-info">2015年11月23日</div><div class="post-content"><p>##Centos上实现ProFTPD基于OpenLDAP的LDAP身份认证</p>
+<p>系统环境</p>
+<ul>
+<li>操作系统：centos 6.5</li>
+</ul>
+<p>###安装OpenLDAP</p>
+<p>centos6.5上安装OpenLDAP这里就不多说，文档链接贴出来了。</p>
+<p>###安装ProFTPD</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install proftpd-mod-ldap</span><br></pre></td></tr></table></figure>
+<p>这个deb包包含了编译的ldap模块（mod_ldap）。</p>
+<p>配置ProFTPD</p>
+<p>修改/etc/proftpd/proftpd.conf：<br>去掉下面几行注释：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">DefaultRoot       ~</span><br><span class="line">RequireValidShell off</span><br></pre></td></tr></table></figure>
+<p>Include /etc/proftpd/ldap.conf<br>修改<code>/etc/proftpd/modules.conf：</code><br>去掉下面一行注释，加载ldap模块：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LoadModule mod_ldap.c</span><br></pre></td></tr></table></figure>
+<p>修改/etc/proftpd/ldap.conf：<br>这个配置文件最为关键：</p>
+<p>(ldap.conf)</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;IfModule mod_ldap.c&gt;</span><br><span class="line">LDAPServer ldap://localhost/??sub</span><br><span class="line">LDAPBindDN &quot;cn=admin,dc=example,dc=com&quot; &quot;adminPassword&quot;</span><br><span class="line">LDAPUsers ou=users,dc=example,dc=com (uid=%u)</span><br><span class="line"></span><br><span class="line">LDAPForceDefaultGID on</span><br><span class="line">LDAPForceDefaultUID on</span><br><span class="line"></span><br><span class="line"># proftpd uid &amp; gid                                                             </span><br><span class="line"># $ id proftpd                                                                  </span><br><span class="line">LDAPDefaultGID 65534</span><br><span class="line">LDAPDefaultUID 107</span><br><span class="line"></span><br><span class="line"># 设置用户的主目录。设置为 /home/ftp 作为 LDAP 用户登录的主目录 注意：要事先创建 /home/ftp 目录，并正确授&gt;</span><br><span class="line">LDAPGenerateHomedir on</span><br><span class="line"># $ sudo mkdir /home/ftp                                                        </span><br><span class="line"># $ sudo chown proftpd:nogroup /home/ftp                                        </span><br><span class="line">LDAPGenerateHomedirPrefix /home/ftp</span><br><span class="line">LDAPForceGeneratedHomedir on</span><br><span class="line"># 在用户主目录下，创建用户个人目录。如果设置为 on，则所有用户共享同一主目录     </span><br><span class="line">LDAPGenerateHomedirPrefixNoUsername off</span><br><span class="line"># 如果用户主目录不存在，创建它                                                  </span><br><span class="line">CreateHome on</span><br><span class="line">&lt;/IfModule&gt;</span><br></pre></td></tr></table></figure>
+<p>其中的LDAPDefaultUID与LDAPDefaultGID为proftpd用户的uid与gid，可以通过以下命令查看：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /etc/passwd | grep proftpd</span><br></pre></td></tr></table></figure>
+<p>创建FTP目录<br>以如上配置为例，我们需要在/home目录下建立FTP目录，并赋予相应权限：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo mkdir /home/ftp</span><br><span class="line">$ sudo chown proftpd:nogroup /home/ftp</span><br></pre></td></tr></table></figure>
+<p>重启ProFTPD服务：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ service proftpd restart</span><br></pre></td></tr></table></figure>
+<p>参考链接：<br><a href="http://www.proftpd.org/docs/contrib/mod_ldap.html" target="_blank" rel="external">ProFTPD module mod_ldap</a></p>
+<p><a href="http://www.pudgecon.com/blog/2013/08/23/install-openldap-and-proftpd-on-ubuntu-12-dot-04/" target="_blank" rel="external">Install OpenLDAP and ProFTPD on Ubuntu 12.04</a></p>
+<p><a href="http://www.pudgecon.com/blog/2013/08/23/shared-directory-on-proftpd-for-all-users/" target="_blank" rel="external">Shared Directory on ProFTPD for All Users</a></p>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/11/24/centos7.1/centos7细节变化/" class="prev">PREV</a><a href="/2015/11/20/Redis/Redis与mamcache区别redis常用命令积累/" class="next">NEXT</a></div><div data-thread-key="2015/11/23/OpenLDAP/ProFTPD做虚拟化用户与OpenLDAP打通认证/" data-title="ProFTPD做虚拟化用户与OpenLDAP打通认证" data-url="http://blog.yangcvo.me/2015/11/23/OpenLDAP/ProFTPD做虚拟化用户与OpenLDAP打通认证/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"true"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+
+</script><div class="copyright"><p>© 2014 - 2016 <a href="http://blog.yangcvo.me">yangc</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yangcvo" target="_blank">Github-yangcvo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>

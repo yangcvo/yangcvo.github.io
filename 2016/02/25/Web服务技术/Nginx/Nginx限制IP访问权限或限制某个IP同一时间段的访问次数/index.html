@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Nginx限制IP访问权限或限制某个IP同一时间段的访问次数 - yangcvo的博客 | Chengyang&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yangcvo.me/2016/02/25/Web服务技术/Nginx/Nginx限制IP访问权限或限制某个IP同一时间段的访问次数/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Web Service" title="Web Service">Web Service</a>
+                        
+                          <a class="tag" href="/tags/#Nginx" title="Nginx">Nginx</a>
+                        
+                    </div>
+                    <h1>Nginx限制IP访问权限或限制某个IP同一时间段的访问次数</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by yangc on
+                        2016-02-25
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h4 id="nginx限制ip访问-nginx访问权限"><a href="#nginx限制ip访问-nginx访问权限" class="headerlink" title="nginx限制ip访问 nginx访问权限"></a>nginx限制ip访问 nginx访问权限</h4><p>看下配置：</p>
+<p>这里我只允许我公司IP访问：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">  server &#123;</div><div class="line">        listen       80;</div><div class="line">        server_name  kibana.ihaozhuo.com;</div><div class="line">        location / &#123;</div><div class="line">             index        index.html index.php index.jsp index.htm;</div><div class="line">             allow 202.107.202.82/32;</div><div class="line">             deny all;</div><div class="line">             proxy_pass           http://kibana.ihaozhuo.com;</div><div class="line">             proxy_ignore_client_abort on;</div><div class="line">             proxy_redirect               off;</div><div class="line">             proxy_set_header     Host    <span class="variable">$host</span>;</div><div class="line">             proxy_set_header     X-Real-IP       <span class="variable">$remote_addr</span>;</div><div class="line">             proxy_set_header     X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</div><div class="line">             &#125;</div><div class="line">      &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里分全局配置和站点配置。这里我kibana网站只限制当个网站IP访问：</p>
+<p>一、服务器全局限IP</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#vi nginx.conf</span></div><div class="line">    allow 202.107.202.82/32;  <span class="comment">#允许的IP</span></div><div class="line">    deny all;</div></pre></td></tr></table></figure>
+<p>二、站点限IP</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#vi vhosts.conf</span></div><div class="line">站点全局限IP:</div><div class="line">location / &#123;</div><div class="line">    index  index.html index.htm index.php;</div><div class="line">    allow 202.107.202.82/32; </div><div class="line">    deny all;</div></pre></td></tr></table></figure>
+<h4 id="如何设置能限制某个IP某一时间段的访问次数"><a href="#如何设置能限制某个IP某一时间段的访问次数" class="headerlink" title="如何设置能限制某个IP某一时间段的访问次数"></a>如何设置能限制某个IP某一时间段的访问次数</h4><p>如何设置能限制某个IP某一时间段的访问次数是一个让人头疼的问题，特别面对恶意的ddos攻击的时候。其中<code>CC攻击（Challenge Collapsar）是DDOS（分布式拒绝服务）</code>的一种，也是一种常见的网站攻击方法，攻击者通过代理服务器或者肉鸡向向受害主机不停地发大量数据包，造成对方服务器资源耗尽，一直到宕机崩溃。</p>
+<p><code>cc攻击</code>一般就是使用有限的ip数对服务器频繁发送数据来达到攻击的目的，nginx可以通过<code>HttpLimitReqModul</code>和<code>HttpLimitZoneModule</code>配置来限制ip在同一时间段的访问次数来防cc攻击。</p>
+<p><code>HttpLimitReqModul</code>用来限制连单位时间内连接数的模块，使用<code>limit_req_zone</code>和<code>limit_req</code>指令配合使用来达到限制。一旦并发连接超过指定数量，就会返回503错误。</p>
+<p><code>HttpLimitConnModul</code>用来限制单个ip的并发连接数，使用limit_zone和limit_conn指令</p>
+<p>这两个模块的区别前一个是对一段时间内的连接数限制，后者是对同一时刻的连接数限制</p>
+<p>####HttpLimitReqModul 限制某一段时间内同一ip访问数实例</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">http&#123;</div><div class="line">    ...</div><div class="line"></div><div class="line">    <span class="comment">#定义一个名为allips的limit_req_zone用来存储session，大小是10M内存，</span></div><div class="line">    <span class="comment">#以$binary_remote_addr 为key,限制平均每秒的请求为20个，</span></div><div class="line">    <span class="comment">#1M能存储16000个状态，rete的值必须为整数，</span></div><div class="line">    <span class="comment">#如果限制两秒钟一个请求，可以设置成30r/m</span></div><div class="line"></div><div class="line">    limit_req_zone <span class="variable">$binary_remote_addr</span> zone=allips:10m rate=20r/s;</div><div class="line">    ...</div><div class="line">    server&#123;</div><div class="line">        ...</div><div class="line">        location &#123;</div><div class="line">            ...</div><div class="line"></div><div class="line">            <span class="comment">#限制每ip每秒不超过20个请求，漏桶数burst为5</span></div><div class="line">            <span class="comment">#brust的意思就是，如果第1秒、2,3,4秒请求为19个，</span></div><div class="line">            <span class="comment">#第5秒的请求为25个是被允许的。</span></div><div class="line">            <span class="comment">#但是如果你第1秒就25个请求，第2秒超过20的请求返回503错误。</span></div><div class="line">            <span class="comment">#nodelay，如果不设置该选项，严格使用平均速率限制请求数，</span></div><div class="line">            <span class="comment">#第1秒25个请求时，5个请求放到第2秒执行，</span></div><div class="line">            <span class="comment">#设置nodelay，25个请求将在第1秒执行。</span></div><div class="line"></div><div class="line">            limit_req zone=allips burst=5 nodelay;</div><div class="line">            ...</div><div class="line">        &#125;</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="HttpLimitZoneModule-限制并发连接数实例"><a href="#HttpLimitZoneModule-限制并发连接数实例" class="headerlink" title="HttpLimitZoneModule 限制并发连接数实例"></a>HttpLimitZoneModule 限制并发连接数实例</h4><p>limit_zone只能定义在http作用域，limit_conn可以定义在http server location作用域</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">http&#123;</div><div class="line">    ...</div><div class="line"></div><div class="line">    <span class="comment">#定义一个名为one的limit_zone,大小10M内存来存储session，</span></div><div class="line">    <span class="comment">#以$binary_remote_addr 为key</span></div><div class="line">    <span class="comment">#nginx 1.18以后用limit_conn_zone替换了limit_conn</span></div><div class="line">    <span class="comment">#且只能放在http作用域</span></div><div class="line">    limit_conn_zone   one  <span class="variable">$binary_remote_addr</span>  10m;  </div><div class="line">    ...</div><div class="line">    server&#123;</div><div class="line">        ...</div><div class="line">        location &#123;</div><div class="line">            ...</div><div class="line">           limit_conn one 20;          <span class="comment">#连接数限制</span></div><div class="line"></div><div class="line">           <span class="comment">#带宽限制,对单个连接限数，如果一个ip两个连接，就是500x2k</span></div><div class="line">           limit_rate 500k;            </div><div class="line"></div><div class="line">            ...</div><div class="line">        &#125;</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="nginx白名单设置"><a href="#nginx白名单设置" class="headerlink" title="nginx白名单设置"></a>nginx白名单设置</h4><p>以上配置会对所有的ip都进行限制，有些时候我们不希望对搜索引擎的蜘蛛或者自己测试ip进行限制，<br>对于特定的白名单ip我们可以借助geo指令实现。<br>1.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">http&#123;</div><div class="line">     geo <span class="variable">$limited</span>&#123;</div><div class="line">        default 1;</div><div class="line">        <span class="comment">#google </span></div><div class="line">        64.233.160.0/19 0;</div><div class="line">        65.52.0.0/14 0;</div><div class="line">        66.102.0.0/20 0;</div><div class="line">        66.249.64.0/19 0;</div><div class="line">        72.14.192.0/18 0;</div><div class="line">        74.125.0.0/16 0;</div><div class="line">        209.85.128.0/17 0;</div><div class="line">        216.239.32.0/19 0;</div><div class="line">        <span class="comment">#M$</span></div><div class="line">        64.4.0.0/18 0;</div><div class="line">        157.60.0.0/16 0;</div><div class="line">        157.54.0.0/15 0;</div><div class="line">        157.56.0.0/14 0;</div><div class="line">        207.46.0.0/16 0;</div><div class="line">        207.68.192.0/20 0;</div><div class="line">        207.68.128.0/18 0;</div><div class="line">        <span class="comment">#yahoo</span></div><div class="line">        8.12.144.0/24 0;</div><div class="line">        66.196.64.0/18 0;</div><div class="line">        66.228.160.0/19 0;</div><div class="line">        67.195.0.0/16 0;</div><div class="line">        74.6.0.0/16 0;</div><div class="line">        68.142.192.0/18 0;</div><div class="line">        72.30.0.0/16 0;</div><div class="line">        209.191.64.0/18 0;</div><div class="line">        <span class="comment">#My IPs</span></div><div class="line">        127.0.0.1/32 0;</div><div class="line">        123.456.0.0/28 0; <span class="comment">#example for your server CIDR</span></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>geo指令定义了一个白名单$limited变量，默认值为1，如果客户端ip在上面的范围内，$limited的值为0</p>
+<p>2.使用map指令映射搜索引擎客户端的ip为空串，如果不是搜索引擎就显示本身真是的ip，这样搜索引擎ip就不能存到limit_req_zone内存session中，所以不会限制搜索引擎的ip访问</p>
+<p>map $limited $limit {<br>1 $binary_remote_addr;<br>0 “”;<br>}</p>
+<p>3.设置limit_req_zone和limit_req<br>limit_req_zone $limit zone=foo:1m rate=10r/m;</p>
+<p>limit_req zone=foo burst=5;</p>
+<p>最后我们使用ab压php-fpm的方式，对上面的方法效果实际测试下</p>
+<p>例1：限制只允许一分钟内只允许一个ip访问60次配置，也就是平均每秒1次<br>首先我们准备一个php脚本放在根目录下$document_root</p>
+<p>test.php</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span>( <span class="variable">$i</span>=0; <span class="variable">$i</span> &lt; 1000; <span class="variable">$i</span>++)</div><div class="line"><span class="built_in">echo</span> <span class="string">'Hello World'</span>;</div><div class="line">?&gt;</div></pre></td></tr></table></figure>
+<p>nginx配置增加limit_req_zone 和 limit_req</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">http&#123;</div><div class="line">    <span class="params">...</span></div><div class="line">    limit_req_zone $binary_remote_addr zone=allips:<span class="number">10</span>m rate=<span class="number">60</span>r/m;</div><div class="line">    <span class="params">...</span></div><div class="line">    server&#123;</div><div class="line">        <span class="params">...</span></div><div class="line">        location &#123;</div><div class="line">            <span class="params">...</span></div><div class="line">            limit_req zone=allips;</div><div class="line">            <span class="params">...</span></div><div class="line">        &#125;</div><div class="line">        <span class="params">...</span></div><div class="line">    &#125;</div><div class="line">    <span class="params">...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>ab -n 5 -c 1 <a href="http://www.weizhang.org/test.php" target="_blank" rel="external">http://www.weizhang.org/test.php</a></p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:06:27:06 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">200</span> <span class="number">11000</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:06:27:06 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">503</span> <span class="number">537</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:06:27:07 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">503</span> <span class="number">537</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:06:27:07 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">503</span> <span class="number">537</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:06:27:07 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">503</span> <span class="number">537</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div></pre></td></tr></table></figure>
+<p>未设置brust和nodelay可以看到该配置只允许每秒访问1次，超出的请求返回503错误</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">http&#123;</div><div class="line">    <span class="params">...</span></div><div class="line">    limit_req_zone $binary_remote_addr zone=allips:<span class="number">10</span>m rate=<span class="number">60</span>r/m;</div><div class="line">    <span class="params">...</span></div><div class="line">    server&#123;</div><div class="line">        <span class="params">...</span></div><div class="line">        location &#123;</div><div class="line">            <span class="params">...</span></div><div class="line">            limit_req zone=allips burst=<span class="number">1</span> nodelay;</div><div class="line">            <span class="params">...</span></div><div class="line">        &#125;</div><div class="line">        <span class="params">...</span></div><div class="line">    &#125;</div><div class="line">    <span class="params">...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>ab -n 5 -c 1 <a href="http://www.weizhang.org/test.php" target="_blank" rel="external">http://www.weizhang.org/test.php</a></p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:07:01:00 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">200</span> <span class="number">11000</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:07:01:00 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">200</span> <span class="number">11000</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:07:01:01 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">503</span> <span class="number">537</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:07:01:01 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">503</span> <span class="number">537</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:07:01:01 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">503</span> <span class="number">537</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div></pre></td></tr></table></figure>
+<p>设置brust=1和nodelay后允许第1秒处理两个请求。</p>
+<p>参考例子：<a href="http://storysky.blog.51cto.com/628458/642970/" target="_blank" rel="external">http://storysky.blog.51cto.com/628458/642970/</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/02/26/python/Python学习一路潇潇洒洒磕磕碰碰😁/" data-toggle="tooltip" data-placement="top" title="Python学习一路潇潇洒洒磕磕碰碰😁">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/02/14/个人生活记录/在一起的第588天💕/" data-toggle="tooltip" data-placement="top" title="在一起的第588天💕">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Web Service" title="Web Service">Web Service</a>
+                        
+                          <a class="tag" href="/tags/#Nginx" title="Nginx">Nginx</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yangcvo-me";
+    var disqus_identifier = "http://blog.yangcvo.me/2016/02/25/Web服务技术/Nginx/Nginx限制IP访问权限或限制某个IP同一时间段的访问次数/";
+    var disqus_url = "http://blog.yangcvo.me/2016/02/25/Web服务技术/Nginx/Nginx限制IP访问权限或限制某个IP同一时间段的访问次数/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/PandaJuesha">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yangcvo.me">yangc</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

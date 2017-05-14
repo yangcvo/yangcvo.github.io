@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Cento6.7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行 | Cheng yang&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="APP测试神器：STF最近项目涉及到较多设备批量管理的需求，发现一工具可以批量对大量设备进行WEB端管理，工具主页：https://openstf.github.io/工具名STF（Smartphone Test Farm）
+STF (or Smartphone Test Farm) is a web application for debugging smartphones, smartwatc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cento6.7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行">
+<meta property="og:url" content="http://blog.yangcvo.me/2015/12/01/Linux笔记/Cento6-7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行/index.html">
+<meta property="og:site_name" content="Cheng yang's Blog">
+<meta property="og:description" content="APP测试神器：STF最近项目涉及到较多设备批量管理的需求，发现一工具可以批量对大量设备进行WEB端管理，工具主页：https://openstf.github.io/工具名STF（Smartphone Test Farm）
+STF (or Smartphone Test Farm) is a web application for debugging smartphones, smartwatc">
+<meta property="og:image" content="https://raw.githubusercontent.com/openstf/stf/master/doc/7s_usage.gif">
+<meta property="og:image" content="http://7xrthw.com1.z0.glb.clouddn.com/openstf.png">
+<meta property="og:updated_time" content="2016-12-15T10:32:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Cento6.7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行">
+<meta name="twitter:description" content="APP测试神器：STF最近项目涉及到较多设备批量管理的需求，发现一工具可以批量对大量设备进行WEB端管理，工具主页：https://openstf.github.io/工具名STF（Smartphone Test Farm）
+STF (or Smartphone Test Farm) is a web application for debugging smartphones, smartwatc">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/openstf/stf/master/doc/7s_usage.gif">
+    
+
+    
+        <link rel="alternate" href="/" title="Cheng yang&#39;s Blog" type="application/atom+xml" />
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">Cheng yang&#39;s Blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="https://github.com/yangcvo">GitHub</a>
+                
+                    <a class="main-nav-link" href="http://weibo.com/yangcvo">Weibo</a>
+                
+                    <a class="main-nav-link" href="http://blog.yangcvo.me/2014/05/04/%E4%B8%AA%E4%BA%BA%E8%AE%B0%E5%BD%95/About-me/">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/yangc.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/yangcvo">GitHub</a></td>
+                
+                    <td><a class="main-nav-link" href="http://weibo.com/yangcvo">Weibo</a></td>
+                
+                    <td><a class="main-nav-link" href="http://blog.yangcvo.me/2014/05/04/%E4%B8%AA%E4%BA%BA%E8%AE%B0%E5%BD%95/About-me/">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/yangc.png" />
+            <h2 id="name">yangc</h2>
+            <h3 id="title">Operation Engineer</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>hangzhou, China</span>
+            <a id="follow" target="_blank" href="https://github.com/yangcvo/">FOLLOW</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                98
+                <span>posts</span>
+            </div>
+            <div class="article-info-block">
+                34
+                <span>tags</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/yangcvo" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://twitter.com/yangaov" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://www.facebook.com/yango88" target="_blank" title="facebook" class=tooltip>
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="dribbble" class=tooltip>
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="rss" class=tooltip>
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-Linux笔记/Cento6-7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Cento6.7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2015/12/01/Linux笔记/Cento6-7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行/">
+            <time datetime="2015-12-01T03:28:00.000Z" itemprop="datePublished">Dec 1 2015</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/测试/">测试</a>
+    </div>
+
+                        
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h2 id="APP测试神器：STF"><a href="#APP测试神器：STF" class="headerlink" title="APP测试神器：STF"></a>APP测试神器：STF</h2><p>最近项目涉及到较多设备批量管理的需求，发现一工具可以批量对大量设备进行WEB端管理，工具主页：<a href="https://openstf.github.io/" target="_blank" rel="external">https://openstf.github.io/</a><br>工具名STF（Smartphone Test Farm）</p>
+<p>STF (or Smartphone Test Farm) is a web application for debugging smartphones, smartwatches and other gadgets remotely, from the comfort of your browser.</p>
+<p>上个主页上的效果图吧：</p>
+<p><img src="https://raw.githubusercontent.com/openstf/stf/master/doc/7s_usage.gif" alt=""></p>
+<p>它的github页面为： <a href="https://github.com/openstf/stf" target="_blank" rel="external">https://github.com/openstf/stf</a> </p>
+<h3 id="安装环境："><a href="#安装环境：" class="headerlink" title="安装环境："></a>安装环境：</h3><ul>
+<li>系统：centos 6.7 x86</li>
+<li>浏览器：chrome</li>
+</ul>
+<h4 id="1-、-Linux一些基本包的安装："><a href="#1-、-Linux一些基本包的安装：" class="headerlink" title="1 、 Linux一些基本包的安装："></a>1 、 Linux一些基本包的安装：</h4><p>运行：<br>yum update<br>yum install -y git<br>yum install -y lib32stdc++6</p>
+<h4 id="2-、-Jdk-amp-SDK环境安装"><a href="#2-、-Jdk-amp-SDK环境安装" class="headerlink" title="2 、 Jdk &amp; SDK环境安装"></a>2 、 Jdk &amp; SDK环境安装</h4><ul>
+<li>JDK下载地址：<a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html" target="_blank" rel="external">jdk下载</a> </li>
+<li>SDK下载地址：<a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html" target="_blank" rel="external">Android SDK</a></li>
+</ul>
+<p>JDK就不多解释了，安装到自己指定目录。写环境变量生效即可。</p>
+<p><strong>SDK 安装：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@openstf srv]<span class="comment"># wget https://dl.google.com/android/android-sdk_r24.4.1-linux.tgz</span></span><br><span class="line">[root@openstf srv]<span class="comment"># tar -zxvf android-sdk_r24.4.1-linux.tgz</span></span><br></pre></td></tr></table></figure>
+<p>拷贝SDK目录到HOME目录中，打开控制台命令运行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@openstf srv]<span class="comment"># vim /etc/profile.d/java.sh</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> JAVA_HOME=/srv/jdk1.8.0_66</span><br><span class="line"><span class="built_in">export</span> CLASSPATH=.:<span class="variable">$JAVA_HOME</span>/jre/lib/rt.jar:<span class="variable">$JAVA_HOME</span>/lib/dt.jar:<span class="variable">$JAVA_HOME</span>/lib/tools.jar</span><br><span class="line"><span class="built_in">export</span> PATH=/usr/<span class="built_in">local</span>/sbin:/usr/<span class="built_in">local</span>/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin:<span class="variable">$JAVA_HOME</span>/bin</span><br><span class="line"><span class="built_in">export</span> ANDROID_HOME=/srv/android-sdk-linux</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$ANDROID_HOME</span>/tools:<span class="variable">$ANDROID_HOME</span>/platform-tools:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
+<p>在执行命令使之生效：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@openstf srv]<span class="comment"># source /etc/profile</span></span><br></pre></td></tr></table></figure>
+<p>发现jdk是生效了，可是sdk没有生效。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@openstf srv]<span class="comment"># java -version</span></span><br><span class="line">java version <span class="string">"1.8.0_66"</span></span><br><span class="line">Java(TM) SE Runtime Environment (build 1.8.0_66-b17)</span><br><span class="line">Java HotSpot(TM) 64-Bit Server VM (build 25.66-b17, mixed mode)</span><br></pre></td></tr></table></figure>
+<h4 id="3-、-CentOS-64-位机器配置-Android-SDK-环境"><a href="#3-、-CentOS-64-位机器配置-Android-SDK-环境" class="headerlink" title="3 、 CentOS 64 位机器配置 Android SDK 环境"></a>3 、 CentOS 64 位机器配置 Android SDK 环境</h4><p>因为是在服务器上，所以是木有任何桌面环境的，也就木有桌面浏览器啦。用 wget 或者 curl 下载即可。下载成功后，解压，查看了下载的SDK文件目录 可是目前目录下面只有 tools 目录，没有 platform-tools 目录，这个目录下的东西可不少哦，神马 aapt、dx 等等非常重要的工具都可是在这个里头哦，通常我们都是直接通过 android 命令就可以启动 Android SDK Manager 的界面管理工具，通过勾选不同平台就可以选择性地更新哪个版本的 sdk 了。</p>
+<p>万能的 google，程序员的福音 stackoverflow 上已经有人解决了该问题。大体就是通过</p>
+<p>先进入到/srv/android-sdk-linux/tools/目录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">android list sdk</span><br><span class="line"></span><br><span class="line">[root@openstf tools]<span class="comment"># android list sdk</span></span><br><span class="line">Refresh Sources:</span><br><span class="line">  Fetching https://dl.google.com/android/repository/addons_list-2.xml</span><br><span class="line">  Validate XML</span><br><span class="line">  Parse XML</span><br><span class="line">  Fetched Add-ons List successfully</span><br><span class="line">  Refresh Sources</span><br><span class="line">  Fetching URL: https://dl.google.com/android/repository/repository-11.xml</span><br><span class="line">  Validate XML: https://dl.google.com/android/repository/repository-11.xml</span><br><span class="line">  Parse XML:    https://dl.google.com/android/repository/repository-11.xml</span><br><span class="line">  Fetching URL: https://dl.google.com/android/repository/addon.xml</span><br><span class="line">  Validate XML: https://dl.google.com/android/repository/addon.xml</span><br><span class="line">  Parse XML:    https://dl.google.com/android/repository/addon.xml</span><br><span class="line">  Fetching URL: https://dl.google.com/android/repository/glass/addon.xml</span><br><span class="line">  Validate XML: https://dl.google.com/android/repository/glass/addon.xml</span><br><span class="line">  Parse XML:    https://dl.google.com/android/repository/glass/addon.xml</span><br><span class="line">  Fetching URL: https://dl.google.com/android/repository/extras/intel/addon.xml</span><br><span class="line">  Validate XML: https://dl.google.com/android/repository/extras/intel/addon.xml</span><br><span class="line">  Parse XML:    https://dl.google.com/android/repository/extras/intel/addon.xml</span><br><span class="line">  Fetching URL: https://dl.google.com/android/repository/sys-img/android/sys-img.xml</span><br><span class="line">  Validate XML: https://dl.google.com/android/repository/sys-img/android/sys-img.xml</span><br><span class="line">  Parse XML:    https://dl.google.com/android/repository/sys-img/android/sys-img.xml</span><br><span class="line">  Fetching URL: https://dl.google.com/android/repository/sys-img/android-wear/sys-img.xml</span><br><span class="line">  Validate XML: https://dl.google.com/android/repository/sys-img/android-wear/sys-img.xml</span><br><span class="line">  Parse XML:    https://dl.google.com/android/repository/sys-img/android-wear/sys-img.xml</span><br><span class="line">  Fetching URL: https://dl.google.com/android/repository/sys-img/android-tv/sys-img.xml</span><br><span class="line">  Validate XML: https://dl.google.com/android/repository/sys-img/android-tv/sys-img.xml</span><br></pre></td></tr></table></figure>
+<p>这个命令来查看有哪些 sdk 可以更新，你可以可以通过</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">android --help list sdk</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">android  list sdk --extended --all</span><br></pre></td></tr></table></figure>
+<p>来查看所有的可用的（包括 Android 认为已经过时的，例如 2.3.3 之类的各个 android 版本的 SDK，而且会将名字给你写出来哦），例如：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">id: 61 or “extra-android-support”</span><br><span class="line">Type: Extra</span><br><span class="line">Desc: Android Support Library, revision 11</span><br><span class="line">By Android</span><br><span class="line">Install path: extras/android/support</span><br></pre></td></tr></table></figure>
+<p>这个指的是就是 Android 的 suppor-library，其他的各个名称也很直观啦，这些名字可以用的地方呢就是我们在使用<br>android update -u</p>
+<p>命令进行 SDK 更新的时候可以通过设置 filter 来选择我们需要安装哪些包，例如下面这个命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">android update sdk -u –filter extra-google-google_play_services</span><br></pre></td></tr></table></figure>
+<p>执行之后，就会选择 Google Play Service 这个包来下载更新，同理其他的都素一样的啦。例如通过 </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">android update sdk -u --filter platform-tool</span><br></pre></td></tr></table></figure>
+<p>会自动下载 platform-tools 目录，你要是加上 platform，使用 </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">android update sdk -u --filter platform-tool,platform</span><br></pre></td></tr></table></figure>
+<p>就会下载所有版本的 platform 文件，其他的命令自己一个个尝试就好了。等下载完成之后，配置 PATH 变量吧 </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> ANDROID_SDK_HOME=/srv/android-sdk-linux</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$ANDROID_SDK_HOME</span>/tools:<span class="variable">$ANDROID_SDK_HOME</span>/platform-tools:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
+<p>这里我参考Google这篇文档：<a href="http://7dot9.com/2012/12/13/centos-64%E4%BD%8D%E6%9C%BA%E5%99%A8%E9%85%8D%E7%BD%AEandroid-sdk%E5%92%8Cndk%E7%8E%AF%E5%A2%83/" target="_blank" rel="external">sdk参考文档</a></p>
+<p>在执行命令使之生效：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@openstf srv]<span class="comment"># source /etc/profile</span></span><br><span class="line"></span><br><span class="line">[root@openstf tools]<span class="comment"># ad</span></span><br><span class="line">adb           addftinfo     addgnupghome  addpart       addr2line     adduser</span><br><span class="line">[root@openstf tools]<span class="comment"># adb</span></span><br></pre></td></tr></table></figure>
+<p>可是这里提示报错：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@openstf tools]<span class="comment"># adb</span></span><br><span class="line">adb: /lib64/libc.so.6: version `GLIBC_2.14<span class="string">' not found (required by adb)</span><br><span class="line">adb: /lib64/libc.so.6: version `GLIBC_2.15'</span> not found (required by adb)</span><br></pre></td></tr></table></figure>
+<p>提示这个错误：然后在Google 解决了。</p>
+<p>参考文章：<a href="http://www.xuebuyuan.com/642177.html" target="_blank" rel="external">解决GLIBC_2.14 not found </a></p>
+<p>这里我也整理RPM下载安装包：[ 我github上面 ] (<a href="https://github.com/yangcvo/openstf" target="_blank" rel="external">https://github.com/yangcvo/openstf</a>)</p>
+<p>验证：控制台分别输入adb和java -version来验证SDK是否配置生效</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@openstf ~]<span class="comment"># adb</span></span><br><span class="line">Android Debug Bridge version 1.0.36</span><br><span class="line">Revision fd9e4d07b0f5-android</span><br><span class="line"></span><br><span class="line"> <span class="_">-a</span>                            - directs adb to listen on all interfaces <span class="keyword">for</span> a connection</span><br><span class="line"> <span class="_">-d</span>                            - directs <span class="built_in">command</span> to the only connected USB device</span><br></pre></td></tr></table></figure>
+<h3 id="3、nodejs安装"><a href="#3、nodejs安装" class="headerlink" title="3、nodejs安装"></a>3、nodejs安装</h3><p>可以参考我博客上面有很详细安装文档：<a href="http://blog.yangcvo.me/2015/05/16/%E5%AE%89%E8%A3%85Node-Js/">Linux+mac 安装node.js</a></p>
+<p>安装完成以后：</p>
+<p>验证：控制台分别输入node -v和npm -v验证是否配置完成</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@openstf node-v0.10.26]<span class="comment"># node -v</span></span><br><span class="line">v0.10.26</span><br><span class="line">[root@openstf node-v0.10.26]<span class="comment"># npm -v</span></span><br><span class="line">1.4.3</span><br></pre></td></tr></table></figure>
+<h3 id="4、安装Bower"><a href="#4、安装Bower" class="headerlink" title="4、安装Bower"></a>4、安装Bower</h3><p>控制台执行npm命令进行Bower安装并等待完成</p>
+<p>安装&amp;验证：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@openstf node-v0.10.26]<span class="comment"># npm install bower -g</span></span><br><span class="line">npm http GET https://registry.npmjs.org/bower</span><br><span class="line">npm http 200 https://registry.npmjs.org/bower</span><br><span class="line">npm http GET https://registry.npmjs.org/bower/-/bower-1.7.9.tgz</span><br><span class="line">npm http 200 https://registry.npmjs.org/bower/-/bower-1.7.9.tgz</span><br><span class="line"></span><br><span class="line">/usr/<span class="built_in">local</span>/bin/bower -&gt; /usr/<span class="built_in">local</span>/lib/node_modules/bower/bin/bower</span><br><span class="line">bower@1.7.9 /usr/<span class="built_in">local</span>/lib/node_modules/bower</span><br><span class="line">[root@openstf node-v0.10.26]<span class="comment">#</span></span><br><span class="line">[root@openstf node-v0.10.26]<span class="comment"># bower -version</span></span><br><span class="line">1.7.9</span><br><span class="line">[root@openstf node-v0.10.26]<span class="comment"># whereis bower</span></span><br><span class="line">bower: /usr/<span class="built_in">local</span>/bin/bower</span><br></pre></td></tr></table></figure>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/openstf.png" alt=""></p>
+<h3 id="5、安装RethinkBD"><a href="#5、安装RethinkBD" class="headerlink" title="5、安装RethinkBD"></a>5、安装RethinkBD</h3><p>参考很多文章上面都是Ubuntu的安装方式。这里我列举了centos的 这是yum源安装方法，我的github上面有详细的源码编译安装方法。<br><a href="https://github.com/yangcvo/openstf" target="_blank" rel="external">stf-github</a></p>
+<p><code>For Centos 6</code></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo wget https://download.rethinkdb.com/centos/6/`uname -m`/rethinkdb.repo \</span><br><span class="line">          -O /etc/yum.repos.d/rethinkdb.repo</span><br><span class="line">sudo yum install rethinkdb</span><br></pre></td></tr></table></figure>
+<p><code>For Centos 7</code></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo wget http://download.rethinkdb.com/centos/7/`uname -m`/rethinkdb.repo \</span><br><span class="line">          -O /etc/yum.repos.d/rethinkdb.repo</span><br><span class="line">sudo yum install rethinkdb</span><br></pre></td></tr></table></figure>
+<p>验证：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@openstf ~]<span class="comment"># rethinkdb -v</span></span><br><span class="line">rethinkdb 2.3.4 (GCC 4.8.2)</span><br><span class="line">[root@openstf ~]<span class="comment"># whereis rethinkdb</span></span><br><span class="line">rethinkdb: /usr/bin/rethinkdb /etc/rethinkdb /usr/share/man/man1/rethinkdb.1.gz</span><br></pre></td></tr></table></figure>
+<h3 id="6、安装GraphicsMagick"><a href="#6、安装GraphicsMagick" class="headerlink" title="6、安装GraphicsMagick"></a>6、安装GraphicsMagick</h3><ul>
+<li>最新版本包地址：<a href="http://sourceforge.net/projects/graphicsmagick/files/graphicsmagick/" target="_blank" rel="external">http://sourceforge.net/projects/graphicsmagick/files/graphicsmagick/</a></li>
+</ul>
+<p>解压GraphicsMagick-1.3.24.tar.gz并控制台进入目录<br>这里下载不了的同学，可以到我github上面下载。</p>
+<p>centos 执行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@openstf ~]<span class="comment"># tar -zxvf GraphicsMagick-1.3.24.tar.gz</span></span><br><span class="line">[root@openstf ~]<span class="comment"># cd GraphicsMagick-1.3.24</span></span><br><span class="line">[root@openstf GraphicsMagick-1.3.24]<span class="comment"># ./configure --prefix=/usr/local/GraphicsMagick</span></span><br><span class="line">[root@openstf GraphicsMagick-1.3.24]<span class="comment"># make &amp;&amp; make instal</span></span><br><span class="line">[root@openstf bin]<span class="comment"># ln -s /usr/local/GraphicsMagick/bin/gm /usr/bin/gm</span></span><br></pre></td></tr></table></figure>
+<p>这里需要做下软链接，不然找不到指定的安装目录</p>
+<p>验证：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@openstf bin]<span class="comment"># gm -version</span></span><br><span class="line">GraphicsMagick 1.3.24 2016-05-30 Q8 http://www.GraphicsMagick.org/</span><br><span class="line">Copyright (C) 2002-2016 GraphicsMagick Group.</span><br><span class="line">Additional copyrights and licenses apply to this software.</span><br><span class="line">See http://www.GraphicsMagick.org/www/Copyright.html <span class="keyword">for</span> details.</span><br><span class="line"></span><br><span class="line">Feature Support:</span><br><span class="line">  Native Thread Safe       yes</span><br><span class="line">  Large Files (&gt; 32 bit)   yes</span><br><span class="line">  Large Memory (&gt; 32 bit)  yes</span><br><span class="line">  BZIP                     yes</span><br><span class="line">  DPS                      no</span><br><span class="line">  FlashPix                 no</span><br><span class="line">  FreeType                 no</span><br><span class="line">  Ghostscript (Library)    no</span><br><span class="line">  JBIG                     no</span><br><span class="line">  JPEG-2000                no</span><br><span class="line">  JPEG                     no</span><br><span class="line">  Little CMS               no</span><br><span class="line">  Loadable Modules         no</span><br><span class="line">  OpenMP                   yes (200805)</span><br><span class="line">  PNG                      no</span><br><span class="line">  TIFF                     no</span><br><span class="line">  TRIO                     no</span><br><span class="line">  UMEM                     no</span><br><span class="line">  WebP                     no</span><br><span class="line">  WMF                      no</span><br><span class="line">  X11                      no</span><br><span class="line">  XML                      yes</span><br><span class="line">  ZLIB                     yes</span><br><span class="line"></span><br><span class="line">Host <span class="built_in">type</span>: x86_64-unknown-linux-gnu</span><br><span class="line"></span><br><span class="line">Configured using the <span class="built_in">command</span>:</span><br><span class="line">  ./configure  <span class="string">'--prefix=/usr/local/GraphicsMagick'</span></span><br><span class="line"></span><br><span class="line">Final Build Parameters:</span><br><span class="line">  CC       = gcc -std=gnu99</span><br><span class="line">  CFLAGS   = -fopenmp -g -O2 -Wall -pthread</span><br><span class="line">  CPPFLAGS = -I/usr/include/libxml2</span><br><span class="line">  CXX      = g++</span><br><span class="line">  CXXFLAGS = -pthread</span><br><span class="line">  LDFLAGS  =</span><br><span class="line">  LIBS     = -lbz2 -lxml2 -lz -lm -lgomp -lpthread</span><br><span class="line">[root@openstf bin]<span class="comment"># whereis gm</span></span><br><span class="line">gm: /usr/bin/gm</span><br></pre></td></tr></table></figure>
+<h3 id="7、安装libsodium-zeromq的依赖"><a href="#7、安装libsodium-zeromq的依赖" class="headerlink" title="7、安装libsodium(zeromq的依赖)"></a>7、安装libsodium(zeromq的依赖)</h3><p>github下载最新包：<a href="https://github.com/jedisct1/libsodium/releases" target="_blank" rel="external">https://github.com/jedisct1/libsodium/releases</a><br>解压libsodium-1.0.3.tar.gz并控制台进入目录<br>执行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">[root@openstf libsodium-1.0.10]<span class="comment">#./configure</span></span><br><span class="line">[root@openstf libsodium-1.0.10]<span class="comment"># make &amp;&amp;  make install</span></span><br></pre></td></tr></table></figure>
+<p>验证：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@openstf libsodium-1.0.10]<span class="comment"># whereis libsodium</span></span><br><span class="line">libsodium: /usr/<span class="built_in">local</span>/lib/libsodium.a /usr/<span class="built_in">local</span>/lib/libsodium.la /usr/<span class="built_in">local</span>/lib/libsodium.so</span><br></pre></td></tr></table></figure>
+<h3 id="8、安装zeromq"><a href="#8、安装zeromq" class="headerlink" title="8、安装zeromq"></a>8、安装zeromq</h3><p>最新版本包地址：<a href="http://download.zeromq.org/" target="_blank" rel="external">http://download.zeromq.org/</a><br>解压zeromq-4.1.2.tar.gz并控制台进入目录<br>执行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@openstf zeromq-4.1.4]<span class="comment"># ./configure</span></span><br></pre></td></tr></table></figure>
+<p>这里有报错：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">checking <span class="keyword">for</span> uint32_t... yes</span><br><span class="line">checking <span class="keyword">for</span> working volatile... yes</span><br><span class="line">checking <span class="keyword">for</span> sodium... no</span><br><span class="line">configure: error: Package requirements (libsodium) were not met:</span><br><span class="line"></span><br><span class="line">No package <span class="string">'libsodium'</span> found</span><br><span class="line"></span><br><span class="line">Consider adjusting the PKG_CONFIG_PATH environment variable <span class="keyword">if</span> you</span><br><span class="line">installed software <span class="keyword">in</span> a non-standard prefix.</span><br><span class="line"></span><br><span class="line">Alternatively, you may <span class="built_in">set</span> the environment variables sodium_CFLAGS</span><br><span class="line">and sodium_LIBS to avoid the need to call pkg-config.</span><br><span class="line">See the pkg-config man page <span class="keyword">for</span> more details.</span><br></pre></td></tr></table></figure>
+<p>解决方法：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@openstf zeromq-4.1.2]<span class="comment"># ./configure -without-libsodium</span></span><br><span class="line">[root@openstf zeromq-4.1.2]<span class="comment"># make &amp;&amp; make install</span></span><br><span class="line">ldconfig</span><br></pre></td></tr></table></figure>
+<h3 id="9、安装protobuf"><a href="#9、安装protobuf" class="headerlink" title="9、安装protobuf"></a>9、安装protobuf</h3><ul>
+<li>github下载最新包：<a href="https://github.com/google/protobuf/releases" target="_blank" rel="external">https://github.com/google/protobuf/releases</a><br>解压protobuf-cpp-3.0.0-alpha-3.tar.gz并控制台进入目录</li>
+</ul>
+<p>执行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">//因为需要配置环境变量，所以用参数指定到了<span class="built_in">local</span>下的指定目录中</span><br><span class="line">./configure --prefix=/usr/<span class="built_in">local</span>/protobuf</span><br><span class="line">make &amp;&amp;  make install</span><br></pre></td></tr></table></figure>
+<p>修改环境变量配置文件：</p>
+<p>vim /etc/profile.d/protobuf.sh<br>配置环境变量并保存退出：</p>
+<p>export PATH=$PATH:/usr/local/protobuf/bin/<br>export PKG_CONFIG_PATH=/usr/local/protobuf/lib/pkgconfig/<br>在控制台执行命令使之生效：</p>
+<p>source /etc/profile<br>验证：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@openstf protobuf-3.0.0-beta-2]<span class="comment"># protoc --version</span></span><br><span class="line">libprotoc 3.0.0</span><br></pre></td></tr></table></figure>
+<h3 id="10、安装pkg-config"><a href="#10、安装pkg-config" class="headerlink" title="10、安装pkg-config"></a>10、安装pkg-config</h3><p>Ubuntu 安装方法：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install pkg-config</span><br></pre></td></tr></table></figure>
+<p>centos：</p>
+<p>首先到网上下载pkgconfig，地址：<a href="http://download.chinaunix.net/download/0009000/8174.shtml，" target="_blank" rel="external">http://download.chinaunix.net/download/0009000/8174.shtml，</a><br>这里的版本比较低：我已上传最新版的包到github</p>
+<p>可以到到这里<a href="http://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz" target="_blank" rel="external">下载</a></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@openstf ~]<span class="comment"># tar -zxvf pkg-config-0.28.tar.gz</span></span><br><span class="line">[root@openstf ~]<span class="comment"># cd pkg-config-0.28</span></span><br><span class="line">[root@openstf pkg-config-0.28]<span class="comment"># ./configure  --with-internal-glib</span></span><br><span class="line">[root@openstf pkg-config-0.28]<span class="comment"># make &amp;&amp; make install</span></span><br></pre></td></tr></table></figure>
+<p>验证：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@openstf pkg-config-0.28]<span class="comment"># pkg-config --version</span></span><br><span class="line">0.28</span><br></pre></td></tr></table></figure>
+<h3 id="11、安装stf-可能需要翻墙或者VPN"><a href="#11、安装stf-可能需要翻墙或者VPN" class="headerlink" title="11、安装stf (可能需要翻墙或者VPN)"></a>11、安装stf (可能需要翻墙或者VPN)</h3><p>控制台执行命令：</p>
+<p>npm install -g stf<br>安装过程：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">.....</span><br><span class="line"></span><br><span class="line">npm http 200 http://registry.npm.taobao.org/optjs</span><br><span class="line">npm http GET http://registry.npm.taobao.org/parsejson/0.0.1</span><br><span class="line">npm http GET http://registry.npm.taobao.org/has-cors/1.0.3</span><br><span class="line">npm http 304 http://registry.npm.taobao.org/wordwrap</span><br><span class="line">npm http GET http://registry.npm.taobao.org/parseqs/0.0.2</span><br><span class="line">npm http GET http://registry.npm.taobao.org/parseuri/0.0.4</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/xmlbuilder/download/xmlbuilder-2.6.2.tgz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/component-inherit/0.0.3</span><br><span class="line">npm http GET http://registry.npm.taobao.org/debug/1.0.4</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/sax/download/sax-1.1.5.tgz</span><br><span class="line">npm http GET https://github.com/rase-/node-XMLHttpRequest/archive/a6b6f2.tar.gz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/colour/download/colour-0.7.1.tgz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/optjs/download/optjs-3.2.2.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/jmespath/download/jmespath-0.15.0.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/parsejson/0.0.1</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/xml2js/download/xml2js-0.4.15.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/has-cors/1.0.3</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/parseuri/0.0.4</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/parseqs/0.0.2</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/debug/1.0.4</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/component-inherit/0.0.3</span><br><span class="line">npm http GET http://registry.npm.taobao.org/parseuri/download/parseuri-0.0.4.tgz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/parsejson/download/parsejson-0.0.1.tgz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/has-cors/download/has-cors-1.0.3.tgz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/parseqs/download/parseqs-0.0.2.tgz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/debug/download/debug-1.0.4.tgz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/callsite/1.0.0</span><br><span class="line">npm http GET http://registry.npm.taobao.org/component-inherit/download/component-inherit-0.0.3.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/colour/download/colour-0.7.1.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/optjs/download/optjs-3.2.2.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/callsite/1.0.0</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/debug/download/debug-1.0.4.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/parseqs/download/parseqs-0.0.2.tgz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/callsite/download/callsite-1.0.0.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/has-cors/download/has-cors-1.0.3.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/component-inherit/download/component-inherit-0.0.3.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/parseuri/download/parseuri-0.0.4.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/parsejson/download/parsejson-0.0.1.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/callsite/download/callsite-1.0.0.tgz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/window-size/0.1.0</span><br><span class="line">npm http GET http://registry.npm.taobao.org/cliui</span><br><span class="line">npm http GET http://registry.npm.taobao.org/decamelize</span><br><span class="line">npm http GET http://registry.npm.taobao.org/camelcase</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/window-size/0.1.0</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/decamelize</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/cliui</span><br><span class="line">npm http 304 http://registry.npm.taobao.org/camelcase</span><br><span class="line">npm http GET http://registry.npm.taobao.org/window-size/download/window-size-0.1.0.tgz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/decamelize/download/decamelize-1.2.0.tgz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/cliui/download/cliui-2.1.0.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/window-size/download/window-size-0.1.0.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/cliui/download/cliui-2.1.0.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/decamelize/download/decamelize-1.2.0.tgz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/center-align</span><br><span class="line">npm http GET http://registry.npm.taobao.org/right-align</span><br><span class="line">npm http GET http://registry.npm.taobao.org/wordwrap/0.0.2</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/center-align</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/wordwrap/0.0.2</span><br><span class="line">npm http GET http://registry.npm.taobao.org/center-align/download/center-align-0.1.3.tgz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/wordwrap/download/wordwrap-0.0.2.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/right-align</span><br><span class="line">npm http GET http://registry.npm.taobao.org/right-align/download/right-align-0.1.3.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/wordwrap/download/wordwrap-0.0.2.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/center-align/download/center-align-0.1.3.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/right-align/download/right-align-0.1.3.tgz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/align-text</span><br><span class="line">npm http GET http://registry.npm.taobao.org/align-text</span><br><span class="line">npm http GET http://registry.npm.taobao.org/lazy-cache</span><br><span class="line">npm http 200 https://github.com/rase-/node-XMLHttpRequest/archive/a6b6f2.tar.gz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/align-text</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/align-text</span><br><span class="line">npm http GET http://registry.npm.taobao.org/align-text/download/align-text-0.1.4.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/lazy-cache</span><br><span class="line">npm http GET http://registry.npm.taobao.org/lazy-cache/download/lazy-cache-1.0.4.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/align-text/download/align-text-0.1.4.tgz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/long</span><br><span class="line">npm http GET http://registry.npm.taobao.org/bufferview</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/lazy-cache/download/lazy-cache-1.0.4.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/bufferview</span><br><span class="line">npm http GET http://registry.npm.taobao.org/bufferview/download/bufferview-1.0.1.tgz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/kind-of</span><br><span class="line">npm http GET http://registry.npm.taobao.org/longest</span><br><span class="line">npm http GET http://registry.npm.taobao.org/repeat-string</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/repeat-string</span><br><span class="line">npm http GET http://registry.npm.taobao.org/repeat-string/download/repeat-string-1.5.4.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/bufferview/download/bufferview-1.0.1.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/longest</span><br><span class="line">npm http GET http://registry.npm.taobao.org/longest/download/longest-1.0.1.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/kind-of</span><br><span class="line">npm http GET http://registry.npm.taobao.org/kind-of/download/kind-of-3.0.3.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/longest/download/longest-1.0.1.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/repeat-string/download/repeat-string-1.5.4.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/kind-of/download/kind-of-3.0.3.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/long</span><br><span class="line">npm http GET http://registry.npm.taobao.org/long/download/long-2.4.0.tgz</span><br><span class="line">npm http GET https://github.com/component/global/archive/v2.0.1.tar.gz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/lodash</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/long/download/long-2.4.0.tgz</span><br><span class="line">npm http 304 http://registry.npm.taobao.org/lodash</span><br><span class="line">npm http GET http://registry.npm.taobao.org/lodash/download/lodash-3.5.0.tgz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/is-buffer</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/lodash/download/lodash-3.5.0.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/is-buffer</span><br><span class="line">npm http GET http://registry.npm.taobao.org/is-buffer/download/is-buffer-1.1.3.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/is-buffer/download/is-buffer-1.1.3.tgz</span><br><span class="line">npm WARN engine is-buffer@1.1.3: wanted: &#123;<span class="string">"node"</span>:<span class="string">"&gt;=0.12"</span>&#125; (current: &#123;<span class="string">"node"</span>:<span class="string">"v0.10.26"</span>,<span class="string">"npm"</span>:<span class="string">"1.4.3"</span>&#125;)</span><br><span class="line">npm WARN engine is-buffer@1.1.3: wanted: &#123;<span class="string">"node"</span>:<span class="string">"&gt;=0.12"</span>&#125; (current: &#123;<span class="string">"node"</span>:<span class="string">"v0.10.26"</span>,<span class="string">"npm"</span>:<span class="string">"1.4.3"</span>&#125;)</span><br><span class="line">npm http GET http://registry.npm.taobao.org/sprintf-js</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/sprintf-js</span><br><span class="line">npm http GET http://registry.npm.taobao.org/sprintf-js/download/sprintf-js-1.0.3.tgz</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/sprintf-js/download/sprintf-js-1.0.3.tgz</span><br><span class="line">npm http 200 https://github.com/component/global/archive/v2.0.1.tar.gz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/through</span><br><span class="line">npm http GET http://registry.npm.taobao.org/ms/0.7.0</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/ms/0.7.0</span><br><span class="line">npm http GET http://registry.npm.taobao.org/ms/download/ms-0.7.0.tgz</span><br><span class="line">npm http 304 http://registry.npm.taobao.org/through</span><br><span class="line">npm http 200 http://registry.npm.taobao.org/ms/download/ms-0.7.0.tgz</span><br><span class="line">npm http GET http://registry.npm.taobao.org/bindings</span><br><span class="line">npm http GET http://registry.npm.taobao.org/nan</span><br><span class="line">npm http 304 http://registry.npm.taobao.org/bindings</span><br><span class="line">npm http 304 http://registry.npm.taobao.org/nan</span><br><span class="line"></span><br><span class="line">&gt; bufferutil@1.2.1 install /usr/<span class="built_in">local</span>/lib/node_modules/stf/node_modules/ws/node_modules/bufferutil</span><br><span class="line">&gt; node-gyp rebuild</span><br><span class="line"></span><br><span class="line">gyp WARN EACCES user <span class="string">"root"</span> does not have permission to access the dev dir <span class="string">"/root/.node-gyp/0.10.26"</span></span><br><span class="line">gyp WARN EACCES attempting to reinstall using temporary dev dir <span class="string">"/usr/local/lib/node_modules/stf/node_modules/ws/node_modules/bufferutil/.node-gyp"</span></span><br><span class="line">gyp http GET http://nodejs.org/dist/v0.10.26/node-v0.10.26.tar.gz</span><br><span class="line">gyp http 200 http://nodejs.org/dist/v0.10.26/node-v0.10.26.tar.gz</span><br><span class="line">make: Entering directory `/usr/<span class="built_in">local</span>/lib/node_modules/stf/node_modules/ws/node_modules/bufferutil/build<span class="string">'</span><br><span class="line">  CXX(target) Release/obj.target/bufferutil/src/bufferutil.o</span><br><span class="line">  SOLINK_MODULE(target) Release/obj.target/bufferutil.node</span><br><span class="line">  SOLINK_MODULE(target) Release/obj.target/bufferutil.node: Finished</span><br><span class="line">  COPY Release/bufferutil.node</span><br><span class="line">make: Leaving directory `/usr/local/lib/node_modules/stf/node_modules/ws/node_modules/bufferutil/build'</span></span><br><span class="line"></span><br><span class="line">&gt; dtrace-provider@0.5.0 install /usr/<span class="built_in">local</span>/lib/node_modules/stf/node_modules/ldapjs/node_modules/dtrace-provider</span><br><span class="line">&gt; node scripts/install.js</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&gt; zmq@2.15.3 install /usr/<span class="built_in">local</span>/lib/node_modules/stf/node_modules/zmq</span><br><span class="line">&gt; node-gyp rebuild</span><br><span class="line"></span><br><span class="line">gyp WARN EACCES user <span class="string">"root"</span> does not have permission to access the dev dir <span class="string">"/root/.node-gyp/0.10.26"</span></span><br><span class="line">gyp WARN EACCES attempting to reinstall using temporary dev dir <span class="string">"/usr/local/lib/node_modules/stf/node_modules/zmq/.node-gyp"</span></span><br><span class="line">gyp http GET http://nodejs.org/dist/v0.10.26/node-v0.10.26.tar.gz</span><br><span class="line">gyp http 200 http://nodejs.org/dist/v0.10.26/node-v0.10.26.tar.gz</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">.....</span><br></pre></td></tr></table></figure>
+<p>运行到这里提示：</p>
+<pre><code class="bash">yp WARN EACCES user <span class="string">"root"</span> does not have permission to access the dev dir <span class="string">"/root/.node-gyp/0.10.26"</span>
+gyp WARN EACCES attempting to reinstall using temporary dev dir <span class="string">"/usr/local/lib/node_modules/stf/node_modules/ws/node_modules/bufferutil/.node-gyp"</span>
+gyp http GET http://nodejs.org/dist/v0.10.26/node-v0.10.26.tar.gz
+gyp http 200 http://nodejs.org/dist/v0.10.26/node-v0.10.26.tar.gz
+make: Entering directory `/usr/<span class="built_in">local</span>/lib/node_modules/stf/node_modules/ws/node_modules/bufferutil/build<span class="string">'
+  CXX(target) Release/obj.target/bufferutil/src/bufferutil.o
+  SOLINK_MODULE(target) Release/obj.target/bufferutil.node</span>
+</code></pre>
+<h3 id="STF运行"><a href="#STF运行" class="headerlink" title="STF运行"></a>STF运行</h3><p>一、启动rethinkDB</p>
+<p>安装完成后，打开单独的控制台，运行命令等待服务启动完成：</p>
+<p>rethinkdb</p>
+<h3 id="二、启动stf服务端"><a href="#二、启动stf服务端" class="headerlink" title="二、启动stf服务端"></a>二、启动stf服务端</h3><p>打开一个单独的控制台，运行命令等待服务启动完成：</p>
+<p>stf local</p>
+<p>注：这里我多加了个参数 –allow-remote用于允许远程调试设备连接</p>
+<h3 id="三、运行客户端"><a href="#三、运行客户端" class="headerlink" title="三、运行客户端"></a>三、运行客户端</h3><p>在浏览器中输入地址：<a href="http://localhost:7100/" target="_blank" rel="external">http://localhost:7100/</a> 访问客户端。</p>
+<p>输入用户名和邮箱登录即可开始使用。</p>
+<p>然后就可以在页面上直接控制连接的设备了，按照官方的说法，可以控制more than 160 devices. 当然 要有好的hub或者无线环境。<br>其他的以后进一步发掘吧。</p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://blog.yangcvo.me/2015/12/01/Linux笔记/Cento6-7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行/" data-id="ciwt7u72v001cflvuzb65m11n" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+        <a href="http://blog.yangcvo.me/2015/12/01/Linux笔记/Cento6-7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="http://blog.yangcvo.me/2015/12/01/Linux笔记/Cento6-7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行/">Comments</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2015/12/21/PHP/PHP编译升级YUM最全面安装部署/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Newer</strong>
+            <div class="article-nav-title">
+                
+                    PHP编译升级YUM最全面安装部署
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2015/11/24/Node.js/Node.js-Grunt工具搭建后台管理实践/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Older</strong>
+            <div class="article-nav-title">Node.js+Grunt工具搭建后台管理实践</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+    
+    </section>
+
+</section>
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">recent</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/12/08/大数据hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://www.51bdtime.com/uploads/allimg/140826/1-140R6103P3405.jpg)" alt="hadoop新增节点集群启动请求异常：Last contact：200" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/大数据/">大数据</a></p>
+                            <p class="item-title"><a href="/2016/12/08/大数据hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/" class="title">hadoop新增节点集群启动请求异常：Last contact：200</a></p>
+                            <p class="item-date"><time datetime="2016-12-08T09:56:03.000Z" itemprop="datePublished">Dec 8 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/12/07/Java/Sonarqube和jacoco搭建代码检查/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://px.thea.cn/Public/Upload/2759083/Intro/1442841940.png)" alt="Sonarqube和jacoco搭建代码检查" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java/">Java</a></p>
+                            <p class="item-title"><a href="/2016/12/07/Java/Sonarqube和jacoco搭建代码检查/" class="title">Sonarqube和jacoco搭建代码检查</a></p>
+                            <p class="item-date"><time datetime="2016-12-07T09:56:03.000Z" itemprop="datePublished">Dec 7 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/12/01/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://thumbs.dreamstime.com/t/tomcat-1930481.jpg)" alt="tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/tomcat/">tomcat</a></p>
+                            <p class="item-title"><a href="/2016/12/01/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/" class="title">tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0</a></p>
+                            <p class="item-date"><time datetime="2016-12-01T09:44:04.000Z" itemprop="datePublished">Dec 1 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/11/14/日志分析平台/graylog 升级2.1 集中日志解决方案/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://www.graylog.org/assets/overview_dashboard-3817012f923d4a00e9bde1c0547796319cf0396149464f434cfc2ae83a9da826.png)" alt="graylog 升级2.1 集中日志解决方案" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a></p>
+                            <p class="item-title"><a href="/2016/11/14/日志分析平台/graylog 升级2.1 集中日志解决方案/" class="title">graylog 升级2.1 集中日志解决方案</a></p>
+                            <p class="item-date"><time datetime="2016-11-14T09:56:03.000Z" itemprop="datePublished">Nov 14 2016</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/11/13/日志分析平台/Graylog—日志分析平台完美代替Elasticsearch/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://www.graylog.org/assets/logo-graylog-6ccfb3d4f7bfd0795c80bb616719f7d2f5151283f25c62aa0a6222994af2abeb.png)" alt="Graylog——日志分析平台完美代替Elasticsearch" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a></p>
+                            <p class="item-title"><a href="/2016/11/13/日志分析平台/Graylog—日志分析平台完美代替Elasticsearch/" class="title">Graylog——日志分析平台完美代替Elasticsearch</a></p>
+                            <p class="item-date"><time datetime="2016-11-13T09:56:03.000Z" itemprop="datePublished">Nov 13 2016</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">categories</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Blog/">Blog</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Cloud-computing/">Cloud computing</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/automation/">automation</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/monitoring/">monitoring</a><span class="category-list-count">16</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tomcat/">tomcat</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/日志分析平台/">日志分析平台</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/测试/">测试</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/虚拟化/">虚拟化</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维安全/">运维安全</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维笔记/">运维笔记</a><span class="category-list-count">6</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">tag cloud</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/ACL/" style="font-size: 12.5px;">ACL</a> <a href="/tags/About-me/" style="font-size: 10px;">About me</a> <a href="/tags/CDN/" style="font-size: 10px;">CDN</a> <a href="/tags/Centos7-1/" style="font-size: 10px;">Centos7.1</a> <a href="/tags/DNS/" style="font-size: 15px;">DNS</a> <a href="/tags/Exsi/" style="font-size: 10px;">Exsi</a> <a href="/tags/Ghost/" style="font-size: 17.5px;">Ghost</a> <a href="/tags/Grunt/" style="font-size: 10px;">Grunt</a> <a href="/tags/Hadoop/" style="font-size: 10px;">Hadoop</a> <a href="/tags/IDC监控/" style="font-size: 10px;">IDC监控</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Jenkins/" style="font-size: 12.5px;">Jenkins</a> <a href="/tags/KVM/" style="font-size: 17.5px;">KVM</a> <a href="/tags/LAMP/" style="font-size: 12.5px;">LAMP</a> <a href="/tags/LVM/" style="font-size: 10px;">LVM</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Smokeping/" style="font-size: 10px;">Smokeping</a> <a href="/tags/Supervisor/" style="font-size: 10px;">Supervisor</a> <a href="/tags/TOTP/" style="font-size: 10px;">TOTP</a> <a href="/tags/Vmware/" style="font-size: 10px;">Vmware</a> <a href="/tags/Vsftpd/" style="font-size: 12.5px;">Vsftpd</a> <a href="/tags/cacti/" style="font-size: 10px;">cacti</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/http/" style="font-size: 10px;">http</a> <a href="/tags/node-js/" style="font-size: 15px;">node.js</a> <a href="/tags/npm/" style="font-size: 10px;">npm</a> <a href="/tags/pm2/" style="font-size: 10px;">pm2</a> <a href="/tags/wkhtmltox/" style="font-size: 10px;">wkhtmltox</a> <a href="/tags/zabbix/" style="font-size: 20px;">zabbix</a> <a href="/tags/zimbra/" style="font-size: 10px;">zimbra</a> <a href="/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/tags/旅行日记/" style="font-size: 10px;">旅行日记</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">links</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://www.unixhot.com/">运维社区</a>
+                    </li>
+                
+                    <li>
+                        <a href="http://elasticsearch.cn/topic/">elk技术论坛</a>
+                    </li>
+                
+                    <li>
+                        <a href="http://openskill.cn/">开源技术社区</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2016 yangc<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'http://blog.yangcvo.me/2015/12/01/Linux笔记/Cento6-7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行/';
+        
+        this.page.identifier = 'Linux笔记/Cento6-7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'blog-yangcvo-me' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> PHP编译升级YUM最全面安装部署 · Cheng yang's Blog</title><meta name="description" content="PHP编译升级YUM最全面安装部署 - yangc"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://blog.yangcvo.me/atom.xml" title="Cheng yang's Blog"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/yangcvo" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/yangcvo" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="http://blog.yangcvo.me/2014/05/04/%E4%B8%AA%E4%BA%BA%E8%AE%B0%E5%BD%95/About-me/" target="_blank" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">PHP编译升级YUM最全面安装部署</h1><div class="post-info">2015年12月21日</div><div class="post-content"><p>PHP</p>
+<h2 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h2><p>1.获取安装包： <a href="http://www.php.net/downloads.php" target="_blank" rel="external">PHP最新源码包</a></p>
+<p>2.获取安装php需要的支持文件：<a href="http://linux.softpedia.com/get/Programming/Libraries/libxml2-162.shtml" target="_blank" rel="external">libxml2官网最新源码包</a></p>
+<p>3.Libxm2下载地址：<a href="ftp://xmlsoft.org/libxml2/" target="_blank" rel="external">Libxm2ftp地址</a></p>
+<h3 id="3-安装libxml2"><a href="#3-安装libxml2" class="headerlink" title="3.安装libxml2"></a>3.安装libxml2</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"> curl -O http://oak0aohum.bkt.clouddn.com/libxml2-2.6.32.tar.gz /tmp/.</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> /tmp/ &amp;&amp; tar zxvf libxml2-2.6.32.tar.gz</span><br><span class="line"><span class="built_in">cd</span> libxml2-2.6.32</span><br><span class="line">./configure --prefix=/usr/<span class="built_in">local</span>/libxml2  &amp;&amp; make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<p>如果安装成功以后，在<code>/usr/local/libxml2/</code>目录下将生成<code>bin、include、lib、man和share</code>五个目录。在后面安装PHP5源代码包的配置时，会通过在configure命令的选项中加上<code>&quot;--with-libxml-dir=/usr/local/libxml2&quot;</code>选项，用于指定安装libxml2库文件的位置。</p>
+<h3 id="4-安装php7-0"><a href="#4-安装php7-0" class="headerlink" title="4.安装php7.0"></a>4.安装php7.0</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#curl -O http://oak0aohum.bkt.clouddn.com/php-7.0.9.tar.gz -C /tmp/.</span></span><br><span class="line"><span class="comment">#cd /tmp/ &amp;&amp; tar zvxf php-7.0.9.tar.gz</span></span><br><span class="line"><span class="comment">#cd php-7.0.9</span></span><br><span class="line"><span class="comment">#./configure  --prefix=/usr/local/php  --with-mysql=/usr/local/mysql --with-apxs=/usr/local/apache2/bin/apxs --with-libxml-dir=/usr/local/libxml2</span></span><br><span class="line"><span class="comment">#make &amp;&amp; make install</span></span><br></pre></td></tr></table></figure>
+<p>设置软链接：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ln <span class="_">-s</span> /usr/<span class="built_in">local</span>/php/bin/php /usr/bin/php</span><br><span class="line">php -version</span><br><span class="line">PHP 7.0.9 (cli) (built: Jul 24 2016 17:17:47) ( NTS )</span><br><span class="line">Copyright (c) 1997-2016 The PHP Group</span><br><span class="line">Zend Engine v3.0.0, Copyright (c) 1998-2016 Zend Technologies</span><br></pre></td></tr></table></figure>
+<p>然后cpopy PHP的配置文件</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cp php-7.0.9/php.ini-development /usr/<span class="built_in">local</span>/php/lib/php.ini</span><br></pre></td></tr></table></figure>
+<p>（如果没有<code>php.ini.dist</code> 则把<code>php.ini-development php.ini-production</code>中的任何一个重命名为php.ini.dist即可）<br>修改<code>php.ini</code>文件 <code>register_globals = On</code></p>
+<h3 id="5-测试php是否成功安装"><a href="#5-测试php是否成功安装" class="headerlink" title="5.测试php是否成功安装"></a>5.测试php是否成功安装</h3><p>写一个php测试页info.php，放到apache2/htdocs中。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line"> phpinfo();</span><br><span class="line"></span><br><span class="line">?&gt;;</span><br></pre></td></tr></table></figure>
+<p>在浏览器中输入：服务器地址/info.php</p>
+<p>如果能正常显示出php的信息.</p>
+<h2 id="YUM一键安装"><a href="#YUM一键安装" class="headerlink" title="YUM一键安装"></a>YUM一键安装</h2><p>centos yum安装PHP</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yum -y install php-gd php-xml php-mbstring php-ldap php-pear php-xmlrpc  php</span><br></pre></td></tr></table></figure>
+<p>yum安装默认路径：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">PHP主目录 /etc/php.d/</span><br><span class="line">PHP配置文件 /etc/php.ini</span><br><span class="line">PHP模块位置 /usr/lib/php/ 或者 /usr/lib64/php/</span><br></pre></td></tr></table></figure>
+<h2 id="PHP升级最新版"><a href="#PHP升级最新版" class="headerlink" title="PHP升级最新版"></a>PHP升级最新版</h2><h3 id="快速将PHP-5-3升级至PHP-5-5"><a href="#快速将PHP-5-3升级至PHP-5-5" class="headerlink" title="快速将PHP 5.3升级至PHP 5.5"></a>快速将PHP 5.3升级至PHP 5.5</h3><p>CentOS 6.7<br>以下为 CentOS 下安装 PHP 方法：</p>
+<p>添加 epel 源</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># rpm -Uvh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm</span><br></pre></td></tr></table></figure>
+<p>添加 remi 源</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm</span><br></pre></td></tr></table></figure>
+<p>安装 PHP</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># yum --enablerepo=remi,remi-php55 install php-fpm php-common php-devel php-mysqlnd php-mbstring php-mcrypt</span><br></pre></td></tr></table></figure>
+<p>查看 PHP 版本</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># php -v</span><br><span class="line">PHP 5.5.9 (cli) (built: Feb 11 2014 08:25:33)</span><br><span class="line">Copyright (c) 1997-2014 The PHP Group</span><br><span class="line">Zend Engine v2.5.0, Copyright (c) 1998-2014 Zend Technologies</span><br></pre></td></tr></table></figure>
+<p>启动 php-fpm</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># service php-fpm start</span><br><span class="line">Starting php-fpm:　　[  OK  ]</span><br></pre></td></tr></table></figure>
+<p>这里重启完以后，记得要让php生效，不然的话不行。</p>
+<p>我一开始刷新还是出现了500错误，后来用php指针测试了下版本是多少？</p>
+<p>www站点添加。info.php</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line"> phpinfo();</span><br><span class="line"></span><br><span class="line">?&gt;;</span><br></pre></td></tr></table></figure>
+<p>访问地址/info.php  出现版本是5.3 环境问题，重启http就可以了。</p>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/12/28/DNS/DNS服务器主从复制搭建/" class="prev">PREV</a><a href="/2015/12/01/Cento6-7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行/" class="next">NEXT</a></div><div data-thread-key="2015/12/21/PHP编译升级YUM最全面安装部署/" data-title="PHP编译升级YUM最全面安装部署" data-url="http://blog.yangcvo.me/2015/12/21/PHP编译升级YUM最全面安装部署/" data-author-key="1" class="ds-thread"></div><script>var duoshuoQuery = {short_name:"true"};
+(function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+
+</script><div class="copyright"><p>© 2014 - 2016 <a href="http://blog.yangcvo.me">yangc</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yangcvo" target="_blank">Github-yangcvo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
