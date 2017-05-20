@@ -97,14 +97,14 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/archives/archives.html">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archives/archives.html">Archives</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -239,16 +239,16 @@ JDK 要求是 JDK 7，官网要求 7u6 或之后版本，包括 JDK 8
 
 <div class="post-preview">
 
-    <a href="/2016/03/26/Web服务技术/Nginx/Nginx+Tomcat实现反向代理优化与配置 /">
+    <a href="/2016/03/26/Web服务技术/Nginx/ Nginx 和 apache 对比 /">
         <h2 class="post-title">
-            Nginx+Tomcat实现反向代理优化与配置
+            Nginx-反向代理
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Nginx+Tomcat实现反向代理什么是反向代理反向代理（Reverse Proxy）方式是指用代理服务器来接受 internet 上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给 internet 上请求连接的客户端，此时代理服务器对外就表现为一个反向代理服务器。
-举个例子，一个用户访问 http://www.example.com/readme，但是 w......
+            Nginx 和 apache 对比个人理解：存在就是理由,一般来说,需要性能的 web 服务,用 nginx 。如果不需要性能只求稳定, 那就 apache 吧。后者的各种功能模块实现得比前者,例如 ssl 的模块就比前者好,可配 置项多。
+这里要注意一点,epoll(freebsd 上是 kqueue )网络 IO 模型是 nginx 处理性能 高的根本理由,但并不是所有的情况下都是 ep......
         </div>
     </a>
     <p class="post-meta">
@@ -261,16 +261,16 @@ JDK 要求是 JDK 7，官网要求 7u6 或之后版本，包括 JDK 8
 
 <div class="post-preview">
 
-    <a href="/2016/03/26/Web服务技术/Nginx/ Nginx 和 apache 对比 /">
+    <a href="/2016/03/26/Web服务技术/Nginx/Nginx+Tomcat实现反向代理优化与配置 /">
         <h2 class="post-title">
-            Nginx-反向代理
+            Nginx+Tomcat实现反向代理优化与配置
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Nginx 和 apache 对比个人理解：存在就是理由,一般来说,需要性能的 web 服务,用 nginx 。如果不需要性能只求稳定, 那就 apache 吧。后者的各种功能模块实现得比前者,例如 ssl 的模块就比前者好,可配 置项多。
-这里要注意一点,epoll(freebsd 上是 kqueue )网络 IO 模型是 nginx 处理性能 高的根本理由,但并不是所有的情况下都是 ep......
+            Nginx+Tomcat实现反向代理什么是反向代理反向代理（Reverse Proxy）方式是指用代理服务器来接受 internet 上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给 internet 上请求连接的客户端，此时代理服务器对外就表现为一个反向代理服务器。
+举个例子，一个用户访问 http://www.example.com/readme，但是 w......
         </div>
     </a>
     <p class="post-meta">
@@ -313,8 +313,7 @@ JDK 要求是 JDK 7，官网要求 7u6 或之后版本，包括 JDK 8
             
         </h3>
         <div class="post-content-preview">
-            ####tomcat性能优化：Java HotSpot(TM) 64-Bit Server VM warning: ignoring option PermSize=512m; support was removed in 8.0
-这个提示应该是升级JDK1.8以上 在Java的8命令行标志MaxPermSize已被删除。其原因是，持久代从热点堆中取出并转移到本机内存。所以为了消除这种信息编......
+            tomcat性能优化：Java HotSpot(TM) 64-Bit Server VM warning: ignoring option PermSize=512m; support was removed in 8.0这个提示应该是升级JDK1.8以上 在Java的8命令行标志MaxPermSize已被删除。其原因是，持久代从热点堆中取出并转移到本机内存。所以为了消除这种信息编辑java......
         </div>
     </a>
     <p class="post-meta">
@@ -378,18 +377,15 @@ vim deploy.yml
 
 <div class="post-preview">
 
-    <a href="/2016/03/09/自动化+可视化/Ansible/ansible小结(五)常用模块/">
+    <a href="/2016/03/09/自动化+可视化/Ansible/Ansible小结（四）Ad-hoc与commands模块 /">
         <h2 class="post-title">
-            Ansible小结 (五) 常用模块
+            Ansible小结（四）Ad-hoc与commands模块
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            ansible命令总结使用：在上一篇中介绍了commands部分模块，本篇承接上篇介绍下常用的模块。根据官方的分类，将模块按功能分类为：
-1云模块、命令模块、数据库模块、文件模块、资产模块、消息模块、监控模块、网络模块、通知模块、包管理模块、源码控制模块、系统模块、单元模块、web设施模块、windows模块
-具体可以参看官方页面
-这里从官方分类的模块里选择最常用的一些模块进行介绍（comm......
+            ansible小结（四）Ad-hoc与commands模块Ad-Hoc 是指ansible下临时执行的一条命令，并且不需要保存的命令，对于复杂的命令后面会说playbook。讲到Ad-hoc 就要提到模块，所有的命令执行都要依赖于事先写好的模块，默认安装好的ansible 里面已经自带了很多模块，如：command、raw、shell、file、cron等，具体可以通过ansible-doc......
         </div>
     </a>
     <p class="post-meta">
@@ -402,15 +398,18 @@ vim deploy.yml
 
 <div class="post-preview">
 
-    <a href="/2016/03/09/自动化+可视化/Ansible/Ansible小结（四）Ad-hoc与commands模块 /">
+    <a href="/2016/03/09/自动化+可视化/Ansible/ansible小结(五)常用模块/">
         <h2 class="post-title">
-            Ansible小结（四）Ad-hoc与commands模块
+            Ansible小结 (五) 常用模块
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            ansible小结（四）Ad-hoc与commands模块Ad-Hoc 是指ansible下临时执行的一条命令，并且不需要保存的命令，对于复杂的命令后面会说playbook。讲到Ad-hoc 就要提到模块，所有的命令执行都要依赖于事先写好的模块，默认安装好的ansible 里面已经自带了很多模块，如：command、raw、shell、file、cron等，具体可以通过ansible-doc......
+            ansible命令总结使用：在上一篇中介绍了commands部分模块，本篇承接上篇介绍下常用的模块。根据官方的分类，将模块按功能分类为：
+1云模块、命令模块、数据库模块、文件模块、资产模块、消息模块、监控模块、网络模块、通知模块、包管理模块、源码控制模块、系统模块、单元模块、web设施模块、windows模块
+具体可以参看官方页面
+这里从官方分类的模块里选择最常用的一些模块进行介绍（comm......
         </div>
     </a>
     <p class="post-meta">
@@ -460,15 +459,17 @@ vim deploy.yml
                     <div class="tags">
                         
                             
+                            <a href="/tags/#DNS" title="DNS" rel="3">DNS</a>
+                            
+                        
+                            
+                        
+                            
                             <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="6">Java+Tomcat notes</a>
                             
                         
                             
                             <a href="/tags/#Dubbo" title="Dubbo" rel="2">Dubbo</a>
-                            
-                        
-                            
-                            <a href="/tags/#DNS" title="DNS" rel="3">DNS</a>
                             
                         
                             
@@ -480,13 +481,17 @@ vim deploy.yml
                             
                         
                             
-                        
-                            
                             <a href="/tags/#Linux note" title="Linux note" rel="13">Linux note</a>
                             
                         
                             
+                        
+                            
                             <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
+                            
+                        
+                            
+                        
                             
                         
                             
@@ -502,13 +507,7 @@ vim deploy.yml
                             
                         
                             
-                        
-                            
-                        
-                            
                             <a href="/tags/#Personal life record" title="Personal life record" rel="7">Personal life record</a>
-                            
-                        
                             
                         
                             
@@ -532,9 +531,9 @@ vim deploy.yml
                             
                         
                             
-                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="11">Performance monitoring</a>
-                            
                         
+                            
+                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="11">Performance monitoring</a>
                             
                         
                             
