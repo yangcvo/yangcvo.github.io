@@ -90,13 +90,6 @@
 
                         
                         <li>
-                            <a href="/archives/archives.html">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
                             <a href="/about/About-me.html">About</a>
                         </li>
                         
@@ -105,6 +98,13 @@
                         
                         <li>
                             <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
                         </li>
                         
                     
@@ -191,11 +191,11 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>tomcat性能优化：Java HotSpot(TM) 64-Bit Server VM warning: ignoring option PermSize=512m; support was removed in 8.0</p>
-<p>这个提示应该是升级JDK1.8以上 在Java的8命令行标志<code>MaxPermSize</code>已被删除。其原因是，持久代从热点堆中取出并转移到本机内存。所以为了消除这种信息编辑java_OPTS环境用户变量</p>
+                <p>####tomcat性能优化：Java HotSpot(TM) 64-Bit Server VM warning: ignoring option PermSize=512m; support was removed in 8.0</p>
+<p>这个提示应该是升级JDK1.8以上 在Java的8命令行标志<code>MaxPermSize</code>已被删除。其原因是，持久代从热点堆中取出并转移到本机内存。所以为了消除这种信息编辑java_OPTS环境用户变量。</p>
 <p>在网上查询到：</p>
-<p>-XX：<code>MaxPermSize</code>参数= size设置最大永久代空间的大小（以字节为单位）。此选项是不赞成使用JDK 8，并通过-XX取代：MaxMetaspaceSize选项。</p>
-<p>-XX：PermSize = size设置分配给永久代如果超过触发垃圾收集的空间（以字节为单位）。该选项已被否决JDK 8，并通过-XX取代：MetaspaceSize选项。</p>
+<p>-XX：<code>MaxPermSize =size</code>设置最大永久代空间的大小（以字节为单位）。此选项是不赞成使用JDK 8，并通过-XX取代：MaxMetaspaceSize选项。</p>
+<p>-XX：<code>PermSize = size</code>设置分配给永久代如果超过触发垃圾收集的空间（以字节为单位）。该选项已被否决JDK 8，并通过-XX取代：<code>MetaspaceSize</code>选项。</p>
 <p>我所在</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">JAVA_OPTS==<span class="string">"-Xmx512m -XX:MaxPermSize=256m"</span></div></pre></td></tr></table></figure>
 <p>在我的系统的.bashrc，将其更改为</p>
