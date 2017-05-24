@@ -13,11 +13,11 @@
 
     <title>
         
-          Dubbo管控台dubbo-admin的安装配置 - yangcvo的博客 | Chengyang&#39;s Blog
+          Dubbo管控台dubbo-admin的安装配置 - Yancy的博客 | Yancy&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://blog.yangcvo.me/2016/09/26/Java-Dubbo/Dubbo监控管控台dubbo-admin的安装配置/">
+    <link rel="canonical" href="http://blog.yancy.me/2016/09/26/Java-Dubbo/Dubbo监控管控台dubbo-admin的安装配置/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -67,7 +67,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+            <a class="navbar-brand" href="/">Yancy&#39;s Blog</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -149,7 +149,7 @@
     <!-- Main Content -->
     
 <!-- Image to hack wechat -->
-<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="http://blog.yancy.me/img/icon_wechat.png" width="0" height="0"> -->
 <!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
 
 <!-- Post Header -->
@@ -173,7 +173,7 @@
                     <h1>Dubbo管控台dubbo-admin的安装配置</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
-                        Posted by yangc on
+                        Posted by Yancy on
                         2016-09-26
                     </span>
                 </div>
@@ -200,7 +200,7 @@
 <h3 id="一、Dubbo管控台简介"><a href="#一、Dubbo管控台简介" class="headerlink" title="一、Dubbo管控台简介"></a>一、Dubbo管控台简介</h3><p>管理控制台的功能主要包括：<code>路由规则</code>，<code>动态配置</code>，<code>服务降级</code>，<code>访问控制</code>，<code>权重调整</code>，<code>负载均衡</code>，等管理功能。</p>
 <p>二、环境准备</p>
 <p>IP：10.132.18.23<br>部署容器：tomcat7<br>端口：8080</p>
-<p>本次dubbo-admin管控台的安装是基于zookeeper注册中心，安装前请确保已成功安装zookeeper<br>zookeeper的集群安装可参照：<a href="http://blog.yangcvo.me/2016/05/28/%E5%A4%A7%E6%95%B0%E6%8D%AEhadoop/zookeeper/ZooKeeper%E9%9B%86%E7%BE%A4%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E4%B8%8E%E4%BC%98%E5%8C%96/">ZooKeeper集群快速搭建与优化</a></p>
+<p>本次dubbo-admin管控台的安装是基于zookeeper注册中心，安装前请确保已成功安装zookeeper<br>zookeeper的集群安装可参照：<a href="http://blog.yangcvo.me/2016/05/28/%E5%A4%A7%E6%95%B0%E6%8D%AEhadoop/zookeeper/ZooKeeper%E9%9B%86%E7%BE%A4%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E4%B8%8E%E4%BC%98%E5%8C%96/" target="_blank" rel="external">ZooKeeper集群快速搭建与优化</a></p>
 <h3 id="三、具体的安装步骤"><a href="#三、具体的安装步骤" class="headerlink" title="三、具体的安装步骤"></a>三、具体的安装步骤</h3><p><strong>1、下载或者上传tomcat7（apache-tomcat-7.0.62.tar）到/sr/</strong><br>下载或者上传Dubbo管控台程序dubbo-admin-2.5.3.war到/srv/<br>创建对应目录&amp;&amp; 创建对应服务用户，给予授权属组。</p>
 <p><strong>2、解压tomcat7的安装包并重命名为dubbo-monitor</strong><br><strong>3、移除/srv/tomcat/tomcat_monitor/webapps/目录下的所有文件.</strong></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@tomcat-monitor_01 ~]<span class="comment"># mkdir /srv/tomcat/</span></div><div class="line">[root@tomcat-monitor_01 ~]<span class="comment"># useradd -s /sbin/nologin -G tomcat </span></div><div class="line">[root@tomcat-monitor_01 ~]<span class="comment"># tar -zxvf apache-tomcat-7.0.62.tar.gz</span></div><div class="line">[root@tomcat-monitor_01 ~]<span class="comment"># mv apache-tomcat-7.0.62 tomcat_monitor</span></div><div class="line">[root@tomcat-monitor_01 ~]<span class="comment"># mv tomcat_monitor /srv/tomcat/.</span></div><div class="line">[root@tomcat-monitor_01 ~]<span class="comment"># cd /srv/tomcat/tomcat_monitor/webapps</span></div><div class="line">[root@tomcat-monitor_01 ~]<span class="comment"># rm -rf *</span></div><div class="line">[root@tomcat-monitor_01 ~]<span class="comment"># chown -R tomcat:tomcat /srv/tomcat</span></div></pre></td></tr></table></figure>
@@ -306,8 +306,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "blog-yangcvo-me";
-    var disqus_identifier = "http://blog.yangcvo.me/2016/09/26/Java-Dubbo/Dubbo监控管控台dubbo-admin的安装配置/";
-    var disqus_url = "http://blog.yangcvo.me/2016/09/26/Java-Dubbo/Dubbo监控管控台dubbo-admin的安装配置/";
+    var disqus_identifier = "http://blog.yancy.me/2016/09/26/Java-Dubbo/Dubbo监控管控台dubbo-admin的安装配置/";
+    var disqus_url = "http://blog.yancy.me/2016/09/26/Java-Dubbo/Dubbo监控管控台dubbo-admin的安装配置/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -413,7 +413,7 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    Copyright &copy; Yancy&#39;s Blog 2017 
                     <br>
                  Theme by <a href="http://blog.yangcvo.me">yangc</a>
                     <span style="display: inline-block; margin: 0 5px;">
@@ -477,7 +477,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+        async("http://blog.yancy.me/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},
@@ -511,7 +511,7 @@
 
 
 <!-- Image to hack wechat -->
-<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<img src="http://blog.yancy.me/img/icon_wechat.png" width="0" height="0" />
 <!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>

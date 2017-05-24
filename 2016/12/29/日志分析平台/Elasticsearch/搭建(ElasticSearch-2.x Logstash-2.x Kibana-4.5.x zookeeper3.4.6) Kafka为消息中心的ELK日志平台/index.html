@@ -13,11 +13,11 @@
 
     <title>
         
-          搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台 - yangcvo的博客 | Chengyang&#39;s Blog
+          搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台 - Yancy的博客 | Yancy&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://blog.yangcvo.me/2016/12/29/日志分析平台/Elasticsearch/搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台/">
+    <link rel="canonical" href="http://blog.yancy.me/2016/12/29/日志分析平台/Elasticsearch/搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -67,7 +67,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+            <a class="navbar-brand" href="/">Yancy&#39;s Blog</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -149,7 +149,7 @@
     <!-- Main Content -->
     
 <!-- Image to hack wechat -->
-<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="http://blog.yancy.me/img/icon_wechat.png" width="0" height="0"> -->
 <!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
 
 <!-- Post Header -->
@@ -171,7 +171,7 @@
                     <h1>搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
-                        Posted by yangc on
+                        Posted by Yancy on
                         2016-12-29
                     </span>
                 </div>
@@ -308,7 +308,7 @@
 <figure class="highlight puppet"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">input</span> &#123;</div><div class="line"> stdin &#123;&#125;</div><div class="line">&#125;</div><div class="line">  <span class="keyword">output</span> &#123;</div><div class="line">    elasticsearch &#123;</div><div class="line">      <span class="attr">hosts</span> =&gt; <span class="string">"10.47.88.206"</span>&#125;</div><div class="line">    <span class="keyword">stdout</span> &#123;</div><div class="line">      <span class="attr">codec</span> =&gt; rubydebug &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
 <h3 id="Step-2-启动服务"><a href="#Step-2-启动服务" class="headerlink" title="Step 2: 启动服务"></a>Step 2: 启动服务</h3><figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">Kafka用到了Zookeeper，所有首先启动Zookper，下面简单的启用一个单实例的Zookkeeper服务。可以在命令的结尾加个&amp;符号，这样就可以启动后离开控制台。</div><div class="line"></div><div class="line"><span class="meta">#现在启动Kafka:</span></div><div class="line"></div><div class="line"><span class="meta-keyword">/srv/</span>kafka<span class="meta-keyword">/bin/</span>kafka-server-start.sh -daemon config/server.properties</div><div class="line"></div><div class="line"><span class="meta">#添加开机启动</span></div><div class="line">echo ‘</div><div class="line"><span class="meta"># start kafka</span></div><div class="line"><span class="meta-keyword">/usr/</span>local<span class="meta-keyword">/kafka/</span>bin/kafka-server-start.sh -daemon <span class="meta-keyword">/usr/</span>local<span class="meta-keyword">/kafka/</span>config/server.properties</div><div class="line">‘ &gt;&gt; <span class="meta-keyword">/etc/</span>rc.local</div><div class="line"> </div><div class="line"><span class="meta">#关闭</span></div><div class="line"><span class="meta-keyword">/usr/</span>local<span class="meta-keyword">/kafka/</span>bin/kafka-server-stop.sh</div></pre></td></tr></table></figure>
 <h3 id="kafka配置防火墙："><a href="#kafka配置防火墙：" class="headerlink" title="kafka配置防火墙："></a>kafka配置防火墙：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">-A INPUT -i eth0 -p tcp -m state --state NEW -m tcp --dport 4888 -j ACCEPT</div></pre></td></tr></table></figure>
-<h3 id="zookeeper集群"><a href="#zookeeper集群" class="headerlink" title="zookeeper集群"></a>zookeeper集群</h3><p>查看我之前写的这篇文档 <a href="http://blog.yangcvo.me/2016/05/28/%E5%A4%A7%E6%95%B0%E6%8D%AEhadoop/zookeeper/ZooKeeper%E9%9B%86%E7%BE%A4%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E4%B8%8E%E4%BC%98%E5%8C%96/">ZooKeeper的集群快速搭建与优化</a> </p>
+<h3 id="zookeeper集群"><a href="#zookeeper集群" class="headerlink" title="zookeeper集群"></a>zookeeper集群</h3><p>查看我之前写的这篇文档 <a href="http://blog.yangcvo.me/2016/05/28/%E5%A4%A7%E6%95%B0%E6%8D%AEhadoop/zookeeper/ZooKeeper%E9%9B%86%E7%BE%A4%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E4%B8%8E%E4%BC%98%E5%8C%96/" target="_blank" rel="external">ZooKeeper的集群快速搭建与优化</a> </p>
 <h3 id="走kafka查看是否所有节点都启动："><a href="#走kafka查看是否所有节点都启动：" class="headerlink" title="走kafka查看是否所有节点都启动："></a>走kafka查看是否所有节点都启动：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[root@kafka_03 bin]<span class="comment"># sh zkCli.sh</span></div><div class="line">Connecting to localhost:2181</div><div class="line">2017-01-04 19:20:24,849 [myid:] - INFO  [main:Environment@100] - Client environment:zookeeper.version=3.4.6-1569965, built on 02/20/2014 09:09 GMT</div><div class="line">2017-01-04 19:20:24,853 [myid:] - INFO  [main:Environment@100] - Client environment:host.name=kafka_03</div><div class="line">2017-01-04 19:20:24,853 [myid:] - INFO  [main:Environment@100] - Client environment:java.version=1.8.0_66</div><div class="line">2017-01-04 19:20:24,856 [myid:] - INFO  [main:Environment@100] - Client environment:java.vendor=Oracle Corporation</div><div class="line">2017-01-04 19:20:24,856 [myid:] - INFO  [main:Environment@100] - Client environment:java.home=/srv/jdk1.8.0_66/jre</div><div class="line">2017-01-04 19:20:24,856 [myid:] - INFO  [main:Environment@100] - Client environment:java.class.path=/srv/zookeeper-3.4.6/bin/../build/classes:/srv/zookeeper-3.4.6/bin/../build/lib/*.jar:/srv/zookeeper-3.4.6/bin/../lib/slf4j-log4j12-1.6.1.jar:/srv/zookeeper-3.4.6/bin/../lib/slf4j-api-1.6.1.jar:/srv/zookeeper-3.4.6/bin/../lib/netty-3.7.0.Final.jar:/srv/zookeeper-3.4.6/bin/../lib/<span class="built_in">log</span>4j-1.2.16.jar:/srv/zookeeper-3.4.6/bin/../lib/jline-0.9.94.jar:/srv/zookeeper-3.4.6/bin/../zookeeper-3.4.6.jar:/srv/zookeeper-3.4.6/bin/../src/java/lib/*.jar:/srv/zookeeper-3.4.6/bin/../conf:</div><div class="line">2017-01-04 19:20:24,856 [myid:] - INFO  [main:Environment@100] - Client environment:java.library.path=/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib</div><div class="line"></div><div class="line">[zk: localhost:2181(CONNECTED) 0] ls /</div><div class="line">[controller_epoch, brokers, zookeeper, kafka, dubbo, admin, isr_change_notification, consumers, config, sthp]</div><div class="line">[zk: localhost:2181(CONNECTED) 5] ls /kafka/brokers/ids</div><div class="line">[0, 1, 2]</div></pre></td></tr></table></figure>
 <p>kafka 三台集群这里可以看到获取到ids。</p>
 <h4 id="安全问题"><a href="#安全问题" class="headerlink" title="安全问题"></a>安全问题</h4><p>特别要注意elk所有软件的端口监听,切勿暴露监听到公网上去,另外即便是内网你也得注意配置内网的访问限制。</p>
@@ -403,8 +403,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "blog-yangcvo-me";
-    var disqus_identifier = "http://blog.yangcvo.me/2016/12/29/日志分析平台/Elasticsearch/搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台/";
-    var disqus_url = "http://blog.yangcvo.me/2016/12/29/日志分析平台/Elasticsearch/搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台/";
+    var disqus_identifier = "http://blog.yancy.me/2016/12/29/日志分析平台/Elasticsearch/搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台/";
+    var disqus_url = "http://blog.yancy.me/2016/12/29/日志分析平台/Elasticsearch/搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -510,7 +510,7 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    Copyright &copy; Yancy&#39;s Blog 2017 
                     <br>
                  Theme by <a href="http://blog.yangcvo.me">yangc</a>
                     <span style="display: inline-block; margin: 0 5px;">
@@ -574,7 +574,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+        async("http://blog.yancy.me/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},
@@ -608,7 +608,7 @@
 
 
 <!-- Image to hack wechat -->
-<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<img src="http://blog.yancy.me/img/icon_wechat.png" width="0" height="0" />
 <!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>

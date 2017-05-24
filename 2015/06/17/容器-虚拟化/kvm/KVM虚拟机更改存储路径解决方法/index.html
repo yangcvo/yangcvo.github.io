@@ -13,11 +13,11 @@
 
     <title>
         
-          KVM虚拟机更改存储路径解决方法 - yangcvo的博客 | Chengyang&#39;s Blog
+          KVM虚拟机更改存储路径解决方法 - Yancy的博客 | Yancy&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://blog.yangcvo.me/2015/06/17/容器-虚拟化/kvm/KVM虚拟机更改存储路径解决方法/">
+    <link rel="canonical" href="http://blog.yancy.me/2015/06/17/容器-虚拟化/kvm/KVM虚拟机更改存储路径解决方法/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -67,7 +67,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+            <a class="navbar-brand" href="/">Yancy&#39;s Blog</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -149,7 +149,7 @@
     <!-- Main Content -->
     
 <!-- Image to hack wechat -->
-<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="http://blog.yancy.me/img/icon_wechat.png" width="0" height="0"> -->
 <!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
 
 <!-- Post Header -->
@@ -171,7 +171,7 @@
                     <h1>KVM虚拟机更改存储路径解决方法</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
-                        Posted by yangc on
+                        Posted by Yancy on
                         2015-06-17
                     </span>
                 </div>
@@ -205,7 +205,7 @@
 <h3 id="这里第一步："><a href="#这里第一步：" class="headerlink" title="这里第一步："></a>这里第一步：</h3><p>需要先停掉虚拟机。如果虚拟机已经挂了，在kvm用virsh查看下。</p>
 <figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">-<span class="ruby">     mysql                          暂停</span></div><div class="line">-<span class="ruby">     mysql-<span class="number">2</span>                        暂停</span></div></pre></td></tr></table></figure>
 <p>如果暂停说明已经卡死了。那么shutdown 也是无效的。</p>
-<p>这里可以查看我写的篇：<a href="http://blog.yangcvo.me/2015/06/18/KVM%E8%99%9A%E6%8B%9F%E5%8C%96%E5%AE%9E%E7%94%A8%E7%AF%87-%E7%AC%AC%E4%BA%8C%E7%AF%87-help%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3%E5%A4%A7%E5%85%A8/">kvm-hellp帮助篇</a>-只对kvm入门人员帮助</p>
+<p>这里可以查看我写的篇：<a href="http://blog.yangcvo.me/2015/06/18/KVM%E8%99%9A%E6%8B%9F%E5%8C%96%E5%AE%9E%E7%94%A8%E7%AF%87-%E7%AC%AC%E4%BA%8C%E7%AF%87-help%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3%E5%A4%A7%E5%85%A8/" target="_blank" rel="external">kvm-hellp帮助篇</a>-只对kvm入门人员帮助</p>
 <pre><code>virsh undefine $1   删除虚拟机取消定义   删除虚拟机先执行这个 取消定义。
 </code></pre><p>强制关闭虚拟机：</p>
 <pre><code>virsh undefine mysql 
@@ -224,7 +224,7 @@ virsh undefine mysql-2
 <p>这里又做错了一步：</p>
 <h3 id="如何取消定义虚拟机"><a href="#如何取消定义虚拟机" class="headerlink" title="如何取消定义虚拟机"></a>如何取消定义虚拟机</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/KVM2.png" alt=""></p>
 <p>我把自己辛辛苦苦的快照都删除了，然后取消了定义。</p>
-<h3 id="注意："><a href="#注意：" class="headerlink" title="注意："></a>注意：</h3><div class="tip"><br>发现取消了定义以后，我的/etc/libvirt/qemu/mysql-2.xml 已经被删除了，取消定义是会删除xml文件的。所以这个时候发现自己大错特错，之前忘记了一个重要的操作。<br><br>这里我发现我MySQL已经被删除了。可是镜像文件还是在/home/vm/mysql-2.img<br></div><br>还好我做了主从，删除了只是其中一台。这个时候求助了之前搞虚拟化的朋友–<code>甜橙大神</code>。<br><br><br>### 紧急修复<br><br>这里我在他的指导帮助下搞定了。<br><br>### 修复第一步：<br><br>我这里先拷贝了一份其他虚拟机的xml文件,做相应修改.<br><br>    cp nginx.xml mysql-2.xml<br><br>然后打开文件：<br><br>name uuid img 之类的都要修改<br><br><em> 先删除:uuid- uuid 可以不填-删除这行就行了<br><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;uuid&gt;876f7ff7<span class="_">-a</span>0e7<span class="_">-f</span>64d-fc3c-bc48fee28635&lt;/uuid&gt;</div></pre></td></tr></table></figure>
+<h3 id="注意："><a href="#注意：" class="headerlink" title="注意："></a>注意：</h3><div class="tip"><br>发现取消了定义以后，我的/etc/libvirt/qemu/mysql-2.xml 已经被删除了，取消定义是会删除xml文件的。所以这个时候发现自己大错特错，之前忘记了一个重要的操作。<br><br>这里我发现我MySQL已经被删除了。可是镜像文件还是在/home/vm/mysql-2.img<br></div><br>还好我做了主从，删除了只是其中一台。这个时候求助了之前搞虚拟化的朋友–<code>甜橙大神</code>。<br><br><br>### 紧急修复<br><br>这里我在他的指导帮助下搞定了。<br><br>### 修复第一步：<br><br>我这里先拷贝了一份其他虚拟机的xml文件,做相应修改.<br><br>    cp nginx.xml mysql-2.xml<br><br>然后打开文件：<br><br>name uuid img 之类的都要修改<br><br><em> 先删除:uuid- uuid 可以不填-删除这行就行了<br><br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">uuid</span>&gt;</span>876f7ff7-a0e7-f64d-fc3c-bc48fee28635<span class="tag">&lt;/<span class="name">uuid</span>&gt;</span></div></pre></td></tr></table></figure>
 
 </em> 改成自己恢复的镜像。<br><br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;<span class="keyword">source</span> <span class="keyword">file</span>=<span class="string">'/home/vm/mysql-2.img'</span><span class="regexp">/&gt;</span></div></pre></td></tr></table></figure><br><br><em> 修改网卡信息：<br><br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">mac</span> <span class="attr">address</span>=<span class="string">'52:54:00:e9:cb:c4'</span>/&gt;</span></div></pre></td></tr></table></figure><br><br>这里的是拷贝过来的，所以你稍微做下修改，我这里把F1改成了c4.
 
@@ -318,8 +318,8 @@ virsh undefine mysql-2
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "blog-yangcvo-me";
-    var disqus_identifier = "http://blog.yangcvo.me/2015/06/17/容器-虚拟化/kvm/KVM虚拟机更改存储路径解决方法/";
-    var disqus_url = "http://blog.yangcvo.me/2015/06/17/容器-虚拟化/kvm/KVM虚拟机更改存储路径解决方法/";
+    var disqus_identifier = "http://blog.yancy.me/2015/06/17/容器-虚拟化/kvm/KVM虚拟机更改存储路径解决方法/";
+    var disqus_url = "http://blog.yancy.me/2015/06/17/容器-虚拟化/kvm/KVM虚拟机更改存储路径解决方法/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -425,7 +425,7 @@ virsh undefine mysql-2
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    Copyright &copy; Yancy&#39;s Blog 2017 
                     <br>
                  Theme by <a href="http://blog.yangcvo.me">yangc</a>
                     <span style="display: inline-block; margin: 0 5px;">
@@ -489,7 +489,7 @@ virsh undefine mysql-2
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+        async("http://blog.yancy.me/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},
@@ -523,7 +523,7 @@ virsh undefine mysql-2
 
 
 <!-- Image to hack wechat -->
-<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<img src="http://blog.yancy.me/img/icon_wechat.png" width="0" height="0" />
 <!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>

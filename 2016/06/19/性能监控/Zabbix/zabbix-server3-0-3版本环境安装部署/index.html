@@ -13,11 +13,11 @@
 
     <title>
         
-          zabbix-server3.0.3版本环境安装部署 - yangcvo的博客 | Chengyang&#39;s Blog
+          zabbix-server3.0.3版本环境安装部署 - Yancy的博客 | Yancy&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://blog.yangcvo.me/2016/06/19/性能监控/Zabbix/zabbix-server3-0-3版本环境安装部署/">
+    <link rel="canonical" href="http://blog.yancy.me/2016/06/19/性能监控/Zabbix/zabbix-server3-0-3版本环境安装部署/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -67,7 +67,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+            <a class="navbar-brand" href="/">Yancy&#39;s Blog</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -149,7 +149,7 @@
     <!-- Main Content -->
     
 <!-- Image to hack wechat -->
-<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="http://blog.yancy.me/img/icon_wechat.png" width="0" height="0"> -->
 <!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
 
 <!-- Post Header -->
@@ -173,7 +173,7 @@
                     <h1>zabbix-server3.0.3版本环境安装部署</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
-                        Posted by yangc on
+                        Posted by Yancy on
                         2016-06-19
                     </span>
                 </div>
@@ -235,7 +235,7 @@
 <p>vi /etc/services #编辑，在最后添加以下代码</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Zabbix</span></div><div class="line">zabbix-agent 10050/tcp   <span class="comment"># Zabbix Agent</span></div><div class="line">zabbix-agent 10050/udp   <span class="comment"># Zabbix Agent</span></div><div class="line">zabbix-trapper 10051/tcp <span class="comment"># Zabbix Trapper</span></div><div class="line">zabbix-trapper 10051/udp <span class="comment"># Zabbix Trapper</span></div><div class="line">:wq! <span class="comment">#保存退出</span></div></pre></td></tr></table></figure>
 <p>添加后如下</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># grep zabbix /etc/services</span></div><div class="line">zabbix-agent     10050/tcp  <span class="comment">#ZabbixAgent</span></div><div class="line">zabbix-agent     10050/udp  <span class="comment">#ZabbixAgent</span></div><div class="line">zabbix-trapper   10051/tcp  <span class="comment">#ZabbixTrapperz</span></div><div class="line">abbix-trapper    10051/udp  <span class="comment">#ZabbixTrapper</span></div></pre></td></tr></table></figure>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta"># grep zabbix /etc/services</span></div><div class="line">zabbix-agent     <span class="number">10050</span>/tcp  <span class="meta">#ZabbixAgent</span></div><div class="line">zabbix-agent     <span class="number">10050</span>/udp  <span class="meta">#ZabbixAgent</span></div><div class="line">zabbix-trapper   <span class="number">10051</span>/tcp  <span class="meta">#ZabbixTrapperz</span></div><div class="line">abbix-trapper    <span class="number">10051</span>/udp  <span class="meta">#ZabbixTrapper</span></div></pre></td></tr></table></figure>
 <p>修改zabbix配置文件</p>
 <p>vim /usr/local/zabbix/etc/zabbix_server.conf</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">DBName=zabbix <span class="comment">#数据库名称</span></div><div class="line">DBUser=zabbix <span class="comment">#数据库用户名</span></div><div class="line">DBPassword=zabbix123.com <span class="comment">#数据库密码</span></div><div class="line">ListenIP=192.168.1.170 <span class="comment">#数据库ip地址</span></div><div class="line">AlertScriptsPath=/usr/<span class="built_in">local</span>/zabbix/share/zabbix/alertscripts   <span class="comment">#zabbix运行脚本存放目录</span></div></pre></td></tr></table></figure>
@@ -274,12 +274,12 @@
 <p> 如果出现图形乱码：可以参考下面的文档。</p>
 <p>其实把之前的字体拷贝过去，然后先修改下配置文件即可。</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cp <span class="regexp">/var/</span>www<span class="regexp">/html/</span>zabbix.<span class="number">2.4</span>.<span class="number">7</span><span class="regexp">/fonts/</span>simkai.ttf <span class="regexp">/var/</span>www<span class="regexp">/html/</span>zabbix<span class="regexp">/fonts/</span>.</div></pre></td></tr></table></figure>
-<p>zabbix-server2.4服务端编译安装 <a href="http://blog.yangcvo.me/2015/01/18/zabbix-server服务端编译安装/">zabbix-server服务端编译安装</a></p>
-<p>zabbix2.4监控80端口状态 : <a href="http://blog.yangcvo.me/2016/07/20/zabbix监控80端口状态/">zabbix监控80端口状态</a></p>
-<p>zabbix+Grafana安装使用监控结合 ：<a href="http://blog.yangcvo.me/2016/07/13/zabbix-Grafana安装使用结合/">zabbix+Grafana安装使用监控结合</a></p>
-<p>zabbix监控MySQL-添加自定义监控项 : <a href="http://blog.yangcvo.me/2015/09/29/zabbix监控MySQL-添加自定义监控项/">zabbix监控MySQL-添加自定义监控项</a></p>
-<p>zabbix的ICMP_Ping模版实现对客户端网络状态的监控 : <a href="http://blog.yangcvo.me/2015/11/18/zabbix的ICMP-Ping模版实现对客户端网络状态的监控/">zabbix的ICMP_Ping模版实现对客户端网络状态的监控</a></p>
-<p>zabbix性能监控故障总结 <a href="http://blog.yangcvo.me/2016/02/07/zabbix-故障总结/">zabbix性能监控故障总结</a></p>
+<p>zabbix-server2.4服务端编译安装 <a href="http://blog.yangcvo.me/2015/01/18/zabbix-server服务端编译安装/" target="_blank" rel="external">zabbix-server服务端编译安装</a></p>
+<p>zabbix2.4监控80端口状态 : <a href="http://blog.yangcvo.me/2016/07/20/zabbix监控80端口状态/" target="_blank" rel="external">zabbix监控80端口状态</a></p>
+<p>zabbix+Grafana安装使用监控结合 ：<a href="http://blog.yangcvo.me/2016/07/13/zabbix-Grafana安装使用结合/" target="_blank" rel="external">zabbix+Grafana安装使用监控结合</a></p>
+<p>zabbix监控MySQL-添加自定义监控项 : <a href="http://blog.yangcvo.me/2015/09/29/zabbix监控MySQL-添加自定义监控项/" target="_blank" rel="external">zabbix监控MySQL-添加自定义监控项</a></p>
+<p>zabbix的ICMP_Ping模版实现对客户端网络状态的监控 : <a href="http://blog.yangcvo.me/2015/11/18/zabbix的ICMP-Ping模版实现对客户端网络状态的监控/" target="_blank" rel="external">zabbix的ICMP_Ping模版实现对客户端网络状态的监控</a></p>
+<p>zabbix性能监控故障总结 <a href="http://blog.yangcvo.me/2016/02/07/zabbix-故障总结/" target="_blank" rel="external">zabbix性能监控故障总结</a></p>
 
 
                 <hr>
@@ -367,8 +367,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "blog-yangcvo-me";
-    var disqus_identifier = "http://blog.yangcvo.me/2016/06/19/性能监控/Zabbix/zabbix-server3-0-3版本环境安装部署/";
-    var disqus_url = "http://blog.yangcvo.me/2016/06/19/性能监控/Zabbix/zabbix-server3-0-3版本环境安装部署/";
+    var disqus_identifier = "http://blog.yancy.me/2016/06/19/性能监控/Zabbix/zabbix-server3-0-3版本环境安装部署/";
+    var disqus_url = "http://blog.yancy.me/2016/06/19/性能监控/Zabbix/zabbix-server3-0-3版本环境安装部署/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -474,7 +474,7 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    Copyright &copy; Yancy&#39;s Blog 2017 
                     <br>
                  Theme by <a href="http://blog.yangcvo.me">yangc</a>
                     <span style="display: inline-block; margin: 0 5px;">
@@ -538,7 +538,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+        async("http://blog.yancy.me/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},
@@ -572,7 +572,7 @@
 
 
 <!-- Image to hack wechat -->
-<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<img src="http://blog.yancy.me/img/icon_wechat.png" width="0" height="0" />
 <!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>

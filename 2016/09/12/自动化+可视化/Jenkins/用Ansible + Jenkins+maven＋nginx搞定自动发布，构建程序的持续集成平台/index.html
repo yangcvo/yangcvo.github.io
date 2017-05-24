@@ -13,11 +13,11 @@
 
     <title>
         
-          Ansible + Jenkins+Maven＋Nginx搞定自动发布，构建程序的持续集成平台 - yangcvo的博客 | Chengyang&#39;s Blog
+          Ansible + Jenkins+Maven＋Nginx搞定自动发布，构建程序的持续集成平台 - Yancy的博客 | Yancy&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://blog.yangcvo.me/2016/09/12/自动化+可视化/Jenkins/用Ansible + Jenkins+maven＋nginx搞定自动发布，构建程序的持续集成平台/">
+    <link rel="canonical" href="http://blog.yancy.me/2016/09/12/自动化+可视化/Jenkins/用Ansible + Jenkins+maven＋nginx搞定自动发布，构建程序的持续集成平台/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -67,7 +67,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Chengyang&#39;s Blog</a>
+            <a class="navbar-brand" href="/">Yancy&#39;s Blog</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -149,7 +149,7 @@
     <!-- Main Content -->
     
 <!-- Image to hack wechat -->
-<!-- <img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="http://blog.yancy.me/img/icon_wechat.png" width="0" height="0"> -->
 <!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
 
 <!-- Post Header -->
@@ -175,7 +175,7 @@
                     <h1>Ansible + Jenkins+Maven＋Nginx搞定自动发布，构建程序的持续集成平台</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
-                        Posted by yangc on
+                        Posted by Yancy on
                         2016-09-12
                     </span>
                 </div>
@@ -246,13 +246,13 @@
 <p>总结：<strong>Ansible把一些shell命令封装成一个个模块，并通过SSH连接，在远程机器上执行这些模块包含的脚本。</strong></p>
 <h4 id="1-2-Ansible安装与配置"><a href="#1-2-Ansible安装与配置" class="headerlink" title="1.2    Ansible安装与配置"></a>1.2    Ansible安装与配置</h4><p>系统环境：centos7.1<br>直接使用yum安装ansible</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># yum install http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm</span></div><div class="line"><span class="comment"># yum install ansible</span></div></pre></td></tr></table></figure>
-<p>安装完成之后，需要<code>ansible</code>中的<code>hosts</code>文件分组，编辑<code>/etc/ansible/hosts</code>文件，将目标机器加入分组，并配置好面秘钥登录。<br>Ansible更多详细内容可以参考我之前写的<a href="http://blog.yangcvo.me/2016/03/07/%E8%87%AA%E5%8A%A8%E5%8C%96/Ansible/Ansible%20%E5%B0%8F%E7%BB%93%EF%BC%88%E4%B8%80%EF%BC%89ansible%E7%9A%84%E5%AE%89%E8%A3%85%20/">ansibles学习篇</a></p>
+<p>安装完成之后，需要<code>ansible</code>中的<code>hosts</code>文件分组，编辑<code>/etc/ansible/hosts</code>文件，将目标机器加入分组，并配置好面秘钥登录。<br>Ansible更多详细内容可以参考我之前写的<a href="http://blog.yangcvo.me/2016/03/07/%E8%87%AA%E5%8A%A8%E5%8C%96/Ansible/Ansible%20%E5%B0%8F%E7%BB%93%EF%BC%88%E4%B8%80%EF%BC%89ansible%E7%9A%84%E5%AE%89%E8%A3%85%20/" target="_blank" rel="external">ansibles学习篇</a></p>
 <h4 id="二-安装Jenkins环境"><a href="#二-安装Jenkins环境" class="headerlink" title="二. 安装Jenkins环境"></a>二. 安装Jenkins环境</h4><p>1)    安装并配置好JAVA、JDK、Tomcat，并去官网下载最新版本的war包。</p>
 <p>去官网下载包资源：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">apache-tomcat-8.0.28.tar.gz</div><div class="line">jenkins.war</div><div class="line">jdk1.8.0_66.tar.gz</div><div class="line">maven.tar.gz</div></pre></td></tr></table></figure>
 <p>没有下载成功的我这里已下载好了。最新版本<br><a href="http://oak0aohum.bkt.clouddn.com/jenkins.war" target="_blank" rel="external">jenkins.war</a><br><a href="http://oak0aohum.bkt.clouddn.com/apache-tomcat-8.0.28.tar.gz" target="_blank" rel="external">tomcat.tar.gz</a><br><a href="http://oak0aohum.bkt.clouddn.com/maven.tar.gz" target="_blank" rel="external">maven.tar.gz</a></p>
 <h5 id="2-1-jdk安装："><a href="#2-1-jdk安装：" class="headerlink" title="2.1 jdk安装："></a>2.1 jdk安装：</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">tar -zxvf jdk1.8.0_66.tar.gz -C /srv/.</div><div class="line">         </div><div class="line">这里在配置环境变量。</div><div class="line"></div><div class="line">vim /etc/profile.d/java.sh</div><div class="line"><span class="built_in">export</span> JAVA_HOME=/srv/jdk1.8.0_66</div><div class="line"><span class="built_in">export</span> CLASS_PATH=<span class="string">"<span class="variable">$JAVA_HOME</span>/lib:<span class="variable">$JAVA_HOME</span>/jre/lib"</span></div><div class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$JAVA_HOME</span>/bin</div><div class="line"></div><div class="line">[root@Jenkins ~]<span class="comment"># java -version</span></div><div class="line">java version <span class="string">"1.8.0_66"</span></div><div class="line">Java(TM) SE Runtime Environment (build 1.8.0_66-b17)</div><div class="line">Java HotSpot(TM) 64-Bit Server VM (build 25.66-b17, mixed mode)</div></pre></td></tr></table></figure>
-<h5 id="2-2-Tomcat安装配置："><a href="#2-2-Tomcat安装配置：" class="headerlink" title="2.2 Tomcat安装配置："></a>2.2 Tomcat安装配置：</h5><p>Jenkins官网：<a href="https://jenkins.io/index.html" target="_blank" rel="external">https://jenkins.io/index.html</a><br>可参考我之前写的文档：<a href="http://blog.yangcvo.me/2015/11/21/tomcat/%E6%90%AD%E5%BB%BA%E9%85%8D%E7%BD%AEtomcat%E7%8E%AF%E5%A2%83/">搭建配置tomcat环境</a></p>
+<h5 id="2-2-Tomcat安装配置："><a href="#2-2-Tomcat安装配置：" class="headerlink" title="2.2 Tomcat安装配置："></a>2.2 Tomcat安装配置：</h5><p>Jenkins官网：<a href="https://jenkins.io/index.html" target="_blank" rel="external">https://jenkins.io/index.html</a><br>可参考我之前写的文档：<a href="http://blog.yangcvo.me/2015/11/21/tomcat/%E6%90%AD%E5%BB%BA%E9%85%8D%E7%BD%AEtomcat%E7%8E%AF%E5%A2%83/" target="_blank" rel="external">搭建配置tomcat环境</a></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">tar -zxvf apache-tomcat-8.0.28.tar.gz -C /srv/.</div><div class="line">mv apache-tomcat-8.0.28 tomcat</div><div class="line">useradd <span class="_">-s</span> /sbin/nologin tomcat </div><div class="line">chown -R tomcat:tomcat tomcat</div></pre></td></tr></table></figure>
 <p>2)    放在配置好Tomcat，启动Jenkins，根据提示，输入安装秘钥。</p>
 <h5 id="2-3-jenkins安装配置："><a href="#2-3-jenkins安装配置：" class="headerlink" title="2.3 jenkins安装配置："></a>2.3 jenkins安装配置：</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mv jenkins.war /srv/tomcat/webapps/. </div><div class="line"><span class="built_in">cd</span> /tomcat</div><div class="line">./bin/startup.sh</div><div class="line">然后打开地址：http://192.168.1.183:8080/jenkins</div><div class="line">新版本会提示下载安装插件。下载以后会让你设置账号和密码还有邮箱。</div></pre></td></tr></table></figure>
@@ -433,8 +433,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "blog-yangcvo-me";
-    var disqus_identifier = "http://blog.yangcvo.me/2016/09/12/自动化+可视化/Jenkins/用Ansible + Jenkins+maven＋nginx搞定自动发布，构建程序的持续集成平台/";
-    var disqus_url = "http://blog.yangcvo.me/2016/09/12/自动化+可视化/Jenkins/用Ansible + Jenkins+maven＋nginx搞定自动发布，构建程序的持续集成平台/";
+    var disqus_identifier = "http://blog.yancy.me/2016/09/12/自动化+可视化/Jenkins/用Ansible + Jenkins+maven＋nginx搞定自动发布，构建程序的持续集成平台/";
+    var disqus_url = "http://blog.yancy.me/2016/09/12/自动化+可视化/Jenkins/用Ansible + Jenkins+maven＋nginx搞定自动发布，构建程序的持续集成平台/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -540,7 +540,7 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Chengyang&#39;s Blog 2017 
+                    Copyright &copy; Yancy&#39;s Blog 2017 
                     <br>
                  Theme by <a href="http://blog.yangcvo.me">yangc</a>
                     <span style="display: inline-block; margin: 0 5px;">
@@ -604,7 +604,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://blog.yangcvo.me/js/jquery.tagcloud.js",function(){
+        async("http://blog.yancy.me/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},
@@ -638,7 +638,7 @@
 
 
 <!-- Image to hack wechat -->
-<img src="http://blog.yangcvo.me/img/icon_wechat.png" width="0" height="0" />
+<img src="http://blog.yancy.me/img/icon_wechat.png" width="0" height="0" />
 <!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
