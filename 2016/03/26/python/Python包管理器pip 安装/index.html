@@ -13,11 +13,11 @@
 
     <title>
         
-          确保Nginx安全的几个技巧 - Yancy的博客 | Yancy&#39;s Blog
+          Python包管理器pip安装 - Yancy的博客 | Yancy&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://blog.yancy.cc/2016/03/27/Web服务技术/Nginx/确保nginx安全的几个技巧/">
+    <link rel="canonical" href="http://blog.yancy.cc/2016/03/26/python/Python包管理器pip 安装/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -165,16 +165,12 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#Web Service" title="Web Service">Web Service</a>
-                        
-                          <a class="tag" href="/tags/#Nginx" title="Nginx">Nginx</a>
-                        
                     </div>
-                    <h1>确保Nginx安全的几个技巧</h1>
+                    <h1>Python包管理器pip安装</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by Yancy on
-                        2016-03-27
+                        2016-03-26
                     </span>
                 </div>
             </div>
@@ -193,19 +189,14 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <ol>
-<li>在配置文件中设置自定义缓存以限制缓冲区溢出攻击的可能性</li>
-</ol>
-<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">client_body_buffer_size <span class="number">1</span>K;</div><div class="line">client_header_buffer_size <span class="number">1</span>k;</div><div class="line">client_max_body_size <span class="number">1</span>k;</div><div class="line">large_client_header_buffers <span class="number">2</span> <span class="number">1</span>k;</div></pre></td></tr></table></figure>
-<ol>
-<li>将timeout设低来防止DOS攻击<br>所有这些声明都可以放到主配置文件中。</li>
-</ol>
-<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">client_body_timeout <span class="number">10</span>;</div><div class="line">client_header_timeout <span class="number">10</span>;</div><div class="line">keepalive_timeout <span class="number">5</span> <span class="number">5</span>;</div><div class="line">send_timeout <span class="number">10</span>;</div></pre></td></tr></table></figure>
-<ol>
-<li>限制用户连接数来预防DOS攻击</li>
-</ol>
-<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">limit_zone slimits $<span class="keyword">binary_remote_addr </span><span class="number">5</span>m<span class="comment">;</span></div><div class="line">limit_conn slimits <span class="number">5</span><span class="comment">;</span></div></pre></td></tr></table></figure>
-<p>个人觉得在防止DDOS攻击这方面，设置这些没太大用处，特别是第三点，很扰乱用户体验度的。</p>
+                <p>pip类似RedHat里面的yum,安装Python包非常方便装</p>
+<h4 id="一、pip的安装（方法一）"><a href="#一、pip的安装（方法一）" class="headerlink" title="一、pip的安装（方法一）"></a>一、pip的安装（方法一）</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span>  /usr/<span class="built_in">local</span>/src</div><div class="line">wget <span class="string">"https://pypi.python.org/packages/source/p/pip/pip-1.5.4.tar.gz#md5=834b2904f92d46aaa333267fb1c922bb"</span> --no-check-certificate</div><div class="line">tar -xzvf pip-1.5.4.tar.gz</div><div class="line"><span class="built_in">cd</span> pip-1.5.4</div><div class="line">python setup.py install</div></pre></td></tr></table></figure>
+<p>如果上述出现<code>ImportError: No module named setuptools</code>的解决方案</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span>  /usr/<span class="built_in">local</span>/src</div><div class="line">wget http://pypi.python.org/packages/<span class="built_in">source</span>/s/setuptools/setuptools-0.6c11.tar.gz --no-check-certificate</div><div class="line">tar zxvf setuptools-0.6c11.tar.gz</div><div class="line"><span class="built_in">cd</span> setuptools-0.6c11</div><div class="line">python setup.py build</div><div class="line">python setup.py install</div></pre></td></tr></table></figure>
+<p>二、pip安装（方法二）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/src</div><div class="line">wget https://bootstrap.pypa.io/get-pip.py --no-check-certificate -O ./get-pip.py</div><div class="line">python get-pip.py</div></pre></td></tr></table></figure>
+<p>三、pip更换国内源地址</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> </div><div class="line">mkdir .pip</div><div class="line">vim .pip/pip.conf</div><div class="line"></div><div class="line">[global]</div><div class="line">index-url = http://pypi.douban.com/simple</div><div class="line">[install]</div><div class="line">trusted-host = pypi.douban.com</div></pre></td></tr></table></figure>
 
 
                 <hr>
@@ -215,12 +206,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2016/03/29/Web服务技术/Nginx/nginx基础篇-日志管理和切割/" data-toggle="tooltip" data-placement="top" title="Nginx基础篇-日志管理和切割">&larr; Previous Post</a>
+                            <a href="/2016/03/27/Web服务技术/Nginx/确保nginx安全的几个技巧/" data-toggle="tooltip" data-placement="top" title="确保Nginx安全的几个技巧">&larr; Previous Post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2016/03/26/python/Python包管理器pip 安装/" data-toggle="tooltip" data-placement="top" title="Python包管理器pip安装">Next Post &rarr;</a>
+                            <a href="/2016/03/26/Java-Dubbo/Nexus安装和配置搭建Maven私服/" data-toggle="tooltip" data-placement="top" title="Nexus安装和配置搭建Maven私服">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -253,10 +244,6 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#Web Service" title="Web Service">Web Service</a>
-                        
-                          <a class="tag" href="/tags/#Nginx" title="Nginx">Nginx</a>
-                        
                     </div>
                 </section>
                 
@@ -293,8 +280,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "blog-yancy-cc";
-    var disqus_identifier = "http://blog.yancy.cc/2016/03/27/Web服务技术/Nginx/确保nginx安全的几个技巧/";
-    var disqus_url = "http://blog.yancy.cc/2016/03/27/Web服务技术/Nginx/确保nginx安全的几个技巧/";
+    var disqus_identifier = "http://blog.yancy.cc/2016/03/26/python/Python包管理器pip 安装/";
+    var disqus_url = "http://blog.yancy.cc/2016/03/26/python/Python包管理器pip 安装/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

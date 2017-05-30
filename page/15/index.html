@@ -184,22 +184,32 @@
 
 <div class="post-preview">
 
-    <a href="/2014/11/27/Linux笔记/SSH/SSH scp error no hostkey alg/">
+    <a href="/2014/12/07/运维性能测试/at发送测压访问iptables防火墙控制并发访问/">
         <h2 class="post-title">
-            SSH scp error no hostkey alg
+            at发送测压访问iptables防火墙控制并发访问
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            SSH scp error no hostkey algssh works well but when you try to copy a file via scp you get this error
-1no hostkey alg
-Go on your server and check if you have /etc/ssh/ssh_host_rsa_key and /etc/ssh/......
+            
+A台 ： 192.168.1.1    做问httpd 的访问者
+B台 ： 192.168.1.2   做为向A发送的请求者
+
+访问前 A查看下iptables 是否开启 ，把他关闭了。才能访问
+
+B 请求 
+
+1# at -n 10000 -c 40 http://192.168.1.1/1.txt
+
+A 查看请求
+
+12netstat -an | grep 80 | grep 192.......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-11-27
+        2014-12-07
     </p>
 
 </div>
@@ -230,21 +240,22 @@ root用户下使用ACL在给开发给予某个文件夹下的所有文件改权�
 
 <div class="post-preview">
 
-    <a href="/2014/11/24/Linux笔记/rrdtool/RRDTOOL编译安装一步一步解决多多依赖关系/">
+    <a href="/2014/11/27/Linux笔记/SSH/SSH scp error no hostkey alg/">
         <h2 class="post-title">
-            rrdtool 编译安装一步一步解决多多依赖关系
+            SSH scp error no hostkey alg
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            RRDTOOL 编译安装一步一步解决多多依赖关系在一些监控软件中需要借助rrdtool绘图，然后安装rrdtool这个画图工具的时候经常报错，下面就简单说明下安装步骤（Cenetos6.5 64bit）。 
-介绍RRDTOOL 是一个基于时间片的日志和绘图工具，有了她你可以轻松的绘制各种基于时间的可视化数据，用于做统计和监控非常合适。著名的开源监控软件Ganglia 就是采用的RRDTOOL......
+            SSH scp error no hostkey algssh works well but when you try to copy a file via scp you get this error
+1no hostkey alg
+Go on your server and check if you have /etc/ssh/ssh_host_rsa_key and /etc/ssh/......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-11-24
+        2014-11-27
     </p>
 
 </div>
@@ -264,6 +275,28 @@ root用户下使用ACL在给开发给予某个文件夹下的所有文件改权�
 1.关闭防火墙1/etc/init.d/iptables stop
 这里说下如果没有关闭防火墙，一定要写规则增加iptables内容如下:
 1234567891011121314# enable zimbra ports-A INPUT -m state --state NEW -m tcp -p tcp --dpo......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2014-11-24
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2014/11/24/Linux笔记/rrdtool/RRDTOOL编译安装一步一步解决多多依赖关系/">
+        <h2 class="post-title">
+            rrdtool 编译安装一步一步解决多多依赖关系
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            RRDTOOL 编译安装一步一步解决多多依赖关系在一些监控软件中需要借助rrdtool绘图，然后安装rrdtool这个画图工具的时候经常报错，下面就简单说明下安装步骤（Cenetos6.5 64bit）。 
+介绍RRDTOOL 是一个基于时间片的日志和绘图工具，有了她你可以轻松的绘制各种基于时间的可视化数据，用于做统计和监控非常合适。著名的开源监控软件Ganglia 就是采用的RRDTOOL......
         </div>
     </a>
     <p class="post-meta">
@@ -389,32 +422,6 @@ Ghost作为一个极简的Blog系统，并没有文章评论系统。要实现�
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2014/10/05/性能监控/Zabbix/zabbix邮件告警/">
-        <h2 class="post-title">
-            zabbix邮件告警
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            操作系统环境：CentOS release 6.7 (Final)
-zabbix版本2.4.7
-关于操作系统CentOS6.0 以下版本都是通过mail命令调用sendmail的sm-client发送邮件，所以如果关闭sendmail按照很多网上的文档是发不出邮件的。
-centos 6.0以上版本
-12默认已经安装好sendmail默认已经安装好postfix
-sendmail和postfi......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2014-10-05
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -458,8 +465,6 @@ sendmail和postfi......
                             
                         
                             
-                        
-                            
                             <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="6">Java+Tomcat notes</a>
                             
                         
@@ -476,8 +481,6 @@ sendmail和postfi......
                             
                         
                             
-                            <a href="/tags/#Linux note" title="Linux note" rel="13">Linux note</a>
-                            
                         
                             
                         
@@ -489,6 +492,10 @@ sendmail和postfi......
                         
                             
                         
+                            
+                        
+                            
+                            <a href="/tags/#Linux note" title="Linux note" rel="13">Linux note</a>
                             
                         
                             
@@ -548,11 +555,11 @@ sendmail和postfi......
                             
                         
                             
+                        
+                            
+                        
+                            
                             <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
-                            
-                        
-                            
-                        
                             
                         
                             
@@ -570,9 +577,9 @@ sendmail和postfi......
                             
                         
                             
-                            <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="6">Log analysis platform</a>
-                            
                         
+                            
+                            <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="6">Log analysis platform</a>
                             
                         
                             
@@ -588,11 +595,11 @@ sendmail和postfi......
                             
                         
                             
+                        
+                            
+                        
+                            
                             <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
-                            
-                        
-                            
-                        
                             
                         
                     </div>

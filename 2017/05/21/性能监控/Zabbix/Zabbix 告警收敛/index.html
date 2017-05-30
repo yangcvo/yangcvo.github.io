@@ -195,13 +195,49 @@
 
                 <h3 id="Zabbix-告警收敛"><a href="#Zabbix-告警收敛" class="headerlink" title="Zabbix 告警收敛"></a>Zabbix 告警收敛</h3><blockquote>
 <p>在多个运维技术分享中都会谈及到“告警风暴”这个词，即在大规模网络发生异常的时候，报警量激增，运维伙伴手机在1个多小时中不断的接受报警通知，这样有可能会造成“狼来了”等一系列的问题，不但对运维人员造成了困扰，给排查问题带了不小的难度。某族同样也困扰过，但在建设了告警平台，对告警进行合并等操作，由原来的月报警8000+ 降低至800条。</p>
+</blockquote>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix_001.png" alt=""></p>
+<blockquote>
 <p>听了若干的技术“吹bi”大会，都在说用了某某的东西后就多么多么的厉害，耳朵都快听出茧子了。真正的把干货分享出来的很少，只能犄角旮旯里面抠出来自己需要的东西，然后回来自己琢磨。说的也是人家也不会把核心做法告诉你，不过也算是给了个方向。闲话不多说，自己琢磨出来的收敛的方法，不管low不low总算把问题解决了，也算是成长路上的突破。</p>
 </blockquote>
+<hr>
 <h3 id="一、收敛架构图"><a href="#一、收敛架构图" class="headerlink" title="一、收敛架构图"></a>一、收敛架构图</h3><ul>
 <li>① 所有产生告警均由zabbix调用脚本推入缓存redis当中</li>
 <li>② 分析系统将在规定时间（1分钟）内去redis中拉取数据，根据定义好的一系列规则进行，合并、分析或直接丢弃，并存入分析平台数据库，以便供历史查询。</li>
 <li>③ 根据预先定义好的规则将报警通过定义好的方式发送给相关人员。</li>
 </ul>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix_002.png" alt=""></p>
+<pre><code>告警收敛架构
+</code></pre><h3 id="二、对zabbix-进行设置"><a href="#二、对zabbix-进行设置" class="headerlink" title="二、对zabbix 进行设置"></a>二、对zabbix 进行设置</h3><h5 id="1-zabbix-Actions"><a href="#1-zabbix-Actions" class="headerlink" title="1.zabbix Actions"></a>1.zabbix Actions</h5><p>对Actions进行特殊设置，Default subject极为重要，是识别收敛的标示。</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix_003.png" alt=""></p>
+<h5 id="Actions-配置"><a href="#Actions-配置" class="headerlink" title="Actions 配置"></a>Actions 配置</h5><ul>
+<li>Default subject</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;EVENT.ID&#125;_1</div></pre></td></tr></table></figure>
+<ul>
+<li>Default message</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">triggervalue|&#123;TRIGGER.VALUE&#125;<span class="comment">#hostname|&#123;HOSTNAME1&#125;#ipaddress|&#123;IPADDRESS&#125;#hostgroup|&#123;TRIGGER.HOSTGROUP.NAME&#125;#triggernseverity|&#123;TRIGGER.NSEVERITY&#125;#triggername|&#123;TRIGGER.NAME&#125;#triggerkey|&#123;TRIGGER.KEY1&#125;#triggeritems|&#123;ITEM.NAME&#125;#itemvalue|&#123;ITEM.VALUE&#125;#eventid|&#123;EVENT.ID&#125;</span></div></pre></td></tr></table></figure>
+<ul>
+<li>Recovery subject</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;EVENT.ID&#125;_0</div></pre></td></tr></table></figure>
+<ul>
+<li>Recovery message</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">triggervalue|&#123;TRIGGER.VALUE&#125;<span class="comment">#hostname|&#123;HOSTNAME1&#125;#ipaddress|&#123;IPADDRESS&#125;#hostgroup|&#123;TRIGGER.HOSTGROUP.NAME&#125;#triggernseverity|&#123;TRIGGER.NSEVERITY&#125;#triggername|&#123;TRIGGER.NAME&#125;#triggerkey|&#123;TRIGGER.KEY1&#125;#triggeritems|&#123;ITEM.NAME&#125;#itemvalue|&#123;ITEM.VALUE&#125;#eventid|&#123;EVENT.ID&#125;</span></div></pre></td></tr></table></figure>
+<h5 id="2-Media-types"><a href="#2-Media-types" class="headerlink" title="2.Media types"></a>2.Media types</h5><p>这里只需要传递subject 参数就可以了。</p>
+<p>Media 配置<br>police.py–报警函数：zabbix告警是调用此函数，将事件id推入redis。</p>
+<p>redis 安装查看第三部分</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">/usr/<span class="built_in">local</span>/zabbix/share/zabbix/alertscripts/police.py</div><div class="line"><span class="comment">#!/usr/bin/env python</span></div><div class="line"><span class="comment">#coding:utf-8</span></div><div class="line"></div><div class="line">import redis</div><div class="line">import sys</div><div class="line"> </div><div class="line">subject=sys.argv[1]</div><div class="line">r = redis.StrictRedis(host=<span class="string">'**.**.**.**'</span>, port=6379)</div><div class="line">r.set(subject,subject)</div></pre></td></tr></table></figure>
+<h4 id="三、操作部分"><a href="#三、操作部分" class="headerlink" title="三、操作部分"></a>三、操作部分</h4><p>1.环境安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#安装python、mysql、redis模块</span></div><div class="line">pip install redis</div><div class="line">pip install mysql-python</div><div class="line">yum install gcc python-devel</div></pre></td></tr></table></figure>
+<p>2.脚本部署</p>
+<p> <a href="https://github.com/yangcvo/Monitor" target="_blank" rel="external">脚本下载地址</a></p>
+<p>①dbread.py–数据库查询函数：接收事件id参数，将zabbix数据库内的数据切割分片并返回告警信息<br>②operation.py –操作函数：接收dbread.py返回的告警信息，进行告警合并，告警压缩处理。并返回处理结果<br>③weixin.py–发送微信告警通知函数：将处理结果发送至指定运维人员<br>④allpolice.py–综合函数：将①②③整合起来，定时每1分钟执行一次</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">*<span class="comment">#文件分布</span></div><div class="line">mkdir -p /data/police</div><div class="line">├── police</div><div class="line">│   ├── dbread.py</div><div class="line">│   ├── allpolice.py</div><div class="line">│   ├── operation.py</div><div class="line">│   ├── send.log</div><div class="line">│   └── weixin.py</div></pre></td></tr></table></figure>
+<h4 id="四、定时任务"><a href="#四、定时任务" class="headerlink" title="四、定时任务"></a>四、定时任务</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">crontab <span class="_">-e</span></div><div class="line"><span class="comment">#告警收敛定时检测#</span></div><div class="line">*/1 * * * * python /data/police/allpolice.py &gt;&gt; /data/police/send.log</div></pre></td></tr></table></figure>
+<h4 id="五、最终效果"><a href="#五、最终效果" class="headerlink" title="五、最终效果"></a>五、最终效果</h4><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix_005.png" alt=""></p>
 
 
                 <hr>

@@ -184,15 +184,17 @@
 
 <div class="post-preview">
 
-    <a href="/2016/03/29/Web服务技术/Nginx/Nginx基础篇-Nginx.conf配置文件详解/">
+    <a href="/2016/03/29/Web服务技术/Nginx/nginx基础篇-日志管理和切割/">
         <h2 class="post-title">
-            Nginx基础篇-Nginx.conf配置文件详解
+            Nginx基础篇-日志管理和切割
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Nginx.conf配置文件详解Nginx配置文件主要分成四部分：main（全局设置）、server（主机设置）、upstream（上游服务器设置，主要为反向代理、负载均衡相关配置）和 location（URL匹配特定位置后的设置），每部分包含若干个指令。main部分设置的指令将影响其它所有部分的设置；server部分的指令主要用于指定虚拟主机域名、IP和端口；upstream的指令用于设置......
+            前言：公司日志查看有时候不太规范，官网web服务日志这边整理了下Nginx日志输出优化。 
+一、日志分类Nginx日志主要分为两种，访问日志和错误日志。两种日志可以在http和server模块中配置，nginx有一个非常灵活的日志记录模式。每个级别的配置可以有各自独立的访问日志。日志格式通过log_format命令来定义
+1、访问日志访问日志主要记录客户端访问Nginx的每一个请求log_f......
         </div>
     </a>
     <p class="post-meta">
@@ -226,6 +228,28 @@
     <p class="post-meta">
         Posted by Yancy on
         2016-03-27
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/26/python/Python包管理器pip 安装/">
+        <h2 class="post-title">
+            Python包管理器pip安装
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            pip类似RedHat里面的yum,安装Python包非常方便装
+一、pip的安装（方法一）12345cd  /usr/local/srcwget "https://pypi.python.org/packages/source/p/pip/pip-1.5.4.tar.gz#md5=834b2904f92d46aaa333267fb1c922bb" --no-check-certificat......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-26
     </p>
 
 </div>
@@ -396,30 +420,6 @@ vim deploy.yml
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2016/03/09/自动化+可视化/Ansible/ansible小结(五)常用模块/">
-        <h2 class="post-title">
-            Ansible小结 (五) 常用模块
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            ansible命令总结使用：在上一篇中介绍了commands部分模块，本篇承接上篇介绍下常用的模块。根据官方的分类，将模块按功能分类为：
-1云模块、命令模块、数据库模块、文件模块、资产模块、消息模块、监控模块、网络模块、通知模块、包管理模块、源码控制模块、系统模块、单元模块、web设施模块、windows模块
-具体可以参看官方页面
-这里从官方分类的模块里选择最常用的一些模块进行介绍（comm......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-03-09
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -463,8 +463,6 @@ vim deploy.yml
                             
                         
                             
-                        
-                            
                             <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="6">Java+Tomcat notes</a>
                             
                         
@@ -481,8 +479,6 @@ vim deploy.yml
                             
                         
                             
-                            <a href="/tags/#Linux note" title="Linux note" rel="13">Linux note</a>
-                            
                         
                             
                         
@@ -494,6 +490,10 @@ vim deploy.yml
                         
                             
                         
+                            
+                        
+                            
+                            <a href="/tags/#Linux note" title="Linux note" rel="13">Linux note</a>
                             
                         
                             
@@ -553,11 +553,11 @@ vim deploy.yml
                             
                         
                             
+                        
+                            
+                        
+                            
                             <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
-                            
-                        
-                            
-                        
                             
                         
                             
@@ -575,9 +575,9 @@ vim deploy.yml
                             
                         
                             
-                            <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="6">Log analysis platform</a>
-                            
                         
+                            
+                            <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="6">Log analysis platform</a>
                             
                         
                             
@@ -593,11 +593,11 @@ vim deploy.yml
                             
                         
                             
+                        
+                            
+                        
+                            
                             <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
-                            
-                        
-                            
-                        
                             
                         
                     </div>
