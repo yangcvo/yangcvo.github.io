@@ -184,201 +184,6 @@
 
 <div class="post-preview">
 
-    <a href="/2014/12/07/运维性能测试/at发送测压访问iptables防火墙控制并发访问/">
-        <h2 class="post-title">
-            at发送测压访问iptables防火墙控制并发访问
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-A台 ： 192.168.1.1    做问httpd 的访问者
-B台 ： 192.168.1.2   做为向A发送的请求者
-
-访问前 A查看下iptables 是否开启 ，把他关闭了。才能访问
-
-B 请求 
-
-1# at -n 10000 -c 40 http://192.168.1.1/1.txt
-
-A 查看请求
-
-12netstat -an | grep 80 | grep 192.......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2014-12-07
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2014/11/27/Linux笔记/SSH/修改权限ssh登陆出现ssh-exchange-identification-read-Connection-reset-by-peer无法登陆问题/">
-        <h2 class="post-title">
-            ACL 修改权限ssh登录报ssh_exchange_identification: read:Connection reset by peer无法登陆问题
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            ACL修改权限出现了严重的问题：
-root用户下使用ACL在给开发给予某个文件夹下的所有文件改权限的时候，用了setfacl命令，咋一看这个命令没啥很正常，也能执行，但是后面的提示让人感觉很不对劲， 有一个/，这是个很危险的命令，有点常识的人都知道，根目录下的文件权限不可以乱动啊，当时吓了一跳，于是另开一个终端怎么也连接不上.
-12ssh root@192.168.1.204Connecti......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2014-11-27
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2014/11/27/Linux笔记/SSH/SSH scp error no hostkey alg/">
-        <h2 class="post-title">
-            SSH scp error no hostkey alg
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            SSH scp error no hostkey algssh works well but when you try to copy a file via scp you get this error
-1no hostkey alg
-Go on your server and check if you have /etc/ssh/ssh_host_rsa_key and /etc/ssh/......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2014-11-27
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2014/11/24/Linux笔记/Zimbra/zimbra邮件系统的环境部署/">
-        <h2 class="post-title">
-            zimbra邮件系统的环境部署
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            zimbra本实验以CENTOS6.6 64位为例. 最小化安装外加开发包
-1.关闭防火墙1/etc/init.d/iptables stop
-这里说下如果没有关闭防火墙，一定要写规则增加iptables内容如下:
-1234567891011121314# enable zimbra ports-A INPUT -m state --state NEW -m tcp -p tcp --dpo......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2014-11-24
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2014/11/24/Linux笔记/rrdtool/RRDTOOL编译安装一步一步解决多多依赖关系/">
-        <h2 class="post-title">
-            rrdtool 编译安装一步一步解决多多依赖关系
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            RRDTOOL 编译安装一步一步解决多多依赖关系在一些监控软件中需要借助rrdtool绘图，然后安装rrdtool这个画图工具的时候经常报错，下面就简单说明下安装步骤（Cenetos6.5 64bit）。 
-介绍RRDTOOL 是一个基于时间片的日志和绘图工具，有了她你可以轻松的绘制各种基于时间的可视化数据，用于做统计和监控非常合适。著名的开源监控软件Ganglia 就是采用的RRDTOOL......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2014-11-24
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2014/11/24/Blog/Ghost/Ghost-blog修改端口/">
-        <h2 class="post-title">
-            Ghost-blog修改端口
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            Ghost 修改端口说下我这是bitnami 一键安装的，因为之前安装的6.0 版本升级用bitnami 一键安装了。
-这里需要修改的端口 就必须这几个地方：
-需要修改端口80-8088：
-123/opt/ghost-0.7.5-0/apache2/conf/httpd.conf/opt/ghost-0.7.5-0/apache2/conf/bitnami/bitnami.conf/opt/......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2014-11-24
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2014/11/24/Blog/Ghost/Ghost博客：实现网站访问次数统计代码 /">
-        <h2 class="post-title">
-            Ghost博客：实现网站访问次数统计代码
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            去年自己搭建了Ghost博客，更新了没多久发现一个问题，就是界面比WordPress好看多，可是功能就唯一好点还支撑Macdown，最近看了下想让自己的博客做到统计访问次数。
-就弄了篇文章，方便后期改进，也可以自己做参考。 
-目前 Ghost系统并未在后台提供设置统计代码的功能，也没有提供在主题（theme）中获取统计代码的能力。现在的解决办法是在主题模板中手动添加，这就需要对模板文件做些改......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2014-11-24
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2014/11/20/Blog/Ghost/Ghost博客：增加Disqus评论组件/">
-        <h2 class="post-title">
-            Ghost博客：增加Disqus评论组件
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            Ghost博客不自带评论功能的，这个是我想说的一个差评，不过简单的添加下评论组件还是比较简单的。
-Ghost作为一个极简的Blog系统，并没有文章评论系统。要实现评论系统，就需要借助第三方评论系统。 
-第三方系统比内置实现主要方便在无需维护用户系统，且大部分第三方系统都有较好的垃圾评论过滤机制，方便省心。 这里以多说为例，多说支持大多数现有blog系统，不过它的官网上没有ghost的选项，可......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2014-11-20
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
     <a href="/2014/10/21/性能监控/cacti/了解Cacti监控安装与配置/">
         <h2 class="post-title">
             了解Cacti监控安装与配置.md
@@ -417,6 +222,211 @@ Ghost作为一个极简的Blog系统，并没有文章评论系统。要实现�
     <p class="post-meta">
         Posted by Yancy on
         2014-10-06
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2014/10/05/性能监控/Zabbix/zabbix邮件告警/">
+        <h2 class="post-title">
+            zabbix邮件告警
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            操作系统环境：CentOS release 6.7 (Final)
+zabbix版本2.4.7
+关于操作系统CentOS6.0 以下版本都是通过mail命令调用sendmail的sm-client发送邮件，所以如果关闭sendmail按照很多网上的文档是发不出邮件的。
+centos 6.0以上版本
+12默认已经安装好sendmail默认已经安装好postfix
+sendmail和postfi......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2014-10-05
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2014/10/04/性能监控/Zabbix/zabbix-故障总结/">
+        <h2 class="post-title">
+            zabbix性能监控故障总结
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            1.zabbix红色弹出报错 zabbix server is not running: the information displayed may not be current
+排错:
+
+123456789101112131415161718192021222324251. 检查   /var/www/html/zabbix/conf/zabbix.conf.php 确定 $DB['DAT......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2014-10-04
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2014/10/03/性能监控/Zabbix/zabbix2.4服务端yum-rpm快速安装部署/">
+        <h2 class="post-title">
+            zabbix2.4服务端rpm快速安装部署
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            系统环境：
+
+192.168.1.170 MySQL主 
+192.168.1.183 zabbix-server
+
+Zabbix 快速部署（RPM）注释：安装环境为系统最小安装，注意时间同步
+12[root@docker ~]# cat /etc/redhat-releaseCentOS Linux release 7.2.1511 (Core)
+关闭SELinux：1、临时关闭（不用重启机......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2014-10-03
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2014/10/02/性能监控/Zabbix/Zabbix2.4server服务端编译安装/">
+        <h2 class="post-title">
+            Zabbix2.4server服务端编译安装
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            系统环境：
+192.168.1.170 MySQL主 
+192.168.1.183 zabbix-server
+
+CentOS Linux release 7.2.1511 (Core)
+
+zabbix源码下载 : http://www.zabbix.com/download.php
+依赖下载：https : //github.com/zabbixcn/curl-rpm/tree/maste......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2014-10-02
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2014/10/02/性能监控/Zabbix/zabbix出现乱码/">
+        <h2 class="post-title">
+            zabbix出现乱码
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            出现乱码：
+乱码安装包下载地址：中文汉化乱码包
+
+
+参考文档：
+
+zabbix版本都已有汉化功能了，直接选择中文就行。
+可是低版本的就需要安装汉化，可是发现打开图形界面是空白图形：
+遇到中文乱码问题。zabbix乱码是怎么照成的呢？zabbix使用DejaVuSan.ttf字体，不支持中文，导致中文出现乱码。解决方法很简单，把我们电脑里面字体文件传到zabbix服务器上。
+
+在zabbix-......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2014-10-02
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2014/10/01/性能监控/Zabbix/zabbix的ICMP-Ping模版实现对客户端网络状态的监控/">
+        <h2 class="post-title">
+            zabbix的ICMP_Ping模版实现对客户端网络状态的监控
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            上一次搭建了邮件告警和微信告警，可以很方便及时接收到告警的。这里讲zabbix里面ICMP-ping模板的实现网络监控。
+Zabbix使用外部命令fping处理ICMP ping的请求，fping不包含在zabbix的发行版本中，需要额外去下载安装fping程序，安装完毕之后需要在zabinx_server.conf中的参数FpingLocation配置fping安装的路径。
+由于fping......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2014-10-01
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2014/09/29/性能监控/Zabbix/zabbix监控MySQL-添加自定义监控项/">
+        <h2 class="post-title">
+            zabbix监控MySQL-添加自定义监控项
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            zabbix监控MySQL前面一些简单的已在上一篇文章大概讲了zabbix原理和使用安装方法等等。在Zabbix的监控系统中通常是由Zabbix Server与Zabbix Agent一起配合实现监控。在Zabbix Agent内置了很多监控基础的监控项。参见
+这些监控项都是CPU, 文件系统, 网络，磁盘等基础的监控项，对于自己开发服务的监控，Zabbix提供了良好框架为用户实现监控和报警......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2014-09-29
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2014/09/13/Web服务技术/Apache/httpd进程非常多，查找被攻击的原因/">
+        <h2 class="post-title">
+            httpd进程非常多，查找被攻击的原因
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            前两天，公司托管在电信机房的vps服务器突然网络中断，运营商那边说我们的服务器不断往外发包，严重影响到机房的网络，所以把该机器的端口封了，无比蛋疼啊，无奈下只能亲自跑到机房解决问题。去到机房，使用top命令查看后发现httpd进程居然占到90%多的CPU。
+ps -aux |grep httpd |wc -l
+   发现有300多个httpd进程应该是受到SYN Flood攻击这时候没有直接......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2014-09-13
     </p>
 
 </div>
@@ -513,13 +523,13 @@ Ghost作为一个极简的Blog系统，并没有文章评论系统。要实现�
                             
                         
                             
-                            <a href="/tags/#Kafka" title="Kafka" rel="2">Kafka</a>
-                            
-                        
-                            
                         
                             
                             <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="4">Big data Hadoop</a>
+                            
+                        
+                            
+                            <a href="/tags/#Kafka" title="Kafka" rel="2">Kafka</a>
                             
                         
                             
@@ -537,9 +547,9 @@ Ghost作为一个极简的Blog系统，并没有文章评论系统。要实现�
                             
                         
                             
-                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
-                            
                         
+                            
+                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
                             
                         
                             
@@ -573,11 +583,11 @@ Ghost作为一个极简的Blog系统，并没有文章评论系统。要实现�
                             
                         
                             
-                        
-                            
-                        
-                            
                             <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
+                            
+                        
+                            
+                        
                             
                         
                             
