@@ -184,6 +184,205 @@
 
 <div class="post-preview">
 
+    <a href="/2016/07/15/容器-虚拟化/Docker/Docker学习(八)：Docker搭建Tomcat运行环境/">
+        <h2 class="post-title">
+            Docker学习(八)：Docker搭建Tomcat运行环境
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Docker搭建JAVA Tomcat运行环境前言Docker在提供一种应用程序的自动化部署解决方案，在 Linux 系统上迅速创建一个容器（轻量级虚拟机）并部署和运行应用程序，并通过配置文件可以轻松实现应用程序的自动化安装、部署和升级，非常方便。
+因为使用了容器，所以可以很方便的把生产环境和开发环境分开，互不影响，这是 docker 最普遍的一个玩法。更多的玩法还有大规模 web 应用、数......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-07-15
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/07/14/容器-虚拟化/Docker/Docker学习(七)：Docker命令总结学习积累经验/">
+        <h2 class="post-title">
+            Docker学习(七)：Docker命令总结学习积累经验
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Docker总结学习积累经验：现在对Docker这个运行的原理以及命令都已经非常清楚，因为自己整理了很多Docker基本命令，已经需要注意都刻意标注：
+谈谈学习Docker心得体会：
+14年就开始接触，后面docker只是知道是容器类似vm虚拟机一样，就是在虚拟机里面跑单独隔离的服务，这是那时候的单面了解，后面学KVM用的感觉还不错，后面VM就慢慢的不再使用，因为针对KVM也深入去学习了。开......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-07-14
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/07/13/容器-虚拟化/Docker/Docker学习(六)：部署nginx/">
+        <h2 class="post-title">
+            Docker学习(六)：部署nginx
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+              我14年就开始接触了docker，因为那时候因为docker还不是很成熟，在测试环境上面使用也没有大大推出，经过这一两年docker容器也很受我们运维人员喜爱特别好的利器。
+ 现在普遍都会在测试环境使用甚至在生产环境也用docker使用集群，之前搞过CDN云加速，环境部署也有在centos7.1最新系统环境部署。因为docker容器要求也比较高。
+ 可以在我前面docker简介和dock......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-07-13
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/07/13/容器-虚拟化/Docker/Docker学习(四)：网络功能Docker独立IP及容器互联/">
+        <h2 class="post-title">
+            Docker学习(四)：网络功能Docker独立IP及容器互联
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Docker 独立IP及容器互联内置bridge (nat)
+缺点：
+
+
+需要配置服务注册/发现，否则宿主机端口分配困难，容易冲突。
+由于每个容器暴露的端口都不一致，造成前端路由层nginx配置（proxy_pass）里面无法使用dns方式。
+端口映射要在容器启动时指定好，后期无法变更。
+测试发现nat不支持websocket.
+
+自建桥接网络
+优点：
+
+
+每个容器都有自己的独立IP，对外提......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-07-13
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/07/13/容器-虚拟化/Docker/Docker学习(五)：容器内多进程管理/">
+        <h2 class="post-title">
+            Docker学习(五)：容器内多进程管理
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            目录1、Supervisor介绍及原理2、Supervisor配置与实例3、参考文档
+从Docker的设计初衷来看，它并不推崇在一个容器中运行多个进程，但在一些实际的场景，比如小规模应用、老业务容器化等，都可能需要在一个容器中，同时运行多个程序。
+在非容器的环境下，同时运行多个进程是非常简单的，系统初始化的时候，都会启动一个init进程，其余的进程都由它来管理。但在容器环境下就不一样了，因为......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-07-13
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/07/12/容器-虚拟化/Docker/Docker学习(三)：容器应用/">
+        <h2 class="post-title">
+            Docker学习(三)：容器应用
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            启动容器启动容器有两种方式，一种是基于镜像新建一个容器并启动，另外一个是将在终止状态（stopped）的容器重新启动。
+因为 Docker 的容器实在太轻量级了，很多时候用户都是随时删除和新创建容器。
+docker 客户端非常简单 。Docker 的每一项操作都是通过命令行来实现的，而每一条命令行都可以使用一系列的标识（flags）和参数。
+123# Usage:  [sudo] docke......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-07-12
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/07/12/容器-虚拟化/Docker/Docker学习(二)：安装篇/">
+        <h2 class="post-title">
+            Docker学习(二)：安装篇
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            CentOS 系列安装Docker以下版本的CentOS 支持 Docker ：
+CentOS 7 (64-bit)CentOS 6.5 (64-bit) or later该指南可能会适用于其它的 EL6/EL7 的 Linux 发行版，譬如 Scientific Linux 。但是我们没有做过任何测试。
+请注意，由于 Docker 的局限性，Docker 只能运行在64位的系统中。
+这些操......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-07-12
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/07/12/容器-虚拟化/Docker/Docker学习(一)：简介/">
+        <h2 class="post-title">
+            Docker学习(一)：简介
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            ##Docker入门简介的个人理解：
+在大型的互联网已大部分在使用docker容器，主要是因为对单个应用的确提供了非常方便。迁移环境扩容部署只需要几分钟就可以做到上百台上千台。
+
+理解分几点：
+
+1234567891011121314151.Docker虚拟化对比：跟传统的虚拟化对比 XEN或KVM区别。因为XEN和KVM这些传统方式则是在硬件的基础上，虚拟出自己的系统，在系统上班部署相关的......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-07-12
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/2016/06/29/运维安全/生产环境-Linux系统安全设置/">
         <h2 class="post-title">
             生产环境-Linux系统安全统一配置
@@ -206,211 +405,25 @@
 
 <div class="post-preview">
 
-    <a href="/2016/06/22/性能监控/Zabbix/zabbix3-0实现微信报警/">
+    <a href="/2016/06/29/运维安全/安全的SSH与CentOS的7谷歌身份验证双因素身份验证/">
         <h2 class="post-title">
-            zabbix3.0实现微信报警
+            安全的SSH与CentOS的7谷歌身份验证双因素身份验证
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            前言：  因为我已经在测试环境和·生产环境·都实现了微信和邮件告警。今天有空就写了篇文档后期可以在复习下，现实生产环境中，我们通常使用邮件和短信接受zabbix报警信息，但是邮件经常被工作人员搁置在角落中甚至被设置为垃圾邮件被过滤掉。公司的短信接口又太贵，复杂环境中使用短息报警会使运维成本增加很多。微信提供了很好的第三方接口，我们可以利用微信报警以求降低运维成本。
-   这里我现在公司也用第......
+            安装谷歌身份验证
+什么是谷歌身份验证官方github详细介绍
+
+概述谷歌身份验证项目包括一次性密码生成器为多个移动平台上的实现，以及一个可插拔的身份验证模块（PAM）整个的一次性密码是基于服务器和设备与谷歌，验证程序的时间安装在同步之中。在设备和服务器然后会知道什么一次性代码是正确的，在30秒内，然后它会改变。
+
+SSH访问始终是关键，你可能要想方设法提高你的SSH访问的安全性。在这篇文章中......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-06-22
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/06/21/性能监控/Zabbix/zabbix3-0部署jmx监控tomcat/">
-        <h2 class="post-title">
-            zabbix3.0部署jmx监控tomcat
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            zabbix提供了一个java gateway的应用去监控jmx（Java Management Extensions，即Java管理扩展）是一个为应用程序、设备、系统等植入管理功能的框架。JMX可以跨越一系列异构操作系统平台、系统体系结构和网络传输协议，灵活的开发无缝集成的系统、网络和服务管理应用。
-一. Zabbix 的JMX监控架构
-一：部署环境123Centos   6.7Zabbi......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-06-21
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/06/21/性能监控/Zabbix/zabbix3.0 poller processes more than 75% busy警报问题解决/">
-        <h2 class="post-title">
-            Zabbix3.0 poller processes more than 75% busy警报问题解决
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            虽然Zabbix的监控警报各种有，但chengyang使用碰到最多的几个莫过于内存耗尽，网络不通，IO太慢还有这个“Zabbix poller processes more than 75% busy”了。一开始的时候因为这个即不影响使用也持续一会儿就自行解决就没有多在意。然后随着数据库的增大，Zabbix消耗的内存可是越来越多，Poller processes（轮询）开始天天Busy了，最......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-06-21
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/06/21/Web服务技术/tomcat/记一次线上tomcat内存不足配置并发优化过程/">
-        <h2 class="post-title">
-            记一次线上tomcat内存不足配置并发优化过程
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            前言：tomcat的内存使用配置,最大连接数配置。如何修改配置呢，在/tomcat的/bin/下面有个这个脚本文件。catailna.sh 脚本文件。 如果windows 是bat设置tomcat的使用内存，也其实就是设置jim的使用参数。
-设置Tomcat启动的初始内存其初始空间(即-Xms)是物理内存的1/64，最大空间(-Xmx)是物理内存的1/4。可以利用JVM提供的-Xmn -Xm......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-06-21
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/06/21/性能监控/Zabbix/zabbix监控tcp连接数/">
-        <h2 class="post-title">
-            zabbix监控tcp连接数
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            系统环境:
-CentOS release 6.7 (Final)
-zabbix.3.0.3
-zabbix-server端：首先创建脚本 Shell
-12mkdir /usr/local/zabbix/scripts[root@zabbix scripts]# vim /usr/local/zabbix/scripts/tcp_connections.sh
-script：
-1234567891......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-06-21
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/06/19/性能监控/Zabbix/zabbix-server3-0-3版本环境安装部署/">
-        <h2 class="post-title">
-            zabbix-server3.0.3版本环境安装部署
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            系统环境：
-192.168.1.170 MySQL主 
-192.168.1.183 zabbix-server
-
-CentOS Linux release 7.2.1511 (Core)
-
-zabbix源码下载 : http://www.zabbix.com/download.php
-依赖下载： https://github.com/zabbixcn/curl-rpm/tree/master......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-06-19
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/06/18/性能监控/Zabbix/zabbix-server2-4全新升级3-0版本/">
-        <h2 class="post-title">
-            zabbix-server2.4全新升级3.0版本
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            zabbix3.0出来了一段时间了，最近忍不住把公司原来的2.4.7版本升级到了3.0。zabbix升级其实很简单，基本步骤为：备份-&gt;重新安装新版本。接下来简单写下这次升级的操作和问题
-1、 关闭zabbix server防止有新的数据提交到数据库中、直接关闭数据库效果也是一样的。这里我先关闭掉我的服务：
-12/etc/init.d/zabbix_server stop  关闭了se......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-06-18
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/06/17/性能监控/Zabbix/zabbix-Grafana安装使用结合/">
-        <h2 class="post-title">
-            zabbix+Grafana安装使用监控结合
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            前言做运维的很重要的基础工作就是监控去准确定位问题，之前用的是Nagios做过监控，也用过cacti，这个之前在IDC做CDN网络方面用的比较多，监控流量好帮手。
-为什么选择zabbix其实现在是算开源监控比较火的。更重要是几款监控做了对比。
-cacti、zabbix同nagios一样，都是非常优势的开源监控软件。 
-
-Nagios: 轻量级/方便/快捷是nagios最大的优势，特别是它的插......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-06-17
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/06/10/自动化+可视化/Ansible/ansible 安装出现 ImportError: No module named _text/">
-        <h2 class="post-title">
-            Ansible安装出现 ImportError/ No module named _text
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            centos6.7 ansible yum安装出现问题：12345ansible --versionTraceback (most recent call last):  File "/usr/bin/ansible", line 46, in &lt;module&gt;    from ansible.module_utils._text import to_textImportErro......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-06-10
+        2016-06-29
     </p>
 
 </div>
@@ -459,23 +472,13 @@ Nagios: 轻量级/方便/快捷是nagios最大的优势，特别是它的插....
                             
                         
                             
-                        
-                            
-                            <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
                             <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="6">Java+Tomcat notes</a>
                             
                         
                             
                             <a href="/tags/#Dubbo" title="Dubbo" rel="2">Dubbo</a>
+                            
+                        
                             
                         
                             
@@ -489,11 +492,15 @@ Nagios: 轻量级/方便/快捷是nagios最大的优势，特别是它的插....
                             
                         
                             
-                        
-                            
-                        
-                            
                             <a href="/tags/#Linux note" title="Linux note" rel="13">Linux note</a>
+                            
+                        
+                            
+                            <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
+                            
+                        
+                            
+                        
                             
                         
                             
@@ -503,13 +510,23 @@ Nagios: 轻量级/方便/快捷是nagios最大的优势，特别是它的插....
                             
                         
                             
-                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="4">Big data Hadoop</a>
+                        
                             
                         
                             
                             <a href="/tags/#Personal life record" title="Personal life record" rel="7">Personal life record</a>
                             
                         
+                            
+                        
+                            
+                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="4">Big data Hadoop</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Kafka" title="Kafka" rel="2">Kafka</a>
                             
                         
                             
@@ -521,19 +538,23 @@ Nagios: 轻量级/方便/快捷是nagios最大的优势，特别是它的插....
                             
                         
                             
-                        
-                            
-                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
-                            
-                        
-                            
                             <a href="/tags/#Operation safety" title="Operation safety" rel="7">Operation safety</a>
                             
                         
                             
                         
                             
+                        
+                            
+                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
+                            
+                        
+                            
                             <a href="/tags/#Blog" title="Blog" rel="6">Blog</a>
+                            
+                        
+                            
+                        
                             
                         
                             
@@ -545,17 +566,9 @@ Nagios: 轻量级/方便/快捷是nagios最大的优势，特别是它的插....
                             
                         
                             
-                        
+                            <a href="/tags/#KVM" title="KVM" rel="7">KVM</a>
                             
                         
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
                             
                         
                             
@@ -567,7 +580,11 @@ Nagios: 轻量级/方便/快捷是nagios最大的优势，特别是它的插....
                             
                         
                             
-                            <a href="/tags/#KVM" title="KVM" rel="7">KVM</a>
+                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
+                            
+                        
+                            
+                        
                             
                         
                             

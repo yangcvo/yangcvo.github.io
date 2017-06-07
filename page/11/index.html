@@ -184,22 +184,20 @@
 
 <div class="post-preview">
 
-    <a href="/2016/01/30/日志分析平台/Elasticsearch/elasticsearch的索引定时自动清理/">
+    <a href="/2016/03/09/自动化+可视化/Ansible/Ansible小结（四）Ad-hoc与commands模块 /">
         <h2 class="post-title">
-            elasticsearch的索引定时自动清理
+            Ansible小结（四）Ad-hoc与commands模块
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            elasticsearch的索引定时自动清理之前用 logstash来做日志收集 并用 elasticsearch来搜索，因为日志没有进行过滤，没几天就发现elasticsearch的索引文件大的吓人，之前还真没清理过。其实要说清理也简单，直接到 elasticsearch data文件夹里删掉就行了，写个脚本定期清理集群es的日志数据。
-这里我清理1月7号的。
-这里后面是索引名称。app_......
+            ansible小结（四）Ad-hoc与commands模块Ad-Hoc 是指ansible下临时执行的一条命令，并且不需要保存的命令，对于复杂的命令后面会说playbook。讲到Ad-hoc 就要提到模块，所有的命令执行都要依赖于事先写好的模块，默认安装好的ansible 里面已经自带了很多模块，如：command、raw、shell、file、cron等，具体可以通过ansible-doc......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-01-30
+        2016-03-09
     </p>
 
 </div>
@@ -207,20 +205,23 @@
 
 <div class="post-preview">
 
-    <a href="/2016/01/29/日志分析平台/Elasticsearch/logstash如何收集tomcat日志分析/">
+    <a href="/2016/03/09/自动化+可视化/Ansible/ansible小结(五)常用模块/">
         <h2 class="post-title">
-            logstash如何写tomcat,redis,nginx日志收集规则
+            Ansible小结 (五) 常用模块
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            logstash如何收集tomcat日志分析（可以参考我下面写的模板）1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162我想实现对tomcat的日志采集，正常应该创建一个file的input，这个input指定了监......
+            ansible命令总结使用：在上一篇中介绍了commands部分模块，本篇承接上篇介绍下常用的模块。根据官方的分类，将模块按功能分类为：
+1云模块、命令模块、数据库模块、文件模块、资产模块、消息模块、监控模块、网络模块、通知模块、包管理模块、源码控制模块、系统模块、单元模块、web设施模块、windows模块
+具体可以参看官方页面
+这里从官方分类的模块里选择最常用的一些模块进行介绍（comm......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-01-29
+        2016-03-09
     </p>
 
 </div>
@@ -228,27 +229,24 @@
 
 <div class="post-preview">
 
-    <a href="/2016/01/28/DNS/DNS服务器主从复制搭建/">
+    <a href="/2016/03/07/自动化+可视化/Ansible/Ansible 小结（一）ansible的安装 /">
         <h2 class="post-title">
-            DNS服务器主从复制搭建
+            Ansible 小结（一）ansible的安装
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            DNS 服务器主从复制搭建最近部署测试环境和灰度发布环境，之前已经整改过一次，因为需要扩容添加，所以这次操作就把实现的过程记录下来了。 
-实现环境：centos 6.7 x86_64
+            上一篇文章记录了解ansible,这篇大概记录下常规使用命令。
+这里以CentOS Linux release 7.2.1511 (Core)系统为准。
 
-主DNS服务器：192.168.1.173
-从DNS服务器：192.168.1.174
-
-实验步骤1、关闭网络防火墙及SElinux（主从DNS服务器上都要有此操作）
-123[root@LAN_redis2 ......
+一、Ansible的安装Centos安装1、yum源安装
+以centos为例，默认在源里没有ansible，不过在fedora epel源里有ansible，配置完epel 源后，可以直接通过yum 进行安装。这里以centos6.8为例......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-01-28
+        2016-03-07
     </p>
 
 </div>
@@ -256,21 +254,23 @@
 
 <div class="post-preview">
 
-    <a href="/2016/01/21/日志分析平台/Elasticsearch/ELK-Elasticsearch-Logstash-Kibana-搭建日志集中分析平台实践/">
+    <a href="/2016/03/07/自动化+可视化/Ansible/Ansible小结（三）ansible.cfg与默认配置 /">
         <h2 class="post-title">
-            ELK(Elasticsearch + Logstash + Kibana)搭建日志集中分析平台实践
+            Ansible小结（三）ansible.cfg与默认配置
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            关注可参考：本文将安装Elasticsearch-1.7.2, Logstash-1.5.5, Kibana-4.1.5。 请注意版本要求，有些组件需要响应的版本要求。logstash是负责搜集和转发日志的，es用于存储和检索，kibana提供web端的展现…他们是独立运行的，也可以部署在同一台机器，也可以不同的机器。
-可以关注我的Github上面有详细文档：https://github.c......
+            #Ansible小结（四）ansible.cfg与默认配置
+Ansible默认安装好后有一个配置文件/etc/ansible/ansible.cfg，该配置文件中定义了ansible的主机的默认配置部分，如默认是否需要输入密码、是否开启sudo认证、action_plugins插件的位置、hosts主机组的位置、是否开启log功能、默认端口、key文件位置等等。
+具体如下：
+12345678......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-01-21
+        2016-03-07
     </p>
 
 </div>
@@ -278,22 +278,23 @@
 
 <div class="post-preview">
 
-    <a href="/2015/12/29/DNS/DNS安全章－DNS污染 /">
+    <a href="/2016/03/07/自动化+可视化/Ansible/ansible小结（二）ansible架构 /">
         <h2 class="post-title">
-            DNS服务器主从复制搭建
+            Ansible小结（二）ansible架构
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            一 、什么是DNS污染 就是客户端发起正常的一次DNS请求，得到的确是一个异常或者不真实的DNS信息。一般造成这样的情况，很有可能DNS信息在某个环节被通过某种方式篡改。   
-二、有什么手段可以造成DNS污染 主要的方式，可以归纳为如下两种： 
-方式一、攻击者监测到DNS查询的请求报文时，伪装成DNS服务器向发出请求主机发送响应报文。因为DNS报文通常是无连接的UDP报文，没有确认机制，源......
+            Ansible 是一个模型驱动的配置管理器，支持多节点发布、远程任务执行。默认使用 SSH 进行远程连接。无需在被管理节点上安装附加软件，可使用各种编程语言进行扩展。
+
+上图为ansible的基本架构，从上图可以了解到其由以下部分组成：
+1234567核心：ansible核心模块（Core Modules）：这些都是ansible自带的模块 扩展模块（Custom Modules）：如果核心......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-12-29
+        2016-03-07
     </p>
 
 </div>
@@ -301,22 +302,24 @@
 
 <div class="post-preview">
 
-    <a href="/2015/12/21/npm/npm翻墙加速国内镜像/">
+    <a href="/2016/03/07/自动化+可视化/Ansible/ Ansible 学习入门 /">
         <h2 class="post-title">
-            npm翻墙加速国内镜像
+            Ansible 学习入门
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            问题Node.js 的依赖包管理生态系统 npm, 是世界上最大的生态系统开源库。 但国内使用 npm 来安装软件，速度很慢，有时候甚至直接就失败了！比如我安装stf就需要翻墙或者VPN去安装，可是就一直卡着。
-原因npm 默认是从国外的源获取和下载包信息，不慢才怪，有时甚至被墙，导致无法正常安装软件。
-解决可以采用国内的 npm 镜像来解决网速慢的问题。这里以“淘宝 NPM 镜像”举例。淘......
+            Ansible介绍
+学习ansible这里我自己做了简单的介绍总结：
+Ansible是一个自动化工具。它可以配置系统,部署软件,编排更高级的任务,比如连续部署或零停机时间滚动更新。
+Ansible的目标是最简单和最易用。它也有一个强烈关注安全性和可靠性,以最少的移动部件,使用OpenSSH运输(加速插座模式和拉模式选择),和设计语言,人类可审核性的——甚至是那些不熟悉程序。
+我们认为简单是所......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-12-21
+        2016-03-07
     </p>
 
 </div>
@@ -324,21 +327,24 @@
 
 <div class="post-preview">
 
-    <a href="/2015/12/10/自动化+可视化/saltstack/服务自动化部署平台之Saltstack总结/">
+    <a href="/2016/02/28/DNS/DNS服务使用dig查询解析/">
         <h2 class="post-title">
-            自动化运维工具-服务自动化部署平台之Saltstack总结
+            DNS服务使用dig查询解析
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            服务自动化部署平台之Saltstack总结Saltstack是一个新的基础设施管理工具。目前处于快速发展阶段，可以看做是强化的Func+弱化的Puppet的组合。间接的反映出了saltstack的两大功能：远程执行和配置管理。
-SaltStack 保持了输入、输出、配置文件的一致性，所有文件均使用YAML格式。主要负责配置管理和远程执行（在远程主机运行预定义或任意的命令，也叫远程执行，这是 ......
+            ##使用dig查询DNS解析
+今天整理下前段时间搭建的DNS主从服务器，DNS主从复制虚拟域名设置等等，总结写了篇文档：DNS服务器主从复制搭建
+这里就顺便写了下dig使用查询DNS解析：
+一般来说linux下查询域名解析有两种选择，nslookup或者dig，而在使用上我觉得dig更加方便顺手。如果是在centos下的话，只要yum装上dig这个包就可以使用dig命令了。
+nslookup......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-12-10
+        2016-02-28
     </p>
 
 </div>
@@ -346,21 +352,32 @@ SaltStack 保持了输入、输出、配置文件的一致性，所有文件均�
 
 <div class="post-preview">
 
-    <a href="/2015/12/01/运维性能测试/Cento6-7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行/">
+    <a href="/2016/02/26/python/Python学习一路潇潇洒洒磕磕碰碰😁/">
         <h2 class="post-title">
-            Cento6.7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行
+            Python学习一路潇潇洒洒磕磕碰碰😁
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            APP测试神器：STF最近项目涉及到较多设备批量管理的需求，发现一工具可以批量对大量设备进行WEB端管理，工具主页：https://openstf.github.io/工具名STF（Smartphone Test Farm）
-STF (or Smartphone Test Farm) is a web application for debugging smartphones, smartw......
+            Python运维编程 （第一关）Topics
+
+Python介绍（不详讲）
+安装、环境准备 （不详细讲）
+
+
+学习 输入和输出 （raw_input）和（print）
+
+12&gt;&gt;&gt;name = raw_input('please enter your name: ')print 'hello,', name
+
+学习 Python基础 应该始终坚持使用4个空格的缩进.
+
+...
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-12-01
+        2016-02-26
     </p>
 
 </div>
@@ -368,20 +385,22 @@ STF (or Smartphone Test Farm) is a web application for debugging smartphones, sm
 
 <div class="post-preview">
 
-    <a href="/2015/11/25/Vsftpd/建立虚拟用户的vsftpd安装配置过程/">
+    <a href="/2016/02/25/Web服务技术/Nginx/Nginx限制IP访问权限或限制某个IP同一时间段的访问次数/">
         <h2 class="post-title">
-            建立虚拟用户的vsftpd安装配置过程
+            Nginx限制IP访问权限或限制某个IP同一时间段的访问次数
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            建立虚拟用户的vsftpd安装配置过程虚拟用户的特点是只能访问服务器为其提供的FTP服务，而不能访问系统的其它资源。所以，如果想让用户对FTP服务器站内具有写权限，但又不允许访问系统其它资源，可以使用虚拟用户来提高系统的安全性。在VSFTP中，认证这些虚拟用户使用的是单独的口令库文件（pam_userdb），由可插入认证模块（PAM）认证。使用这种方式更加安全，并且配置更加灵活。 下面介绍配......
+            nginx限制ip访问 nginx访问权限看下配置：
+这里我只允许我公司IP访问：
+12345678910111213141516  server &#123;        listen       80;        server_name  kibana.ihaozhuo.com;        location / &#123;             index        i......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-11-25
+        2016-02-25
     </p>
 
 </div>
@@ -389,22 +408,21 @@ STF (or Smartphone Test Farm) is a web application for debugging smartphones, sm
 
 <div class="post-preview">
 
-    <a href="/2015/11/21/Web服务技术/tomcat/搭建配置tomcat环境/">
+    <a href="/2016/02/14/个人生活记录/在一起的第588天💕/">
         <h2 class="post-title">
-            搭建配置tomcat环境
+            在一起的第588天💕
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            先安装jdk-java环境首先先检查linux机器上是否有自带的jdk,一般不建议用yum安装，环境变量不方便自定义。
-java -version检查下就可以，如果有版本低的话可以先卸载掉方法如下：
-1234[root@localhost java]# rpm -qa|grep gcj 或者 rpm -qa|grep javalibgcj-4.1.2-44.el5java-1.4.2-gcj......
+            今天2016年2月14日我们的第二个情人节： 夜已经很深了，我还坐在电脑前写信给你,慢慢把我们在一起点点滴滴记录下来,这些天总是有很多话想对你说,但对你的思念扰乱了我所有的思绪。我不知道该说些什么或怎么说？说心里话，和你的每一天我很快乐很幸福，是我一生中从未有过的！真的XXL。
+   在这个13亿茫茫人海当中，你已我相距1325公里因缘分而相识，因相趣而相知，你是一个文文静静，高高大大，很懂......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-11-21
+        2016-02-14
     </p>
 
 </div>
@@ -453,23 +471,13 @@ java -version检查下就可以，如果有版本低的话可以先卸载掉方�
                             
                         
                             
-                        
-                            
-                            <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
                             <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="6">Java+Tomcat notes</a>
                             
                         
                             
                             <a href="/tags/#Dubbo" title="Dubbo" rel="2">Dubbo</a>
+                            
+                        
                             
                         
                             
@@ -483,11 +491,15 @@ java -version检查下就可以，如果有版本低的话可以先卸载掉方�
                             
                         
                             
-                        
-                            
-                        
-                            
                             <a href="/tags/#Linux note" title="Linux note" rel="13">Linux note</a>
+                            
+                        
+                            
+                            <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
+                            
+                        
+                            
+                        
                             
                         
                             
@@ -497,13 +509,23 @@ java -version检查下就可以，如果有版本低的话可以先卸载掉方�
                             
                         
                             
-                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="4">Big data Hadoop</a>
+                        
                             
                         
                             
                             <a href="/tags/#Personal life record" title="Personal life record" rel="7">Personal life record</a>
                             
                         
+                            
+                        
+                            
+                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="4">Big data Hadoop</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Kafka" title="Kafka" rel="2">Kafka</a>
                             
                         
                             
@@ -515,19 +537,23 @@ java -version检查下就可以，如果有版本低的话可以先卸载掉方�
                             
                         
                             
-                        
-                            
-                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
-                            
-                        
-                            
                             <a href="/tags/#Operation safety" title="Operation safety" rel="7">Operation safety</a>
                             
                         
                             
                         
                             
+                        
+                            
+                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
+                            
+                        
+                            
                             <a href="/tags/#Blog" title="Blog" rel="6">Blog</a>
+                            
+                        
+                            
+                        
                             
                         
                             
@@ -539,17 +565,9 @@ java -version检查下就可以，如果有版本低的话可以先卸载掉方�
                             
                         
                             
-                        
+                            <a href="/tags/#KVM" title="KVM" rel="7">KVM</a>
                             
                         
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
                             
                         
                             
@@ -561,7 +579,11 @@ java -version检查下就可以，如果有版本低的话可以先卸载掉方�
                             
                         
                             
-                            <a href="/tags/#KVM" title="KVM" rel="7">KVM</a>
+                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
+                            
+                        
+                            
+                        
                             
                         
                             

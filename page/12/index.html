@@ -184,22 +184,22 @@
 
 <div class="post-preview">
 
-    <a href="/2015/11/20/自动化+可视化/saltstack/自动化运维工具--saltstack远程启动tomcat日志乱码 /">
+    <a href="/2016/01/30/日志分析平台/Elasticsearch/elasticsearch的索引定时自动清理/">
         <h2 class="post-title">
-            自动化运维工具--saltstack远程启动tomcat日志乱码
+            elasticsearch的索引定时自动清理
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            自动化运维工具–saltstack远程启动tomcat日志乱码最近在线上发布tomcat，想做到自动部署，可是出现了问题，就是日志输出会有乱码，用户名的getMyUserInfo 是一堆乱码，salt原理系统字符集没太深入的研究，后来在墙外看到一篇文章很实用，就做了下自己的总结。
-开始我是salt执行远程脚本。
-1salt 'tomcat_A1' cmd.run '/etc/init.d/t......
+            elasticsearch的索引定时自动清理之前用 logstash来做日志收集 并用 elasticsearch来搜索，因为日志没有进行过滤，没几天就发现elasticsearch的索引文件大的吓人，之前还真没清理过。其实要说清理也简单，直接到 elasticsearch data文件夹里删掉就行了，写个脚本定期清理集群es的日志数据。
+这里我清理1月7号的。
+这里后面是索引名称。app_......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-11-20
+        2016-01-30
     </p>
 
 </div>
@@ -207,23 +207,20 @@
 
 <div class="post-preview">
 
-    <a href="/2015/11/20/数据库/Redis/Redis与mamcache区别redis常用命令积累/">
+    <a href="/2016/01/29/日志分析平台/Elasticsearch/logstash如何收集tomcat日志分析/">
         <h2 class="post-title">
-            Redis与mamcache区别redis常用命令积累
+            logstash如何写tomcat,redis,nginx日志收集规则
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            redis与mamcache区别&amp;redis常用命令积累之前一直有在用mamcache集群，现在出来了redis用的多的还是现在的redis主从，集群等。
-##redis与mamcache区别
-也仔细了做了这两种存储数据库也叫内存数据库它们的区别：
-123456781、 Redis和Memcache都是将数据存放在内存中，都是内存数据库。不过memcache还可用于缓存其他东西，例如......
+            logstash如何收集tomcat日志分析（可以参考我下面写的模板）1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162我想实现对tomcat的日志采集，正常应该创建一个file的input，这个input指定了监......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-11-20
+        2016-01-29
     </p>
 
 </div>
@@ -231,24 +228,27 @@
 
 <div class="post-preview">
 
-    <a href="/2015/11/20/数据库/Redis/Redis安装报错-报错搜集/">
+    <a href="/2016/01/28/DNS/DNS服务器主从复制搭建/">
         <h2 class="post-title">
-            Redis安装报错总结-文件解释
+            DNS服务器主从复制搭建
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            ###安装的时候最新安装包，3.0.7
-异常一：
-报错：error: jemalloc/jemalloc.h: No such file or directory
+            DNS 服务器主从复制搭建最近部署测试环境和灰度发布环境，之前已经整改过一次，因为需要扩容添加，所以这次操作就把实现的过程记录下来了。 
+实现环境：centos 6.7 x86_64
 
-12345zmalloc.h:50:31: error: jemalloc/jemalloc.h: No such file or directoryzmalloc.h:55:2: error: #error "Newer ve......
+主DNS服务器：192.168.1.173
+从DNS服务器：192.168.1.174
+
+实验步骤1、关闭网络防火墙及SElinux（主从DNS服务器上都要有此操作）
+123[root@LAN_redis2 ......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-11-20
+        2016-01-28
     </p>
 
 </div>
@@ -256,21 +256,21 @@
 
 <div class="post-preview">
 
-    <a href="/2015/11/19/数据库/Redis/Redis-Sentinel哨兵服务实现redis主从集群搭建及容灾部署/">
+    <a href="/2016/01/21/日志分析平台/Elasticsearch/ELK-Elasticsearch-Logstash-Kibana-搭建日志集中分析平台实践/">
         <h2 class="post-title">
-            Redis主从集群搭建及容灾部署
+            ELK(Elasticsearch + Logstash + Kibana)搭建日志集中分析平台实践
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Redis-主从复制原理及分析Slave向Master同步的实现是：Slave向Master发出同步请求（发送sync命令），Master先dump出rdb文件，然后将rdb文件全量传输给slave，然后Master把缓存的写命令转发给Slave，初次同步完成。
-以及以后的同步实现是：123Master将变量的快照直接实时依次发送给各个Slave。但不管什么原因导致Slave和Master断......
+            关注可参考：本文将安装Elasticsearch-1.7.2, Logstash-1.5.5, Kibana-4.1.5。 请注意版本要求，有些组件需要响应的版本要求。logstash是负责搜集和转发日志的，es用于存储和检索，kibana提供web端的展现…他们是独立运行的，也可以部署在同一台机器，也可以不同的机器。
+可以关注我的Github上面有详细文档：https://github.c......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-11-19
+        2016-01-21
     </p>
 
 </div>
@@ -278,21 +278,22 @@
 
 <div class="post-preview">
 
-    <a href="/2015/11/01/自动化+可视化/saltstack/自动化运维工具--SaltStack-分组（使用记录,groups） /">
+    <a href="/2015/12/29/DNS/DNS安全章－DNS污染 /">
         <h2 class="post-title">
-            自动化运维工具--SaltStack-分组（使用记录,groups）
+            DNS服务器主从复制搭建
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            自动化运维工具–SaltStack-分组（使用记录,groups）在使用 SaltStack 对主机进行批量管理的时候，因为不同的服务器组所做的业务功能不同，因此为了更加方便的管理，为了便于管理功能业务相似的minion,Saltstack提供了分组的模式，因为线上机器多，不可能每次都是“*”或者“ip主机名” 这样不现实的。
-所以我们现在都是提供分组，哪里的机器分哪个组这样你操作起来就方便......
+            一 、什么是DNS污染 就是客户端发起正常的一次DNS请求，得到的确是一个异常或者不真实的DNS信息。一般造成这样的情况，很有可能DNS信息在某个环节被通过某种方式篡改。   
+二、有什么手段可以造成DNS污染 主要的方式，可以归纳为如下两种： 
+方式一、攻击者监测到DNS查询的请求报文时，伪装成DNS服务器向发出请求主机发送响应报文。因为DNS报文通常是无连接的UDP报文，没有确认机制，源......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-11-01
+        2015-12-29
     </p>
 
 </div>
@@ -300,20 +301,22 @@
 
 <div class="post-preview">
 
-    <a href="/2015/11/01/自动化+可视化/saltstack/自动化运维工具--Saltstack写sls语法批量部署zabbix_agent/">
+    <a href="/2015/12/21/npm/npm翻墙加速国内镜像/">
         <h2 class="post-title">
-            自动化运维工具--Saltstack写sls语法批量部署zabbix_agent
+            npm翻墙加速国内镜像
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Saltstack批量部署zabbix_agent服务12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576epel_install:  file.managed......
+            问题Node.js 的依赖包管理生态系统 npm, 是世界上最大的生态系统开源库。 但国内使用 npm 来安装软件，速度很慢，有时候甚至直接就失败了！比如我安装stf就需要翻墙或者VPN去安装，可是就一直卡着。
+原因npm 默认是从国外的源获取和下载包信息，不慢才怪，有时甚至被墙，导致无法正常安装软件。
+解决可以采用国内的 npm 镜像来解决网速慢的问题。这里以“淘宝 NPM 镜像”举例。淘......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-11-01
+        2015-12-21
     </p>
 
 </div>
@@ -321,26 +324,21 @@
 
 <div class="post-preview">
 
-    <a href="/2015/10/21/LVM/LVM快速配置/">
+    <a href="/2015/12/10/自动化+可视化/saltstack/服务自动化部署平台之Saltstack总结/">
         <h2 class="post-title">
-            LVM快速配置
+            自动化运维工具-服务自动化部署平台之Saltstack总结
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            
-fdisk -l ，列出所有存储设备，假设存在/dev/sdb和/dev/sda1两个存储设备，并且hdb有6个分区，其中sdb5、sdb6两个分区未使用，sda1为U盘
-
-fdisk /dev/sdb，输入p查看hdb的分区情况及相应文件系统，输入t来更改文件系统，输入w保存退出，取消则输入q，具体例子如下：
-
-
-12345678fdisk /dev/sdb Command (m for......
+            服务自动化部署平台之Saltstack总结Saltstack是一个新的基础设施管理工具。目前处于快速发展阶段，可以看做是强化的Func+弱化的Puppet的组合。间接的反映出了saltstack的两大功能：远程执行和配置管理。
+SaltStack 保持了输入、输出、配置文件的一致性，所有文件均使用YAML格式。主要负责配置管理和远程执行（在远程主机运行预定义或任意的命令，也叫远程执行，这是 ......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-10-21
+        2015-12-10
     </p>
 
 </div>
@@ -348,22 +346,21 @@ fdisk /dev/sdb，输入p查看hdb的分区情况及相应文件系统，输入t�
 
 <div class="post-preview">
 
-    <a href="/2015/10/10/自动化+可视化/saltstack/自动化运维工具--Saltstack安装部署配置使用/">
+    <a href="/2015/12/01/运维性能测试/Cento6-7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行/">
         <h2 class="post-title">
-            自动化运维工具--Saltstack安装部署配置使用
+            Cento6.7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            自动化运维工具–Saltstack安装部署配置使用前言：
-开始学saltstack的时候是在现在一家做CDN云加速的那是在2014年，salt刚刚出来所以我觉得我接触应该也算早的。 使用最多的同步下发的用到这个工具，下面我简单介绍和操作给大家看下。Salt 和 Puppet Chef 一样可以让你同时在多台服务器上执行命令也包括安装和配置软件。
-Salt 有两个主要的功能：配置管理和远程执行......
+            APP测试神器：STF最近项目涉及到较多设备批量管理的需求，发现一工具可以批量对大量设备进行WEB端管理，工具主页：https://openstf.github.io/工具名STF（Smartphone Test Farm）
+STF (or Smartphone Test Farm) is a web application for debugging smartphones, smartw......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-10-10
+        2015-12-01
     </p>
 
 </div>
@@ -371,21 +368,20 @@ Salt 有两个主要的功能：配置管理和远程执行......
 
 <div class="post-preview">
 
-    <a href="/2015/09/29/容器-虚拟化/kvm/KVM虚拟机如何进行克隆操作/">
+    <a href="/2015/11/25/Vsftpd/建立虚拟用户的vsftpd安装配置过程/">
         <h2 class="post-title">
-            KVM虚拟机如何进行克隆操作
+            建立虚拟用户的vsftpd安装配置过程
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            KVM虚拟机如何进行克隆操作我们知道，重复的事情做多了就需要上脚本或采用工具以便节省操作时间，提升工作效率，减低繁琐操作。本人也是懒人一个，相同的事情做多了，就想法子弄成脚本或采用工具去搞。KVM虚拟机的创建同样如此，我们不可能每次创建都要手工执行一次，于是就有了KVM克隆出现。克隆操作有两种方式：
-(1) KVM本机虚拟机直接克隆。(2) 通过复制配置文件与磁盘文件的虚拟机复制克隆(适用于......
+            建立虚拟用户的vsftpd安装配置过程虚拟用户的特点是只能访问服务器为其提供的FTP服务，而不能访问系统的其它资源。所以，如果想让用户对FTP服务器站内具有写权限，但又不允许访问系统其它资源，可以使用虚拟用户来提高系统的安全性。在VSFTP中，认证这些虚拟用户使用的是单独的口令库文件（pam_userdb），由可插入认证模块（PAM）认证。使用这种方式更加安全，并且配置更加灵活。 下面介绍配......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-09-29
+        2015-11-25
     </p>
 
 </div>
@@ -393,31 +389,22 @@ Salt 有两个主要的功能：配置管理和远程执行......
 
 <div class="post-preview">
 
-    <a href="/2015/09/22/数据库/Mongodb/Red Hat企业版或CentOS的Linux上安装MongoDB/">
+    <a href="/2015/11/21/Web服务技术/tomcat/搭建配置tomcat环境/">
         <h2 class="post-title">
-            RedHat企业版或CentOS的Linux上yum方式安装MongoDB
+            搭建配置tomcat环境
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            ##RedHat企业版或CentOS的Linux上yum方式安装MongoDB
-
-概述
-
-
-官网翻译：
-
-使用本教程对使用Red Hat Enterprise Linux或CentOS的Linux版本5，6，7安装MongoDB中的.rpm软件包。虽然这些发行版包括自己的MongoDB包，官方MongoDB的包装一般都比较最新的。
-
-平台支持
-
-本安装指南只支持64位系统。请参阅平台支持的详......
+            先安装jdk-java环境首先先检查linux机器上是否有自带的jdk,一般不建议用yum安装，环境变量不方便自定义。
+java -version检查下就可以，如果有版本低的话可以先卸载掉方法如下：
+1234[root@localhost java]# rpm -qa|grep gcj 或者 rpm -qa|grep javalibgcj-4.1.2-44.el5java-1.4.2-gcj......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-09-22
+        2015-11-21
     </p>
 
 </div>
@@ -466,23 +453,13 @@ Salt 有两个主要的功能：配置管理和远程执行......
                             
                         
                             
-                        
-                            
-                            <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
                             <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="6">Java+Tomcat notes</a>
                             
                         
                             
                             <a href="/tags/#Dubbo" title="Dubbo" rel="2">Dubbo</a>
+                            
+                        
                             
                         
                             
@@ -496,11 +473,15 @@ Salt 有两个主要的功能：配置管理和远程执行......
                             
                         
                             
-                        
-                            
-                        
-                            
                             <a href="/tags/#Linux note" title="Linux note" rel="13">Linux note</a>
+                            
+                        
+                            
+                            <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
+                            
+                        
+                            
+                        
                             
                         
                             
@@ -510,13 +491,23 @@ Salt 有两个主要的功能：配置管理和远程执行......
                             
                         
                             
-                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="4">Big data Hadoop</a>
+                        
                             
                         
                             
                             <a href="/tags/#Personal life record" title="Personal life record" rel="7">Personal life record</a>
                             
                         
+                            
+                        
+                            
+                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="4">Big data Hadoop</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Kafka" title="Kafka" rel="2">Kafka</a>
                             
                         
                             
@@ -528,19 +519,23 @@ Salt 有两个主要的功能：配置管理和远程执行......
                             
                         
                             
-                        
-                            
-                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
-                            
-                        
-                            
                             <a href="/tags/#Operation safety" title="Operation safety" rel="7">Operation safety</a>
                             
                         
                             
                         
                             
+                        
+                            
+                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
+                            
+                        
+                            
                             <a href="/tags/#Blog" title="Blog" rel="6">Blog</a>
+                            
+                        
+                            
+                        
                             
                         
                             
@@ -552,17 +547,9 @@ Salt 有两个主要的功能：配置管理和远程执行......
                             
                         
                             
-                        
+                            <a href="/tags/#KVM" title="KVM" rel="7">KVM</a>
                             
                         
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
                             
                         
                             
@@ -574,7 +561,11 @@ Salt 有两个主要的功能：配置管理和远程执行......
                             
                         
                             
-                            <a href="/tags/#KVM" title="KVM" rel="7">KVM</a>
+                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
+                            
+                        
+                            
+                        
                             
                         
                             
