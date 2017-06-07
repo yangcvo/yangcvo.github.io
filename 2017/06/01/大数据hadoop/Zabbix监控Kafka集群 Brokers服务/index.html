@@ -13,11 +13,11 @@
 
     <title>
         
-          Zabbix 告警收敛 - Yancy的博客 | Yancy&#39;s Blog
+          Zabbix监控Kafka集群 Brokers服务 - Yancy的博客 | Yancy&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://blog.yancy.cc/2017/05/21/性能监控/Zabbix/Zabbix 告警收敛/">
+    <link rel="canonical" href="http://blog.yancy.cc/2017/06/01/大数据hadoop/Zabbix监控Kafka集群 Brokers服务/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -165,16 +165,14 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#Performance monitoring" title="Performance monitoring">Performance monitoring</a>
-                        
-                          <a class="tag" href="/tags/#zabbix" title="zabbix">zabbix</a>
+                          <a class="tag" href="/tags/#Kafka" title="Kafka">Kafka</a>
                         
                     </div>
-                    <h1>Zabbix 告警收敛</h1>
+                    <h1>Zabbix监控Kafka集群 Brokers服务</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by Yancy on
-                        2017-05-21
+                        2017-06-01
                     </span>
                 </div>
             </div>
@@ -193,51 +191,50 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h3 id="Zabbix-告警收敛"><a href="#Zabbix-告警收敛" class="headerlink" title="Zabbix 告警收敛"></a>Zabbix 告警收敛</h3><blockquote>
-<p>在多个运维技术分享中都会谈及到“告警风暴”这个词，即在大规模网络发生异常的时候，报警量激增，运维伙伴手机在1个多小时中不断的接受报警通知，这样有可能会造成“狼来了”等一系列的问题，不但对运维人员造成了困扰，给排查问题带了不小的难度。某族同样也困扰过，但在建设了告警平台，对告警进行合并等操作，由原来的月报警8000+ 降低至800条。</p>
-</blockquote>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix_001.png" alt=""></p>
-<blockquote>
-<p>听了若干的技术“吹bi”大会，都在说用了某某的东西后就多么多么的厉害，耳朵都快听出茧子了。真正的把干货分享出来的很少，只能犄角旮旯里面抠出来自己需要的东西，然后回来自己琢磨。说的也是人家也不会把核心做法告诉你，不过也算是给了个方向。闲话不多说，自己琢磨出来的收敛的方法，不管low不low总算把问题解决了，也算是成长路上的突破。</p>
-</blockquote>
-<hr>
-<h3 id="一、收敛架构图"><a href="#一、收敛架构图" class="headerlink" title="一、收敛架构图"></a>一、收敛架构图</h3><ul>
-<li>① 所有产生告警均由zabbix调用脚本推入缓存redis当中</li>
-<li>② 分析系统将在规定时间（1分钟）内去redis中拉取数据，根据定义好的一系列规则进行，合并、分析或直接丢弃，并存入分析平台数据库，以便供历史查询。</li>
-<li>③ 根据预先定义好的规则将报警通过定义好的方式发送给相关人员。</li>
-</ul>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix_002.png" alt=""></p>
-<pre><code>告警收敛架构
-</code></pre><h3 id="二、对zabbix-进行设置"><a href="#二、对zabbix-进行设置" class="headerlink" title="二、对zabbix 进行设置"></a>二、对zabbix 进行设置</h3><h5 id="1-zabbix-Actions"><a href="#1-zabbix-Actions" class="headerlink" title="1.zabbix Actions"></a>1.zabbix Actions</h5><p>对Actions进行特殊设置，Default subject极为重要，是识别收敛的标示。</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix_003.png" alt=""></p>
-<h5 id="Actions-配置"><a href="#Actions-配置" class="headerlink" title="Actions 配置"></a>Actions 配置</h5><ul>
-<li>Default subject</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;EVENT.ID&#125;_1</div></pre></td></tr></table></figure>
+                <h2 id="Zabbix监控Kafka集群-Brokers服务"><a href="#Zabbix监控Kafka集群-Brokers服务" class="headerlink" title="Zabbix监控Kafka集群 Brokers服务"></a>Zabbix监控Kafka集群 Brokers服务</h2><h4 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h4><p>公司让我处理Hadoop及相关服务监控、报警这里主要讲kafka集群服务。这里我也看了几篇kafka相关文章，好文贴出来：</p>
 <ul>
-<li>Default message</li>
+<li><a href="http://www.infoq.com/cn/articles/kafka-analysis-part-1" target="_blank" rel="external">infoq kafka 入门了解</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-kafka/index.html" target="_blank" rel="external">kafka 工作原理介绍</a></li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">triggervalue|&#123;TRIGGER.VALUE&#125;<span class="comment">#hostname|&#123;HOSTNAME1&#125;#ipaddress|&#123;IPADDRESS&#125;#hostgroup|&#123;TRIGGER.HOSTGROUP.NAME&#125;#triggernseverity|&#123;TRIGGER.NSEVERITY&#125;#triggername|&#123;TRIGGER.NAME&#125;#triggerkey|&#123;TRIGGER.KEY1&#125;#triggeritems|&#123;ITEM.NAME&#125;#itemvalue|&#123;ITEM.VALUE&#125;#eventid|&#123;EVENT.ID&#125;</span></div></pre></td></tr></table></figure>
+<p>在我们公司主要Kafka 的几个特性非常满足我们的需求：可扩展性、数据分区、低延迟、处理大量不同消费者的能力。</p>
+<p>而这里我想帮忙BI团队实现Kafka全面监控。分两点：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">1. 监控Kafka Brokers服务</div><div class="line">2. 监控Kafka Lag堆积数</div></pre></td></tr></table></figure>
+<p>对于Kafka的监控，已经有现成的开源软件了，在我们公司内部也使用了一段时间，有两种方案。我们公司用第三种方案。<br>一般都会选择两个开源的工具：KafkaOffsetMonitor和kafka-web-console，这两款我都有用过.</p>
 <ul>
-<li>Recovery subject</li>
+<li>Kafka三款监控工具比较</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;EVENT.ID&#125;_0</div></pre></td></tr></table></figure>
+<p>目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1、Kafka Web Conslole</div><div class="line">2、Kafka Manager</div><div class="line">3、KafkaOffsetMonitor</div></pre></td></tr></table></figure>
+<p><a href="https://github.com/quantifind/KafkaOffsetMonitor" target="_blank" rel="external">KafkaOffsetMonitor</a>：最大的好处就是配置简单，只需要配个zookeeper的地址就能用了，坑爹的地方就是不能自动刷新，手动刷新时耗时较长，而且有时候都刷不出来，另外就是图像用了一段时间就完全显示不了了，不知道大家是不是这样。</p>
+<p><a href="https://github.com/claudemamo/kafka-web-console" target="_blank" rel="external">kafka-web-console</a>：相比与前者，数据是落地的，因此刷新较快，而且支持在前端自定义zookeeper的地址，还能列出实时的topic里的具体内容。但是搭建比较复杂，而且github上的默认数据库是H2的，像我们一般用mysql的，还得自己转化。另外在用的过程中，我遇到一个问题，在连接kafka的leader失败的时候，会一直重试，其结果就是导致我kafka的那台机子连接数过高，都到2w了，不知道是不是它的一个bug。</p>
+<p>具体介绍以及安装在我另外篇博文。这里不详细讲解开源软件，这里用zabbix监控Kafka Brokers服务。</p>
+<h4 id="kafka-monitoring-Brokers服务"><a href="#kafka-monitoring-Brokers服务" class="headerlink" title="kafka-monitoring Brokers服务"></a>kafka-monitoring Brokers服务</h4><p>操作系统环境：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Centos 7.1 </div><div class="line">64G内存</div><div class="line">2T磁盘空间，指定kafka写入数据目录。</div></pre></td></tr></table></figure>
+<p>说明下:</p>
+<p>监控Brokers是利用Zabbix JMX监控获取数据。</p>
+<p>☝️第一步：不用解释前提你在zabbix-server端已经安装过abbix-java-gataway 如果没有安装可以看下面，安装过可以略过第一步。</p>
+<p>1.0 安装配置zabbix-java-gataway</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">yum install -y zabbix-java-gataway</div><div class="line">vi /etc/zabbix/zabbix_java_gateway.conf</div><div class="line">START_POLLERS=10 </div><div class="line">Uncoment并设置为StartJavaPollers = 5 更改JavaGateway的 IP = IP_address_java_gateway</div><div class="line">``` </div><div class="line">1.1 重新启动zabbix-server</div><div class="line"></div><div class="line">```bash</div><div class="line">/etc/init.d/zabbix-java-gataway restart</div><div class="line">chkconfig --level 345 zabbix-java-gataway on</div><div class="line">/etc/init.d/zabbix-java-gataway start</div></pre></td></tr></table></figure>
+<p>☝️第二步：Kafka配置</p>
+<p>这里我们服务器给大数据那边安装在指定用户目录下面：/home/jollybi/tools/kafka_2.10-0.8.2.1</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">su - jollybi 进入相应用户</div><div class="line">vim /home/jollybi/tools/kafka_2.10-0.8.2.1/kafka-run-class.sh</div><div class="line"></div><div class="line">从</div><div class="line"></div><div class="line"><span class="comment"># JMX settings</span></div><div class="line"><span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$KAFKA_JMX_OPTS</span>"</span> ]; <span class="keyword">then</span></div><div class="line">KAFKA_JMX_OPTS=<span class="string">"-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -   Dcom.sun.management.jmxremote.ssl=false "</span></div><div class="line"><span class="keyword">fi</span></div><div class="line">至</div><div class="line"></div><div class="line"><span class="comment"># JMX settings</span></div><div class="line"><span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$KAFKA_JMX_OPTS</span>"</span> ]; <span class="keyword">then</span></div><div class="line">KAFKA_JMX_OPTS=<span class="string">"-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=12345 -    Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false "</span></div><div class="line"><span class="keyword">fi</span></div></pre></td></tr></table></figure>
+<p>重启服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">/home/jollybi/tools/kafka_2.10-0.8.2.1/bin/kafka-server-stop.sh</div><div class="line">/home/jollybi/tools/kafka_2.10-0.8.2.1/bin/kafka-server-start.sh</div></pre></td></tr></table></figure>
+<p>☝️第三步：导入模板登录到您的zabbix网页.</p>
+<p>导入模板登录到您的zabbix网页</p>
+<p>单击配置 - &gt;模板 - &gt;导入</p>
+<p>下载模板 <a href="https://github.com/yangcvo/Zabbix-Monitoring-Kafka" target="_blank" rel="external">zbx_kafka_templates.xml</a> 并上传到zabbix然后将此模板添加到Kafka并在zabbix上配置JMX接口</p>
+<p>输入Kafka IP地址和JMX端口如果看到jmx图标，您配置了JMX监控好！</p>
 <ul>
-<li>Recovery message</li>
+<li>查看数据：</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">triggervalue|&#123;TRIGGER.VALUE&#125;<span class="comment">#hostname|&#123;HOSTNAME1&#125;#ipaddress|&#123;IPADDRESS&#125;#hostgroup|&#123;TRIGGER.HOSTGROUP.NAME&#125;#triggernseverity|&#123;TRIGGER.NSEVERITY&#125;#triggername|&#123;TRIGGER.NAME&#125;#triggerkey|&#123;TRIGGER.KEY1&#125;#triggeritems|&#123;ITEM.NAME&#125;#itemvalue|&#123;ITEM.VALUE&#125;#eventid|&#123;EVENT.ID&#125;</span></div></pre></td></tr></table></figure>
-<h5 id="2-Media-types"><a href="#2-Media-types" class="headerlink" title="2.Media types"></a>2.Media types</h5><p>这里只需要传递subject 参数就可以了。</p>
-<p>Media 配置<br>police.py–报警函数：zabbix告警是调用此函数，将事件id推入redis。</p>
-<p>redis 安装查看第三部分</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">/usr/<span class="built_in">local</span>/zabbix/share/zabbix/alertscripts/police.py</div><div class="line"><span class="comment">#!/usr/bin/env python</span></div><div class="line"><span class="comment">#coding:utf-8</span></div><div class="line"></div><div class="line">import redis</div><div class="line">import sys</div><div class="line"> </div><div class="line">subject=sys.argv[1]</div><div class="line">r = redis.StrictRedis(host=<span class="string">'**.**.**.**'</span>, port=6379)</div><div class="line">r.set(subject,subject)</div></pre></td></tr></table></figure>
-<h4 id="三、操作部分"><a href="#三、操作部分" class="headerlink" title="三、操作部分"></a>三、操作部分</h4><p>1.环境安装</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#安装python、mysql、redis模块</span></div><div class="line">pip install redis</div><div class="line">pip install mysql-python</div><div class="line">yum install gcc python-devel</div></pre></td></tr></table></figure>
-<p>2.脚本部署</p>
-<p> <a href="https://github.com/yangcvo/Monitor" target="_blank" rel="external">脚本下载地址</a></p>
-<p>①dbread.py–数据库查询函数：接收事件id参数，将zabbix数据库内的数据切割分片并返回告警信息<br>②operation.py –操作函数：接收dbread.py返回的告警信息，进行告警合并，告警压缩处理。并返回处理结果<br>③weixin.py–发送微信告警通知函数：将处理结果发送至指定运维人员<br>④allpolice.py–综合函数：将①②③整合起来，定时每1分钟执行一次</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">*<span class="comment">#文件分布</span></div><div class="line">mkdir -p /data/police</div><div class="line">├── police</div><div class="line">│   ├── dbread.py</div><div class="line">│   ├── allpolice.py</div><div class="line">│   ├── operation.py</div><div class="line">│   ├── send.log</div><div class="line">│   └── weixin.py</div></pre></td></tr></table></figure>
-<h4 id="四、定时任务"><a href="#四、定时任务" class="headerlink" title="四、定时任务"></a>四、定时任务</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">crontab <span class="_">-e</span></div><div class="line"><span class="comment">#告警收敛定时检测#</span></div><div class="line">*/1 * * * * python /data/police/allpolice.py &gt;&gt; /data/police/send.log</div></pre></td></tr></table></figure>
-<h4 id="五、最终效果"><a href="#五、最终效果" class="headerlink" title="五、最终效果"></a>五、最终效果</h4><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix_005.png" alt=""></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Brokers_01.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Brokers_02.png" alt=""></p>
+<ul>
+<li>查看效果图：</li>
+</ul>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Brokers_03.png" alt=""></p>
+<p>参考官网监控指标的含义;</p>
+<p><a href="http://docs.confluent.io/current/kafka/monitoring.html" target="_blank" rel="external">Servilo Metrics broker Metrics</a><br><a href="http://docs.confluent.io/current/kafka/monitoring.html" target="_blank" rel="external">Producer Metrics Global Request Metrics</a><br><a href="http://docs.confluent.io/current/kafka/monitoring.html" target="_blank" rel="external">Global Connection Metrics</a></p>
 
 
                 <hr>
@@ -247,12 +244,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2017/06/01/大数据hadoop/Zabbix监控Kafka集群 Brokers服务/" data-toggle="tooltip" data-placement="top" title="Zabbix监控Kafka集群 Brokers服务">&larr; Previous Post</a>
+                            <a href="/2017/06/02/大数据hadoop/Zabbix-Monitoring Kafka Consumer | kafka的监控和告警/" data-toggle="tooltip" data-placement="top" title="Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警">&larr; Previous Post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2017/04/10/网络/深度了解阿里云服务器经典网络和专有网络区别如何实现方案？/" data-toggle="tooltip" data-placement="top" title="深度了解阿里云服务器经典网络和专有网络区别如何实现方案？">Next Post &rarr;</a>
+                            <a href="/2017/05/21/性能监控/Zabbix/Zabbix 告警收敛/" data-toggle="tooltip" data-placement="top" title="Zabbix 告警收敛">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -285,9 +282,7 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#Performance monitoring" title="Performance monitoring">Performance monitoring</a>
-                        
-                          <a class="tag" href="/tags/#zabbix" title="zabbix">zabbix</a>
+                          <a class="tag" href="/tags/#Kafka" title="Kafka">Kafka</a>
                         
                     </div>
                 </section>
@@ -319,8 +314,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "blog-yancy-cc";
-    var disqus_identifier = "http://blog.yancy.cc/2017/05/21/性能监控/Zabbix/Zabbix 告警收敛/";
-    var disqus_url = "http://blog.yancy.cc/2017/05/21/性能监控/Zabbix/Zabbix 告警收敛/";
+    var disqus_identifier = "http://blog.yancy.cc/2017/06/01/大数据hadoop/Zabbix监控Kafka集群 Brokers服务/";
+    var disqus_url = "http://blog.yancy.cc/2017/06/01/大数据hadoop/Zabbix监控Kafka集群 Brokers服务/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
