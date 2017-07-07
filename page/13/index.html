@@ -90,7 +90,7 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/about/About-me.html">About</a>
                         </li>
                         
                     
@@ -104,7 +104,7 @@
 
                         
                         <li>
-                            <a href="/about/About-me.html">About</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -184,21 +184,23 @@
 
 <div class="post-preview">
 
-    <a href="/2015/09/29/容器-虚拟化/kvm/KVM虚拟机如何进行克隆操作/">
+    <a href="/2016/03/07/数据库/MySQL/[第七章]MySQL读写分离/">
         <h2 class="post-title">
-            KVM虚拟机如何进行克隆操作
+            【第七章】MySQL读写分离
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            KVM虚拟机如何进行克隆操作我们知道，重复的事情做多了就需要上脚本或采用工具以便节省操作时间，提升工作效率，减低繁琐操作。本人也是懒人一个，相同的事情做多了，就想法子弄成脚本或采用工具去搞。KVM虚拟机的创建同样如此，我们不可能每次创建都要手工执行一次，于是就有了KVM克隆出现。克隆操作有两种方式：
-(1) KVM本机虚拟机直接克隆。(2) 通过复制配置文件与磁盘文件的虚拟机复制克隆(适用于......
+            MySQL读写分离1234场景描述：数据库Master主服务器：192.168.10.130数据库Slave从服务器：192.168.10.131MySQL-Proxy调度服务器：192.168.10.132
+以下操作，均是在192.168.10.132即MySQL-Proxy调度服务器 上进行的。
+3.1 MySQL的安装与配置具体的安装过程与上文相同。
+3.2 检查系统所需软件包通过 r......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-09-29
+        2016-03-07
     </p>
 
 </div>
@@ -206,21 +208,23 @@
 
 <div class="post-preview">
 
-    <a href="/2015/09/22/数据库/Mongodb/Mongodb基本操作/">
+    <a href="/2016/03/05/数据库/MySQL/【第六章】MySQL5.6 主从同步/">
         <h2 class="post-title">
-            Mongodb基本命令操作
+            【第六章】MySQL5.6 主从同步
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Mongodb基本命令操作###MongoDB数据库基本用法
-123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869show dbs:显示数据库列表show collections：显示当前......
+            Mysql作为目前世界上使用最广泛的免费数据库，相信所有从事系统运维的工程师都一定接触过。但在实际的生产环境中，由单台Mysql作为独立的数据库是完全不能满足实际需求的，无论是在安全性，高可用性以及高并发等各个方面。
+
+主从复制的原理：
+分为同步复制和异步复制，实际复制架构中大部分为异步复制。 复制的基本过程如下：1).Slave上面的IO进程连接上Master，并请求从指定日志文件的指定位......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-09-22
+        2016-03-05
     </p>
 
 </div>
@@ -228,31 +232,24 @@
 
 <div class="post-preview">
 
-    <a href="/2015/09/22/数据库/Mongodb/Red Hat企业版或CentOS的Linux上安装MongoDB/">
+    <a href="/2016/02/28/DNS/DNS服务使用dig查询解析/">
         <h2 class="post-title">
-            RedHat企业版或CentOS的Linux上yum方式安装MongoDB
+            DNS服务使用dig查询解析
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            ##RedHat企业版或CentOS的Linux上yum方式安装MongoDB
-
-概述
-
-
-官网翻译：
-
-使用本教程对使用Red Hat Enterprise Linux或CentOS的Linux版本5，6，7安装MongoDB中的.rpm软件包。虽然这些发行版包括自己的MongoDB包，官方MongoDB的包装一般都比较最新的。
-
-平台支持
-
-本安装指南只支持64位系统。请参阅平台支持的详......
+            ##使用dig查询DNS解析
+今天整理下前段时间搭建的DNS主从服务器，DNS主从复制虚拟域名设置等等，总结写了篇文档：DNS服务器主从复制搭建
+这里就顺便写了下dig使用查询DNS解析：
+一般来说linux下查询域名解析有两种选择，nslookup或者dig，而在使用上我觉得dig更加方便顺手。如果是在centos下的话，只要yum装上dig这个包就可以使用dig命令了。
+nslookup......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-09-22
+        2016-02-28
     </p>
 
 </div>
@@ -260,23 +257,32 @@
 
 <div class="post-preview">
 
-    <a href="/2015/09/21/数据库/Mongodb/Mongodb启动的解决方法/">
+    <a href="/2016/02/26/python/Python学习一路潇潇洒洒磕磕碰碰😁/">
         <h2 class="post-title">
-            Mongodb启动的解决方法
+            Python学习一路潇潇洒洒磕磕碰碰😁
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            #Mongodb启动的解决方法
-####无法启动分析：
-遇到MongoDB突然无法启动，第一反应是删除mongod.lock。这个文件在MongoDB的数据库目录下，默认是/data/db。这是最常见的问题了，产生原因是MongoDB没有正常结束（比如被kill -9杀掉或是其他意外情况导致中断）。
-还一些其他情况会导致MongoDB无法启动。本文讨论的无法启动，是指：使用/etc/init......
+            Python运维编程 （第一关）Topics
+
+Python介绍（不详讲）
+安装、环境准备 （不详细讲）
+
+
+学习 输入和输出 （raw_input）和（print）
+
+12&gt;&gt;&gt;name = raw_input('please enter your name: ')print 'hello,', name
+
+学习 Python基础 应该始终坚持使用4个空格的缩进.
+
+...
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-09-21
+        2016-02-26
     </p>
 
 </div>
@@ -284,22 +290,22 @@
 
 <div class="post-preview">
 
-    <a href="/2015/09/19/数据库/Mongodb/centos安装MongoDB数据库、配置、主从同步、备份与恢复/">
+    <a href="/2016/02/25/Web服务技术/Nginx/Nginx限制IP访问权限或限制某个IP同一时间段的访问次数/">
         <h2 class="post-title">
-            Centos安装MongoDB数据库、配置、主从同步、备份与恢复
+            Nginx限制IP访问权限或限制某个IP同一时间段的访问次数
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Centos安装MongoDB数据库、配置、主从同步、备份与恢复mongodb个人的理解
- Mongo是一个高性能，开源，文档型数据库，MongoDB服务端可运行在Linux、Windows或OS X平台，支持32位和64位应用，默认端口为27017。推荐运行在64位平台，因为MongoDB在32位模式运行时支持的最大文件尺寸为2GB。 
-MongoDB把数据存储在文件中（默认路径为：/da......
+            nginx限制ip访问 nginx访问权限看下配置：
+这里我只允许我公司IP访问：
+12345678910111213141516  server &#123;        listen       80;        server_name  kibana.ihaozhuo.com;        location / &#123;             index        i......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-09-19
+        2016-02-25
     </p>
 
 </div>
@@ -307,20 +313,21 @@ MongoDB把数据存储在文件中（默认路径为：/da......
 
 <div class="post-preview">
 
-    <a href="/2015/09/18/数据库/Mongodb/Windows安装配置Mongodb/">
+    <a href="/2016/02/14/个人生活记录/在一起的第588天💕/">
         <h2 class="post-title">
-            Windows安装配置Mongodb
+            在一起的第588天💕
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            前言   MongoDB环境的部署很简单。已经用过的人肯定会和我有相同的想法。首先在官网上下载对应的版本（http://www.mongodb.org/downloads）,要分清是自己的是32位还是64位的。      MongoDb的版本号，偶数的版本是稳定版，奇数是开发版。例如，1.2开头的是稳定版(1.2.0 , 1.2.1 , 1.2.2 等等) ，1.3开头的开发版（1.3.0 ......
+            今天2016年2月14日我们的第二个情人节： 夜已经很深了，我还坐在电脑前写信给你,慢慢把我们在一起点点滴滴记录下来,这些天总是有很多话想对你说,但对你的思念扰乱了我所有的思绪。我不知道该说些什么或怎么说？说心里话，和你的每一天我很快乐很幸福，是我一生中从未有过的！真的XXL。
+   在这个13亿茫茫人海当中，你已我相距1325公里因缘分而相识，因相趣而相知，你是一个文文静静，高高大大，很懂......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-09-18
+        2016-02-14
     </p>
 
 </div>
@@ -328,49 +335,22 @@ MongoDB把数据存储在文件中（默认路径为：/da......
 
 <div class="post-preview">
 
-    <a href="/2015/09/10/自动化+可视化/saltstack/自动化运维工具-Saltstack的详细介绍安装与使用以及语法开发操作/">
+    <a href="/2016/01/30/日志分析平台/Elasticsearch/elasticsearch的索引定时自动清理/">
         <h2 class="post-title">
-            自动化运维工具-Saltstack的详细介绍安装与使用以及语法开发操作
+            elasticsearch的索引定时自动清理
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            引言:自动化运维1:saltstack 的基本介绍2:salt 的安装
-服务端 
-安装
-配置文件 
-运行 
-注意事项
-
-
-客户端 
-安装
-配置文件
-运行
-注意事项
-
-
-
-3:salt 的使用:
-基础知识
-targeting 
-nodegroup 
-grains 
-pillar
-
-
-状态管理 
-state
-state 语法
-state 的逻辑关系 
-highstate
-salt schedul......
+            elasticsearch的索引定时自动清理之前用 logstash来做日志收集 并用 elasticsearch来搜索，因为日志没有进行过滤，没几天就发现elasticsearch的索引文件大的吓人，之前还真没清理过。其实要说清理也简单，直接到 elasticsearch data文件夹里删掉就行了，写个脚本定期清理集群es的日志数据。
+这里我清理1月7号的。
+这里后面是索引名称。app_......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-09-10
+        2016-01-30
     </p>
 
 </div>
@@ -378,21 +358,20 @@ salt schedul......
 
 <div class="post-preview">
 
-    <a href="/2015/06/29/容器-虚拟化/kvm/kvm虚拟化小结（六）libguestfs-tools/">
+    <a href="/2016/01/29/日志分析平台/Elasticsearch/logstash如何收集tomcat日志分析/">
         <h2 class="post-title">
-            kvm虚拟化小结（六）libguestfs-tools
+            logstash如何写tomcat,redis,nginx日志收集规则
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            libguestfs 是一组 Linux 下的 C 语言的 API ，用来访问虚拟机的磁盘映像文件。其项目主页是http://libguestfs.org/ ，该工具包内包含的工具有
-123456789virt-cat、virt-df、virt-ls、virt-copy-in、virt-copy-out、virt-edit、guestfs、guestmount、virt-list-files......
+            logstash如何收集tomcat日志分析（可以参考我下面写的模板）1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162我想实现对tomcat的日志采集，正常应该创建一个file的input，这个input指定了监......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-06-29
+        2016-01-29
     </p>
 
 </div>
@@ -400,25 +379,27 @@ salt schedul......
 
 <div class="post-preview">
 
-    <a href="/2015/06/28/容器-虚拟化/kvm/kvm磁盘虚拟化技术应用/">
+    <a href="/2016/01/28/DNS/DNS服务器主从复制搭建/">
         <h2 class="post-title">
-            kvm磁盘虚拟化技术应用
+            DNS服务器主从复制搭建
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            镜像创建：
-qemu-img create 命令。 
--f 参数指定镜像格式，默认的话是raw格式。 
-123456qemu-img create test 50G生成出是默认的raw格式指定格式：qcow2qemu-img create test.qcow2 -f qcow2 50G
-qcow2 格式 文件特别小，压缩比tar压缩效率高很多。在镜像传输上非常有意义。
-raw是不支持快照的，......
+            DNS 服务器主从复制搭建最近部署测试环境和灰度发布环境，之前已经整改过一次，因为需要扩容添加，所以这次操作就把实现的过程记录下来了。 
+实现环境：centos 6.7 x86_64
+
+主DNS服务器：192.168.1.173
+从DNS服务器：192.168.1.174
+
+实验步骤1、关闭网络防火墙及SElinux（主从DNS服务器上都要有此操作）
+123[root@LAN_redis2 ......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-06-28
+        2016-01-28
     </p>
 
 </div>
@@ -426,20 +407,21 @@ raw是不支持快照的，......
 
 <div class="post-preview">
 
-    <a href="/2015/06/18/容器-虚拟化/kvm/KVM虚拟化 (二) help帮助文档大全/">
+    <a href="/2016/01/21/日志分析平台/Elasticsearch/ELK-Elasticsearch-Logstash-Kibana-搭建日志集中分析平台实践/">
         <h2 class="post-title">
-            KVM虚拟化 (二) help帮助文档大全
+            ELK(Elasticsearch + Logstash + Kibana)搭建日志集中分析平台实践
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            基本语句用法：12345678910111213141516virsh start x       启动名字为x的非活动虚拟机virsh create x.xml    创建虚拟机（创建后，虚拟机立     即执行，成为活动主机）virsh suspend x          暂停虚拟机virsh resume x           启动暂停的虚拟机virsh shutdown x   ......
+            关注可参考：本文将安装Elasticsearch-1.7.2, Logstash-1.5.5, Kibana-4.1.5。 请注意版本要求，有些组件需要响应的版本要求。logstash是负责搜集和转发日志的，es用于存储和检索，kibana提供web端的展现…他们是独立运行的，也可以部署在同一台机器，也可以不同的机器。
+可以关注我的Github上面有详细文档：https://github.c......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-06-18
+        2016-01-21
     </p>
 
 </div>
@@ -484,15 +466,15 @@ raw是不支持快照的，......
                     <div class="tags">
                         
                             
+                            <a href="/tags/#DNS" title="DNS" rel="3">DNS</a>
+                            
+                        
+                            
                             <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="6">Java+Tomcat notes</a>
                             
                         
                             
                             <a href="/tags/#Dubbo" title="Dubbo" rel="2">Dubbo</a>
-                            
-                        
-                            
-                            <a href="/tags/#DNS" title="DNS" rel="3">DNS</a>
                             
                         
                             
@@ -504,11 +486,23 @@ raw是不支持快照的，......
                             
                         
                             
-                            <a href="/tags/#Linux note" title="Linux note" rel="13">Linux note</a>
-                            
                         
                             
                             <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
+                            
+                        
+                            
+                        
                             
                         
                             
@@ -524,13 +518,13 @@ raw是不支持快照的，......
                             
                         
                             
+                            <a href="/tags/#Performance and framework" title="Performance and framework" rel="2">Performance and framework</a>
+                            
+                        
+                            
                         
                             
                             <a href="/tags/#Personal life record" title="Personal life record" rel="7">Personal life record</a>
-                            
-                        
-                            
-                        
                             
                         
                             
@@ -538,15 +532,9 @@ raw是不支持快照的，......
                             
                         
                             
+                        
+                            
                             <a href="/tags/#Kafka" title="Kafka" rel="2">Kafka</a>
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Performance and framework" title="Performance and framework" rel="2">Performance and framework</a>
-                            
-                        
                             
                         
                             
@@ -559,8 +547,6 @@ raw是不支持快照的，......
                         
                             
                             <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
-                            
-                        
                             
                         
                             
@@ -582,13 +568,19 @@ raw是不支持快照的，......
                             
                         
                             
+                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
                         
                             
                             <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="17">Virtualization-Docker</a>
-                            
-                        
-                            
-                        
                             
                         
                             
@@ -598,15 +590,13 @@ raw是不支持快照的，......
                             
                         
                             
+                        
+                            
+                            <a href="/tags/#MySQL.Database" title="MySQL.Database" rel="26">MySQL.Database</a>
+                            
+                        
+                            
                             <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="6">Log analysis platform</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
                             
                         
                             
@@ -618,11 +608,11 @@ raw是不支持快照的，......
                             
                         
                             
-                            <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
+                            <a href="/tags/#Jenkins" title="Jenkins" rel="2">Jenkins</a>
                             
                         
                             
-                            <a href="/tags/#Jenkins" title="Jenkins" rel="2">Jenkins</a>
+                            <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
                             
                         
                             

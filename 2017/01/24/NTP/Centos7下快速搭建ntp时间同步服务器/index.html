@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Centos7下快速搭建ntp时间同步服务器 - Yancy的博客 | Yancy&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2017/01/24/NTP/Centos7下快速搭建ntp时间同步服务器/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
+                        
+                          <a class="tag" href="/tags/#NTP" title="NTP">NTP</a>
+                        
+                    </div>
+                    <h1>Centos7下快速搭建ntp时间同步服务器</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2017-01-24
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="Centos7下快速搭建ntp时间同步服务器"><a href="#Centos7下快速搭建ntp时间同步服务器" class="headerlink" title="Centos7下快速搭建ntp时间同步服务器"></a>Centos7下快速搭建ntp时间同步服务器</h1><h4 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h4><p>   从云服务器迁移到机房需要自己搭建时间同步服务器，因为云上面每台服务器都自带了时间同步服务所以不需要我们管理。</p>
+<p>   当服务器多了，时间准确与否，一致与否是个大问题。虽然这个问题总是被忽略，但是统一一致的时间是很有必要的。下面我们通过NTP实现时间同步。</p>
+<p>NTP（Network Time Protocol 网络时间协议）是一个用于同步计算机时钟的网络协议。它可以使计算机与其他服务器或时钟源进行时间同步，进行高精度的时间校正。简而言之，NTP就是使一台或多台服务器（客户端）与时间服务器（服务端）之间进行时间同步（即客户端与服务端的时间同步），以保证时间的统一性。前采用的时间标准是世界协调时UTC（Universal Time Coordinated）。NTP的主要开发者是美国特拉华大学的David L. Mills教授。</p>
+<h4 id="一、搭建时间同步服务器"><a href="#一、搭建时间同步服务器" class="headerlink" title="一、搭建时间同步服务器"></a>一、搭建时间同步服务器</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">1、编译安装ntp server</div><div class="line"></div><div class="line">wget http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/ntp-4.2.8p1.tar.gz</div><div class="line">tar zxvf ntp-4.2.8p1.tar.gz</div><div class="line"><span class="built_in">cd</span> ntp-4.2.8p1</div><div class="line">./configure --prefix=/usr/<span class="built_in">local</span>/ntp --enable-all-clocks --enable-parse-clocks</div><div class="line">make &amp;&amp; make install</div></pre></td></tr></table></figure>
+<p>下载出现慢中断可以下载<a href="http://oak0aohum.bkt.clouddn.com/ntp-4.2.8.tar.gz" target="_blank" rel="external">ntp-4.2.8.tar.gz</a></p>
+<div class="tip"><br>注：如以上下载地址无法访问，请从ntp官方下载网页（<a href="http://www.ntp.org/downloads.html）寻找下载地址。" target="_blank" rel="external">http://www.ntp.org/downloads.html）寻找下载地址。</a><br></div>
+
+<h4 id="二、配置-etc-ntp-conf"><a href="#二、配置-etc-ntp-conf" class="headerlink" title="二、配置/etc/ntp.conf"></a>二、配置/etc/ntp.conf</h4><p>restrict用来设置访问权限<br>server用来设置上层时间服务器<br>driftfile用来设置保存漂移时间的文件</p>
+<p>①、第一种配置：允许任何IP的客户机都可以进行时间同步<br>将“restrict default kod nomodify notrap nopeer noquery”这行修改成：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">restrict default nomodify</div></pre></td></tr></table></figure>
+<p>配置文件示例: <a href="http://oak0aohum.bkt.clouddn.com/ntp.conf" target="_blank" rel="external">ntp.conf</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Permit time synchronization with our time source, but do not</span></div><div class="line"><span class="comment"># permit the source to query or modify the service on this system.</span></div><div class="line"><span class="comment">#===restrict 权限控制===  </span></div><div class="line"><span class="comment">#设置默认策略不允许任何主机进行时间同步，修改 </span></div><div class="line"></div><div class="line">restrict default nomodify</div><div class="line"></div><div class="line"><span class="comment"># Permit all access over the loopback interface.  This could</span></div><div class="line"><span class="comment"># be tightened as well, but to do so would effect some of</span></div><div class="line"><span class="comment"># the administrative functions.</span></div><div class="line">restrict 127.0.0.1</div><div class="line"></div><div class="line"><span class="comment"># -- CLIENT NETWORK -------</span></div><div class="line"><span class="comment"># Permit systems on this network to synchronize with this</span></div><div class="line"><span class="comment"># time service.  Do not permit those systems to modify the</span></div><div class="line"><span class="comment"># configuration of this service.  Also, do not use those</span></div><div class="line"><span class="comment"># systems as peers for synchronization.</span></div><div class="line"><span class="comment"># restrict 192.168.1.0 mask 255.255.255.0 nomodify notrap</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment"># --- OUR TIMESERVERS -----  #====源服务器===  </span></div><div class="line"><span class="comment">#server 0.pool.ntp.org        </span></div><div class="line"><span class="comment">#server 1.pool.ntp.org</span></div><div class="line"><span class="comment">#server 2.pool.ntp.org</span></div><div class="line"></div><div class="line">server 210.72.145.44 prefer  <span class="comment">#指定上级更新时间服务器，优先使用这个地址  </span></div><div class="line">server 133.100.11.8</div><div class="line"> </div><div class="line"><span class="comment"># --- NTP MULTICASTCLIENT ---</span></div><div class="line"><span class="comment">#multicastclient			# listen on default 224.0.1.1</span></div><div class="line"><span class="comment"># restrict 224.0.1.1 mask 255.255.255.255 nomodify notrap</span></div><div class="line"><span class="comment"># restrict 192.168.1.0 mask 255.255.255.0 nomodify notrap</span></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment"># --- GENERAL CONFIGURATION ---</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># Undisciplined Local Clock. This is a fake driver intended for backup</span></div><div class="line"><span class="comment"># and when no outside source of synchronized time is available. The</span></div><div class="line"><span class="comment"># default stratum is usually 3, but in this case we elect to use stratum</span></div><div class="line"><span class="comment"># 0. Since the server line does not have the prefer keyword, this driver</span></div><div class="line"><span class="comment"># is never used for synchronization, unless no other other</span></div><div class="line"><span class="comment"># synchronization source is available. In case the local host is</span></div><div class="line"><span class="comment"># controlled by some external source, such as an external oscillator or</span></div><div class="line"><span class="comment"># another protocol, the prefer keyword would cause the local host to</span></div><div class="line"><span class="comment"># disregard all other synchronization sources, unless the kernel</span></div><div class="line"><span class="comment"># modifications are in use and declare an unsynchronized condition.</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment">#指定阶层编号为10，降低其优先度。让NTP Server和其自身保持同步，如果在/ntp.conf中定义的server都不可用时，将使用local时间作为ntp服务提供给ntp客户端。</span></div><div class="line"></div><div class="line">server	127.127.1.0	<span class="comment"># local clock</span></div><div class="line">fudge	127.127.1.0 stratum 10	</div><div class="line"></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># Drift file.  Put this in a directory which the daemon can write to.</span></div><div class="line"><span class="comment"># No symbolic links allowed, either, since the daemon updates the file</span></div><div class="line"><span class="comment"># by creating a temporary in the same directory and then rename()'ing</span></div><div class="line"><span class="comment"># it to the file.</span></div><div class="line"><span class="comment">#</span></div><div class="line">driftfile /var/lib/ntp/drift</div><div class="line">broadcastdelay	0.008</div><div class="line"></div><div class="line"><span class="comment">#设置ntp日志文件 </span></div><div class="line">logfile /var/<span class="built_in">log</span>/ntp/ntp.log   </div><div class="line"></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># Keys file.  If you want to diddle your server at run time, make a</span></div><div class="line"><span class="comment"># keys file (mode 600 for sure) and define the key number to be</span></div><div class="line"><span class="comment"># used for making requests.</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># PLEASE DO NOT USE THE DEFAULT VALUES HERE. Pick your own, or remote</span></div><div class="line"><span class="comment"># systems might be able to reset your clock at will. Note also that</span></div><div class="line"><span class="comment"># ntpd is started with a -A flag, disabling authentication, that</span></div><div class="line"><span class="comment"># will have to be removed as well.</span></div><div class="line"><span class="comment">#</span></div><div class="line">keys		/etc/ntp/keys</div></pre></td></tr></table></figure>
+<p>②、第二种配置：只允许192.168.1.<em>*</em>网段的客户机进行时间同步<br>在restrict default nomodify notrap noquery（表示默认拒绝所有IP的时间同步）之后增加一行：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">restrict</span> 192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.0</span> <span class="selector-tag">mask</span> 255<span class="selector-class">.255</span><span class="selector-class">.255</span><span class="selector-class">.0</span> <span class="selector-tag">nomodify</span></div></pre></td></tr></table></figure>
+<p>配置文件示例：<a href="http://oak0aohum.bkt.clouddn.com/ntp_2.txt" target="_blank" rel="external">/etc/ntp.conf</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Permit time synchronization with our time source, but do not</span></div><div class="line"><span class="comment"># permit the source to query or modify the service on this system.</span></div><div class="line"></div><div class="line">restrict default nomodify notrap noquery</div><div class="line"></div><div class="line"><span class="comment"># Permit all access over the loopback interface.  This could</span></div><div class="line"><span class="comment"># be tightened as well, but to do so would effect some of</span></div><div class="line"><span class="comment"># the administrative functions.</span></div><div class="line">restrict 127.0.0.1 </div><div class="line">restrict 192.168.1.0 mask 255.255.255.0 nomodify</div><div class="line"></div><div class="line"><span class="comment"># -- CLIENT NETWORK -------</span></div><div class="line"><span class="comment"># Permit systems on this network to synchronize with this</span></div><div class="line"><span class="comment"># time service.  Do not permit those systems to modify the</span></div><div class="line"><span class="comment"># configuration of this service.  Also, do not use those</span></div><div class="line"><span class="comment"># systems as peers for synchronization.</span></div><div class="line"><span class="comment"># restrict 192.168.1.0 mask 255.255.255.0 nomodify notrap</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment"># --- OUR TIMESERVERS ----- </span></div><div class="line"><span class="comment">#server 0.pool.ntp.org</span></div><div class="line"><span class="comment">#server 1.pool.ntp.org</span></div><div class="line"><span class="comment">#server 2.pool.ntp.org</span></div><div class="line">server 210.72.145.44 prefer  <span class="comment">#指定上级更新时间服务器，优先使用这个地址  </span></div><div class="line">server 133.100.11.8 </div><div class="line"></div><div class="line"></div><div class="line"><span class="comment"># --- NTP MULTICASTCLIENT ---</span></div><div class="line"><span class="comment">#multicastclient			# listen on default 224.0.1.1</span></div><div class="line"><span class="comment"># restrict 224.0.1.1 mask 255.255.255.255 nomodify notrap</span></div><div class="line"><span class="comment"># restrict 192.168.1.0 mask 255.255.255.0 nomodify notrap</span></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment"># --- GENERAL CONFIGURATION ---</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># Undisciplined Local Clock. This is a fake driver intended for backup</span></div><div class="line"><span class="comment"># and when no outside source of synchronized time is available. The</span></div><div class="line"><span class="comment"># default stratum is usually 3, but in this case we elect to use stratum</span></div><div class="line"><span class="comment"># 0. Since the server line does not have the prefer keyword, this driver</span></div><div class="line"><span class="comment"># is never used for synchronization, unless no other other</span></div><div class="line"><span class="comment"># synchronization source is available. In case the local host is</span></div><div class="line"><span class="comment"># controlled by some external source, such as an external oscillator or</span></div><div class="line"><span class="comment"># another protocol, the prefer keyword would cause the local host to</span></div><div class="line"><span class="comment"># disregard all other synchronization sources, unless the kernel</span></div><div class="line"><span class="comment"># modifications are in use and declare an unsynchronized condition.</span></div><div class="line"><span class="comment">#</span></div><div class="line">server	127.127.1.0	<span class="comment"># local clock</span></div><div class="line">fudge	127.127.1.0 stratum 10	</div><div class="line"></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># Drift file.  Put this in a directory which the daemon can write to.</span></div><div class="line"><span class="comment"># No symbolic links allowed, either, since the daemon updates the file</span></div><div class="line"><span class="comment"># by creating a temporary in the same directory and then rename()'ing</span></div><div class="line"><span class="comment"># it to the file.</span></div><div class="line"><span class="comment">#</span></div><div class="line">driftfile /var/lib/ntp/drift</div><div class="line">broadcastdelay	0.008</div><div class="line"></div><div class="line"></div><div class="line">  <span class="comment">#设置ntp日志文件</span></div><div class="line">logfile /var/<span class="built_in">log</span>/ntp/ntp.log</div><div class="line"></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># Keys file.  If you want to diddle your server at run time, make a</span></div><div class="line"><span class="comment"># keys file (mode 600 for sure) and define the key number to be</span></div><div class="line"><span class="comment"># used for making requests.</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># PLEASE DO NOT USE THE DEFAULT VALUES HERE. Pick your own, or remote</span></div><div class="line"><span class="comment"># systems might be able to reset your clock at will. Note also that</span></div><div class="line"><span class="comment"># ntpd is started with a -A flag, disabling authentication, that</span></div><div class="line"><span class="comment"># will have to be removed as well.</span></div><div class="line"><span class="comment">#</span></div><div class="line">keys		/etc/ntp/keys</div></pre></td></tr></table></figure>
+<h4 id="3、以守护进程启动ntpd"><a href="#3、以守护进程启动ntpd" class="headerlink" title="3、以守护进程启动ntpd"></a>3、以守护进程启动ntpd</h4><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="regexp">/usr/</span>local<span class="regexp">/ntp/</span>bin<span class="regexp">/ntpd -c /</span>etc<span class="regexp">/ntp.conf -p /</span>tmp<span class="regexp">/ntpd.pid</span></div></pre></td></tr></table></figure>
+<p>启动服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">#启动</span></div><div class="line">service ntpd start  或者 /etc/rc.d/init.d/ntpd start</div><div class="line"></div><div class="line">[root@hz-ntp_03 ~]<span class="comment"># /etc/init.d/ntpd start  </span></div><div class="line">正在启动 ntpd：                                            [确定]</div><div class="line">[root@hz-ntp_03 ~]<span class="comment"># netstat -lntup|grep ntp</span></div><div class="line">udp        0      0 192.168.1.144:123           0.0.0.0:*                               26577/ntpd</div><div class="line">udp        0      0 127.0.0.1:123               0.0.0.0:*                               26577/ntpd</div><div class="line">udp        0      0 0.0.0.0:123                 0.0.0.0:*                               26577/ntpd</div><div class="line">udp        0      0 fe80::5054:ff:fe00:408d:123 :::*                                    26577/ntpd</div><div class="line">udp        0      0 ::1:123                     :::*                                    26577/ntpd</div><div class="line">udp        0      0 :::123                      :::*                                    26577/ntpd</div><div class="line"></div><div class="line">[root@hz-ntp_03 ~]<span class="comment"># ps -ef |grep ntp|grep -v grep</span></div><div class="line">ntp      26577     1  0 13:41 ?        00:00:00 ntpd -u ntp:ntp -p /var/run/ntpd.pid -g</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">#添加为开机服务</span></div><div class="line"> chkconfig --level 345 ntpd on</div><div class="line"></div><div class="line"><span class="comment">#停止</span></div><div class="line"> service ntpd stop</div><div class="line"> 或/etc/rc.d/init.d/ntpd stop</div></pre></td></tr></table></figure>
+<h4 id="4、-管理命令"><a href="#4、-管理命令" class="headerlink" title="4、 管理命令"></a>4、 管理命令</h4><p>1.查看本机和上层服务器的时间同步结果</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">ln -s /usr/local/ntp/bin/ntpq /usr/bin/ntpq</div><div class="line">watch ntpq -p</div><div class="line"></div><div class="line">Every 2.0s: ntpq -p                                                                                                                                                                                                 Tue Sep<span class="number"> 20 </span>11:02:08 2016</div><div class="line"></div><div class="line">     remote           refid	 st t when poll reach   delay   offset  jitter</div><div class="line">==============================================================================</div><div class="line"> 210.72.145.44   .INIT.         <span class="number"> 16 </span>u    -  <span class="number"> 64 </span>  <span class="number"> 0 </span>   0.000    0.000   0.000</div><div class="line">*clock.tl.fukuok 133.100.73.251  <span class="number"> 2 </span>u  <span class="number"> 42 </span> <span class="number"> 64 </span>  <span class="number"> 7 </span> 196.633   -0.609  37.632</div><div class="line"> LOCAL(0)        .LOCL.         <span class="number"> 10 </span>l    -  <span class="number"> 64 </span>  <span class="number"> 0 </span>   0.000    0.000   0.000</div></pre></td></tr></table></figure>
+<p>下面对部分参数进行说明：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">remote： 本地主机所连接的上层NTP服务器</div><div class="line">st：NTP服务器优先级</div><div class="line">when：上次与NTP服务器同步的时间（单位：s）</div><div class="line">poll：下次与NTP服务器同步的时间（单位：s）</div><div class="line">delay：从本地发出时间同步命令给远程时间服务器开始，到整个时间同步完成所需时间（单位：10^-6s）</div><div class="line">offset：本地主机与时间服务器的时间差（同步后将自动纠正）</div><div class="line">jitter：一个offset的分布统计值，该值越小，表示时间越精确</div></pre></td></tr></table></figure>
+<h4 id="报错问题："><a href="#报错问题：" class="headerlink" title="报错问题："></a>报错问题：</h4><p>4、ntpd启动后，客户机要等几分钟再与其进行时间同步，否则会提示<code>“no server suitable for synchronization found”</code>错误。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">1.防火墙开启：-A INPUT -m state --state NEW -m tcp -p tcp --dport 123 -j ACCEPT</div><div class="line">2.客户端 使用：ntpdate –d  192.168.1.220 ntp服务端IP</div><div class="line"></div><div class="line">出现错误提示：</div><div class="line">Error resolving –d: Name or service not known (-2)</div><div class="line">20 Sep 10:51:23 ntpdate[25372]: Can<span class="string">'t find host –d: Name or service not known (-2)</span></div><div class="line">20 Sep 10:51:23 ntpdate[25372]: adjust time server 192.168.1.220 offset 0.009945 sec</div><div class="line">无法解析域名。</div><div class="line">所以重新定义：</div><div class="line">server 210.72.145.44 prefer  #指定上级更新时间服务器，优先使用这个地址  </div><div class="line">server 133.100.11.8 </div><div class="line">在重启服务就可以了。</div></pre></td></tr></table></figure>
+<h4 id="二、配置时间同步客户机"><a href="#二、配置时间同步客户机" class="headerlink" title="二、配置时间同步客户机"></a>二、配置时间同步客户机</h4><p>临时生效：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@tomcat ~]<span class="comment"># /usr/sbin/ntpdate 192.168.1.220;/sbin/hwclock -w</span></div><div class="line">20 Sep 11:00:12 ntpdate[25448]: adjust time server 192.168.1.220 offset 0.016237 sec</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vi /var/spool/cron/root</div></pre></td></tr></table></figure>
+<p>增加一行，在每天的5点13分、9点13分、14点13分、19点13分与时间同步服务器进行同步</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">13 5,9,14,19 * * * /usr/sbin/ntpdate 192.168.18.2</div></pre></td></tr></table></figure>
+<p>1.LINUX客户端： (局域网内对时间有要求的机器)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">echo</span> <span class="string">"0 */1 * * * root /usr/sbin/ntpdate 192.168.1.220;/sbin/hwclock -w"</span>&gt;&gt;/etc/crontab</div></pre></td></tr></table></figure>
+<p>备注：如果客户机没有ntpdate，可以下载ntpdate.tar.gz到/usr/sbin/目录，然后解压：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wget http://blog.zyan.cc/attachment/200708/ntdate.tar.gz</div><div class="line"><span class="built_in">cd</span> /usr/sbin/</div><div class="line">tar zxvf ntpdate.tar.gz</div></pre></td></tr></table></figure>
+<p>或者yum安装 yum install -y ntpdate.</p>
+<p>没有创建ntp时间同步服务器使用外部去同步的话：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#5 2-3 * * * /usr/sbin/ntpdate ntp.fudan.edu.cn  &amp;&amp; hwclock -w &amp;&amp; hwclock --systohc &gt;/dev/null 2&gt;&amp;1</span></div><div class="line"><span class="comment">#5 4-6 * * * /usr/sbin/ntpdate ntp.api.bz &amp;&amp; hwclock -w &amp;&amp; hwclock --systohc &gt;/dev/null 2&gt;&amp;1</span></div><div class="line"><span class="comment">#00 * * * * /usr/sbin/ntpdate ntp.org &gt;/dev/null 2&gt;&amp;1</span></div><div class="line"></div><div class="line">或者同步数据库：ntpdate time1.aliyun.com </div><div class="line">timedatectl <span class="built_in">set</span>-timezone Asia/Shanghai   <span class="comment">#设置时区</span></div></pre></td></tr></table></figure>
+<p>这三条都可以实现。</p>
+<hr>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/01/26/python/Python pip方式-源码方式模块安装大全/" data-toggle="tooltip" data-placement="top" title="Python pip方式-源码方式模块安装大全">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/01/07/自动化+可视化/Phabricator/Centos7搭建配置phabricator开源的可视化代码审查工具/" data-toggle="tooltip" data-placement="top" title="Centos7搭建配置phabricator开源的可视化代码审查工具">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
+                        
+                          <a class="tag" href="/tags/#NTP" title="NTP">NTP</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yancy-cc";
+    var disqus_identifier = "http://blog.yancy.cc/2017/01/24/NTP/Centos7下快速搭建ntp时间同步服务器/";
+    var disqus_url = "http://blog.yancy.cc/2017/01/24/NTP/Centos7下快速搭建ntp时间同步服务器/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

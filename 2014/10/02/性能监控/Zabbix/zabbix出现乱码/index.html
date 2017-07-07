@@ -90,7 +90,7 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/about/About-me.html">About</a>
                         </li>
                         
                     
@@ -104,7 +104,7 @@
 
                         
                         <li>
-                            <a href="/about/About-me.html">About</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -206,8 +206,8 @@
 <p><code>var/www/html/zabbix/fonts</code>目录下面查看，发现之前上传字体的文件名后缀是.ttc，猜着一般见到的都后缀都是ttf的，会不会是这个问题导致的呢。于是在windows系统上找到<code>simkai.ttf</code>,上传到fonts下，编辑<code>/var/www/html/zabbix/include/defines.inc.php</code>，更改两处地方：</p>
 <pre><code>define(‘ZBX_FONT_NAME‘, ‘simkai‘);
 define(‘ZBX_GRAPH_FONT_NAME‘,  ‘simkai‘);
-</code></pre><p>设置好了，服务重启下，刷新，图下面就有字体了：</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-luanma.png" alt=""></p>
+</code></pre><p>fzytk<br>设置好了，服务重启下，刷新，图下面就有字体了：</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-luanma.png" alt=""><br>graphfont</p>
 <p>常见问题：<br>依旧乱码：通过以上的操作，大部分同学的乱码问题解决了，但是依旧有一些同学还是乱码？细心的群友提供另外一种情况：初始化数据库的时候未使用utf8编码所致.初始化数据库使用命令</p>
 <pre><code>create database zabbix default charset utf8;
 </code></pre><p>或者my.cnf增加如下配置</p>

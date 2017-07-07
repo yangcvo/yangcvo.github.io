@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          构建MySQL+keepalived高可用自动切换 - Yancy的博客 | Yancy&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2016/04/21/数据库/MySQL/构建MySQL+keepalived高可用自动切换/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#MySQL.Database" title="MySQL.Database">MySQL.Database</a>
+                        
+                    </div>
+                    <h1>构建MySQL+keepalived高可用自动切换</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2016-04-21
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="构建MySQL-keepalived高可用自动切换"><a href="#构建MySQL-keepalived高可用自动切换" class="headerlink" title="构建MySQL+keepalived高可用自动切换"></a>构建MySQL+keepalived高可用自动切换</h2><h4 id="问题描述："><a href="#问题描述：" class="headerlink" title="问题描述："></a>问题描述：</h4><p>keepalived主要用于MySQL故障自动切换。那说到keepalived，keepalived到底是什么？</p>
+<p>keepalived是类似于layer3 ,4 &amp;7交换机制的软件，也就是平时我们说的3层4层和第7层交换。</p>
+<h4 id="keepalived的作用"><a href="#keepalived的作用" class="headerlink" title="keepalived的作用"></a>keepalived的作用</h4><p>keepalived的作用是检测web服务器的状态，如果有一台web服务器、MySQL机器宕机或者工作出现故障，keepalived将有故障的web服务器或者MySQL服务器从系统中剔除，当服务器工作正常后keepalived自动将web、MySQL服务器加入服务群中，这些工作全部自动完成，不需要人工干涉，需要人工做的只是修复故障的web和MySQL的服务器。</p>
+<h4 id="MySQL-主从同步"><a href="#MySQL-主从同步" class="headerlink" title="MySQL 主从同步"></a>MySQL 主从同步</h4><table>
+<thead>
+<tr>
+<th>MySQL-VIP</th>
+<th>192.168.1.111</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MySQL-master1</td>
+<td>192.168.1.170</td>
+</tr>
+<tr>
+<td>MySQL-master2</td>
+<td>192.168.1.171</td>
+</tr>
+</tbody>
+</table>
+<h4 id="keepalived安装配置："><a href="#keepalived安装配置：" class="headerlink" title="keepalived安装配置："></a>keepalived安装配置：</h4><p>主从服务器都需要安装keepalived</p>
+<p>1.安装依赖</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="number">1</span><span class="selector-class">.gcc</span></div><div class="line">    安装命令：yum install gcc gcc-c++</div><div class="line"><span class="number">2</span><span class="selector-class">.openssl-devel</span> ,openssl</div><div class="line">    安装命令：yum install openssl-devel openssl</div><div class="line"><span class="number">3</span>.源码内核的.</div><div class="line">    安装命令：yum install kernel-devel kernel</div><div class="line">    建立软连接：ln -s /usr/src/kernels/内核名称/   /usr/src/linux</div><div class="line"></div><div class="line"><span class="number">4</span><span class="selector-class">.yum</span> install -y libnfnetlink-devel</div></pre></td></tr></table></figure>
+<p>依赖不安装会报错。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">wget http:<span class="comment">//www.keepalived.org/software/keepalived-1.2.24.tar.gz</span></div><div class="line">tar -zxvf keepalived-<span class="number">1.2</span>.<span class="number">24</span><span class="selector-class">.tar</span><span class="selector-class">.gz</span></div><div class="line">cd keepalived-<span class="number">1.2</span>.<span class="number">24</span></div><div class="line"> ./configure --prefix=/usr/local/keepalived --with-kernel-dir=/usr/src/kernels/<span class="number">2.6</span>.<span class="number">32</span>-<span class="number">642.6</span>.<span class="number">2</span><span class="selector-class">.el6</span><span class="selector-class">.x86_64</span></div><div class="line"> make &amp;&amp; make install</div></pre></td></tr></table></figure>
+<p>2.设置KEEPALIVED开机自启动：  </p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">cp <span class="regexp">/usr/</span>local<span class="regexp">/keepalived/</span>etc<span class="regexp">/rc.d/</span>init.d<span class="regexp">/keepalived /</span>etc<span class="regexp">/rc.d/</span>init.d/   </div><div class="line"> cp <span class="regexp">/usr/</span>local<span class="regexp">/keepalived/</span>etc<span class="regexp">/sysconfig/</span>keepalived <span class="regexp">/etc/</span>sysconfig/   </div><div class="line"> cp <span class="regexp">/usr/</span>local<span class="regexp">/keepalived/</span>sbin<span class="regexp">/keepalived /</span>usr<span class="regexp">/sbin/</span>   </div><div class="line"> chkconfig keepalived on  </div><div class="line">  mkdir -p <span class="regexp">/etc/</span>keepalived</div><div class="line">  cp <span class="regexp">/usr/</span>local<span class="regexp">/keepalived/</span>etc<span class="regexp">/keepalived/</span>keepalived.conf <span class="regexp">/etc/</span>keepalived/</div><div class="line">  chmod +x <span class="regexp">/etc/</span>init.d/keepalived</div></pre></td></tr></table></figure>
+<p>3.配置keepalived</p>
+<p>我们自己在新建一个配置文件，默认情况下keepalived启动时会去/etc/keepalived目录下找配置文件</p>
+<p>vim /etc/keepalived/keepalived.conf</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">! Configuration File for keepalived</div><div class="line"></div><div class="line">global_defs &#123;</div><div class="line">   notification_email &#123;</div><div class="line">   chengyangyang@hz-health.cn</div><div class="line"></div><div class="line">    &#125;</div><div class="line">   notification_email_from    chengyangyang@hz-health.cn</div><div class="line">   smtp_server <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></div><div class="line">   smtp_connect_timeout <span class="number">30</span></div><div class="line">   router_id LVS_DEVEL</div><div class="line">   vrrp_skip_check_adv_addr</div><div class="line">   vrrp_strict</div><div class="line">   vrrp_garp_interval <span class="number">0</span></div><div class="line">   vrrp_gna_interval <span class="number">0</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">vrrp_instance VI_1 &#123;</div><div class="line">    <span class="section">state</span> MASTER    #两台配置此处均是BACKUP  </div><div class="line">    interface eth0</div><div class="line">    virtual_router_id <span class="number">51</span></div><div class="line">    priority <span class="number">100</span>   #优先级，另一台改为<span class="number">90</span>  </div><div class="line">    nopreempt  #不抢占，只在优先级高的机器上设置即可，优先级低的机器不设置  </div><div class="line">    advert_int <span class="number">1</span></div><div class="line">    authentication &#123;</div><div class="line">        auth_type PASS</div><div class="line">        auth_pass <span class="number">1111</span></div><div class="line">    &#125;</div><div class="line">    virtual_ipaddress &#123;</div><div class="line">        <span class="number">192.168</span><span class="number">.1</span><span class="number">.111</span></div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">virtual_server <span class="number">192.168</span><span class="number">.1</span><span class="number">.111</span> <span class="number">3306</span> &#123;</div><div class="line">    delay_loop <span class="number">6</span>  #每个<span class="number">6</span>秒检查一次real_server状态 </div><div class="line">    lb_algo wrr   #LVS算法  </div><div class="line">    lb_kind DR    #LVS模式  </div><div class="line">    persistence_timeout <span class="number">50</span>  #会话保持时间  </div><div class="line">    protocol TCP</div><div class="line"></div><div class="line">        real_server <span class="number">192.168</span><span class="number">.1</span><span class="number">.170</span> <span class="number">3306</span> &#123;</div><div class="line">        weight <span class="number">100</span></div><div class="line">        notify_down /data/shell/mysql.sh    #检测到服务down后执行的脚本</div><div class="line">        TCP_CHECK &#123;</div><div class="line">        connect_timeout <span class="number">10</span>   #连接超时时间  </div><div class="line">        nb_get_retry <span class="number">3</span>    #重连次数  </div><div class="line">        delay_before_retry <span class="number">3</span>    #重连间隔时间  </div><div class="line">        connect_port <span class="number">3306</span>   #健康检查端口  </div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>　　编写检测服务down后所要执行的脚本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> vim /data/shell/mysql.sh </span></div><div class="line"><span class="meta"> #</span><span class="bash">!/bin/sh  </span></div><div class="line"> pkill keepalived  </div><div class="line"><span class="meta"> #</span><span class="bash">chmod +x /data/shell/mysql.sh</span></div></pre></td></tr></table></figure>
+<p>　注：此脚本是上面配置文件notify_down选项所用到的，keepalived使用notify_down选项来检查real_server的服务状态，当发现real_server服务故障时，便触发此脚本；我们可以看到，脚本就一个命令，通过pkill keepalived强制杀死keepalived进程，从而实现了MySQL故障自动转移。另外，我们不用担心两个MySQL会同时提供数据更新操作，因为每台MySQL上的keepalived的配置里面只有本机MySQL的IP+VIP，而不是两台MySQL的IP+VIP.<br>　<br>　<br>　4. 启动keepalived</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"> 1. <span class="comment">#/etc/init.d/keepalived start</span></div><div class="line"> 2. <span class="comment">#ps -aux | grep keepalived </span></div><div class="line"> [root@mysql log]<span class="comment"># ps -aux | grep keepali</span></div><div class="line">Warning: bad syntax, perhaps a bogus '-'? See /usr/share/doc/procps-3.2.8/FAQ</div><div class="line">root     <span class="number"> 2984 </span> 0.0  0.0 <span class="number"> 35264 </span> <span class="number"> 980 </span>?        Ss   12:27   0:00 keepalived -D</div><div class="line">root     <span class="number"> 2985 </span> 0.0  0.1 <span class="number"> 39440 </span><span class="number"> 2208 </span>?        S    12:27   0:00 keepalived -D</div><div class="line">root     <span class="number"> 2986 </span> 0.0  0.0 <span class="number"> 39440 </span><span class="number"> 1620 </span>?        S    12:27   0:00 keepalived -D</div><div class="line">root     <span class="number"> 2989 </span> 0.0  0.0<span class="number"> 103324 </span> <span class="number"> 864 </span>pts/0    S+   12:28   0:00 grep keepali</div></pre></td></tr></table></figure>
+<p>启动的时候查看日志：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="selector-attr">[root@mysql ~]</span># <span class="selector-tag">tailf</span> <span class="selector-tag">-1000</span> /<span class="selector-tag">var</span>/<span class="selector-tag">log</span>/<span class="selector-tag">messages</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">12</span><span class="selector-pseudo">:28</span><span class="selector-pseudo">:08</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[2986]</span>: <span class="selector-tag">VRRP_Instance</span>(VI_1) <span class="selector-tag">Sending</span>/<span class="selector-tag">queueing</span> <span class="selector-tag">gratuitous</span> <span class="selector-tag">ARPs</span> <span class="selector-tag">on</span> <span class="selector-tag">eth0</span> <span class="selector-tag">for</span> <span class="selector-tag">192</span><span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.111</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">12</span><span class="selector-pseudo">:28</span><span class="selector-pseudo">:08</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[2986]</span>: <span class="selector-tag">Sending</span> <span class="selector-tag">gratuitous</span> <span class="selector-tag">ARP</span> <span class="selector-tag">on</span> <span class="selector-tag">eth0</span> <span class="selector-tag">for</span> <span class="selector-tag">192</span><span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.111</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">12</span><span class="selector-pseudo">:28</span><span class="selector-pseudo">:08</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[2986]</span>: <span class="selector-tag">Sending</span> <span class="selector-tag">gratuitous</span> <span class="selector-tag">ARP</span> <span class="selector-tag">on</span> <span class="selector-tag">eth0</span> <span class="selector-tag">for</span> <span class="selector-tag">192</span><span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.111</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">12</span><span class="selector-pseudo">:28</span><span class="selector-pseudo">:08</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[2986]</span>: <span class="selector-tag">Sending</span> <span class="selector-tag">gratuitous</span> <span class="selector-tag">ARP</span> <span class="selector-tag">on</span> <span class="selector-tag">eth0</span> <span class="selector-tag">for</span> <span class="selector-tag">192</span><span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.111</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">12</span><span class="selector-pseudo">:28</span><span class="selector-pseudo">:08</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[2986]</span>: <span class="selector-tag">Sending</span> <span class="selector-tag">gratuitous</span> <span class="selector-tag">ARP</span> <span class="selector-tag">on</span> <span class="selector-tag">eth0</span> <span class="selector-tag">for</span> <span class="selector-tag">192</span><span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.111</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:42</span><span class="selector-pseudo">:46</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_healthcheckers</span><span class="selector-attr">[2985]</span>: <span class="selector-tag">TCP</span> <span class="selector-tag">connection</span> <span class="selector-tag">to</span> <span class="selector-attr">[192.168.1.170]</span><span class="selector-pseudo">:3306</span> <span class="selector-tag">failed</span>.</div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:42</span><span class="selector-pseudo">:49</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_healthcheckers</span><span class="selector-attr">[2985]</span>: <span class="selector-tag">TCP</span> <span class="selector-tag">connection</span> <span class="selector-tag">to</span> <span class="selector-attr">[192.168.1.170]</span><span class="selector-pseudo">:3306</span> <span class="selector-tag">failed</span>.</div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:42</span><span class="selector-pseudo">:49</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_healthcheckers</span><span class="selector-attr">[2985]</span>: <span class="selector-tag">Check</span> <span class="selector-tag">on</span> <span class="selector-tag">service</span> <span class="selector-attr">[192.168.1.170]</span><span class="selector-pseudo">:3306</span> <span class="selector-tag">failed</span> <span class="selector-tag">after</span> <span class="selector-tag">1</span> <span class="selector-tag">retry</span>.</div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:42</span><span class="selector-pseudo">:49</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_healthcheckers</span><span class="selector-attr">[2985]</span>: <span class="selector-tag">Removing</span> <span class="selector-tag">service</span> <span class="selector-attr">[192.168.1.170]</span><span class="selector-pseudo">:3306</span> <span class="selector-tag">from</span> <span class="selector-tag">VS</span> <span class="selector-attr">[192.168.1.111]</span><span class="selector-pseudo">:3306</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:42</span><span class="selector-pseudo">:49</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_healthcheckers</span><span class="selector-attr">[2985]</span>: <span class="selector-tag">IPVS</span>: <span class="selector-tag">Protocol</span> <span class="selector-tag">not</span> <span class="selector-tag">available</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:42</span><span class="selector-pseudo">:49</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_healthcheckers</span><span class="selector-attr">[2985]</span>: <span class="selector-tag">SMTP</span> <span class="selector-tag">connection</span> <span class="selector-tag">ERROR</span> <span class="selector-tag">to</span> <span class="selector-attr">[127.0.0.1]</span><span class="selector-pseudo">:25.</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:42</span><span class="selector-pseudo">:55</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_healthcheckers</span><span class="selector-attr">[2985]</span>: <span class="selector-tag">TCP</span> <span class="selector-tag">connection</span> <span class="selector-tag">to</span> <span class="selector-attr">[192.168.1.170]</span><span class="selector-pseudo">:3306</span> <span class="selector-tag">failed</span>.</div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:42</span><span class="selector-pseudo">:58</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_healthcheckers</span><span class="selector-attr">[2985]</span>: <span class="selector-tag">TCP</span> <span class="selector-tag">connection</span> <span class="selector-tag">to</span> <span class="selector-attr">[192.168.1.170]</span><span class="selector-pseudo">:3306</span> <span class="selector-tag">failed</span>.</div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:42</span><span class="selector-pseudo">:58</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_healthcheckers</span><span class="selector-attr">[2985]</span>: <span class="selector-tag">Check</span> <span class="selector-tag">on</span> <span class="selector-tag">service</span> <span class="selector-attr">[192.168.1.170]</span><span class="selector-pseudo">:3306</span> <span class="selector-tag">failed</span> <span class="selector-tag">after</span> <span class="selector-tag">1</span> <span class="selector-tag">retry</span>.</div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:42</span><span class="selector-pseudo">:58</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_healthcheckers</span><span class="selector-attr">[2985]</span>: <span class="selector-tag">Removing</span> <span class="selector-tag">service</span> <span class="selector-attr">[192.168.1.170]</span><span class="selector-pseudo">:3306</span> <span class="selector-tag">from</span> <span class="selector-tag">VS</span> <span class="selector-attr">[192.168.1.111]</span><span class="selector-pseudo">:3306</span></div></pre></td></tr></table></figure>
+<p>这里有提示：IPVS: Can’t initialize ipvs: Protocol not available解决方法<br>解决办法<br>首先你必须得先安装ipvsadm</p>
+<pre><code>yum install ipvsadm
+</code></pre><p>要是你已经安装过了,这句就直接忽略掉吧,之后在执行一下命令</p>
+<pre><code>ipvsadm
+</code></pre><p>这一个小小的命令就能够给你解决上边的问题了,现在你再看看你的message里边还有没有一直在刷新。</p>
+<p>解决完以后重启keepalived</p>
+<p>在查看下日志：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:46</span><span class="selector-pseudo">:27</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_healthcheckers</span><span class="selector-attr">[3942]</span>: <span class="selector-tag">Activating</span> <span class="selector-tag">healthchecker</span> <span class="selector-tag">for</span> <span class="selector-tag">service</span> <span class="selector-attr">[192.168.1.170]</span><span class="selector-pseudo">:3306</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:46</span><span class="selector-pseudo">:27</span> <span class="selector-tag">mysql</span> <span class="selector-tag">kernel</span>: <span class="selector-tag">IPVS</span>: <span class="selector-attr">[wrr]</span> <span class="selector-tag">scheduler</span> <span class="selector-tag">registered</span>.</div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:46</span><span class="selector-pseudo">:31</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[3943]</span>: <span class="selector-tag">VRRP_Instance</span>(VI_1) <span class="selector-tag">Transition</span> <span class="selector-tag">to</span> <span class="selector-tag">MASTER</span> <span class="selector-tag">STATE</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:46</span><span class="selector-pseudo">:32</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[3943]</span>: <span class="selector-tag">VRRP_Instance</span>(VI_1) <span class="selector-tag">Entering</span> <span class="selector-tag">MASTER</span> <span class="selector-tag">STATE</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:46</span><span class="selector-pseudo">:32</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[3943]</span>: <span class="selector-tag">VRRP_Instance</span>(VI_1) <span class="selector-tag">setting</span> <span class="selector-tag">protocol</span> <span class="selector-tag">VIPs</span>.</div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:46</span><span class="selector-pseudo">:32</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[3943]</span>: <span class="selector-tag">Sending</span> <span class="selector-tag">gratuitous</span> <span class="selector-tag">ARP</span> <span class="selector-tag">on</span> <span class="selector-tag">eth0</span> <span class="selector-tag">for</span> <span class="selector-tag">192</span><span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.111</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:46</span><span class="selector-pseudo">:32</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[3943]</span>: <span class="selector-tag">VRRP_Instance</span>(VI_1) <span class="selector-tag">Sending</span>/<span class="selector-tag">queueing</span> <span class="selector-tag">gratuitous</span> <span class="selector-tag">ARPs</span> <span class="selector-tag">on</span> <span class="selector-tag">eth0</span> <span class="selector-tag">for</span> <span class="selector-tag">192</span><span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.111</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:46</span><span class="selector-pseudo">:32</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[3943]</span>: <span class="selector-tag">Sending</span> <span class="selector-tag">gratuitous</span> <span class="selector-tag">ARP</span> <span class="selector-tag">on</span> <span class="selector-tag">eth0</span> <span class="selector-tag">for</span> <span class="selector-tag">192</span><span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.111</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:46</span><span class="selector-pseudo">:32</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_healthcheckers</span><span class="selector-attr">[3942]</span>: <span class="selector-tag">Netlink</span> <span class="selector-tag">reflector</span> <span class="selector-tag">reports</span> <span class="selector-tag">IP</span> <span class="selector-tag">192</span><span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.111</span> <span class="selector-tag">added</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:46</span><span class="selector-pseudo">:32</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[3943]</span>: <span class="selector-tag">Sending</span> <span class="selector-tag">gratuitous</span> <span class="selector-tag">ARP</span> <span class="selector-tag">on</span> <span class="selector-tag">eth0</span> <span class="selector-tag">for</span> <span class="selector-tag">192</span><span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.111</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:46</span><span class="selector-pseudo">:32</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[3943]</span>: <span class="selector-tag">Sending</span> <span class="selector-tag">gratuitous</span> <span class="selector-tag">ARP</span> <span class="selector-tag">on</span> <span class="selector-tag">eth0</span> <span class="selector-tag">for</span> <span class="selector-tag">192</span><span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.111</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:46</span><span class="selector-pseudo">:32</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[3943]</span>: <span class="selector-tag">Sending</span> <span class="selector-tag">gratuitous</span> <span class="selector-tag">ARP</span> <span class="selector-tag">on</span> <span class="selector-tag">eth0</span> <span class="selector-tag">for</span> <span class="selector-tag">192</span><span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.111</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">20</span><span class="selector-pseudo">:46</span><span class="selector-pseudo">:37</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[3943]</span>: <span class="selector-tag">Sending</span> <span class="selector-tag">gratuitous</span> <span class="selector-tag">ARP</span> <span class="selector-tag">on</span> <span class="selector-tag">eth0</span> <span class="selector-tag">for</span> <span class="selector-tag">192</span><span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.111</span></div></pre></td></tr></table></figure>
+<p>这里你显示了Master start 显示 Nov 13 20:46:37 mysql Keepalived_vrrp[3943]: Sending gratuitous ARP on eth0 for 192.168.1.111</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[3943]</span>: <span class="selector-tag">VRRP_Instance</span>(<span class="selector-tag">VI_1</span>) <span class="selector-tag">Transition</span> <span class="selector-tag">to</span> <span class="selector-tag">MASTER</span> <span class="selector-tag">STATE</span></div><div class="line"><span class="selector-tag">Nov</span> 13 20<span class="selector-pseudo">:46</span><span class="selector-pseudo">:37</span> <span class="selector-tag">mysql</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[3943]</span>: <span class="selector-tag">Sending</span> <span class="selector-tag">gratuitous</span> <span class="selector-tag">ARP</span> <span class="selector-tag">on</span> <span class="selector-tag">eth0</span> <span class="selector-tag">for</span> 192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.111</span></div></pre></td></tr></table></figure>
+<h3 id="测试："><a href="#测试：" class="headerlink" title="测试："></a>测试：</h3><p>找一台局域网PC，然后去ping  MySQL的VIP，这时候MySQL的VIP是可以ping的通的<br>　　停止MySQL服务，看keepalived健康检查程序是否会触发我们编写的脚本<br>　　2、192.168.1.171上keepalived安装及配置.<br>　　<br>　　<br>　　1.安装keepalived  跟主MySQL一样。<br>　　<br>　　2.配置keepalived<br>　<br>　这台配置和上面基本一样，但有三个地方不同：<code>优先级为90、无抢占设置、real_server为本机IP</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash">mkdir /etc/keepalived  </span></div><div class="line"><span class="meta">#</span><span class="bash">vi /etc/keepalived/keepalived.conf</span></div></pre></td></tr></table></figure>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">! Configuration File for keepalived</div><div class="line"></div><div class="line">global_defs &#123;</div><div class="line">   notification_email &#123;</div><div class="line">   chengyangyang@hz-health.cn</div><div class="line"></div><div class="line">    &#125;</div><div class="line">   notification_email_from    chengyangyang@hz-health.cn</div><div class="line">   smtp_server <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></div><div class="line">   smtp_connect_timeout <span class="number">30</span></div><div class="line">   router_id LVS_DEVEL</div><div class="line">   vrrp_skip_check_adv_addr</div><div class="line">   vrrp_strict</div><div class="line">   vrrp_garp_interval <span class="number">0</span></div><div class="line">   vrrp_gna_interval <span class="number">0</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">vrrp_instance VI_1 &#123;</div><div class="line">    <span class="section">state</span> BACKUP</div><div class="line">    interface eth0</div><div class="line">    virtual_router_id <span class="number">51</span></div><div class="line">    priority <span class="number">90</span></div><div class="line">    advert_int <span class="number">1</span></div><div class="line">    authentication &#123;</div><div class="line">        auth_type PASS</div><div class="line">        auth_pass <span class="number">1111</span></div><div class="line">    &#125;</div><div class="line">    virtual_ipaddress &#123;</div><div class="line">        <span class="number">192.168</span><span class="number">.1</span><span class="number">.111</span></div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">virtual_server <span class="number">192.168</span><span class="number">.1</span><span class="number">.111</span> <span class="number">3306</span> &#123;</div><div class="line">    delay_loop <span class="number">6</span></div><div class="line">    lb_algo wrr</div><div class="line">      lb_kind DR</div><div class="line">    persistence_timeout <span class="number">50</span></div><div class="line">    protocol TCP</div><div class="line"></div><div class="line">        real_server <span class="number">192.168</span><span class="number">.1</span><span class="number">.171</span> <span class="number">3306</span> &#123;</div><div class="line">        weight <span class="number">100</span></div><div class="line">        notify_down /data/shell/mysql.sh</div><div class="line">        TCP_CHECK &#123;</div><div class="line">        connect_timeout <span class="number">10</span></div><div class="line">        nb_get_retry <span class="number">3</span></div><div class="line">        delay_before_retry <span class="number">3</span></div><div class="line">        connect_port <span class="number">3306</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>编写检测服务down后所要执行的脚本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># vim /data/shell/mysql.sh </span></div><div class="line"><span class="meta">#!/bin/sh  </span></div><div class="line">pkill keepalived  </div><div class="line"><span class="comment">#chmod +x /data/shell/mysql.sh</span></div></pre></td></tr></table></figure>
+<p>启动从搭建：keepalived  </p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="selector-attr">[root@mysql-2 shell]</span># /<span class="selector-tag">etc</span>/<span class="selector-tag">init</span><span class="selector-class">.d</span>/<span class="selector-tag">keepalived</span> <span class="selector-tag">start</span></div><div class="line">正在启动 <span class="selector-tag">keepalived</span>：                                      <span class="selector-attr">[确定]</span></div><div class="line"><span class="selector-attr">[root@mysql-2 shell]</span># <span class="selector-tag">ps</span> <span class="selector-tag">-ef</span> | <span class="selector-tag">grep</span> <span class="selector-tag">keep</span></div><div class="line"><span class="selector-tag">root</span>     <span class="selector-tag">14340</span>     <span class="selector-tag">1</span>  <span class="selector-tag">0</span> <span class="selector-tag">12</span><span class="selector-pseudo">:37</span> ?        <span class="selector-tag">00</span><span class="selector-pseudo">:00</span><span class="selector-pseudo">:00</span> <span class="selector-tag">keepalived</span> <span class="selector-tag">-D</span></div><div class="line"><span class="selector-tag">root</span>     <span class="selector-tag">14341</span> <span class="selector-tag">14340</span>  <span class="selector-tag">0</span> <span class="selector-tag">12</span><span class="selector-pseudo">:37</span> ?        <span class="selector-tag">00</span><span class="selector-pseudo">:00</span><span class="selector-pseudo">:00</span> <span class="selector-tag">keepalived</span> <span class="selector-tag">-D</span></div><div class="line"><span class="selector-tag">root</span>     <span class="selector-tag">14342</span> <span class="selector-tag">14340</span>  <span class="selector-tag">0</span> <span class="selector-tag">12</span><span class="selector-pseudo">:37</span> ?        <span class="selector-tag">00</span><span class="selector-pseudo">:00</span><span class="selector-pseudo">:00</span> <span class="selector-tag">keepalived</span> <span class="selector-tag">-D</span></div></pre></td></tr></table></figure>
+<p>测试<br>　　停止MySQL服务，看keepalived健康检查程序是否会触发我们编写的脚本。
+　　</p>
+<p>MySQL远程登录测试<br>　　我们找一台安装有MySQL客户端的linux，然后登录VIP，看是否能登录，在登录之两台MySQL服务器都要授权允许从远程登录。<br>　　<br>　　<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">　　 <span class="number">1.</span> MySQL&gt; grant all privileges on *.* to 'root'@'%' identified by '<span class="number">123456</span>';  </div><div class="line"><span class="number">2.</span> Query OK, <span class="number">0</span> rows affected (<span class="number">0.00</span> sec)  </div><div class="line"><span class="number">3.</span>  </div><div class="line"><span class="number">4.</span> MySQL&gt; flush privileges;  </div><div class="line"><span class="number">5.</span> Query OK, <span class="number">0</span> rows affected (<span class="number">0.00</span> sec)</div></pre></td></tr></table></figure></p>
+<p>　● keepalived故障转移测试<br>　<br>　　※ 在windows客户端一直去ping  VIP，然后关闭192.168.1.170上的keepalived，正常情况下VIP就会切换到192.168.1.171上面去<br>　　※ 开启192.168.1.170上的keepalived，关闭192.168.1.171上的keepalived，看是否能自动切换，正常情况下VIP又会属于192.168.1.171<br>　　注：keepalived切换速度还是非常块的，整个切换过程只需1-3秒<br>　<br>　● MySQL故障转移测试<br>　　※在192.168.1.170上关闭MySQL服务，看VIP是否会切换到192.168.1.171上<br>　　※开启192.168.1.170上的MySQL和keepalived，然后关闭192.168.1.171上的MySQL，看VIP是否会切换到192.168.1.170上</p>
+<p>我这里先关闭170 主MySQL的数据库。</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">[root@mysql shell]# /etc/init.d/mysql stop</div><div class="line"><span class="symbol">Shutting</span> down <span class="symbol">MySQL</span>.... <span class="symbol">SUCCESS</span>!</div><div class="line"></div><div class="line">查看日志：</div><div class="line"><span class="symbol">Nov</span> <span class="number">13</span> <span class="number">20</span>:<span class="number">47</span>:<span class="number">03</span> mysql <span class="symbol">Keepalived_healthcheckers</span>[<span class="number">3942</span>]: <span class="symbol">TCP</span> connection to [<span class="number">192.168</span><span class="number">.1</span><span class="number">.170</span>]:<span class="number">3306</span> failed.</div><div class="line"><span class="symbol">Nov</span> <span class="number">13</span> <span class="number">20</span>:<span class="number">47</span>:<span class="number">06</span> mysql <span class="symbol">Keepalived_healthcheckers</span>[<span class="number">3942</span>]: <span class="symbol">TCP</span> connection to [<span class="number">192.168</span><span class="number">.1</span><span class="number">.170</span>]:<span class="number">3306</span> failed.</div><div class="line"><span class="symbol">Nov</span> <span class="number">13</span> <span class="number">20</span>:<span class="number">47</span>:<span class="number">06</span> mysql <span class="symbol">Keepalived_healthcheckers</span>[<span class="number">3942</span>]: <span class="symbol">Check</span> on service [<span class="number">192.168</span><span class="number">.1</span><span class="number">.170</span>]:<span class="number">3306</span> failed after <span class="number">1</span> retry.</div><div class="line"><span class="symbol">Nov</span> <span class="number">13</span> <span class="number">20</span>:<span class="number">47</span>:<span class="number">06</span> mysql <span class="symbol">Keepalived_healthcheckers</span>[<span class="number">3942</span>]: <span class="symbol">Removing</span> service [<span class="number">192.168</span><span class="number">.1</span><span class="number">.170</span>]:<span class="number">3306</span> from <span class="symbol">VS</span> [<span class="number">192.168</span><span class="number">.1</span><span class="number">.111</span>]:<span class="number">3306</span></div><div class="line"><span class="symbol">Nov</span> <span class="number">13</span> <span class="number">20</span>:<span class="number">47</span>:<span class="number">06</span> mysql <span class="symbol">Keepalived_healthcheckers</span>[<span class="number">3942</span>]: <span class="symbol">Executing</span> [/data/shell/mysql.sh] for service [<span class="number">192.168</span><span class="number">.1</span><span class="number">.170</span>]:<span class="number">3306</span> in <span class="symbol">VS</span> [<span class="number">192.168</span><span class="number">.1</span><span class="number">.111</span>]:<span class="number">3306</span></div><div class="line"><span class="symbol">Nov</span> <span class="number">13</span> <span class="number">20</span>:<span class="number">47</span>:<span class="number">06</span> mysql <span class="symbol">Keepalived_healthcheckers</span>[<span class="number">3942</span>]: <span class="symbol">Lost</span> quorum <span class="number">1</span><span class="number">-0</span>=<span class="number">1</span> &gt; <span class="number">0</span> for <span class="symbol">VS</span> [<span class="number">192.168</span><span class="number">.1</span><span class="number">.111</span>]:<span class="number">3306</span></div><div class="line"><span class="symbol">Nov</span> <span class="number">13</span> <span class="number">20</span>:<span class="number">47</span>:<span class="number">06</span> mysql <span class="symbol">Keepalived_healthcheckers</span>[<span class="number">3942</span>]: <span class="symbol">SMTP</span> connection <span class="symbol">ERROR</span> to [<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>]:<span class="number">25.</span></div><div class="line"><span class="symbol">Nov</span> <span class="number">13</span> <span class="number">20</span>:<span class="number">47</span>:<span class="number">06</span> mysql <span class="symbol">Keepalived</span>[<span class="number">3941</span>]: <span class="symbol">Stopping</span></div><div class="line"><span class="symbol">Nov</span> <span class="number">13</span> <span class="number">20</span>:<span class="number">47</span>:<span class="number">06</span> mysql <span class="symbol">Keepalived_vrrp</span>[<span class="number">3943</span>]: <span class="symbol">VRRP_Instance</span>(<span class="symbol">VI_1</span>) sent <span class="number">0</span> priority</div><div class="line"><span class="symbol">Nov</span> <span class="number">13</span> <span class="number">20</span>:<span class="number">47</span>:<span class="number">06</span> mysql <span class="symbol">Keepalived_vrrp</span>[<span class="number">3943</span>]: <span class="symbol">VRRP_Instance</span>(<span class="symbol">VI_1</span>) removing protocol <span class="symbol">VIPs</span>.</div><div class="line"><span class="symbol">Nov</span> <span class="number">13</span> <span class="number">20</span>:<span class="number">47</span>:<span class="number">06</span> mysql <span class="symbol">Keepalived_healthcheckers</span>[<span class="number">3942</span>]: <span class="symbol">Stopped</span></div><div class="line"><span class="symbol">Nov</span> <span class="number">13</span> <span class="number">20</span>:<span class="number">47</span>:<span class="number">06</span> mysql kernel: <span class="symbol">IPVS</span>: <span class="symbol">__ip_vs_del_service</span>: enter</div><div class="line"><span class="symbol">Nov</span> <span class="number">13</span> <span class="number">20</span>:<span class="number">47</span>:<span class="number">06</span> mysql <span class="symbol">Keepalived_vrrp</span>[<span class="number">3943</span>]: <span class="symbol">Stopped</span></div><div class="line"><span class="symbol">Nov</span> <span class="number">13</span> <span class="number">20</span>:<span class="number">47</span>:<span class="number">06</span> mysql <span class="symbol">Keepalived</span>[<span class="number">3941</span>]: <span class="symbol">Stopped</span> <span class="symbol">Keepalived</span> v1<span class="number">.2</span><span class="number">.24</span> (<span class="number">11</span>/<span class="number">12</span>,<span class="number">2016</span>)</div></pre></td></tr></table></figure>
+<p>这里提示已经去执行 Executing [/data/shell/mysql.sh] 关闭掉kkepalived</p>
+<p>然后在查看主的192.168.1.170 日志：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="selector-attr">[root@mysql-2 shell]</span># <span class="selector-tag">tailf</span> <span class="selector-tag">-1000</span> /<span class="selector-tag">var</span>/<span class="selector-tag">log</span>/<span class="selector-tag">messages</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">21</span><span class="selector-pseudo">:06</span><span class="selector-pseudo">:11</span> <span class="selector-tag">mysql-2</span> <span class="selector-tag">Keepalived_healthcheckers</span><span class="selector-attr">[14762]</span>: <span class="selector-tag">Using</span> <span class="selector-tag">LinkWatch</span> <span class="selector-tag">kernel</span> <span class="selector-tag">netlink</span> <span class="selector-tag">reflector</span>...</div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">21</span><span class="selector-pseudo">:06</span><span class="selector-pseudo">:11</span> <span class="selector-tag">mysql-2</span> <span class="selector-tag">Keepalived_healthcheckers</span><span class="selector-attr">[14762]</span>: <span class="selector-tag">Activating</span> <span class="selector-tag">healthchecker</span> <span class="selector-tag">for</span> <span class="selector-tag">service</span> <span class="selector-attr">[192.168.1.171]</span><span class="selector-pseudo">:3306</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">21</span><span class="selector-pseudo">:06</span><span class="selector-pseudo">:11</span> <span class="selector-tag">mysql-2</span> <span class="selector-tag">kernel</span>: <span class="selector-tag">IPVS</span>: <span class="selector-attr">[wrr]</span> <span class="selector-tag">scheduler</span> <span class="selector-tag">registered</span>.</div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">21</span><span class="selector-pseudo">:06</span><span class="selector-pseudo">:14</span> <span class="selector-tag">mysql-2</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[14763]</span>: <span class="selector-tag">VRRP_Instance</span>(VI_1) <span class="selector-tag">Transition</span> <span class="selector-tag">to</span> <span class="selector-tag">MASTER</span> <span class="selector-tag">STATE</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">21</span><span class="selector-pseudo">:06</span><span class="selector-pseudo">:15</span> <span class="selector-tag">mysql-2</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[14763]</span>: <span class="selector-tag">VRRP_Instance</span>(VI_1) <span class="selector-tag">Entering</span> <span class="selector-tag">MASTER</span> <span class="selector-tag">STATE</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">21</span><span class="selector-pseudo">:06</span><span class="selector-pseudo">:15</span> <span class="selector-tag">mysql-2</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[14763]</span>: <span class="selector-tag">VRRP_Instance</span>(VI_1) <span class="selector-tag">setting</span> <span class="selector-tag">protocol</span> <span class="selector-tag">VIPs</span>.</div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">21</span><span class="selector-pseudo">:06</span><span class="selector-pseudo">:15</span> <span class="selector-tag">mysql-2</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[14763]</span>: <span class="selector-tag">Sending</span> <span class="selector-tag">gratuitous</span> <span class="selector-tag">ARP</span> <span class="selector-tag">on</span> <span class="selector-tag">eth0</span> <span class="selector-tag">for</span> <span class="selector-tag">192</span><span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.111</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">21</span><span class="selector-pseudo">:06</span><span class="selector-pseudo">:15</span> <span class="selector-tag">mysql-2</span> <span class="selector-tag">Keepalived_vrrp</span><span class="selector-attr">[14763]</span>: <span class="selector-tag">VRRP_Instance</span>(VI_1) <span class="selector-tag">Sending</span>/<span class="selector-tag">queueing</span> <span class="selector-tag">gratuitous</span> <span class="selector-tag">ARPs</span> <span class="selector-tag">on</span> <span class="selector-tag">eth0</span> <span class="selector-tag">for</span> <span class="selector-tag">192</span><span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.111</span></div><div class="line"><span class="selector-tag">Nov</span> <span class="selector-tag">13</span> <span class="selector-tag">21</span><span class="selector-pseudo">:06</span><span class="selector-pseudo">:15</span> <span class="selector-tag">mysql-2</span> <span class="selector-tag">Keepalived_healthcheckers</span><span class="selector-attr">[14762]</span>: <span class="selector-tag">Netlink</span> <span class="selector-tag">reflector</span> <span class="selector-tag">reports</span> <span class="selector-tag">IP</span> <span class="selector-tag">192</span><span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.111</span> <span class="selector-tag">added</span></div></pre></td></tr></table></figure>
+<p>这里显示已经出现了</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">VRRP_Instance(VI_1) Transition to <span class="keyword">MASTER</span> <span class="title">STATE</span></div></pre></td></tr></table></figure>
+<p>说明从的数据库已经切到master上面了。</p>
+<p>这个有什么效果呢？</p>
+<p>可以看到连接MySQL数据库192.168.1.170服务。 当170主关闭了，171从数据库还是开启的。</p>
+<p>可以参考视频：<a href="https://ke.qq.com/webcourse/index.html#course_id=134105&amp;term_id=100150148&amp;taid=598898829822937&amp;vid=d1410xfhpp8" target="_blank" rel="external">构建MySQL+keepalived高可用自动切换</a></p>
+<p>可参考文档：<a href="http://kb.cnblogs.com/page/83944/" target="_blank" rel="external">利用keepalived构建高可用MySQL-HA</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/04/26/数据库/MySQL/MySQL5-6主从-优化-集群与读写分离-MySQL-Proxy-实践/" data-toggle="tooltip" data-placement="top" title="【第十章】MySQL5-6主从-优化-集群与读写分离-MySQL-Proxy-实践">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/04/16/数据库/MySQL/mysql-proxy代理连接阿里云RDS/" data-toggle="tooltip" data-placement="top" title="Mysql-proxy代理连接阿里云RDS">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#MySQL.Database" title="MySQL.Database">MySQL.Database</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yancy-cc";
+    var disqus_identifier = "http://blog.yancy.cc/2016/04/21/数据库/MySQL/构建MySQL+keepalived高可用自动切换/";
+    var disqus_url = "http://blog.yancy.cc/2016/04/21/数据库/MySQL/构建MySQL+keepalived高可用自动切换/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

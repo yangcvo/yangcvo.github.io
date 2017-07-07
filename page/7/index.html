@@ -90,7 +90,7 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/about/About-me.html">About</a>
                         </li>
                         
                     
@@ -104,7 +104,7 @@
 
                         
                         <li>
-                            <a href="/about/About-me.html">About</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -184,26 +184,130 @@
 
 <div class="post-preview">
 
-    <a href="/2016/06/29/运维安全/ 化解自己的阿里云服务器被黑客攻击-暴力破解/">
+    <a href="/2016/07/13/容器-虚拟化/Docker/Docker学习(四)：网络功能Docker独立IP及容器互联/">
         <h2 class="post-title">
-            化解自己的阿里云服务器被黑客攻击-暴力破解
+            Docker学习(四)：网络功能Docker独立IP及容器互联
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            说明下：因为阿里云服务器我是用来自己搭建blog 的做了一些简单的监控。
-因为防止被攻击瘫痪，做到安全防范，可是今天晚上吃完饭，发现又被人攻击，是印度和巴西IP地址暴力破解方式一直在尝试破解我密码。
-1还好我在阿里云上面使用了云盾告警，其实它这个一般般，只能提醒，不能有效阻止黑客攻击。
+            Docker 独立IP及容器互联内置bridge (nat)
+缺点：
 
-收到告警以后，马上打开电脑去云盾上面查看下。
 
-然后看了以后发现问题不大，可是上机器查看，发现有不断的攻......
+需要配置服务注册/发现，否则宿主机端口分配困难，容易冲突。
+由于每个容器暴露的端口都不一致，造成前端路由层nginx配置（proxy_pass）里面无法使用dns方式。
+端口映射要在容器启动时指定好，后期无法变更。
+测试发现nat不支持websocket.
+
+自建桥接网络
+优点：
+
+
+每个容器都有自己的独立IP，对外提......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-06-29
+        2016-07-13
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/07/13/容器-虚拟化/Docker/Docker学习(五)：容器内多进程管理/">
+        <h2 class="post-title">
+            Docker学习(五)：容器内多进程管理
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            目录1、Supervisor介绍及原理2、Supervisor配置与实例3、参考文档
+从Docker的设计初衷来看，它并不推崇在一个容器中运行多个进程，但在一些实际的场景，比如小规模应用、老业务容器化等，都可能需要在一个容器中，同时运行多个程序。
+在非容器的环境下，同时运行多个进程是非常简单的，系统初始化的时候，都会启动一个init进程，其余的进程都由它来管理。但在容器环境下就不一样了，因为......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-07-13
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/07/12/容器-虚拟化/Docker/Docker学习(三)：容器应用/">
+        <h2 class="post-title">
+            Docker学习(三)：容器应用
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            启动容器启动容器有两种方式，一种是基于镜像新建一个容器并启动，另外一个是将在终止状态（stopped）的容器重新启动。
+因为 Docker 的容器实在太轻量级了，很多时候用户都是随时删除和新创建容器。
+docker 客户端非常简单 。Docker 的每一项操作都是通过命令行来实现的，而每一条命令行都可以使用一系列的标识（flags）和参数。
+123# Usage:  [sudo] docke......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-07-12
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/07/12/容器-虚拟化/Docker/Docker学习(二)：安装篇/">
+        <h2 class="post-title">
+            Docker学习(二)：安装篇
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            CentOS 系列安装Docker以下版本的CentOS 支持 Docker ：
+CentOS 7 (64-bit)CentOS 6.5 (64-bit) or later该指南可能会适用于其它的 EL6/EL7 的 Linux 发行版，譬如 Scientific Linux 。但是我们没有做过任何测试。
+请注意，由于 Docker 的局限性，Docker 只能运行在64位的系统中。
+这些操......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-07-12
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/07/12/容器-虚拟化/Docker/Docker学习(一)：简介/">
+        <h2 class="post-title">
+            Docker学习(一)：简介
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            ##Docker入门简介的个人理解：
+在大型的互联网已大部分在使用docker容器，主要是因为对单个应用的确提供了非常方便。迁移环境扩容部署只需要几分钟就可以做到上百台上千台。
+
+理解分几点：
+
+1234567891011121314151.Docker虚拟化对比：跟传统的虚拟化对比 XEN或KVM区别。因为XEN和KVM这些传统方式则是在硬件的基础上，虚拟出自己的系统，在系统上班部署相关的......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-07-12
     </p>
 
 </div>
@@ -259,6 +363,33 @@ SSH访问始终是关键，你可能要想方设法提高你的SSH访问的安�
 
 <div class="post-preview">
 
+    <a href="/2016/06/29/运维安全/ 化解自己的阿里云服务器被黑客攻击-暴力破解/">
+        <h2 class="post-title">
+            化解自己的阿里云服务器被黑客攻击-暴力破解
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            说明下：因为阿里云服务器我是用来自己搭建blog 的做了一些简单的监控。
+因为防止被攻击瘫痪，做到安全防范，可是今天晚上吃完饭，发现又被人攻击，是印度和巴西IP地址暴力破解方式一直在尝试破解我密码。
+1还好我在阿里云上面使用了云盾告警，其实它这个一般般，只能提醒，不能有效阻止黑客攻击。
+
+收到告警以后，马上打开电脑去云盾上面查看下。
+
+然后看了以后发现问题不大，可是上机器查看，发现有不断的攻......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-06-29
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/2016/06/22/性能监控/Zabbix/zabbix3-0实现微信报警/">
         <h2 class="post-title">
             zabbix3.0实现微信报警
@@ -295,129 +426,6 @@ SSH访问始终是关键，你可能要想方设法提高你的SSH访问的安�
     <p class="post-meta">
         Posted by Yancy on
         2016-06-21
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/06/21/性能监控/Zabbix/zabbix3-0部署jmx监控tomcat/">
-        <h2 class="post-title">
-            zabbix3.0部署jmx监控tomcat
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            zabbix提供了一个java gateway的应用去监控jmx（Java Management Extensions，即Java管理扩展）是一个为应用程序、设备、系统等植入管理功能的框架。JMX可以跨越一系列异构操作系统平台、系统体系结构和网络传输协议，灵活的开发无缝集成的系统、网络和服务管理应用。
-一. Zabbix 的JMX监控架构
-一：部署环境123Centos   6.7Zabbi......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-06-21
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/06/21/Web服务技术/tomcat/记一次线上tomcat内存不足配置并发优化过程/">
-        <h2 class="post-title">
-            记一次线上tomcat内存不足配置并发优化过程
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            前言：tomcat的内存使用配置,最大连接数配置。如何修改配置呢，在/tomcat的/bin/下面有个这个脚本文件。catailna.sh 脚本文件。 如果windows 是bat设置tomcat的使用内存，也其实就是设置jim的使用参数。
-设置Tomcat启动的初始内存其初始空间(即-Xms)是物理内存的1/64，最大空间(-Xmx)是物理内存的1/4。可以利用JVM提供的-Xmn -Xm......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-06-21
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/06/21/性能监控/Zabbix/zabbix监控tcp连接数/">
-        <h2 class="post-title">
-            zabbix监控tcp连接数
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            系统环境:
-CentOS release 6.7 (Final)
-zabbix.3.0.3
-zabbix-server端：首先创建脚本 Shell
-12mkdir /usr/local/zabbix/scripts[root@zabbix scripts]# vim /usr/local/zabbix/scripts/tcp_connections.sh
-script：
-1234567891......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-06-21
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/06/19/性能监控/Zabbix/zabbix-server3-0-3版本环境安装部署/">
-        <h2 class="post-title">
-            zabbix-server3.0.3版本环境安装部署
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            系统环境：
-192.168.1.170 MySQL主 
-192.168.1.183 zabbix-server
-
-CentOS Linux release 7.2.1511 (Core)
-
-zabbix源码下载 : http://www.zabbix.com/download.php
-依赖下载： https://github.com/zabbixcn/curl-rpm/tree/master......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-06-19
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/06/18/性能监控/Zabbix/zabbix-server2-4全新升级3-0版本/">
-        <h2 class="post-title">
-            zabbix-server2.4全新升级3.0版本
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            zabbix3.0出来了一段时间了，最近忍不住把公司原来的2.4.7版本升级到了3.0。zabbix升级其实很简单，基本步骤为：备份-&gt;重新安装新版本。接下来简单写下这次升级的操作和问题
-1、 关闭zabbix server防止有新的数据提交到数据库中、直接关闭数据库效果也是一样的。这里我先关闭掉我的服务：
-12/etc/init.d/zabbix_server stop  关闭了se......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-06-18
     </p>
 
 </div>
@@ -462,15 +470,15 @@ zabbix源码下载 : http://www.zabbix.com/download.php
                     <div class="tags">
                         
                             
+                            <a href="/tags/#DNS" title="DNS" rel="3">DNS</a>
+                            
+                        
+                            
                             <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="6">Java+Tomcat notes</a>
                             
                         
                             
                             <a href="/tags/#Dubbo" title="Dubbo" rel="2">Dubbo</a>
-                            
-                        
-                            
-                            <a href="/tags/#DNS" title="DNS" rel="3">DNS</a>
                             
                         
                             
@@ -482,11 +490,23 @@ zabbix源码下载 : http://www.zabbix.com/download.php
                             
                         
                             
-                            <a href="/tags/#Linux note" title="Linux note" rel="13">Linux note</a>
-                            
                         
                             
                             <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
+                            
+                        
+                            
+                        
                             
                         
                             
@@ -502,13 +522,13 @@ zabbix源码下载 : http://www.zabbix.com/download.php
                             
                         
                             
+                            <a href="/tags/#Performance and framework" title="Performance and framework" rel="2">Performance and framework</a>
+                            
+                        
+                            
                         
                             
                             <a href="/tags/#Personal life record" title="Personal life record" rel="7">Personal life record</a>
-                            
-                        
-                            
-                        
                             
                         
                             
@@ -516,15 +536,9 @@ zabbix源码下载 : http://www.zabbix.com/download.php
                             
                         
                             
+                        
+                            
                             <a href="/tags/#Kafka" title="Kafka" rel="2">Kafka</a>
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Performance and framework" title="Performance and framework" rel="2">Performance and framework</a>
-                            
-                        
                             
                         
                             
@@ -537,8 +551,6 @@ zabbix源码下载 : http://www.zabbix.com/download.php
                         
                             
                             <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
-                            
-                        
                             
                         
                             
@@ -560,13 +572,19 @@ zabbix源码下载 : http://www.zabbix.com/download.php
                             
                         
                             
+                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
                         
                             
                             <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="17">Virtualization-Docker</a>
-                            
-                        
-                            
-                        
                             
                         
                             
@@ -576,15 +594,13 @@ zabbix源码下载 : http://www.zabbix.com/download.php
                             
                         
                             
+                        
+                            
+                            <a href="/tags/#MySQL.Database" title="MySQL.Database" rel="26">MySQL.Database</a>
+                            
+                        
+                            
                             <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="6">Log analysis platform</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
                             
                         
                             
@@ -596,11 +612,11 @@ zabbix源码下载 : http://www.zabbix.com/download.php
                             
                         
                             
-                            <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
+                            <a href="/tags/#Jenkins" title="Jenkins" rel="2">Jenkins</a>
                             
                         
                             
-                            <a href="/tags/#Jenkins" title="Jenkins" rel="2">Jenkins</a>
+                            <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
                             
                         
                             

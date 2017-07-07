@@ -90,7 +90,7 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/about/About-me.html">About</a>
                         </li>
                         
                     
@@ -104,7 +104,7 @@
 
                         
                         <li>
-                            <a href="/about/About-me.html">About</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -184,22 +184,21 @@
 
 <div class="post-preview">
 
-    <a href="/2016/02/25/Web服务技术/Nginx/Nginx限制IP访问权限或限制某个IP同一时间段的访问次数/">
+    <a href="/2016/03/26/Web服务技术/Nginx/ Nginx 和 apache 对比 /">
         <h2 class="post-title">
-            Nginx限制IP访问权限或限制某个IP同一时间段的访问次数
+            Nginx-反向代理
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            nginx限制ip访问 nginx访问权限看下配置：
-这里我只允许我公司IP访问：
-12345678910111213141516  server &#123;        listen       80;        server_name  kibana.ihaozhuo.com;        location / &#123;             index        i......
+            Nginx 和 apache 对比个人理解：存在就是理由,一般来说,需要性能的 web 服务,用 nginx 。如果不需要性能只求稳定, 那就 apache 吧。后者的各种功能模块实现得比前者,例如 ssl 的模块就比前者好,可配 置项多。
+这里要注意一点,epoll(freebsd 上是 kqueue )网络 IO 模型是 nginx 处理性能 高的根本理由,但并不是所有的情况下都是 ep......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-02-25
+        2016-03-26
     </p>
 
 </div>
@@ -207,21 +206,21 @@
 
 <div class="post-preview">
 
-    <a href="/2016/02/14/个人生活记录/在一起的第588天💕/">
+    <a href="/2016/03/26/Web服务技术/Nginx/Nginx+Tomcat实现反向代理优化与配置 /">
         <h2 class="post-title">
-            在一起的第588天💕
+            Nginx+Tomcat实现反向代理优化与配置
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            今天2016年2月14日我们的第二个情人节： 夜已经很深了，我还坐在电脑前写信给你,慢慢把我们在一起点点滴滴记录下来,这些天总是有很多话想对你说,但对你的思念扰乱了我所有的思绪。我不知道该说些什么或怎么说？说心里话，和你的每一天我很快乐很幸福，是我一生中从未有过的！真的XXL。
-   在这个13亿茫茫人海当中，你已我相距1325公里因缘分而相识，因相趣而相知，你是一个文文静静，高高大大，很懂......
+            Nginx+Tomcat实现反向代理什么是反向代理反向代理（Reverse Proxy）方式是指用代理服务器来接受 internet 上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给 internet 上请求连接的客户端，此时代理服务器对外就表现为一个反向代理服务器。
+举个例子，一个用户访问 http://www.example.com/readme，但是 w......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-02-14
+        2016-03-26
     </p>
 
 </div>
@@ -229,22 +228,23 @@
 
 <div class="post-preview">
 
-    <a href="/2016/01/30/日志分析平台/Elasticsearch/elasticsearch的索引定时自动清理/">
+    <a href="/2016/03/23/数据库/MySQL/Mysql配置为Master:Slave的常用维护命令/">
         <h2 class="post-title">
-            elasticsearch的索引定时自动清理
+            Mysql配置为Master/Slave的常用维护命令
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            elasticsearch的索引定时自动清理之前用 logstash来做日志收集 并用 elasticsearch来搜索，因为日志没有进行过滤，没几天就发现elasticsearch的索引文件大的吓人，之前还真没清理过。其实要说清理也简单，直接到 elasticsearch data文件夹里删掉就行了，写个脚本定期清理集群es的日志数据。
-这里我清理1月7号的。
-这里后面是索引名称。app_......
+            Mysql配置为Master/Slave的常用维护命令master端：
+123show master status;   #查看状态：show processlist;     #查看slave下MySQL进程信息reset master;         #慎用，将清空日志及同步position
+slave端：
+12345CHANGE MASTER TO MASTER_LOG_FILE=’......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-01-30
+        2016-03-23
     </p>
 
 </div>
@@ -252,20 +252,20 @@
 
 <div class="post-preview">
 
-    <a href="/2016/01/29/日志分析平台/Elasticsearch/logstash如何收集tomcat日志分析/">
+    <a href="/2016/03/22/数据库/MySQL/MySQL中binglog数据恢复与定时删除/">
         <h2 class="post-title">
-            logstash如何写tomcat,redis,nginx日志收集规则
+            MySQL中binglog数据恢复与定时删除
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            logstash如何收集tomcat日志分析（可以参考我下面写的模板）1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162我想实现对tomcat的日志采集，正常应该创建一个file的input，这个input指定了监......
+            MySQL中binglog数据恢复与定时删除1234567891011121314//显示所有本机上的二进制日志mysql&gt; SHOW MASTER LOGS;//删除所有本机上的二进制日志mysql&gt; RESET MASTER;//删除所有创建时间在binary-log.xxx之前的二进制日志mysql&gt; PURGE MASTER LOGS TO 'binary-log.......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-01-29
+        2016-03-22
     </p>
 
 </div>
@@ -273,27 +273,21 @@
 
 <div class="post-preview">
 
-    <a href="/2016/01/28/DNS/DNS服务器主从复制搭建/">
+    <a href="/2016/03/22/数据库/MySQL/服务连接数据库出现报错：Could not get JDBC Connection; nested exception is java.sql.SQLException: Connections could not be acquired from the underlying database!"}/">
         <h2 class="post-title">
-            DNS服务器主从复制搭建
+            服务连接数据库出现报错：Could not get JDBC Connection; nested exception is java.sql.SQLException/ Connections could not be acquired from the underlying database!"}
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            DNS 服务器主从复制搭建最近部署测试环境和灰度发布环境，之前已经整改过一次，因为需要扩容添加，所以这次操作就把实现的过程记录下来了。 
-实现环境：centos 6.7 x86_64
-
-主DNS服务器：192.168.1.173
-从DNS服务器：192.168.1.174
-
-实验步骤1、关闭网络防火墙及SElinux（主从DNS服务器上都要有此操作）
-123[root@LAN_redis2 ......
+            服务连接数据库出现报错：Could not get JDBC Connection; nested exception is java.sql.SQLException: Connections could not be acquired from the underlying database!”}排查问题分为几点：
+12341、ping一下数据的IP地址，看能否通: telnet 192......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-01-28
+        2016-03-22
     </p>
 
 </div>
@@ -301,21 +295,21 @@
 
 <div class="post-preview">
 
-    <a href="/2016/01/21/日志分析平台/Elasticsearch/ELK-Elasticsearch-Logstash-Kibana-搭建日志集中分析平台实践/">
+    <a href="/2016/03/21/shell编程入门到简单/shell入门到简单 学习总结1-12章/">
         <h2 class="post-title">
-            ELK(Elasticsearch + Logstash + Kibana)搭建日志集中分析平台实践
+            shell入门到简单 学习总结1-12章
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            关注可参考：本文将安装Elasticsearch-1.7.2, Logstash-1.5.5, Kibana-4.1.5。 请注意版本要求，有些组件需要响应的版本要求。logstash是负责搜集和转发日志的，es用于存储和检索，kibana提供web端的展现…他们是独立运行的，也可以部署在同一台机器，也可以不同的机器。
-可以关注我的Github上面有详细文档：https://github.c......
+            第一章Shell前言：Shell本身是一种用C语言编写的程序，从用户的角度来看，Shell是用户与Linux操作系统沟通的桥梁。用户既可以输入命令执行，又可以利用 Shell脚本编程，完成更加复杂的操作。在Linux GUI日益完善的今天在运维领域Shell编程仍然起着不可忽视的作用。深入地了解和熟练地掌握Shell编程，是每一个Linux用户的必修。
+1.1 Linux的Shell种类：B......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-01-21
+        2016-03-21
     </p>
 
 </div>
@@ -323,22 +317,20 @@
 
 <div class="post-preview">
 
-    <a href="/2015/12/29/DNS/DNS安全章－DNS污染 /">
+    <a href="/2016/03/21/Web服务技术/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/">
         <h2 class="post-title">
-            DNS服务器主从复制搭建
+            tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            一 、什么是DNS污染 就是客户端发起正常的一次DNS请求，得到的确是一个异常或者不真实的DNS信息。一般造成这样的情况，很有可能DNS信息在某个环节被通过某种方式篡改。   
-二、有什么手段可以造成DNS污染 主要的方式，可以归纳为如下两种： 
-方式一、攻击者监测到DNS查询的请求报文时，伪装成DNS服务器向发出请求主机发送响应报文。因为DNS报文通常是无连接的UDP报文，没有确认机制，源......
+            tomcat性能优化：Java HotSpot(TM) 64-Bit Server VM warning: ignoring option PermSize=512m; support was removed in 8.0这个提示应该是升级JDK1.8以上 在Java的8命令行标志MaxPermSize已被删除。其原因是，持久代从热点堆中取出并转移到本机内存。所以为了消除这种信息编辑java......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-12-29
+        2016-03-21
     </p>
 
 </div>
@@ -346,22 +338,21 @@
 
 <div class="post-preview">
 
-    <a href="/2015/12/21/npm/npm翻墙加速国内镜像/">
+    <a href="/2016/03/21/Linux笔记/YUM/本地Yum仓库搭建部署/">
         <h2 class="post-title">
-            npm翻墙加速国内镜像
+            Centos6.7 本地Yum仓库搭建部署
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            问题Node.js 的依赖包管理生态系统 npm, 是世界上最大的生态系统开源库。 但国内使用 npm 来安装软件，速度很慢，有时候甚至直接就失败了！比如我安装stf就需要翻墙或者VPN去安装，可是就一直卡着。
-原因npm 默认是从国外的源获取和下载包信息，不慢才怪，有时甚至被墙，导致无法正常安装软件。
-解决可以采用国内的 npm 镜像来解决网速慢的问题。这里以“淘宝 NPM 镜像”举例。淘......
+            本地Yum仓库搭建部署搭建私有 yum 仓库服务端配置系统：Centos6.7去阿里镜像下载Centos6的yum源，安装系统eple-release源：
+12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-12-21
+        2016-03-21
     </p>
 
 </div>
@@ -369,21 +360,20 @@
 
 <div class="post-preview">
 
-    <a href="/2015/12/10/自动化+可视化/saltstack/服务自动化部署平台之Saltstack总结/">
+    <a href="/2016/03/15/运维笔记/个人记录😆-走上全栈运维工程师学习笔记/">
         <h2 class="post-title">
-            自动化运维工具-服务自动化部署平台之Saltstack总结
+            个人记录😆-走上全栈运维工程师学习笔记
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            服务自动化部署平台之Saltstack总结Saltstack是一个新的基础设施管理工具。目前处于快速发展阶段，可以看做是强化的Func+弱化的Puppet的组合。间接的反映出了saltstack的两大功能：远程执行和配置管理。
-SaltStack 保持了输入、输出、配置文件的一致性，所有文件均使用YAML格式。主要负责配置管理和远程执行（在远程主机运行预定义或任意的命令，也叫远程执行，这是 ......
+            个人运维学习笔记：1234567从2014年初就开始慢慢记录自己所接触和学习到的东西，慢慢的积累，整理出很多学习的好文章，在这里我并且记录下来。这是我现在维护的个人笔记库和博客不同，它们大多都不是直接来源于我的原创，而是我一边阅读一边整理加工而成的笔记列表.我的目的是将零散的知识点放在一个集中的地方.  第一：方便我自己查看和学习，可以更好的找到我想要的文档。 第二：可以给自己学习结果每年做......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-12-10
+        2016-03-15
     </p>
 
 </div>
@@ -391,21 +381,25 @@ SaltStack 保持了输入、输出、配置文件的一致性，所有文件均�
 
 <div class="post-preview">
 
-    <a href="/2015/12/01/运维性能测试/Cento6-7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行/">
+    <a href="/2016/03/14/数据库/MySQL/[第八章]MySQL数据库修改字符集/">
         <h2 class="post-title">
-            Cento6.7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行
+            【第八章】MySQL数据库修改字符集
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            APP测试神器：STF最近项目涉及到较多设备批量管理的需求，发现一工具可以批量对大量设备进行WEB端管理，工具主页：https://openstf.github.io/工具名STF（Smartphone Test Farm）
-STF (or Smartphone Test Farm) is a web application for debugging smartphones, smartw......
+            mysql数据库修改字符集这个一开始我用查看了下开发环境yjk数据库。
+mysql数据库修改字符集system variables的character_set_server改成utf8mb4
+查看字符集的对应的：
+12show variables like 'character%';character_set_server =utf8
+我直接到数据库里面修改。
+1234my.cnf下面修改：......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-12-01
+        2016-03-14
     </p>
 
 </div>
@@ -450,15 +444,15 @@ STF (or Smartphone Test Farm) is a web application for debugging smartphones, sm
                     <div class="tags">
                         
                             
+                            <a href="/tags/#DNS" title="DNS" rel="3">DNS</a>
+                            
+                        
+                            
                             <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="6">Java+Tomcat notes</a>
                             
                         
                             
                             <a href="/tags/#Dubbo" title="Dubbo" rel="2">Dubbo</a>
-                            
-                        
-                            
-                            <a href="/tags/#DNS" title="DNS" rel="3">DNS</a>
                             
                         
                             
@@ -470,11 +464,23 @@ STF (or Smartphone Test Farm) is a web application for debugging smartphones, sm
                             
                         
                             
-                            <a href="/tags/#Linux note" title="Linux note" rel="13">Linux note</a>
-                            
                         
                             
                             <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
+                            
+                        
+                            
+                        
                             
                         
                             
@@ -490,13 +496,13 @@ STF (or Smartphone Test Farm) is a web application for debugging smartphones, sm
                             
                         
                             
+                            <a href="/tags/#Performance and framework" title="Performance and framework" rel="2">Performance and framework</a>
+                            
+                        
+                            
                         
                             
                             <a href="/tags/#Personal life record" title="Personal life record" rel="7">Personal life record</a>
-                            
-                        
-                            
-                        
                             
                         
                             
@@ -504,15 +510,9 @@ STF (or Smartphone Test Farm) is a web application for debugging smartphones, sm
                             
                         
                             
+                        
+                            
                             <a href="/tags/#Kafka" title="Kafka" rel="2">Kafka</a>
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Performance and framework" title="Performance and framework" rel="2">Performance and framework</a>
-                            
-                        
                             
                         
                             
@@ -525,8 +525,6 @@ STF (or Smartphone Test Farm) is a web application for debugging smartphones, sm
                         
                             
                             <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
-                            
-                        
                             
                         
                             
@@ -548,13 +546,19 @@ STF (or Smartphone Test Farm) is a web application for debugging smartphones, sm
                             
                         
                             
+                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
                         
                             
                             <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="17">Virtualization-Docker</a>
-                            
-                        
-                            
-                        
                             
                         
                             
@@ -564,15 +568,13 @@ STF (or Smartphone Test Farm) is a web application for debugging smartphones, sm
                             
                         
                             
+                        
+                            
+                            <a href="/tags/#MySQL.Database" title="MySQL.Database" rel="26">MySQL.Database</a>
+                            
+                        
+                            
                             <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="6">Log analysis platform</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
                             
                         
                             
@@ -584,11 +586,11 @@ STF (or Smartphone Test Farm) is a web application for debugging smartphones, sm
                             
                         
                             
-                            <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
+                            <a href="/tags/#Jenkins" title="Jenkins" rel="2">Jenkins</a>
                             
                         
                             
-                            <a href="/tags/#Jenkins" title="Jenkins" rel="2">Jenkins</a>
+                            <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
                             
                         
                             

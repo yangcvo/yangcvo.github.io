@@ -90,7 +90,7 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/about/About-me.html">About</a>
                         </li>
                         
                     
@@ -104,7 +104,7 @@
 
                         
                         <li>
-                            <a href="/about/About-me.html">About</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -184,28 +184,20 @@
 
 <div class="post-preview">
 
-    <a href="/2014/09/07/Linux笔记/linux系统环境变量优化/">
+    <a href="/2015/06/18/容器-虚拟化/kvm/KVM虚拟化 (二) help帮助文档大全/">
         <h2 class="post-title">
-            linux系统环境变量优化
+            KVM虚拟化 (二) help帮助文档大全
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            linux 系统环境变量优化可以统一写在/etc/profile.d/下面
-
-变化目录结构字体颜色:
-
-vim color.sh
-
-
-
-1234PS1='[\[\033[0;34m\]\u\[\033[0;37m\]@\[\033[0;35m\]\h\[\033[0;33m\] \w\[\033[0;37m\]]\[\033[0;31m\]\$\[\033[00m\] 'export PRO......
+            基本语句用法：12345678910111213141516virsh start x       启动名字为x的非活动虚拟机virsh create x.xml    创建虚拟机（创建后，虚拟机立     即执行，成为活动主机）virsh suspend x          暂停虚拟机virsh resume x           启动暂停的虚拟机virsh shutdown x   ......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-09-07
+        2015-06-18
     </p>
 
 </div>
@@ -213,22 +205,25 @@ vim color.sh
 
 <div class="post-preview">
 
-    <a href="/2014/08/19/容器-虚拟化/Vmware Exsi/Exsi报错：Failed to extend swap file from 0 kb to 5242880 kb./">
+    <a href="/2015/06/17/容器-虚拟化/kvm/kvm虚拟化(三)虚拟机快速克隆/">
         <h2 class="post-title">
-            Exsi报错：Failed to extend swap file from 0 kb to 5242880 kb.
+            KVM虚拟机更改存储路径解决方法
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            昨天公司的esxi服务器碰到这么个问题；
- 问题描述大致 ：
-问题出来的过程是这样的，  这个esxi服务器上装了5个虚拟机，有windows，有centos；当我昨天在搭建namenode的构建的过程中，当我同时执行3个任务的时候，虚拟机就挂掉，提示“there is no more space for virtual disk jenkins-00002.vmdk. you might ......
+            kvm虚拟化(三)虚拟机快速克隆第一步：
+在复制之前需要的操作：
+有一个DHCP服务用于IP地址自动获取，获取后期VNC修改静态IP地址开启VNC远程桌面设置网卡为自动获取IP地址安装必要的补丁程序执行setupmgr和Sysprep（关机）复制关机后的VM镜像模板文件
+举例：
+我的kvm镜像都是指定在同一个数据挂载目录下面：
+12345678910111213141516171819 /o......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-08-19
+        2015-06-17
     </p>
 
 </div>
@@ -236,23 +231,24 @@ vim color.sh
 
 <div class="post-preview">
 
-    <a href="/2014/07/21/Linux笔记/Linux实用的一些命令/">
+    <a href="/2015/06/17/容器-虚拟化/kvm/KVM虚拟机更改存储路径解决方法/">
         <h2 class="post-title">
-            Linux实用的一些命令
+            KVM虚拟机更改存储路径解决方法
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            #学习Linux 实用命令
-最近把之前学的慢慢整理出来，很多都是很实用的，而且一时想不起来的，就记录在这里了，不需要去查询资料，这样可以方便下次复习把不经常用的在看一遍。
-1. linux 下不解压查看tar.gz包中的文件列表12第一种方法：gunzip &lt;a.tar.gz |tar tvf -第二种方法：gzip  -dc a.tar.gz | tar tvf -
-###2. cp......
+            玩kvm的2014年开始慢慢接触了，发现功能特别大，比vm好用，vm是基于Windows上面需要安装客户端登陆很麻烦,也有人说也有web管理端其实我觉得运维在kvm伸缩现在很火的openstack也是底层kvm去生成虚拟机的。
+kvm 在之前的搭建环境 一开始安装指定的虚拟机镜像没有放到挂载单独的一块硬盘路径。后果会不堪设想。
+kvm服务器：
+IP：192.168.1.250
+镜像存储路径：......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-07-21
+        2015-06-17
     </p>
 
 </div>
@@ -260,24 +256,28 @@ vim color.sh
 
 <div class="post-preview">
 
-    <a href="/2014/06/24/Linux笔记/wkhtmltox/wkhtmltox源码安装实现HTML页面转成pdf效果/">
+    <a href="/2015/06/16/容器-虚拟化/kvm/KVM虚拟化(六)调整虚拟机CPU大小,添加memory内存,添加虚拟机硬盘disk,虚拟机内存减半现象/">
         <h2 class="post-title">
-            wkhtmltox源码安装实现HTML页面转成pdf效果
+            KVM虚拟化(六)调整虚拟机CPU大小,添加memory内存,添加虚拟机硬盘disk,虚拟机内存减半现象
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            wkhtmltopdf是一个将html页面转成pdf的工具。
-wkhtmltox项目主页：http://wkhtmltopdf.org/  支持html转pdf、image
-这段时间公司涉及到将html转成pdf/jpg的相关功能，我查了很多资料，网上大能找到的方法主要有以下两种：
-系统环境：系统最好CentOS release 6.5
-网上google wkhtmltopdf发现，wkht......
+            调整虚拟机CPU大小
+这个是我需要修改的虚拟机dataname1
+操作这些都需要shutdown off
+
+1virsh # shutdown dataname1
+
+查看你要修改的虚拟机的配置信息。 
+
+12345678910111213141516171819202122[root@kvm ~]# virsh欢迎使用 virsh，虚拟化的交互式终端。输入：'help' 来获得命令的帮助信息......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-06-24
+        2015-06-16
     </p>
 
 </div>
@@ -285,22 +285,22 @@ wkhtmltox项目主页：http://wkhtmltopdf.org/  支持html转pdf、image
 
 <div class="post-preview">
 
-    <a href="/2014/06/16/Blog/Hexo/hexo打包提示错误：ERROR Plugin load failed:hexo-generator-json-content/">
+    <a href="/2015/04/01/运维安全/使用AIDE做Linux高级入侵检测文件监控/">
         <h2 class="post-title">
-            hexo打包提示错误:ERROR Plugin load failed:hexo-generator-json-content
+            使用AIDE做Linux高级入侵检测文件监控
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            hexo打包提示错误:ERROR Plugin load failed:hexo-generator-json-content我操作：npm install -S hexo-generator-json-content 先安装打包代码出错。 
-这个我已经安装过了，执行：hexo g  就报错。
-12345678910111213141516171819202122232425➜  yangc......
+            1、aide介绍
+AIDE(Adevanced Intrusion Detection Environment,高级入侵检测环境)是个入侵检测工具，主要用途是检查文本的完整性。
+AIDE能够构造一个指定文档的数据库，他使用aide.conf作为其配置文档。AIDE数据库能够保存文档的各种属性，包括：权限(permission)、索引节点序号(inode number)、所属用户(user)、......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-06-16
+        2015-04-01
     </p>
 
 </div>
@@ -308,21 +308,21 @@ wkhtmltox项目主页：http://wkhtmltopdf.org/  支持html转pdf、image
 
 <div class="post-preview">
 
-    <a href="/2014/06/16/Blog/Hexo/hexo常用命令笔记/">
+    <a href="/2015/02/26/python/python及常用工具的安装 /">
         <h2 class="post-title">
-            hexo常用命令笔记
+            python及常用工具的安装
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            hexo123npm install hexo -g #安装  npm update hexo -g #升级  hexo init #初始化
-简写12345hexo n "我的博客" == hexo new "我的博客" #新建文章hexo p == hexo publishhexo g == hexo generate#生成hexo s == hexo server #启动服务预览hexo......
+            python及常用工具的安装现在python一般情况下我们使用的2.7版本.系统自带的是2.6版本，可以在官方https://www.python.org/downloads/ 下载,它的安装还是很简单的。tar包下载后可以直接解压，configure、make、make install即可。
+python安装以后注意：这里要强调一下的是安装Python后很有可能linux的yum就不能正常......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-06-16
+        2015-02-26
     </p>
 
 </div>
@@ -330,21 +330,21 @@ wkhtmltox项目主页：http://wkhtmltopdf.org/  支持html转pdf、image
 
 <div class="post-preview">
 
-    <a href="/2014/04/19/性能监控/Somekeping/用最简单易懂的方式安装smokeping/">
+    <a href="/2015/02/25/Vsftpd/建立虚拟用户的vsftpd安装配置报错问题收集/">
         <h2 class="post-title">
-            用最简单的方式安装smokeping
+            建立虚拟用户的vsftpd安装配置报错问题收集
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            smokeping这个监控还是很强大的，用这个监控是在第一家公司做IDC起家后面转型CDN云计算云加速。这个也是我学的最早的一款监控，在这里我用编译安装方式。也有脚本安装不过需要了解过somkeping安装过程会比较看的懂脚本。
-适用于宽带运营商维护和IDC机房维护可以检测本地网络的到上级运营商出口这段路由各个节点的稳定性            可以检测本地网络到各主要门户网站的延时，丢包率......
+            vsftp报错问题收集1. 解决vsftp错误500 OOPS: cannot change directory:/home/** 目录123打开/etc/selinux/config将selinux=enforcing或permissive改成disabled。然后给目录权限：给那个www目录设置vsftp的权限，或者直接777.
+2. 530 Login incorrect1234567......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-04-19
+        2015-02-25
     </p>
 
 </div>
@@ -352,23 +352,72 @@ wkhtmltox项目主页：http://wkhtmltopdf.org/  支持html转pdf、image
 
 <div class="post-preview">
 
-    <a href="/2014/03/21/个人生活记录/About-me/">
+    <a href="/2015/02/24/Supervisor监控进程/Supervisor 进程持久化监控工具 /">
         <h2 class="post-title">
-            About-me
+            Supervisor 监控进程
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            122016-1 - 2017.5 美年大健康-优健康  2014.4 -  2015.12 mmtrix-高升控股
-My dearest reader
-Welcome to my blog. I doubt you got to it by accident. With any luck, you got to it because of a search result. 
-If so, ......
+            Supervisor 监控进程在重要的一些服务运行时间较长有时候，进程突然终止服务，可能是没有资源了，也可能是意外，比如说：因为 OOM 被杀；或者由于 BUG 导致崩溃；亦或者误操作等等，此时，我们需要重新启动进程。
+使用 Supervisor 的原因
+如果你有很多进程在跑，不时还需要 start/stop/restart 一下进程
+如果哪天由于某种原因，进程挂了，你需要重启进程或定时执行......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-03-21
+        2015-02-24
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2015/02/23/性能与架构/CDN加速助力高并发网站架构/">
+        <h2 class="post-title">
+            CDN加速助力高并发网站架构
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            CDN加速助力高并发网站架构
+架构说明：用户通过互联网访问网站需要经过的节点如下：一、要通过域名解析在域名解析处有两种方式1、自建，自建需要在域名解析前架设防火墙。
+2、使用现有的域名解析提供商，需要设置成CNAME,其实就是另一个域名解析，进行跳转。在刚开始的时候建议先用CNAME方式，部署不影响用户现有方式，容易被用户接受，而且不用暂时不用担心第一级dns的问题。
+总之，如果要建设idc......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2015-02-23
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2014/12/24/Blog/Ghost/Ghost博客最新版安装与更新15种主题/">
+        <h2 class="post-title">
+            Ghost博客：最新版安装与更新15种主题
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Ghost2014年底年又把Wordpress所以博客资源迁移到了新的ghost上面。
+使用WordPress搭建自己的Blog站点：
+这个是我 ghost：https://github.com/yangcvo/Ghost
+这里我总结了下：
+123456789101112Ghost作为一款博客新秀，采用Node.js语言编写，前后台简洁，占用资源少，支持 Markdown，作为个人建站博客程......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2014-12-24
     </p>
 
 </div>
@@ -384,6 +433,10 @@ If so, ......
             <a href="/page/16/">&larr; Newer Posts</a>
         </li>
     
+    
+        <li class="next">
+            <a href="/page/18/">Older Posts &rarr;</a>
+        </li>
     
 </ul>
 
@@ -409,15 +462,15 @@ If so, ......
                     <div class="tags">
                         
                             
+                            <a href="/tags/#DNS" title="DNS" rel="3">DNS</a>
+                            
+                        
+                            
                             <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="6">Java+Tomcat notes</a>
                             
                         
                             
                             <a href="/tags/#Dubbo" title="Dubbo" rel="2">Dubbo</a>
-                            
-                        
-                            
-                            <a href="/tags/#DNS" title="DNS" rel="3">DNS</a>
                             
                         
                             
@@ -429,11 +482,23 @@ If so, ......
                             
                         
                             
-                            <a href="/tags/#Linux note" title="Linux note" rel="13">Linux note</a>
-                            
                         
                             
                             <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
+                            
+                        
+                            
+                        
                             
                         
                             
@@ -449,13 +514,13 @@ If so, ......
                             
                         
                             
+                            <a href="/tags/#Performance and framework" title="Performance and framework" rel="2">Performance and framework</a>
+                            
+                        
+                            
                         
                             
                             <a href="/tags/#Personal life record" title="Personal life record" rel="7">Personal life record</a>
-                            
-                        
-                            
-                        
                             
                         
                             
@@ -463,15 +528,9 @@ If so, ......
                             
                         
                             
+                        
+                            
                             <a href="/tags/#Kafka" title="Kafka" rel="2">Kafka</a>
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Performance and framework" title="Performance and framework" rel="2">Performance and framework</a>
-                            
-                        
                             
                         
                             
@@ -484,8 +543,6 @@ If so, ......
                         
                             
                             <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
-                            
-                        
                             
                         
                             
@@ -507,13 +564,19 @@ If so, ......
                             
                         
                             
+                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
                         
                             
                             <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="17">Virtualization-Docker</a>
-                            
-                        
-                            
-                        
                             
                         
                             
@@ -523,15 +586,13 @@ If so, ......
                             
                         
                             
+                        
+                            
+                            <a href="/tags/#MySQL.Database" title="MySQL.Database" rel="26">MySQL.Database</a>
+                            
+                        
+                            
                             <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="6">Log analysis platform</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
                             
                         
                             
@@ -543,11 +604,11 @@ If so, ......
                             
                         
                             
-                            <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
+                            <a href="/tags/#Jenkins" title="Jenkins" rel="2">Jenkins</a>
                             
                         
                             
-                            <a href="/tags/#Jenkins" title="Jenkins" rel="2">Jenkins</a>
+                            <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
                             
                         
                             
