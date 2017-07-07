@@ -13,11 +13,11 @@
 
     <title>
         
-          Yancy的博客 | Yancy&#39;s Blog
+          MySQL安装php以后报错：Can&#39;t connect to local MySQL server through socket &#39;/var/lib/mysql/mysql.sock&#39; (2) - Yancy的博客 | Yancy&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://blog.yancy.cc/archives/2016/12/">
+    <link rel="canonical" href="http://blog.yancy.cc/2016/04/29/数据库/MySQL/mysql安装php以后报错：Can&#39;t connect to local MySQL server through socket &#39;:var:lib:mysql:mysql.sock&#39; (2) /">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -147,7 +147,187 @@
 
 
     <!-- Main Content -->
-    <!-- Default Archive layout, we use archives instead. -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#MySQL.Database" title="MySQL.Database">MySQL.Database</a>
+                        
+                    </div>
+                    <h1>MySQL安装php以后报错：Can&#39;t connect to local MySQL server through socket &#39;/var/lib/mysql/mysql.sock&#39; (2)</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2016-04-29
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="mysql安装php以后报错Can’t-connect-to-local-MySQL-server-through-socket-‘-var-lib-mysql-mysql-sock’-2"><a href="#mysql安装php以后报错Can’t-connect-to-local-MySQL-server-through-socket-‘-var-lib-mysql-mysql-sock’-2" class="headerlink" title="mysql安装php以后报错Can’t connect to local MySQL server through socket ‘/var/lib/mysql/mysql.sock’ (2)"></a>mysql安装php以后报错Can’t connect to local MySQL server through socket ‘/var/lib/mysql/mysql.sock’ (2)</h3><p>这种情况是mysql -uroot -p 密码 一直正确 不能登录<br>需要在配置文件里面从新写</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">vim <span class="regexp">/etc/my</span>.cnf</div><div class="line">socket=<span class="regexp">/var/</span>lib<span class="regexp">/mysql/my</span>sql.sock</div></pre></td></tr></table></figure>
+<p>这是我客户端默认安装路径 给指定了。</p>
+<p>已解决 看文档这里有：<br><a href="http://stackoverflow.com/questions/21103197/cant-connect-to-local-mysql-server-through-socket-var-lib-mysql-mysql-sock" target="_blank" rel="external">http://stackoverflow.com/questions/21103197/cant-connect-to-local-mysql-server-through-socket-var-lib-mysql-mysql-sock</a></p>
+<p>报错：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">MySQL -uroot -<span class="selector-tag">p</span></div><div class="line">mysql:unknown variable <span class="string">'sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES'</span></div></pre></td></tr></table></figure>
+<p>还有 密码正确 mysql -uroot -p 不弹出输入密码 说明 这个错误很明显。<br>我排查了看下，因为我多了一条这个 去掉就可以了。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">vim /etc/my<span class="selector-class">.cnf</span></div><div class="line">[mysql]</div><div class="line"><span class="number">#dff</span>ault-character-set=utf8</div></pre></td></tr></table></figure>
+<p>注释就可以了。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/05/05/个人生活记录/黄山之旅/" data-toggle="tooltip" data-placement="top" title="黄山之旅">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/04/29/数据库/MySQL/【第一章】Mysql数据库入门及安装/" data-toggle="tooltip" data-placement="top" title="【第一章】MySQL数据库入门及安装">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#MySQL.Database" title="MySQL.Database">MySQL.Database</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yancy-cc";
+    var disqus_identifier = "http://blog.yancy.cc/2016/04/29/数据库/MySQL/mysql安装php以后报错：Can&#39;t connect to local MySQL server through socket &#39;:var:lib:mysql:mysql.sock&#39; (2) /";
+    var disqus_url = "http://blog.yancy.cc/2016/04/29/数据库/MySQL/mysql安装php以后报错：Can&#39;t connect to local MySQL server through socket &#39;:var:lib:mysql:mysql.sock&#39; (2) /";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
 
     <!-- Footer -->
     <!-- Footer -->
