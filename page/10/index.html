@@ -97,14 +97,14 @@
 
                         
                         <li>
-                            <a href="/archives/archives.html">Archives</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/archives/archives.html">Archives</a>
                         </li>
                         
                     
@@ -181,76 +181,6 @@
             
                 <!-- Main Content -->
 
-
-<div class="post-preview">
-
-    <a href="/2016/04/15/数据库/MySQL/mysql优化连接数防止访问量过高的方法 /">
-        <h2 class="post-title">
-            Mysql优化连接数防止访问量过高的方法
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            Mysql优化连接数防止访问量过高的方法很多开发人员都会遇见”MySQL: ERROR 1040: Too many connections”的异常情况，造成这种情况的一种原因是访问量过高，MySQL服务器抗不住，这个时候就要考虑增加从服务器分散读压力；另一种原因就是MySQL配置文件中max_connections值过小。
-首先，我们来查看mysql的最大连接数：
-1234567mysql......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-04-15
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/04/11/数据库/MySQL/【第五章】MySQL数据库备份及恢复命令 mysqldump,source的用法/">
-        <h2 class="post-title">
-            【第五章】MySQL数据库备份及恢复命令 mysqldump,source的用法
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            1.导出整个数据库12mysqldump -u 用户名 -p -P3306 --default-character-set=utf8 数据库名 &gt; 导出的文件名(数据库默认编码是utf8)mysqldump -uroot -p -P3306 --default-character-set=utf8 yjk &gt; yjk.sql
-mysqldump备份报错:
-Got error: 1......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-04-11
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/04/05/Web服务技术/Nginx/Nginx 安全&优化&日志输出规范详细配置/">
-        <h2 class="post-title">
-            Nginx 安全&优化&日志输出规范详细配置
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            ##1.Nginx日志审计
-① 参考配置操作(1)编辑 nginx.conf 配置文件
-将 error_log 前的“#”去掉，记录错误日志将 access_log 前的“#”去掉，记录访问日志(2)设置 access_log，修改配置文件如下：
-1234log_format formatname '$remote_addr - $remote_user [$time_local] '' "......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-04-05
-    </p>
-
-</div>
-<hr>
 
 <div class="post-preview">
 
@@ -418,6 +348,74 @@ JDK 要求是 JDK 7，官网要求 7u6 或之后版本，包括 JDK 8
 </div>
 <hr>
 
+<div class="post-preview">
+
+    <a href="/2016/03/26/Web服务技术/Nginx/ Nginx 和 apache 对比 /">
+        <h2 class="post-title">
+            Nginx-反向代理
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Nginx 和 apache 对比个人理解：存在就是理由,一般来说,需要性能的 web 服务,用 nginx 。如果不需要性能只求稳定, 那就 apache 吧。后者的各种功能模块实现得比前者,例如 ssl 的模块就比前者好,可配 置项多。
+这里要注意一点,epoll(freebsd 上是 kqueue )网络 IO 模型是 nginx 处理性能 高的根本理由,但并不是所有的情况下都是 ep......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-26
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/26/Web服务技术/Nginx/Nginx+Tomcat实现反向代理优化与配置 /">
+        <h2 class="post-title">
+            Nginx+Tomcat实现反向代理优化与配置
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Nginx+Tomcat实现反向代理什么是反向代理反向代理（Reverse Proxy）方式是指用代理服务器来接受 internet 上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给 internet 上请求连接的客户端，此时代理服务器对外就表现为一个反向代理服务器。
+举个例子，一个用户访问 http://www.example.com/readme，但是 w......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-26
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/23/数据库/MySQL/Mysql配置为Master:Slave的常用维护命令/">
+        <h2 class="post-title">
+            Mysql配置为Master/Slave的常用维护命令
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Mysql配置为Master/Slave的常用维护命令master端：
+123show master status;   #查看状态：show processlist;     #查看slave下MySQL进程信息reset master;         #慎用，将清空日志及同步position
+slave端：
+12345CHANGE MASTER TO MASTER_LOG_FILE=’......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-23
+    </p>
+
+</div>
+<hr>
+
 
 
 <!-- Pager -->
@@ -479,17 +477,17 @@ JDK 要求是 JDK 7，官网要求 7u6 或之后版本，包括 JDK 8
                             
                         
                             
-                            <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
                             <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
                             
                         
                             
@@ -509,12 +507,6 @@ JDK 要求是 JDK 7，官网要求 7u6 或之后版本，包括 JDK 8
                             
                         
                             
-                            <a href="/tags/#Performance and framework" title="Performance and framework" rel="2">Performance and framework</a>
-                            
-                        
-                            
-                        
-                            
                             <a href="/tags/#Personal life record" title="Personal life record" rel="7">Personal life record</a>
                             
                         
@@ -529,6 +521,12 @@ JDK 要求是 JDK 7，官网要求 7u6 或之后版本，包括 JDK 8
                             
                         
                             
+                            <a href="/tags/#Performance and framework" title="Performance and framework" rel="2">Performance and framework</a>
+                            
+                        
+                            
+                        
+                            
                         
                             
                             <a href="/tags/#Operation safety" title="Operation safety" rel="7">Operation safety</a>
@@ -537,9 +535,9 @@ JDK 要求是 JDK 7，官网要求 7u6 或之后版本，包括 JDK 8
                             
                         
                             
-                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
-                            
                         
+                            
+                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
                             
                         
                             
@@ -559,23 +557,23 @@ JDK 要求是 JDK 7，官网要求 7u6 或之后版本，包括 JDK 8
                             
                         
                             
-                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
                             <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="17">Virtualization-Docker</a>
                             
                         
                             
+                        
+                            
                             <a href="/tags/#KVM" title="KVM" rel="7">KVM</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
+                            
+                        
                             
                         
                             
@@ -603,11 +601,11 @@ JDK 要求是 JDK 7，官网要求 7u6 或之后版本，包括 JDK 8
                             
                         
                             
+                        
+                            
+                        
+                            
                             <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
-                            
-                        
-                            
-                        
                             
                         
                     </div>

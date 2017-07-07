@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          【第一章】MySQL数据库入门及安装 - Yancy的博客 | Yancy&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2016/02/29/数据库/MySQL/【第一章】Mysql数据库入门及安装/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#MySQL.Database" title="MySQL.Database">MySQL.Database</a>
+                        
+                    </div>
+                    <h1>【第一章】MySQL数据库入门及安装</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2016-02-29
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h4 id="安装方法一：yum安装方式"><a href="#安装方法一：yum安装方式" class="headerlink" title="安装方法一：yum安装方式"></a>安装方法一：yum安装方式</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">yum <span class="keyword">install</span> -y gcc gcc-c++ make automake  </div><div class="line">yum <span class="comment">--enablerepo=remi,remi-test list mysql mysql-server</span></div><div class="line">yum <span class="comment">--enablerepo=remi,remi-test install mysql mysql-server  mysql-devel</span></div><div class="line"></div><div class="line">/etc/init.d/mysqld <span class="keyword">start</span></div><div class="line">chkconfig <span class="comment">--levels 345 mysqld on</span></div><div class="line">/usr/<span class="keyword">bin</span>/mysql_secure_installation 初始化设置密码即可登录了。</div></pre></td></tr></table></figure>
+<h4 id="安装方法二：RPM方式安装MySQL5-6"><a href="#安装方法二：RPM方式安装MySQL5-6" class="headerlink" title="安装方法二：RPM方式安装MySQL5.6"></a>安装方法二：RPM方式安装MySQL5.6</h4><p>a. 检查MySQL及相关RPM包，是否安装，如果有安装，则移除（rpm –e 名称）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1	[root@localhost ~]<span class="comment"># rpm -qa | grep -i mysql</span></div><div class="line">2	mysql-libs-5.1.66-2.el6_3.x86_64</div><div class="line">3	[root@localhost ~]<span class="comment"># yum -y remove mysql-libs*</span></div></pre></td></tr></table></figure>
+<p>b. 下载Linux对应的RPM包，如：CentOS6.4_64对应的RPM包，如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">1	[root@localhost rpm]<span class="comment"># ll</span></div><div class="line">2	total 74364</div><div class="line">3	-rw-r--r--. 1 root root 18442536 Dec 11 20:19 MySQL-client-5.6.15-1.el6.x86_64.rpm</div><div class="line">4	-rw-r--r--. 1 root root  3340660 Dec 11 20:06 MySQL-devel-5.6.15-1.el6.x86_64.rpm</div><div class="line">5	-rw-r--r--. 1 root root 54360600 Dec 11 20:03 MySQL-server-5.6.15-1.el6.x86_64.rpm</div></pre></td></tr></table></figure>
+<p>c. 安装MySQL</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">1	[root@localhost rpm]<span class="comment"># rpm -ivh MySQL-server-5.6.15-1.el6.x86_64.rpm</span></div><div class="line"> 如果安装不上，--nodeps —force 强制安装</div><div class="line">2	[root@localhost rpm]<span class="comment"># rpm -ivh MySQL-devel-5.6.15-1.el6.x86_64.rpm</span></div><div class="line">3	[root@localhost rpm]<span class="comment"># rpm -ivh MySQL-client-5.6.15-1.el6.x86_64.rpm</span></div><div class="line">4	<span class="comment">#修改配置文件位置</span></div><div class="line">5	[root@localhost rpm]<span class="comment"># cp /usr/share/mysql/my-default.cnf /etc/my.cnf</span></div></pre></td></tr></table></figure>
+<p>d. 初始化MySQL及设置密码</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="number">1</span>	[root@localhost rpm]<span class="comment"># /usr/bin/mysql_install_db</span></div><div class="line"><span class="number">2</span>	[root@localhost rpm]<span class="comment"># service mysql start</span></div><div class="line"><span class="number">3</span>	[root@localhost rpm]<span class="comment"># cat /root/.mysql_secret  #查看root账号密码</span></div><div class="line"><span class="number">4</span>	<span class="comment"># The random password set for the root user at Wed Dec 11 23:32:50 2013 (local time): qKTaFZnl</span></div><div class="line"><span class="number">5</span>	[root@localhost ~]<span class="comment"># mysql -uroot –pqKTaFZnl</span></div><div class="line"><span class="number">6</span>	mysql&gt; SET PASSWORD = PASSWORD(<span class="string">'123456'</span>);    <span class="comment">#设置密码为123456</span></div><div class="line"><span class="number">7</span>	mysql&gt; <span class="keyword">exit</span></div><div class="line"><span class="number">8</span>	[root@localhost ~]<span class="comment"># mysql -uroot -p123456</span></div><div class="line">e. 允许远程登陆</div><div class="line"></div><div class="line"><span class="number">01</span>	mysql&gt; use mysql;</div><div class="line"><span class="number">02</span>	mysql&gt; select host,user,password from user;</div><div class="line"><span class="number">03</span>	+-----------------------+------+-------------------------------------------+</div><div class="line"><span class="number">04</span>	| host                  | user | password                                  |</div><div class="line"><span class="number">05</span>	+-----------------------+------+-------------------------------------------+</div><div class="line"><span class="number">06</span>	| localhost             | root | *<span class="number">6</span>BB4837EB74329105EE4568DDA7DC67ED2CA2AD9 |</div><div class="line"><span class="number">07</span>	| localhost.localdomain | root | *<span class="number">1237</span>E2CE819C427B0D8174456DD83C47480D37E8 |</div><div class="line"><span class="number">08</span>	| <span class="number">127.0</span>.<span class="number">0.1</span>             | root | *<span class="number">1237</span>E2CE819C427B0D8174456DD83C47480D37E8 |</div><div class="line"><span class="number">09</span>	| ::<span class="number">1</span>                   | root | *<span class="number">1237</span>E2CE819C427B0D8174456DD83C47480D37E8 |</div><div class="line"><span class="number">10</span>	+-----------------------+------+-------------------------------------------+</div><div class="line"><span class="number">11</span>	 </div><div class="line"><span class="number">12</span>	mysql&gt; update user set password=password(<span class="string">'123456'</span>) where user=<span class="string">'root'</span>;</div><div class="line"><span class="number">13</span>	mysql&gt; update user set host=<span class="string">'%'</span> where user=<span class="string">'root'</span> and host=<span class="string">'localhost'</span>;</div><div class="line"><span class="number">14</span>	mysql&gt; flush privileges;</div><div class="line"><span class="number">15</span>	mysql&gt; <span class="keyword">exit</span></div></pre></td></tr></table></figure>
+<p>f. 设置开机自启动</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="number">1</span>	[root@localhost ~]<span class="comment"># chkconfig mysql on</span></div><div class="line"><span class="number">2</span>	[root@localhost ~]<span class="comment"># chkconfig --list | grep mysql</span></div><div class="line"><span class="number">3</span>	mysql           <span class="number">0</span>:off   <span class="number">1</span>:off   <span class="number">2</span>:on    <span class="number">3</span>:on    <span class="number">4</span>:on    <span class="number">5</span>:on    <span class="number">6</span>:off</div><div class="line">g. MySQL的默认安装位置</div><div class="line"></div><div class="line"><span class="number">1</span>	/var/<span class="class"><span class="keyword">lib</span>/<span class="title">mysql</span>/               <span class="comment">#数据库目录</span></span></div><div class="line"><span class="number">2</span>	/usr/share/mysql              <span class="comment">#配置文件目录</span></div><div class="line"><span class="number">3</span>	/usr/bin                     <span class="comment">#相关命令目录</span></div><div class="line"><span class="number">4</span>	/etc/init.d/mysql              <span class="comment">#启动脚本</span></div></pre></td></tr></table></figure>
+<p>修改字符集和数据存储路径<br>配置/etc/my.cnf文件,修改数据存放路径、mysql.sock路径以及默认编码utf-8.</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">[html] view plain copy</div><div class="line"> </div><div class="line"><span class="number">1.</span> [client]  </div><div class="line"><span class="number">2.</span> password        = <span class="number">123456</span>  </div><div class="line"><span class="number">3.</span> port            = <span class="number">3306</span>  </div><div class="line"><span class="number">4.</span> <span class="section">default</span>-character-set=utf8  </div><div class="line"><span class="number">5.</span> [mysqld]  </div><div class="line"><span class="number">6.</span> port            = <span class="number">3306</span>  </div><div class="line"><span class="number">7.</span> character_set_server=utf8  </div><div class="line"><span class="number">8.</span> character_set_client=utf8  </div><div class="line"><span class="number">9.</span> collation-server=utf8_general_ci  </div><div class="line"><span class="number">10.</span> #(注意linux下mysql安装完后是默认：表名区分大小写，列名不区分大小写； <span class="number">0</span>：区分大小写，<span class="number">1</span>：不区分大小写)  </div><div class="line"><span class="number">11.</span> lower_case_table_names=<span class="number">1</span>  </div><div class="line"><span class="number">12.</span> #(设置最大连接数，默认为 <span class="number">151</span>，MySQL服务器允许的最大连接数<span class="number">16384</span>; )  </div><div class="line"><span class="number">13.</span> max_connections=<span class="number">1000</span>  </div><div class="line"><span class="number">14.</span> [mysql]  </div><div class="line"><span class="number">15.</span> <span class="section">default</span>-character-set = utf8</div></pre></td></tr></table></figure>
+<p>查看字符集</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">show</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">'%collation%'</span>;</div><div class="line"><span class="keyword">show</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">'%char%'</span>;</div></pre></td></tr></table></figure>
+<h4 id="安装方法三：tar源码安装"><a href="#安装方法三：tar源码安装" class="headerlink" title="安装方法三：tar源码安装"></a>安装方法三：tar源码安装</h4><p>msyql服务器： mysql-5.6.24.tar.gz </p>
+<p>下载地 址：<a href="http://dev.mysql.com/downloads/mysql/5.1.html#downloads" target="_blank" rel="external">http://dev.mysql.com/downloads/mysql/5.1.html#downloads</a> 免费版，只能下载mysql社匙版。</p>
+<p>Mysql 5.5.15 以后，使用了新的 cmake 编译方式，所以先安装 cmake。之前的版本直接 configure 然后make ，make install 。 cmake是什么？ CMake是一个跨平台的安装（编译）工具，可以用简单的语句来描述所有平台的安装(编译过程)。他能够 输出各种各样的 makefile 戒者 project 文件，能测试编译器所支持的 C++特性,类似 UNIX 下的 automake。 只是 CMake 的组态档取名为 CmakeLists.txt。Cmake 并不直接建构出最终的软件，而是产生标准的 建构档（如 Unix 的 Makefile 戒 Windows Visual C++ 的 projects/workspaces），然后再依一般 的建构方式使用。这使得熟悉某个集成开发环境（IDE）的开发者可以用标准的方式建构他的软件，这种 可以使用各平台的原生建构系统的能力是 CMake 和 SCons 等其他类似系统的匙删之处。</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">wget http://www.cmake.org/files/v2<span class="meta">.8</span>/cmake-<span class="number">2.8</span><span class="meta">.11</span>-rc3.tar.gz </div><div class="line">tar -zxvf cmake-<span class="number">2.8</span><span class="meta">.11</span>-rc3.tar.gz </div><div class="line">cd cmake-<span class="number">2.8</span><span class="meta">.11</span>-rc3 </div><div class="line">./bootstrap</div><div class="line">gmake</div><div class="line">gmake install </div><div class="line">安装完成，可阅读install_manifest.txt查看具体都安装了什么。 </div><div class="line">三、异常情况 </div><div class="line">如果步骤六报错，可能原因是关联的程序包未安装。解决方法：安装所需的程序包后，将cmake-<span class="number">2.8</span><span class="meta">.11</span>-rc3/目录下的CMakeCache.txt删掉，再从步骤六开始。</div><div class="line">本安装将MySQL的数据文件与执行文件分离，如果你打算设置到不同的路径，注意修改对应的执行命令和数据库初始化脚本。</div></pre></td></tr></table></figure>
+<p>修改防火墙设置，打开3306端口</p>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">vi /etc/sysconfig/iptables-A INPUT -m <span class="keyword">state</span> --state NEW -m tcp -p tcp --dport <span class="number">3306</span> -j ACCEPT</div><div class="line">＃重启防火墙使新设置生效</div><div class="line">service iptables restart</div></pre></td></tr></table></figure>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">＃新增用户组</div><div class="line">groupadd mysql</div><div class="line"></div><div class="line">＃新增用户</div><div class="line">useradd mysql -g mysql</div><div class="line"></div><div class="line">＃新建数据库执行文件目录</div><div class="line">mkdir -p /usr/local/mysql</div><div class="line"></div><div class="line">＃新建数据库数据文件目录</div><div class="line">mkdir -p /usr/local/mysql/data</div><div class="line"></div><div class="line">＃编辑PATH搜索路径</div><div class="line">vim /etc/profile.d/mysql.sh</div><div class="line">Append these <span class="number">2</span> lines to the <span class="keyword">end</span> of the <span class="symbol">file:</span>将下面两行命令增加到最后</div><div class="line">PATH=<span class="regexp">/usr/local</span><span class="regexp">/mysql/bin</span><span class="symbol">:/usr/local/mysql/lib</span><span class="symbol">:</span><span class="variable">$PATHexport</span> PATH</div><div class="line"></div><div class="line"></div><div class="line">＃生效PATH搜索路径</div><div class="line">source /etc/profile</div><div class="line"></div><div class="line">＃编辑hosts文件，加入本机IP和主机名</div><div class="line">vi /etc/hosts</div><div class="line"><span class="number">192.168</span>.<span class="number">211.100</span>      centhost.centdomain</div><div class="line"></div><div class="line"></div><div class="line">＃安装编译源码所需的工具和库(需要联网)</div><div class="line">yum -y install wget gcc-c++ ncurses-devel cmake make perl</div><div class="line"></div><div class="line"></div><div class="line">＃进入源码压缩包下载目录</div><div class="line">cd /usr/local/src</div><div class="line"></div><div class="line"></div><div class="line">＃下载源码压缩包，下载包<span class="number">53</span>M大小，有点慢，等吧。</div><div class="line">wget <span class="symbol">http:</span>/<span class="regexp">/dev.mysql.com/get</span><span class="regexp">/Downloads/</span>MySQL-<span class="number">5.6</span>/mysql-<span class="number">5.6</span>.<span class="number">10</span>.tar.gz/from/<span class="symbol">http:</span>/<span class="regexp">/cdn.mysql.com/</span></div><div class="line"><span class="symbol">http:</span>/<span class="regexp">/dev.mysql.com/downloads</span><span class="regexp">/mysql/</span><span class="comment">#downloads</span></div><div class="line"><span class="symbol">http:</span>/<span class="regexp">/fossies.org/linux</span><span class="regexp">/misc/</span></div><div class="line"></div><div class="line">＃解压缩源码包</div><div class="line">tar -zxvf mysql-<span class="number">5.6</span>.<span class="number">11</span>.tar.gz</div><div class="line"></div><div class="line">＃进入解压缩源码目录</div><div class="line">cd mysql-<span class="number">5.6</span>.<span class="number">11</span></div></pre></td></tr></table></figure>
+<p>从mysql5.5起，mysql源码安装开始使用cmake了，执行源码编译配置脚本。</p>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">cmake \-DCMAKE_INSTALL_PREFIX=/usr/local/mysql \</div><div class="line">-<span class="ruby">DMYSQL_UNIX_ADDR=<span class="regexp">/usr/local</span><span class="regexp">/mysql/mysql</span>.sock \</span></div><div class="line">-<span class="ruby">DDEFAULT_CHARSET=utf8 \</span></div><div class="line">-<span class="ruby">DDEFAULT_COLLATION=utf8_general_ci \</span></div><div class="line">-<span class="ruby">DWITH_MYISAM_STORAGE_ENGINE=<span class="number">1</span> \</span></div><div class="line">-<span class="ruby">DWITH_INNOBASE_STORAGE_ENGINE=<span class="number">1</span> \</span></div><div class="line">-<span class="ruby">DWITH_ARCHIVE_STORAGE_ENGINE=<span class="number">1</span> \</span></div><div class="line">-<span class="ruby">DWITH_BLACKHOLE_STORAGE_ENGINE=<span class="number">1</span> \</span></div><div class="line">-<span class="ruby">DWITH_MEMORY_STORAGE_ENGINE=<span class="number">1</span> \</span></div><div class="line">-<span class="ruby">DWITH_READLINE=<span class="number">1</span> \</span></div><div class="line">-<span class="ruby">DENABLED_LOCAL_INFILE=<span class="number">1</span> \</span></div><div class="line">-<span class="ruby">DMYSQL_DATADIR=<span class="regexp">/usr/local</span><span class="regexp">/mysql/data</span> \</span></div><div class="line">-<span class="ruby">DMYSQL_USER=mysql \</span></div><div class="line">-<span class="ruby">DMYSQL_TCP_PORT=<span class="number">3306</span></span></div><div class="line">＃编译源码，这一步时间会较长，耐心等待。</div></pre></td></tr></table></figure>
+<p>cmake 编译选项含意：</p>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">-<span class="ruby">DCMAKE_INSTALL_PREFIX=<span class="regexp">/usr/local</span><span class="regexp">/mysql</span></span></div><div class="line">#指定mysql安装的根目录，只要/mysql目录存在就可以了，mysql-5.5在安装时，会自动创建。这个 值可以在服务器开机时，通过--basedir来设置。</div><div class="line"></div><div class="line"></div><div class="line">-<span class="ruby"><span class="regexp">DMYSQL_UNIX_ADDR=/usr</span><span class="regexp">/local/mysql</span><span class="regexp">/mysql.sock</span></span></div><div class="line">#mysql服务器用于监听的套接字，这个必需是一个绝对路径，默认是/tmp/mysql.sock。在服务器吭劢 时，可通过--socket 来改变。 </div><div class="line"></div><div class="line"></div><div class="line">-<span class="ruby"><span class="regexp">DDEFAULT_CHARSET=utf8</span></span></div><div class="line">#设置mysql默认使用utf8字符集，不指定，默认使用latin1 西欧字符集。 </div><div class="line"></div><div class="line"></div><div class="line">-<span class="ruby"><span class="regexp">DDEFAULT_COLLATION=utf8_general_ci </span></span></div><div class="line">#默认字符校对 </div><div class="line"></div><div class="line">-<span class="ruby"><span class="regexp">DWITH_EXTRA_CHARSETS=all  </span></span></div><div class="line">#指定mysql扩展字符集支持所有的字符集。默认mysql支持所有字符集</div><div class="line"></div><div class="line"></div><div class="line"> -<span class="ruby"><span class="regexp">DWITH_MYISAM_STORAGE_ENGINE=1 </span></span></div><div class="line"> -<span class="ruby"><span class="regexp">DWITH_INNOBASE_STORAGE_ENGINE=1 </span></span></div><div class="line">  -<span class="ruby"><span class="regexp">DWITH_MEMORY_STORAGE_ENGINE=1  </span></span></div><div class="line"></div><div class="line"> #静态编译 Myisam、Innobase、Memory 存储引擎刡 mysql 服务器。这样 mysql 服务器就支持这三 种存储引擎了。  </div><div class="line"></div><div class="line">-<span class="ruby"><span class="regexp">DWITH_READLINE=1   #支持readline库 。</span></span></div><div class="line"> -<span class="ruby"><span class="regexp">DENABLED_LOCAL_INFILE=1   #允许从本地导入数据 ，吭用加载本地数据</span></span></div><div class="line"> -<span class="ruby"><span class="regexp">DMYSQL_DATADIR=/server</span><span class="regexp">/mysql/data</span>   <span class="comment">#mysql数据库存放数据的目录 </span></span></div><div class="line">-<span class="ruby">DMYSQL_USER=mysql    <span class="comment">#指定运行mysql服务的用户</span></span></div></pre></td></tr></table></figure>
+<p>注：具体编译参数参考： <a href="http://dev.mysql.com/doc/refman/5.5/en/source-configuration-options.html" target="_blank" rel="external">http://dev.mysql.com/doc/refman/5.5/en/source-configuration-options.html</a>  </p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">make</div><div class="line">make install</div><div class="line"></div><div class="line"></div><div class="line">＃清除安装临时文件</div><div class="line">make clean</div><div class="line"></div><div class="line">＃修改目录拥有者</div><div class="line">chown -R <span class="string">mysql:</span>mysql <span class="regexp">/usr/</span>local/mysql</div><div class="line">chown -R <span class="string">mysql:</span>mysql <span class="regexp">/usr/</span>local<span class="regexp">/mysql/</span>data</div><div class="line"></div><div class="line"></div><div class="line">＃进入安装路径</div><div class="line">cd <span class="regexp">/usr/</span>local/mysql </div><div class="line"></div><div class="line"></div><div class="line">＃执行初始化配置脚本，创建系统自带的数据库和表。</div><div class="line">scripts<span class="regexp">/mysql_install_db --user=mysql --datadir=/</span>usr<span class="regexp">/local/</span>mysql/data</div><div class="line">初始化脚本在 <span class="regexp">/usr/</span>local<span class="regexp">/mysql/</span>my.cnf 生成了配置文件。需要更改该配置文件的所有者：</div><div class="line"></div><div class="line">chown -R <span class="string">mysql:</span>mysql <span class="regexp">/usr/</span>local/mysql</div></pre></td></tr></table></figure>
+<p>多说两句：在启动MySQL服务时，会按照一定次序搜索my.cnf，先在/etc目录下找，找不到则会搜索”$basedir/my.cnf”，在本例中就是 /usr/local/mysql/my.cnf，这是新版MySQL的配置文件的默认位置！注意：在CentOS 6.4版操作系统的最小安装完成后，在/etc目录下会存在一个my.cnf，需要将此文件更名为其他的名字，如：/etc/my.cnf.bak，否则，该文件会干扰源码安装的MySQL的正确配置，造成无法启动。<br>＃复制服务启动脚本</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">cp <span class="regexp">/usr/</span>local<span class="regexp">/mysql/</span>support-files<span class="regexp">/mysql.server /</span>etc<span class="regexp">/init.d/</span>mysqld</div><div class="line">chmod <span class="number">755</span> <span class="regexp">/etc/</span>init.d/mysqld</div><div class="line">cp <span class="regexp">/usr/</span>local<span class="regexp">/mysql/</span>support-files<span class="regexp">/my-default.cnf /</span>etc/my.cnf</div></pre></td></tr></table></figure>
+<p>启动MySQL服务</p>
+<pre><code>service mysqld start
+</code></pre><p>设置开机自动启动服务</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">chkconfig</span> <span class="selector-tag">mysqld</span> <span class="selector-tag">on</span></div><div class="line"><span class="selector-tag">chkconfig</span>  <span class="selector-tag">--list</span> <span class="selector-tag">mysqld5</span><span class="selector-class">.5</span> <span class="selector-tag">mysqld5</span><span class="selector-class">.5</span>       0<span class="selector-pseudo">:off</span> 1<span class="selector-pseudo">:off</span> 2<span class="selector-pseudo">:on</span> 3<span class="selector-pseudo">:on</span> 4<span class="selector-pseudo">:on</span> 5<span class="selector-pseudo">:on</span> 6<span class="selector-pseudo">:off</span></div></pre></td></tr></table></figure>
+<p> 修改MySQL用户root的密码（授权法，例如：你想root用户使用root密码从任何主机连接到mysql服务器）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">mysql -u root(进入MySQ终端)</div><div class="line"><span class="meta">mysql&gt;</span><span class="bash">use mysql;(进入MySQL数据库)</span></div><div class="line"><span class="meta">mysql&gt;</span><span class="bash">GRANT ALL PRIVILEGES ON *.* TO root@<span class="string">"%"</span> IDENTIFIED BY <span class="string">"root"</span>;(授权root用户使用root password从任何主机连接到mysql服务器)</span></div><div class="line"><span class="meta">mysql&gt;</span><span class="bash">update user <span class="built_in">set</span> Password = password(<span class="string">'123456'</span>) <span class="built_in">where</span> User=<span class="string">'root'</span>;(修改root用户密码为123456)</span></div><div class="line"><span class="meta">mysql&gt;</span><span class="bash">flush privileges;(特权)</span></div><div class="line"><span class="meta">mysql&gt;</span><span class="bash"><span class="built_in">exit</span>;(退出)</span></div></pre></td></tr></table></figure>
+<h5 id="可选：运行安全设置脚本，修改MySQL用户root（不是系统的root-）的密码，禁止root远程连接（防止破解密码），移除test数据库和匿名用户，强烈建议生产服务器使用："><a href="#可选：运行安全设置脚本，修改MySQL用户root（不是系统的root-）的密码，禁止root远程连接（防止破解密码），移除test数据库和匿名用户，强烈建议生产服务器使用：" class="headerlink" title="可选：运行安全设置脚本，修改MySQL用户root（不是系统的root!）的密码，禁止root远程连接（防止破解密码），移除test数据库和匿名用户，强烈建议生产服务器使用："></a>可选：运行安全设置脚本，修改MySQL用户root（不是系统的root!）的密码，禁止root远程连接（防止破解密码），移除test数据库和匿名用户，强烈建议生产服务器使用：</h5><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="regexp">/usr/</span>local<span class="regexp">/mysql/</span>bin<span class="regexp">/mysql_secure_installation</span></div></pre></td></tr></table></figure>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/03/05/数据库/MySQL/【第六章】MySQL5.6 主从同步/" data-toggle="tooltip" data-placement="top" title="【第六章】MySQL5.6 主从同步">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/02/28/DNS/DNS服务使用dig查询解析/" data-toggle="tooltip" data-placement="top" title="DNS服务使用dig查询解析">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#MySQL.Database" title="MySQL.Database">MySQL.Database</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yancy-cc";
+    var disqus_identifier = "http://blog.yancy.cc/2016/02/29/数据库/MySQL/【第一章】Mysql数据库入门及安装/";
+    var disqus_url = "http://blog.yancy.cc/2016/02/29/数据库/MySQL/【第一章】Mysql数据库入门及安装/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

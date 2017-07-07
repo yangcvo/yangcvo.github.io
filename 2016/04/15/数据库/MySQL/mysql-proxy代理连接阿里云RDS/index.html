@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          【第十二章】Mysql-proxy代理连接阿里云RDS - Yancy的博客 | Yancy&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2016/04/15/数据库/MySQL/mysql-proxy代理连接阿里云RDS/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#MySQL.Database" title="MySQL.Database">MySQL.Database</a>
+                        
+                    </div>
+                    <h1>【第十二章】Mysql-proxy代理连接阿里云RDS</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2016-04-15
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="使用mysql-proxy远程连接内网的数据库，如阿里云的RDS"><a href="#使用mysql-proxy远程连接内网的数据库，如阿里云的RDS" class="headerlink" title="使用mysql-proxy远程连接内网的数据库，如阿里云的RDS"></a>使用mysql-proxy远程连接内网的数据库，如阿里云的RDS</h1><p>由于有个项目使用了阿里云的RDS，只能使用阿里云服务器内网连接RDS，很是麻烦，在公司办公的话，开发连接等等。</p>
+<p>希望能够用<code>Navicat</code>直接来管理RDS，在网上找了一下，还真的给我找到方法了，原来mysql有个mysql-proxy的工具，顾名思义就是代理连接的意思，使用方法如下：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="number">1</span>）首先需要先下载mysql-proxy，上mysql的官网</div><div class="line">下载地址：<span class="string">http:</span><span class="comment">//dev.mysql.com/downloads/mysql-proxy</span></div><div class="line"></div><div class="line">我这里用的是centos6<span class="number">.5</span>系统，下载redhat6<span class="number">.64</span>位就行</div><div class="line"></div><div class="line"><span class="number">2</span>）下载后，解压tar包，将解压后的目录移至<span class="regexp">/usr/</span>local<span class="regexp">/下，移动后完整路径为：/</span>usr<span class="regexp">/local/</span>mysql-proxy</div><div class="line"></div><div class="line"><span class="number">3</span>）在<span class="regexp">/usr/</span>local/mysql-proxy目录下新建一个文件，命名为：mysql-proxy.cnf，并修改其权限为<span class="number">0660</span></div><div class="line"></div><div class="line"><span class="number">4</span>）将以下代码拷贝至mysql-proxy.cnf中（尖括号部分需要根据您的服务器来修改）：</div><div class="line"></div><div class="line"><span class="number">5</span>）启动mysql-proxy：</div></pre></td></tr></table></figure>
+<p>🍓操作命令：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">wget http:<span class="comment">//downloads.mysql.com/archives/get/file/mysql-proxy-0.8.5-linux-el6-x86-64bit.tar.gz</span></div><div class="line"></div><div class="line">tar -zxvf mysql-proxy-<span class="number">0.8</span>.<span class="number">5</span>-linux-el6-x86-<span class="number">64</span>bit<span class="selector-class">.tar</span><span class="selector-class">.gz</span> </div><div class="line">mv mysql-proxy-<span class="number">0.8</span>.<span class="number">5</span>-linux-el6-x86-<span class="number">64</span>bit /usr/local/mysql-proxy</div><div class="line"></div><div class="line">touch /usr/local/mysql-proxy/mysql-proxy<span class="selector-class">.cnf</span></div><div class="line">chmod <span class="number">660</span> mysql-proxy.cnf</div></pre></td></tr></table></figure>
+<p>🍓这是我写的</p>
+<p><strong>vim /usr/local/mysql-proxy/mysql-proxy.cnf</strong></p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="section">[mysql-proxy]</span></div><div class="line"><span class="attr">daemon</span> = <span class="literal">true</span></div><div class="line"><span class="attr">pid-file</span> = /var/run/mysql-proxy.pid</div><div class="line"><span class="attr">log-file</span> = /var/log/mysql-proxy.log</div><div class="line"><span class="attr">log-level</span> = warning</div><div class="line"><span class="attr">max-open-files</span> = <span class="number">1024</span></div><div class="line"><span class="attr">plugins</span> = admin,proxy</div><div class="line"><span class="attr">user</span> = mysql-proxy</div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment">#Proxy Configuration</span></div><div class="line"><span class="attr">proxy-address</span> = <span class="number">0.0</span>.<span class="number">0.0</span>:<span class="number">3307</span></div><div class="line"><span class="attr">proxy-backend-addresses</span> = mysql.prod.intranet:<span class="number">3306</span>  内网域名和端口</div><div class="line"><span class="comment">#proxy-read-only-backend-addresses =</span></div><div class="line"><span class="comment">#proxy-lua-script =</span></div><div class="line"><span class="comment">#proxy-skip-profiling = true</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># Admin Configuration</span></div><div class="line"><span class="comment">#admin-address = 0.0.0.0:4041</span></div><div class="line"><span class="attr">admin-lua-script</span> = /usr/local/mysql-proxy/lib/mysql-proxy/lua/admin.lua</div><div class="line"><span class="attr">admin-username</span> = admin</div><div class="line"><span class="attr">admin-password</span> = admin</div></pre></td></tr></table></figure>
+<h4 id="解释下："><a href="#解释下：" class="headerlink" title="解释下："></a>解释下：</h4><p>这里我写mysql.prod.intranet:3306  内网域名和端口  是阿里云内网<code>rdsm5t6w6574weqwfda2.mysql.rds.aliyuncs.com</code> 域名加端口只不过是我做了内网DNS服务器设置了内网域名：mysql.prod.intranet  如何设置的呢。</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@mysql ~]<span class="comment"># ping rdsm5t6w6574weqwfda2.mysql.rds.aliyuncs.com</span></div><div class="line">PING rdsm5t6w6574weqwfda2.mysql.rds.aliyuncs.com (<span class="number">10.146</span>.<span class="number">74.133</span>) <span class="number">56</span>(<span class="number">84</span>) bytes of data.</div><div class="line"><span class="number">64</span> bytes from <span class="number">10.146</span>.<span class="number">74.133</span>: <span class="attr">icmp_seq=1</span> <span class="attr">ttl=58</span> <span class="attr">time=0.218</span> ms</div><div class="line"><span class="number">64</span> bytes from <span class="number">10.146</span>.<span class="number">74.133</span>: <span class="attr">icmp_seq=2</span> <span class="attr">ttl=58</span> <span class="attr">time=0.265</span> ms</div><div class="line"><span class="number">64</span> bytes from <span class="number">10.146</span>.<span class="number">74.133</span>: <span class="attr">icmp_seq=3</span> <span class="attr">ttl=58</span> <span class="attr">time=0.157</span> ms</div></pre></td></tr></table></figure>
+<p>然后到自己搭建主从内网DNS服务器配置：vim /var/named/prod.prod.intranet<br>设置下</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">openmysql</span><span class="selector-class">.prod</span><span class="selector-class">.intranet</span>. <span class="selector-tag">IN</span>      <span class="selector-tag">A</span>       10<span class="selector-class">.146</span><span class="selector-class">.74</span><span class="selector-class">.120</span></div></pre></td></tr></table></figure>
+<p>就可以了。</p>
+<p>参考的内容：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="section">[mysql-proxy]</span></div><div class="line"><span class="attr">admin-address</span> = localhost:<span class="number">4041</span></div><div class="line"><span class="attr">admin-username</span> = &lt;RDS数据库用户名&gt;</div><div class="line"><span class="attr">admin-password</span> = &lt;RDS数据库密码&gt;</div><div class="line"><span class="attr">admin-lua-script</span> = /usr/local/mysql-proxy/lib/mysql-proxy/lua/admin.lua</div><div class="line"><span class="attr">proxy-backend-addresses</span> = &lt;此处填写你的RDS连接地址和连接端口，地址和端口之间以冒号分隔&gt;</div><div class="line"><span class="attr">proxy-address</span> = &lt;此处填写你的ECS外网ip地址&gt;:<span class="number">4040</span></div><div class="line"><span class="attr">log-file</span> = ./mysql-proxy.log</div><div class="line"><span class="attr">log-level</span> = debug</div><div class="line"><span class="attr">daemon</span> = <span class="literal">true</span></div></pre></td></tr></table></figure>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="number">5</span>）启动mysql-proxy：</div></pre></td></tr></table></figure>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># <span class="regexp">/usr/</span>local<span class="regexp">/mysql-proxy/</span>bin<span class="regexp">/mysql-proxy --defaults-file=/u</span>sr<span class="regexp">/local/my</span>sql-proxy<span class="regexp">/mysql-proxy.cnf</span></div></pre></td></tr></table></figure>
+<p>🍓这样就可以了。</p>
+<h3 id="第二种方法yum安装："><a href="#第二种方法yum安装：" class="headerlink" title="第二种方法yum安装："></a>第二种方法yum安装：</h3><h6 id="一、安装mysql-proxy"><a href="#一、安装mysql-proxy" class="headerlink" title="一、安装mysql-proxy:"></a>一、安装mysql-proxy:</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install -y mysql-proxy</div></pre></td></tr></table></figure>
+<p>多省事，不要老想着源码有多好管理，yum源就是方便！</p>
+<p>接着执行以下命令就可以知道Mysql-proxy的安装目录.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@mysql ~]<span class="comment"># whereis mysql-proxy</span></div><div class="line">mysql-proxy: /usr/bin/mysql-proxy /etc/mysql-proxy.cnf /usr/lib64/mysql-proxy</div></pre></td></tr></table></figure>
+<p>如果你想去了解MySql-proxy相关配置信息，可以直接输入<code>mysql-proxy --help all</code>。当然你可以直接把相关的配置信息写入到文件，这样可以避免每次启去mysql-proxy时需要写很长的配置信息。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">[root@mysql ~]<span class="comment"># mysql-proxy -V</span></div><div class="line">mysql-proxy 0.8.5</div><div class="line">  chassis: 0.8.5</div><div class="line">  glib2: 2.28.8</div><div class="line">  libevent: 1.4.13-stable</div><div class="line">  LUA: Lua 5.1.4</div><div class="line">    package.path: /usr/lib64/mysql-proxy/lua/?.lua</div><div class="line">    package.cpath: /usr/lib64/mysql-proxy/lua/?.so</div><div class="line">-- modules</div><div class="line">  proxy: 0.8.5</div></pre></td></tr></table></figure>
+<p>接着到/etc目录中创建<code>mysql-proxy</code>文件，然后编辑<code>mysql-proxy.cnf</code>配置文件并分配权限（没有权限mysql-proxy是无法启动）。命令如下：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">touch <span class="regexp">/etc/my</span>sql-proxy.cnf</div><div class="line">chmod <span class="number">0660</span> <span class="regexp">/etc/my</span>sql-proxy.cnf</div></pre></td></tr></table></figure>
+<p>注意: 此配置文件权限660，否则服务无法启动，有配置文件了就可在命令行下用选项#mysql-proxy –defaults-file=/etc/mysql-proxy.cnf来启动，后面就不用跟太多选项，若用rpm方式安装此文件会提供，但安装好后无rw-splitting.lua这个脚本文件，可以通过在二进制安装包里提取此脚本文件）</p>
+<p>接着你就可以把你的相关配置信息写入到mysql-proxy.cnf文件中了(以下内容是以上文中服务器配置说明的ip为例的)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">[mysql-proxy]</div><div class="line">daemon = <span class="literal">true</span></div><div class="line">pid-file = /var/run/mysql-proxy.pid</div><div class="line"><span class="built_in">log</span>-file = /var/<span class="built_in">log</span>/mysql-proxy.log</div><div class="line"><span class="built_in">log</span>-level = debug</div><div class="line">max-open-files = 1024</div><div class="line">plugins = admin,proxy</div><div class="line">user = mysql-proxy</div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment">#Proxy Configuration</span></div><div class="line">proxy-address = 0.0.0.0:3307</div><div class="line">proxy-backend-addresses = mallmysql.prod.intranet:3306</div><div class="line"><span class="comment">#proxy-read-only-backend-addresses =</span></div><div class="line"><span class="comment">#proxy-lua-script = /usr/lib64/mysql-proxy/lua/rw-splitting.lua</span></div><div class="line"><span class="comment">#proxy-skip-profiling = true</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># Admin Configuration</span></div><div class="line">admin-address = 0.0.0.0:4041</div><div class="line">admin-lua-script = /usr/lib64/mysql-proxy/lua/admin.lua</div><div class="line">admin-username = admin</div><div class="line">admin-password = admin</div></pre></td></tr></table></figure>
+<p>🍓说明下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#proxy-backend-addresses = mallmysql.prod.intranet:3306</span></div><div class="line">这个是RDS内网的地址，你如果做代理的话，最好选择ECS的服务器公网IP，这里我使用RDS域名加端口。</div><div class="line">域名是我在内网DNS做了解析的。RDS可以ping下得到IP 或者做个cname域名都行。</div><div class="line"><span class="comment">#proxy-lua-script = /usr/lib64/mysql-proxy/lua/rw-splitting.lua</span></div><div class="line">这个是proxy代理脚本，这个不需要设置的，没有设置MySQL读写分离不需要设置。</div></pre></td></tr></table></figure>
+<p>在做以上配置（以上配置中，用户名和密码是数据库的哟）后，你可以输入以下命令(也可以用<code>/etc/init.d/mysql-proxy start</code>)来启动Mysql proxy：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">service mysql-proxy start </div><div class="line">chkconfig --add mysql-proxy  </div><div class="line">chkconfig mysql-proxy on</div><div class="line">service mysql-proxy restart</div></pre></td></tr></table></figure>
+<p>查看启动日志：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">[root@mysql ~]<span class="comment"># tailf -1000 /var/log/mysql-proxy.log</span></div><div class="line">2016-09-07 17:35:59: (message) Initiating shutdown, requested from signal handler</div><div class="line">2016-09-07 17:36:00: (message) shutting down normally, <span class="built_in">exit</span> code is: 0</div><div class="line">2016-09-07 17:36:01: (critical) plugin admin 0.8.5 started</div><div class="line">2016-09-07 17:36:01: (critical) plugin proxy 0.8.5 started</div><div class="line">2016-09-07 17:36:01: (debug) max open file-descriptors = 1024</div><div class="line">2016-09-07 17:36:01: (message) admin-server listening on port 0.0.0.0:4041</div><div class="line">2016-09-07 17:36:01: (message) proxy listening on port 0.0.0.0:3307</div><div class="line">2016-09-07 17:36:01: (message) added <span class="built_in">read</span>/write backend: mallmysql.prod.intranet:3306</div><div class="line">2016-09-07 17:36:01: (debug) now running as user: mysql-proxy (497/498)</div></pre></td></tr></table></figure>
+<p>在成功启动后，你可以用<code>netstat -tunlp</code>命令来查看4040端口来确认mysql-proxy是否真的启动了。然后你就可以用程序连接外网ip的4040端口来访问内网的数据库服务器了。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Active Internet connections (only servers)</div><div class="line">Proto Recv-Q Send-Q Local Address               Foreign Address             State       PID/Program name</div><div class="line">tcp        0      0 10.47.88.103:10050          0.0.0.0:*                   LISTEN      14111/zabbix_agentd</div><div class="line">tcp        0      0 0.0.0.0:4041                0.0.0.0:*                   LISTEN      18714/mysql-proxy</div><div class="line">tcp        0      0 0.0.0.0:3307                0.0.0.0:*                   LISTEN      18714/mysql-proxy</div><div class="line">tcp        0      0 0.0.0.0:8110                0.0.0.0:*                   LISTEN      3322/jsvc.exec</div><div class="line">tcp        0      0 0.0.0.0:10001               0.0.0.0:*                   LISTEN      3322/jsvc.exec</div><div class="line">tcp        0      0 0.0.0.0:8115                0.0.0.0:*                   LISTEN      1744/jsvc.exec</div></pre></td></tr></table></figure>
+<p>公司测试ECS公网IP地址连接：</p>
+<p><img src="media/14784291331837.jpg" alt=""></p>
+<p>🍓搭建当中的确遇到很多问题：</p>
+<h6 id="报错一："><a href="#报错一：" class="headerlink" title="报错一："></a>报错一：</h6><figure class="highlight subunit"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">ERROR </span>1105 (HY000): (proxy) all backends are down</div></pre></td></tr></table></figure>
+<p>参考：<a href="https://bugs.mysql.com/bug.php?id=47251" target="_blank" rel="external">https://bugs.mysql.com/bug.php?id=47251</a></p>
+<h6 id="报错二："><a href="#报错二：" class="headerlink" title="报错二："></a>报错二：</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">2016-09-07 14:30:29: (debug) [network-mysqld.c:1134]: error on a connection (fd: -1 event: 0). closing client connection.</div></pre></td></tr></table></figure>
+<p>这个问题后来发现原来是RDS需要问题，重新新建用户名和密码，在给ECS公网服务器添加到白名单就行了。<br>具体可以参考文章：<a href="http://www.0550go.com/database/mysql/mysql-proxy.html" target="_blank" rel="external">http://www.0550go.com/database/mysql/mysql-proxy.html</a></p>
+<p>参考文档：<a href="http://www.lyblog.net/detail/577.html" target="_blank" rel="external">多种方式实现公网访问内网数据库服务器</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/04/15/数据库/MySQL/【第九章】MySQL优化连接数防止访问量过高的方法 /" data-toggle="tooltip" data-placement="top" title="【第十一章】Mysql优化连接数防止访问量过高的方法">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/04/05/Web服务技术/Nginx/Nginx 安全&优化&日志输出规范详细配置/" data-toggle="tooltip" data-placement="top" title="Nginx 安全&优化&日志输出规范详细配置">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#MySQL.Database" title="MySQL.Database">MySQL.Database</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yancy-cc";
+    var disqus_identifier = "http://blog.yancy.cc/2016/04/15/数据库/MySQL/mysql-proxy代理连接阿里云RDS/";
+    var disqus_url = "http://blog.yancy.cc/2016/04/15/数据库/MySQL/mysql-proxy代理连接阿里云RDS/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
