@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          【第十三章】MySQL 数据库优化(运维角度) - Yancy的博客 | Yancy&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2016/04/26/数据库/MySQL/【第十三章】MySQL 数据库优化(运维角度)  /">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#MySQL.Database" title="MySQL.Database">MySQL.Database</a>
+                        
+                    </div>
+                    <h1>【第十三章】MySQL 数据库优化(运维角度)</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2016-04-26
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="MySQL-数据库优化-运维角度"><a href="#MySQL-数据库优化-运维角度" class="headerlink" title="MySQL 数据库优化(运维角度)"></a>MySQL 数据库优化(运维角度)</h1><p><strong>数据库维护</strong></p>
+<p>数据库维护是运维工程师或者DBA主要工作，包括性能监控、性能分析、性能调优、数据库备份和恢复等。</p>
+<p>一个成熟的数据库架构并不是一开始设计就具备高可用、高伸缩等特性的，它是随着用户量的增加，基础架构才逐渐完善。这篇博文主要谈MySQL数据库发展周期中所面临的问题及优化方案，暂且抛开前端应用不说，大致分为以下五个阶段：</p>
+<p><strong>1、数据库表设计</strong></p>
+<p>项目立项后，开发部根据产品部需求开发项目，开发工程师工作其中一部分就是对表结构设计。对于数据库来说，这点很重要，如果设计不当，会直接影响访问速度和用户体验。影响的因素很多，比如慢查询、低效的查询语句、没有适当建立索引、数据库堵塞（死锁）等。当然，有测试工程师的团队，会做压力测试，找bug。对于没有测试工程师的团队来说，大多数开发工程师初期不会太多考虑数据库设计是否合理，而是尽快完成功能实现和交付，等项目有一定访问量后，隐藏的问题就会暴露，这时再去修改就不是这么容易的事了。</p>
+<p><strong>2、数据库部署</strong></p>
+<p>该运维工程师出场了，项目初期访问量不会很大，所以单台部署足以应对在1500左右的QPS（每秒查询率）。考虑到高可用性，可采用MySQL主从复制+Keepalived做双击热备，常见集群软件有Keepalived、Heartbeat。</p>
+<p>双机热备博文：<a href="http://lizhenliang.blog.51cto.com/7876557/1362313" target="_blank" rel="external">http://lizhenliang.blog.51cto.com/7876557/1362313</a></p>
+<p><strong>3、数据库性能优化</strong></p>
+<p>如果将MySQL部署到普通的X86服务器上，在不经过任何优化情况下，MySQL理论值正常可以处理2000左右QPS，经过优化后，有可能会提升到2500左右QPS，否则，访问量当达到1500左右并发连接时，数据库处理性能就会变慢，而且硬件资源还很富裕，这时就该考虑软件问题了。那么怎样让数据库最大化发挥性能呢？ <code>一方面可以单台运行多个MySQL实例让服务器性能发挥到最大化，另一方面是对数据库进行优化，往往操作系统和数据库默认配置都比较保守，会对数据库发挥有一定限制，可对这些配置进行适当的调整，尽可能的处理更多连接数。</code></p>
+<p><strong>具体优化有以下三个层面：</strong></p>
+<p><strong>3.1 数据库配置优化</strong></p>
+<p>MySQL常用有两种存储引擎，一个是MyISAM，不支持事务处理，读性能处理快，表级别锁。另一个是InnoDB，支持事务处理（ACID），设计目标是为处理大容量数据发挥最大化性能，行级别锁。</p>
+<p><strong>表锁：</strong>开销小，锁定粒度大，发生死锁概率高，相对并发也低。</p>
+<p><strong>行锁：</strong>开销大，锁定粒度小，发生死锁概率低，相对并发也高。</p>
+<p>为什么会出现表锁和行锁呢？主要是为了保证数据的完整性，举个例子，一个用户在操作一张表，其他用户也想操作这张表，那么就要等第一个用户操作完，其他用户才能操作，表锁和行锁就是这个作用。否则多个用户同时操作一张表，肯定会数据产生冲突或者异常。</p>
+<p>根据以上看来，使用InnoDB存储引擎是最好的选择，也是MySQL5.5以后版本中默认存储引擎。每个存储引擎相关联参数比较多，以下列出主要影响数据库性能的参数。</p>
+<p>一般生产自己搭建的数据库，最好都有这些优化参数。</p>
+<p>公共参数默认值：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="attr">max_connections</span> = <span class="number">151</span></div><div class="line"><span class="comment">#同时处理最大连接数，推荐设置最大连接数是上限连接数的80%左右</span></div><div class="line"><span class="attr">sort_buffer_size</span> = <span class="number">2</span>M</div><div class="line"><span class="comment">#查询排序时缓冲区大小，只对order by和group by起作用，可增大此值为16M</span></div><div class="line"><span class="attr">query_cache_limit</span> = <span class="number">1</span>M</div><div class="line"><span class="comment">#查询缓存限制，只有1M以下查询结果才会被缓存，以免结果数据较大把缓存池覆盖</span></div><div class="line"><span class="attr">query_cache_size</span> = <span class="number">16</span>M</div><div class="line"><span class="comment">#查看缓冲区大小，用于缓存SELECT查询结果，下一次有同样SELECT查询将直接从缓存池返回结果，可适当成倍增加此值</span></div><div class="line"><span class="attr">open_files_limit</span> = <span class="number">1024</span></div><div class="line"><span class="comment">#打开文件数限制，如果show global status like 'open_files'查看的值等于或者大于open_files_limit值时，程序会无法连接数据库或卡死</span></div></pre></td></tr></table></figure>
+<p><strong>MyISAM参数默认值：</strong></p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="attr">key_buffer_size</span> = <span class="number">16</span>M</div><div class="line"><span class="comment">#索引缓存区大小，一般设置物理内存的30-40%</span></div><div class="line"><span class="attr">read_buffer_size</span> = <span class="number">128</span>K</div><div class="line"><span class="comment">#读操作缓冲区大小，推荐设置16M或32M</span></div></pre></td></tr></table></figure>
+<p><strong>InnoDB参数默认值：</strong></p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="attr">innodb_buffer_pool_size</span> = <span class="number">128</span>M</div><div class="line"><span class="comment">#索引和数据缓冲区大小，一般设置物理内存的60%-70%</span></div><div class="line"><span class="attr">innodb_buffer_pool_instances</span> = <span class="number">1</span></div><div class="line"><span class="comment">#缓冲池实例个数，推荐设置4个或8个</span></div><div class="line"><span class="attr">innodb_flush_log_at_trx_commit</span> = <span class="number">1</span></div><div class="line"><span class="comment">#关键参数，0代表大约每秒写入到日志并同步到磁盘，数据库故障会丢失1秒左右事务数据。1为每执行一条SQL后写入到日志并同步到磁盘，I/O开销大，执行完SQL要等待日志读写，效率低。2代表只把日志写入到系统缓存区，再每秒同步到磁盘，效率很高，如果服务器故障，才会丢失事务数据。对数据安全性要求不是很高的推荐设置2，性能高，修改后效果明显。</span></div><div class="line"><span class="attr">innodb_file_per_table</span> = <span class="literal">OFF</span></div><div class="line"><span class="comment">#默认是共享表空间，共享表空间idbdata文件不断增大，影响一定的I/O性能。推荐开启独立表空间模式，每个表的索引和数据都存在自己独立的表空间中，可以实现单表在不同数据库中移动。</span></div><div class="line"><span class="attr">innodb_log_buffer_size</span> = <span class="number">8</span>M</div><div class="line"><span class="comment">#日志缓冲区大小，由于日志最长每秒钟刷新一次，所以一般不用超过16M</span></div></pre></td></tr></table></figure>
+<p><strong>3.2 系统内核优化</strong></p>
+<p>大多数MySQL都部署在linux系统上，所以操作系统的一些参数也会影响到MySQL性能，以下对linux内核进行适当优化。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">net<span class="selector-class">.ipv4</span><span class="selector-class">.tcp_fin_timeout</span> = <span class="number">30</span></div><div class="line">#TIME_WAIT超时时间，默认是<span class="number">60s</span></div><div class="line">net<span class="selector-class">.ipv4</span><span class="selector-class">.tcp_tw_reuse</span> = <span class="number">1</span></div><div class="line">#<span class="number">1</span>表示开启复用，允许TIME_WAIT socket重新用于新的TCP连接，<span class="number">0</span>表示关闭</div><div class="line">net<span class="selector-class">.ipv4</span><span class="selector-class">.tcp_tw_recycle</span> = <span class="number">1</span></div><div class="line">#<span class="number">1</span>表示开启TIME_WAIT socket快速回收，<span class="number">0</span>表示关闭</div><div class="line">net<span class="selector-class">.ipv4</span><span class="selector-class">.tcp_max_tw_buckets</span> = <span class="number">4096</span></div><div class="line">#系统保持TIME_WAIT socket最大数量，如果超出这个数，系统将随机清除一些TIME_WAIT并打印警告信息</div><div class="line">net<span class="selector-class">.ipv4</span><span class="selector-class">.tcp_max_syn_backlog</span> = <span class="number">4096</span></div><div class="line">#进入SYN队列最大长度，加大队列长度可容纳更多的等待连接</div></pre></td></tr></table></figure>
+<p>在linux系统中，如果进程打开的文件句柄数量超过系统默认值1024，就会提示“too many files open”信息，所以要调整打开文件句柄限制。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> vi /etc/security/limits.conf  <span class="comment">#加入以下配置，*代表所有用户，也可以指定用户，重启系统生效</span></span></div><div class="line">* soft nofile 65535</div><div class="line">* hard nofile 65535</div><div class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">ulimit</span> -SHn 65535   <span class="comment">#立刻生效</span></span></div></pre></td></tr></table></figure>
+<p><strong>3.3 硬件配置</strong></p>
+<p>加大物理内存，提高文件系统性能。linux内核会从内存中分配出缓存区（系统缓存和数据缓存）来存放热数据，通过文件系统延迟写入机制，等满足条件时（如缓存区大小到达一定百分比或者执行sync命令）才会同步到磁盘。也就是说物理内存越大，分配缓存区越大，缓存数据越多。当然，服务器故障会丢失一定的缓存数据。</p>
+<p>SSD硬盘代替SAS硬盘，将RAID级别调整为RAID1+0，相对于RAID1和RAID5有更好的读写性能（IOPS），毕竟数据库的压力主要来自磁盘I/O方面。</p>
+<p><strong>4、数据库架构扩展</strong></p>
+<p>随着业务量越来越大，单台数据库服务器性能已无法满足业务需求，该考虑加机器了，该做集群了~~~。主要思想是分解单台数据库负载，突破磁盘I/O性能，热数据存放缓存中，降低磁盘I/O访问频率。</p>
+<p><strong>4.1 主从复制与读写分离</strong></p>
+<p>因为生产环境中，数据库大多都是读操作，所以部署一主多从架构，主数据库负责写操作，并做双击热备，多台从数据库做负载均衡，负责读操作，主流的负载均衡器有LVS、HAProxy、Nginx。</p>
+<p>怎么来实现读写分离呢？大多数企业是在代码层面实现读写分离，效率比较高。另一个种方式通过代理程序实现读写分离，企业中应用较少，常见代理程序有MySQL Proxy、Amoeba。在这样数据库集群架构中，大大增加数据库高并发能力，解决单台性能瓶颈问题。如果从数据库一台从库能处理2000 QPS，那么5台就能处理1w QPS，数据库横向扩展性也很容易。</p>
+<p>有时，面对大量写操作的应用时，单台写性能达不到业务需求。如果做双主，就会遇到数据库数据不一致现象，产生这个原因是在应用程序不同的用户会有可能操作两台数据库，同时的更新操作造成两台数据库数据库数据发生冲突或者不一致。在单库时MySQL利用存储引擎机制表锁和行锁来保证数据完整性，怎样在多台主库时解决这个问题呢？有一套基于perl语言开发的主从复制管理工具，叫MySQL-MMM（Master-Master replication managerfor Mysql，Mysql主主复制管理器），这个工具最大的优点是在同一时间只提供一台数据库写操作，有效保证数据一致性。</p>
+<p>MySQL-MMM博文：<a href="http://lizhenliang.blog.51cto.com/7876557/1354576" target="_blank" rel="external">http://lizhenliang.blog.51cto.com/7876557/1354576</a></p>
+<p><strong>4.2 增加缓存</strong></p>
+<p>给数据库增加缓存系统，把热数据缓存到内存中，如果缓存中有要请求的数据就不再去数据库中返回结果，提高读性能。缓存实现有本地缓存和分布式缓存，本地缓存是将数据缓存到本地服务器内存中或者文件中。分布式缓存可以缓存海量数据，扩展性好，主流的分布式缓存系统有memcached、redis，memcached性能稳定，数据缓存在内存中，速度很快，QPS可达8w左右。如果想数据持久化就选择用redis，性能不低于memcached。</p>
+<p>这里我们用了redis 也用memcached</p>
+<p>工作过程：<br><img src="media/14787629205161.jpg" alt=""></p>
+<p><strong>5. 开启慢查询日志</strong></p>
+<p>MySQL开启慢查询日志，分析出哪条SQL语句比较慢，使用set设置变量，重启服务失效，可以在my.cnf添加参数永久生效。</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mysql&gt; <span class="keyword">set</span> <span class="keyword">global</span> slow-query-<span class="built_in">log</span>=<span class="keyword">on</span>  <span class="comment">#开启慢查询功能</span></div><div class="line">mysql&gt; <span class="keyword">set</span> <span class="keyword">global</span> slow_query_log_file='/var/<span class="built_in">log</span>/mysql/mysql-slow.<span class="built_in">log</span>';  <span class="comment">#指定慢查询</span></div><div class="line">日志文件位置</div><div class="line">mysql&gt; <span class="keyword">set</span> <span class="keyword">global</span> log_queries_not_using_indexes=<span class="keyword">on</span>;   <span class="comment">#记录没有使用索引的查询</span></div><div class="line">mysql&gt; <span class="keyword">set</span> <span class="keyword">global</span> long_query_time=<span class="number">1</span>;   <span class="comment">#只记录处理时间1s以上的慢查询</span></div></pre></td></tr></table></figure>
+<p>分析慢查询日志，可以使用MySQL自带的mysqldumpslow工具，分析的日志较为简单。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> mysqldumpslow -t 3 /var/<span class="built_in">log</span>/mysql/mysql-slow.log <span class="comment">#查看最慢的前三个查询</span></span></div></pre></td></tr></table></figure>
+<p>也可以使用percona公司的pt-query-digest工具，日志分析功能全面，可分析slow log、binlog、general log。</p>
+<p>分析慢查询日志：<code>pt-query-digest /var/log/mysql/mysql-slow.log</code></p>
+<p>分析binlog日志：<code>mysqlbinlog mysql-bin.000001 &gt;mysql-bin.000001.sql</code></p>
+<p><code>pt-query-digest --type=binlog mysql-bin.000001.sql</code></p>
+<p>分析普通日志：<code>pt-query-digest --type=genlog localhost.log</code></p>
+<p><strong>5.1 数据库备份</strong></p>
+<p>备份数据库是最基本的工作，也是最重要的，否则后果很严重，你懂得！但由于数据库比较大，上百G，往往备份都很耗费时间，所以就该选择一个效率高的备份策略，对于数据量大的数据库，一般都采用增量备份。常用的备份工具有mysqldump、mysqlhotcopy、xtrabackup等，mysqldump比较适用于小的数据库，因为是逻辑备份，所以备份和恢复耗时都比较长。mysqlhotcopy和xtrabackup是物理备份，备份和恢复速度快，不影响数据库服务情况下进行热拷贝，建议使用xtrabackup，支持增量备份。</p>
+<p>Xtrabackup备份工具使用博文：<a href="http://lizhenliang.blog.51cto.com/7876557/1612800" target="_blank" rel="external">http://lizhenliang.blog.51cto.com/7876557/1612800</a></p>
+<p><strong>5.2 数据库修复</strong></p>
+<p>有时候MySQL服务器突然断电、异常关闭，会导致表损坏，无法读取表数据。这时就可以用到MySQL自带的两个工具进行修复，myisamchk和mysqlcheck。</p>
+<p>myisamchk：只能修复myisam表，需要停止数据库</p>
+<p>常用参数：</p>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">-<span class="ruby">f --force 强制修复，覆盖老的临时文件，一般不使用</span></div><div class="line">-<span class="ruby">r --recover 恢复模式</span></div><div class="line">-<span class="ruby">q --quik 快速恢复</span></div><div class="line">-<span class="ruby">a --analyze 分析表</span></div><div class="line">-<span class="ruby">o --safe-recover 老的恢复模式，如果-r无法修复，可以使用此参数试试</span></div><div class="line">-<span class="ruby">F --fast 只检查没有正常关闭的表</span></div></pre></td></tr></table></figure>
+<p>快速修复weibo数据库:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">cd</span> /var/lib/mysql/weibo</span></div><div class="line"><span class="meta">#</span><span class="bash"> myisamchk -r -q *.MYI</span></div></pre></td></tr></table></figure>
+<p>mysqlcheck：myisam和innodb表都可以用，不需要停止数据库，如修复单个表，可在数据库后面添加表名，以空格分割</p>
+<p>常用参数：</p>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">-<span class="ruby">a --all-databases 检查所有的库</span></div><div class="line">-<span class="ruby">r --repair 修复表</span></div><div class="line">-<span class="ruby">c --check 检查表，默认选项</span></div><div class="line">-<span class="ruby">a --analyze 分析表</span></div><div class="line">-<span class="ruby">o --optimize 优化表</span></div><div class="line">-<span class="ruby">q --quik 最快检查或修复表</span></div><div class="line">-<span class="ruby">F --fast 只检查没有正常关闭的表</span></div></pre></td></tr></table></figure>
+<p>快速修复weibo数据库:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysqlcheck -r -<span class="selector-tag">q</span> -uroot -p123 weibo</div></pre></td></tr></table></figure>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/04/26/数据库/MySQL/【第十章】MySQL5-6主从-优化-集群与读写分离-MySQL-Proxy-实践/" data-toggle="tooltip" data-placement="top" title="【第十章】MySQL5-6主从-优化-集群与读写分离-MySQL-Proxy-实践">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/04/25/数据库/MySQL/mysql 远程连接不上，由于bind-address问题/" data-toggle="tooltip" data-placement="top" title="Mysql 远程连接不上，由于bind-address问题">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#MySQL.Database" title="MySQL.Database">MySQL.Database</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yancy-cc";
+    var disqus_identifier = "http://blog.yancy.cc/2016/04/26/数据库/MySQL/【第十三章】MySQL 数据库优化(运维角度)  /";
+    var disqus_url = "http://blog.yancy.cc/2016/04/26/数据库/MySQL/【第十三章】MySQL 数据库优化(运维角度)  /";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

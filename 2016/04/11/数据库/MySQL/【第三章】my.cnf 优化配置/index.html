@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          【第三章】my.cnf 优化配置 - Yancy的博客 | Yancy&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2016/04/11/数据库/MySQL/【第三章】my.cnf 优化配置/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#MySQL.Database" title="MySQL.Database">MySQL.Database</a>
+                        
+                    </div>
+                    <h1>【第三章】my.cnf 优化配置</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2016-04-11
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="my-cnf-优化配置"><a href="#my-cnf-优化配置" class="headerlink" title="my.cnf 优化配置"></a>my.cnf 优化配置</h1><p>Mysql参数优化对于新手来讲，是比较难懂的东西，其实这个参数优化，是个很复杂的东西，对于不同的网站，及其在线量，访问量，帖子数量，网络情况，以及机器硬件配置都有关系，优化不可能一次性完成，需要不断的观察以及调试，才有可能得到最佳效果。</p>
+<p>个人在配置这个时候碰到很多的问题：</p>
+<p>比如出现配置完，MySQL启动报错：</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Starting MySQL...The server quit without updating PID file (<span class="regexp">/opt/mysql</span><span class="regexp">/data/rekfan</span>.pid).[失败]</div><div class="line">可参考这篇：<span class="symbol">http:</span>/<span class="regexp">/blog.rekfan.com/articles</span><span class="regexp">/186.html</span></div><div class="line">我的问题解决是把自己配置定义的pid </div><div class="line">pid-file=/opt<span class="regexp">/mysql/log</span><span class="regexp">/mysql.pid</span></div><div class="line">注释掉，让默认去访问。</div><div class="line">因为启动/etc<span class="regexp">/init.d/mysql</span> 下面的脚本 rpm安装的默认路径在/var/<span class="class"><span class="keyword">lib</span>/<span class="title">mysql</span>/<span class="title">mysql</span>-2.<span class="title">pid</span></span></div></pre></td></tr></table></figure>
+<p>还有报错：</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">报出异常Can 't connect to <span class="keyword">local</span> MySQL server through socket '/<span class="keyword">var</span>/lib/mysql/mysql.sock '(2) "</div><div class="line">打开错误日志/opt/mysql/<span class="keyword">log</span>/<span class="keyword">error</span>.<span class="keyword">log</span>看到如下内容：</div><div class="line">140417  7:30:38 [<span class="keyword">ERROR</span>] Can't start server: Bind <span class="keyword">on</span> TCP/IP port: Cannot assign requested address  </div><div class="line">140417  7:30:38 [<span class="keyword">ERROR</span>] <span class="keyword">Do</span> you already have another mysqld server running <span class="keyword">on</span> port: 3306 ?<span class="keyword">g</span>  </div><div class="line">140417  7:30:38 [<span class="keyword">ERROR</span>] Aborting  </div><div class="line">端口占用</div><div class="line">kill进程重新启动。</div><div class="line">添加了这条：</div><div class="line">socket=/<span class="keyword">var</span>/lib/mysql/mysql.sock</div></pre></td></tr></table></figure>
+<p>修改配置文件：先cp</p>
+<p>cp /usr/share/mysql/my-default.cnf /etc/my.cnf<br>我的my.cnf 配置。</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># For advice on how to change settings please see</span></div><div class="line"><span class="comment"># http://dev.mysql.com/doc/refman/5.6/en/server-configuration-defaults.html</span></div><div class="line"><span class="comment"># *** DO NOT EDIT THIS FILE. It's a template which will be copied to the</span></div><div class="line"><span class="comment"># *** default location during install, and will be replaced if you</span></div><div class="line"><span class="comment"># *** upgrade to a newer version of MySQL.</span></div><div class="line">[mysqld]</div><div class="line"><span class="comment">#mysqld程序--目录和文件</span></div><div class="line">user=mysql                           <span class="comment"># MySQL启动用户：mysql</span></div><div class="line">datadir = /home/data/mysql           <span class="comment">#  使用给定目录作为根目录(安装目录)。</span></div><div class="line">server-id = 1                        <span class="comment">#表示是本机的序号为1,一般来讲就是master的意思</span></div><div class="line">pid-file=/opt/mysql/log/mysql.pid    <span class="comment">#为mysqld程序指定一个存放进程ID的文件(仅适用于UNIX/Linux系统);</span></div><div class="line">lower_case_table_names=1            <span class="comment">#一般情况下 Linux 服务器默认安装 MySQL 的数据库表名是区分大小写的 云服务器 ECS MySQL 设置数据库表名不区分大小写.</span></div><div class="line">socket=/home/data/mysql/mysql.sock   <span class="comment"># 为MySQL客户程序与服务器之间的本地通信指定一个套接字文件(Linux下默认是/var/lib/mysql/mysql.sock文件)</span></div><div class="line">port  = 3306                         <span class="comment"># 指定MsSQL侦听的端口</span></div><div class="line"><span class="comment">#key_buffer       = 384M             # key_buffer_size指定用于索引的缓冲区大小，增加它可得到更好处理的索引(对所有读和多重写)，到你能负担得起那样多。如果你使它太大，系统将开始换页并且真的变慢了。对于内存在4GB左右的服务器该参数可设置为384M或512M。通过检查状态值Key_read_requests和 Key_reads,可以知道key_buffer_size设置是否合理。比例key_reads / key_read_requests应该尽可能的低，至少是1:100，1:1000更好(上述状态值可以使用SHOW STATUS LIKE ‘key_read%'获得)。注意：该参数值设置的</span></div><div class="line">过大反而会是服务器整体效率降低!</div><div class="line"><span class="comment">#table_cache = 512                   #table_cache指定表高速缓存的大小。每当MySQL访问一个表时，如果在表缓冲区中还有空间，该表就被打开并放入其中，这样可以更快地访问表内容。通过检查峰值时间的状态值Open_tables和Opened_tables，可以决定是否需</span></div><div class="line">要增加table_cache的值。如果你发现 open_tables等于table_cache，并且opened_tables在不断增长，那么你就需要增加table_cache的值了(上述状态值可以使用SHOW STATUS LIKE ‘Open%tables'获得)。注意，不能盲目地把table_cache设置成很大的值。如果设置得&gt;太高，可能会造成文件描述符不足，从而造成性能不稳定或者连接失败。</div><div class="line"></div><div class="line">max_allowed_packet=128M</div><div class="line">innodb_log_file_size=512M</div><div class="line">default-storage-engine=InnoDB       <span class="comment">#innodb为默认数据引擎</span></div><div class="line"><span class="comment">#sort_buffer_size = 2M               #查询排序时缓冲区大小，只对order by和group by起作用，可增大此值为16M</span></div><div class="line"><span class="comment">#query_cache_limit = 1M             #查询缓存限制，只有1M以下查询结果才会被缓存，以免结果数据较大把缓存池覆盖</span></div><div class="line"><span class="comment">#query_cache_size = 16M            #查看缓冲区大小，用于缓存SELECT查询结果，下一次有同样SELECT查询将直接从缓存池返回结果，可适当成倍增加此值</span></div><div class="line"><span class="comment">#open_files_limit = 1024                   #打开文件数限制，如果show global status like 'open_files'查看的值等于或者大于open_files_limit值时，程序会无法连接数据库或卡死</span></div><div class="line">max_connections = 1000              <span class="comment">#指定MySQL允许的最大连接进程数。如果在访问论坛时经常出现Too Many Connections的错误提示，则需要增大该参数值。</span></div><div class="line"><span class="comment">#max_connect_errors = 100000000     #对于同一主机，如果有超出该参数值个数的中断错误连接，则该主机将被禁止连接。如需对该主机进行解禁，执行：FLUSH HOST;。</span></div><div class="line"><span class="comment">#wait_timeout = 8                   #指定一个请求的最大连接时间，对于4GB左右内存的服务器可以设置为5-10。</span></div><div class="line"><span class="comment">#thread_concurrency = 8             #该参数取值为服务器逻辑CPU数量×2，在本例中，服务器有2颗物理CPU，而每颗物理CPU又支持H.T超线程，所以实际取值为4 × 2 = 8</span></div><div class="line"></div><div class="line">long_query_time = 1                <span class="comment">#慢查询时间 超过1秒则为慢查询</span></div><div class="line">binlog_checksum=NONE               <span class="comment">#默认为NONE， 表示在图1的箭头1 不生成checksum， 这样就可以兼容旧版本的mysql。此外，就只能设置为CRC32了。</span></div><div class="line">binlog_format=MIXED                <span class="comment">#设定主从复制模式的方法非常简单，只要在以前设定复制配置的基础上，再加一个参数：以上两种模式的混合使用，一般的复制使用STATEMENT模式保存binlog，对于STATEMENT模式无法复制的操作使用ROW模式保存binlog，MySQL会根据执行的SQL语句选择日志保存方式。</span></div><div class="line">log-bin                 = /opt/mysql/mysql-bin.log    <span class="comment"># binlog日志文件</span></div><div class="line">expire_logs_days        = 7                           <span class="comment"># binlog过期清理时间</span></div><div class="line">max_binlog_size         = 100m                        <span class="comment"># binlog每个日志文件大小</span></div><div class="line">binlog_cache_size       = 4m                          <span class="comment"># binlog缓存大小</span></div><div class="line">max_binlog_cache_size   = 512m                        <span class="comment"># 最大binlog缓存大小</span></div><div class="line"></div><div class="line">symbolic-links=0</div><div class="line"><span class="comment">#log_bin=mysql-bin</span></div><div class="line"><span class="comment">#log_bin=/home/data/mysql/mysql-bin.log    #确保此文件可写</span></div><div class="line">read-only       =0  <span class="comment">#主机，读写都可以</span></div><div class="line">binlog-do-db    =yjk   <span class="comment">#需要备份数据，多个写多行</span></div><div class="line">binlog-ignore-db=mysql <span class="comment">#不需要备份的数据库，多个写多行</span></div><div class="line">character_set_server=utf8mb4                         <span class="comment">#写入的数据到MySQL中数据为防止中文乱码。</span></div><div class="line">lower_case_table_names=1                             <span class="comment">#这样MySQL 将在创建与查找时将所有的表名自动转换为小写字符</span></div><div class="line"><span class="comment">#character_set_client=utf8                           #集群写入的数据到MySQL中数据为防止中文乱码。</span></div><div class="line"><span class="comment">#collation-server=utf8_general_ci</span></div><div class="line">expire_logs_days = 10                                <span class="comment"># 日志保留时间</span></div><div class="line">sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES</div><div class="line"></div><div class="line">[mysqld_safe]</div><div class="line">log-error=/opt/mysql/log/error.log   <span class="comment">#错误日志路径</span></div><div class="line">og=/opt/mysql/log/mysql.log         <span class="comment">#普通日志路径</span></div><div class="line">master-port=3306                     <span class="comment">#mysql master端口</span></div><div class="line">log-slave-updates</div><div class="line"></div><div class="line">[mysql]</div><div class="line"></div><div class="line">default-character-set=utf8</div><div class="line"></div><div class="line">[client]</div><div class="line">default-character-set=utf8</div><div class="line">socket=/home/data/mysql/mysql.sock</div><div class="line"></div><div class="line">[mysqldump]</div><div class="line">user=root</div><div class="line">password=Ihaozhuo_b313</div></pre></td></tr></table></figure>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/04/12/数据库/MySQL/【第五章】MySQL数据库备份及恢复命令 mysqldump,source的用法/" data-toggle="tooltip" data-placement="top" title="【第五章】MySQL数据库备份及恢复命令 mysqldump,source的用法">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/04/07/数据库/MySQL/MySQL启动错误：mysql.sock丢失/" data-toggle="tooltip" data-placement="top" title="【第六章】MySQL启动错误：mysql.sock丢失">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#MySQL.Database" title="MySQL.Database">MySQL.Database</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yancy-cc";
+    var disqus_identifier = "http://blog.yancy.cc/2016/04/11/数据库/MySQL/【第三章】my.cnf 优化配置/";
+    var disqus_url = "http://blog.yancy.cc/2016/04/11/数据库/MySQL/【第三章】my.cnf 优化配置/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

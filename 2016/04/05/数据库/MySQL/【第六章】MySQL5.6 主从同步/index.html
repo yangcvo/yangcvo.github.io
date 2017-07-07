@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          【第六章】MySQL5.6 主从同步 - Yancy的博客 | Yancy&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2016/04/05/数据库/MySQL/【第六章】MySQL5.6 主从同步/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#MySQL.Database" title="MySQL.Database">MySQL.Database</a>
+                        
+                    </div>
+                    <h1>【第六章】MySQL5.6 主从同步</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2016-04-05
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>Mysql作为目前世界上使用最广泛的免费数据库，相信所有从事系统运维的工程师都一定接触过。但在实际的生产环境中，由单台Mysql作为独立的数据库是完全不能满足实际需求的，无论是在安全性，高可用性以及高并发等各个方面。</p>
+<p><img src="media/14787617613970.jpg" alt=""></p>
+<p>主从复制的原理：</p>
+<p>分为同步复制和异步复制，实际复制架构中大部分为异步复制。 复制的基本过程如下：<br>1).Slave上面的IO进程连接上Master，并请求从指定日志文件的指定位置（或者从最开始的日志）之后的日志内容；</p>
+<p>2).Master接收到来自Slave的IO进程的请求后，通过负责复制的IO进程根据请求信息读取制定日志指定位置之后的日志信息，返回给Slave 的IO进程。返回信息中除了日志所包含的信息之外，还包括本次返回的信息已经到Master端的bin-log文件的名称以及bin-log的位置；  </p>
+<p>3).Slave的IO进程接收到信息后，将接收到的日志内容依次添加到Slave端的relay-log文件的最末端，并将读取到的Master端的 bin-log的文件名和位置记录到master-info文件中，以便在下一次读取的时候能够清楚的告诉Master“我需要从某个bin-log的哪个位置开始往后的日志内容，请发给我”；  </p>
+<p>4).Slave的Sql进程检测到relay-log中新增加了内容后，会马上解析relay-log的内容成为在Master端真实执行时候的那些可执行的内容，并在自身执行。</p>
+<p>因此，一般来说都是通过 主从复制（Master-Slave）的方式来同步数据，再通过读写分离（MySQL-Proxy）来提升数据库的并发负载能力 这样的方案来进行部署与实施的。</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">MySQL主从同步的作用 </div><div class="line"><span class="number">1</span>、可以作为一种备份机制，相当于热备份 </div><div class="line"><span class="number">2</span>、可以用来做读写分离，均衡数据库负载 </div><div class="line">MySQL主从同步的步骤 </div><div class="line">一、准备操作 </div><div class="line"><span class="number">1</span>、主从数据库版本一致，建议版本<span class="number">5.5</span>以上 </div><div class="line"><span class="number">2</span>、主从数据库数据一致</div></pre></td></tr></table></figure>
+<p><strong>如下图所示：</strong></p>
+<p>下面是我在实际工作过程中所整理的笔记，在此分享出来，以供大家参考。</p>
+<p><strong>一、MySQL的安装与配置</strong></p>
+<p>具体的安装过程，建议参考我的这一篇文章：<br>值得一提的是，我的安装过程都是源码包编译安装的，并且所有的配置与数据等都统一规划到了/opt/mysql目录中，因此在一台服务器上安装完成以后，可以将整个mysql目录打包，然后传到其它服务器上解包，便可立即使用。</p>
+<p><strong>二、MySQL主从复制</strong><br>场景描述：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">主数据库服务器：192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.170</span>，<span class="selector-tag">MySQL</span>已经安装，并且无应用数据。</div><div class="line">从数据库服务器：192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.171</span>，<span class="selector-tag">MySQL</span>已经安装，并且无应用数据。</div></pre></td></tr></table></figure>
+<p><strong>2.1 主服务器上进行的操作</strong><br>启动mysql服务</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">root<span class="symbol">@mysql</span> mysql]<span class="meta"># /etc/init.d/mysql start</span></div><div class="line">Starting MySQL. SUCCESS!</div></pre></td></tr></table></figure>
+<p>打开主机Master的my.cnf，输入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">log_bin=/var/lib/mysql/mysql-bin.log    <span class="comment">#确保此文件可写 启用二进制日志</span></div><div class="line"><span class="built_in">read</span>-only       =0  <span class="comment">#主机，读写都可以</span></div><div class="line">binlog-do-db    =yjk   <span class="comment">#需要备份数据，多个写多行</span></div><div class="line">binlog-ignore-db=mysql <span class="comment">#不需要备份的数据库，多个写多行</span></div><div class="line">character_set_server=utf8                            <span class="comment">#写入的数据到MySQL中数据为防止中文乱码。</span></div><div class="line">lower_case_table_names=1                             <span class="comment">#这样MySQL 将在创建与查找时将所有的表名自动转换为小写字符</span></div><div class="line">character_set_client=utf8                            <span class="comment">#集群写入的数据到MySQL中数据为防止中文乱码。</span></div><div class="line">collation-server=utf8_general_ci</div></pre></td></tr></table></figure>
+<p>这里我在之前新创建了个数据库。我需要备份的数据。</p>
+<p>打开从机slave的my.cnf，输入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">server-id               = 2</div><div class="line">log_bin                 = /var/lib/mysql/mysql-bin.log</div><div class="line">master-host     =192.168.1.170</div><div class="line">master-user     =backup</div><div class="line">master-pass     =backup</div><div class="line">master-port     =3306</div><div class="line">master-connect-retry=60 <span class="comment">#如果从服务器发现主服务器断掉，重新连接的时间差(秒)</span></div><div class="line">replicate-do-db =<span class="built_in">test</span> <span class="comment">#只复制某个库</span></div><div class="line">replicate-ignore-db=mysql <span class="comment">#不复制某个库</span></div><div class="line">slave-skip-errors = all   <span class="comment">#忽略因复制出现的所有错误</span></div></pre></td></tr></table></figure>
+<p>配置好保存。</p>
+<p><strong>同步数据库</strong></p>
+<p>有多种方法，我说最笨的一种，先mysqldump导出主机A的数据yjk为 yjk.sql<br>然后在，从机B上建立数据库yjk，mysql导入 yjk.sql到yjk库中<br>先重启主机A的mysql，再重启从机B的mysql</p>
+<p><strong>通过命令行登录管理MySQL服务器</strong></p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[root@mysql mysql]<span class="comment"># mysql -uroot -p’new-password'</span></div><div class="line">Warning: Using a password <span class="keyword">on</span> <span class="keyword">the</span> command line interface can be insecure.</div><div class="line">Welcome <span class="keyword">to</span> <span class="keyword">the</span> MySQL monitor.  Commands <span class="keyword">end</span> <span class="keyword">with</span> ; <span class="keyword">or</span> \g.</div><div class="line">Your MySQL connection <span class="built_in">id</span> <span class="keyword">is</span> <span class="number">1</span></div><div class="line">Server <span class="built_in">version</span>: <span class="number">5.6</span><span class="number">.20</span>-<span class="built_in">log</span> MySQL Community Server (GPL)</div><div class="line"></div><div class="line">Copyright (c) <span class="number">2000</span>, <span class="number">2014</span>, Oracle <span class="keyword">and</span>/<span class="keyword">or</span> <span class="keyword">its</span> affiliates. All rights reserved.</div><div class="line"></div><div class="line">Oracle <span class="keyword">is</span> a registered trademark <span class="keyword">of</span> Oracle Corporation <span class="keyword">and</span>/<span class="keyword">or</span> <span class="keyword">its</span></div><div class="line">affiliates. Other names may be trademarks <span class="keyword">of</span> their respective</div><div class="line">owners.</div><div class="line"></div><div class="line">Type 'help;' <span class="keyword">or</span> '\h' <span class="keyword">for</span> help. Type '\c' <span class="keyword">to</span> clear <span class="keyword">the</span> current input statement.</div></pre></td></tr></table></figure>
+<p>授权给从数据库服务器192.168.1.171</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mysql&gt; GRANT REPLICATION SLAVE <span class="keyword">ON</span> *.*<span class="keyword">to</span> <span class="string">'backup'</span>@<span class="string">'192.168.1.171'</span> identified <span class="keyword">by</span> <span class="string">'backup'</span>;</div><div class="line">Query OK, <span class="number">0</span> <span class="keyword">rows</span> affected (<span class="number">0.02</span> sec)</div></pre></td></tr></table></figure>
+<p>查询主数据库状态</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">1 row in set (0.00 sec)</div><div class="line"></div><div class="line"><span class="section">mysql&gt;  show master status;</span></div><div class="line">+------------------+----------+--------------+------------------+-------------------+</div><div class="line"><span class="section">| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |</span></div><div class="line">+------------------+----------+--------------+------------------+-------------------+</div><div class="line"><span class="section">| mysql-bin.000008 |      120 | yjk          | mysql            |                   |</span></div><div class="line">+------------------+----------+--------------+------------------+-------------------+</div><div class="line">1 row in set (0.00 sec)</div><div class="line"></div><div class="line">mysql&gt;  show master status\G;</div><div class="line"><span class="bullet">*************************** </span>1. row ***************************</div><div class="line"><span class="code">             File: mysql-bin.000008</span></div><div class="line"><span class="code">         Position: 120</span></div><div class="line"><span class="code">     Binlog_Do_DB: yjk</span></div><div class="line"><span class="code"> Binlog_Ignore_DB: mysql</span></div><div class="line">Executed<span class="emphasis">_Gtid_</span>Set:</div><div class="line">1 row in set (0.00 sec)</div></pre></td></tr></table></figure>
+<p>记录下 FILE 及 Position 的值，在后面进行从服务器操作的时候需要用到。</p>
+<p>####2.2 配置从服务器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">修改从服务器的配置文件/etc/my.cnf</div><div class="line">将 server-id = 1修改为 server-id = 10，并确保这个ID没有被别的MySQL服务所使用。</div><div class="line">启动mysql服务</div><div class="line">[root@mysql-2 <span class="built_in">log</span>]<span class="comment"># /etc/init.d/mysql stop</span></div><div class="line">Shutting down MySQL.. SUCCESS!</div><div class="line">[root@mysql-2 <span class="built_in">log</span>]<span class="comment"># /etc/init.d/mysql start</span></div><div class="line">Starting MySQL. SUCCESS!</div></pre></td></tr></table></figure>
+<p>通过命令行登录管理MySQL服务器</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bin/mysql -uroot -p'new-password'</div></pre></td></tr></table></figure>
+<p>执行同步SQL语句</p>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">mysql&gt; change master to</div><div class="line">    -<span class="ruby">&gt; master_host=<span class="string">'192.168.1.170'</span>,</span></div><div class="line">    -<span class="ruby">&gt; master_user=<span class="string">'backup'</span>,</span></div><div class="line">    -<span class="ruby">&gt; master_password=<span class="string">'backup'</span>,</span></div><div class="line">    -<span class="ruby">&gt; master_log_file=<span class="string">'mysql-bin.000008'</span>,</span></div><div class="line">    -<span class="ruby">&gt; master_log_pos=<span class="number">234</span>;</span></div></pre></td></tr></table></figure>
+<p>这里同步数据：提示我报错；ERROR 1198 (HY000): This operation cannot be performed with a running slave; run STOP SLAVE first</p>
+<p>网上看了MySQL配置master/slave常用命令，需要先停止slave。 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mysql&gt; show slave status;</div><div class="line">+----------------+---------------+-------------+-------------+---------------+-----------------+---------------------+------------------------+---------------+-----------------------+------------------+-------------------+-----------------+---------------------+--------------------+------------------------+-------------------------+-----------------------------+------------+------------+--------------+---------------------+-----------------+-----------------+----------------+---------------+--------------------+--------------------+--------------------+-----------------+-------------------+----------------+-----------------------+-------------------------------+---------------+-----------------------------------------------------------------------------------------------------------------------+----------------+----------------+-----------------------------+------------------+-------------+----------------------------+-----------+---------------------+-----------------------------------------------------------------------------+--------------------+-------------+-------------------------+--------------------------+----------------+--------------------+--------------------+-------------------+---------------+</div><div class="line">| Slave_IO_State | Master_Host   | Master_User | Master_Port | Connect_Retry | Master_Log_File | Read_Master_Log_Pos | Relay_Log_File         | Relay_Log_Pos | Relay_Master_Log_File | Slave_IO_Running | Slave_SQL_Running | Replicate_Do_DB | Replicate_Ignore_DB | Replicate_Do_Table | Replicate_Ignore_Table | Replicate_Wild_Do_Table | Replicate_Wild_Ignore_Table | Last_Errno | Last_Error | Skip_Counter | Exec_Master_Log_Pos | Relay_Log_Space | Until_Condition | Until_Log_File | Until_Log_Pos | Master_SSL_Allowed | Master_SSL_CA_File | Master_SSL_CA_Path | Master_SSL_Cert | Master_SSL_Cipher | Master_SSL_Key | Seconds_Behind_Master | Master_SSL_Verify_Server_Cert | Last_IO_Errno | Last_IO_Error                                                                                                         | Last_SQL_Errno | Last_SQL_Error | Replicate_Ignore_Server_Ids | Master_Server_Id | Master_UUID | Master_Info_File           | SQL_Delay | SQL_Remaining_Delay | Slave_SQL_Running_State                                                     | Master_Retry_Count | Master_Bind | Last_IO_Error_Timestamp | Last_SQL_Error_Timestamp | Master_SSL_Crl | Master_SSL_Crlpath | Retrieved_Gtid_Set | Executed_Gtid_Set | Auto_Position |</div><div class="line">+----------------+---------------+-------------+-------------+---------------+-----------------+---------------------+------------------------+---------------+-----------------------+------------------+-------------------+-----------------+---------------------+--------------------+------------------------+-------------------------+-----------------------------+------------+------------+--------------+---------------------+-----------------+-----------------+----------------+---------------+--------------------+--------------------+--------------------+-----------------+-------------------+----------------+-----------------------+-------------------------------+---------------+-----------------------------------------------------------------------------------------------------------------------+----------------+----------------+-----------------------------+------------------+-------------+----------------------------+-----------+---------------------+-----------------------------------------------------------------------------+--------------------+-------------+-------------------------+--------------------------+----------------+--------------------+--------------------+-------------------+---------------+</div><div class="line">|                | 192.168.1.170 |             |        3306 |            60 |                 |                   4 | mysql-relay-bin.000005 |             4 |                       | No               | Yes               |                 |                     |                    |                        |                         |                             |          0 |            |            0 |                 120 |             120 | None            |                |             0 | No                 |                    |                    |                 |                   |                |                     0 | No                            |          1593 | Fatal error: Invalid (empty) username when attempting to connect to the master server. Connection attempt terminated. |              0 |                |                             |                0 |             | /var/lib/mysql/master.info |         0 |                NULL | Slave has <span class="built_in">read</span> all relay <span class="built_in">log</span>; waiting <span class="keyword">for</span> the slave I/O thread to update it |              86400 |             | 160612 16:56:22         |                          |                |                    |                    |                   |             0 |</div><div class="line">+----------------+---------------+-------------+-------------+---------------+-----------------+---------------------+------------------------+---------------+-----------------------+------------------+-------------------+-----------------+---------------------+--------------------+------------------------+-------------------------+-----------------------------+------------+------------+--------------+---------------------+-----------------+-----------------+----------------+---------------+--------------------+--------------------+--------------------+-----------------+-------------------+----------------+-----------------------+-------------------------------+---------------+-----------------------------------------------------------------------------------------------------------------------+----------------+----------------+-----------------------------+------------------+-------------+----------------------------+-----------+---------------------+-----------------------------------------------------------------------------+--------------------+-------------+-------------------------+--------------------------+----------------+--------------------+--------------------+-------------------+---------------+</div><div class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</div></pre></td></tr></table></figure>
+<p>这里我看到了我之前配置的，所以在配置就会报刚才那个错误。</p>
+<p>这里只需</p>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">mysql&gt; stop slave;</div><div class="line">Query OK, 0 rows affected (0.01 sec)</div><div class="line"></div><div class="line"></div><div class="line">mysql&gt; change master to</div><div class="line">    -<span class="ruby">&gt; master_host=<span class="string">'192.168.1.170'</span>,</span></div><div class="line">    -<span class="ruby">&gt; master_user=<span class="string">'backup'</span>,</span></div><div class="line">    -<span class="ruby">&gt; master_password=<span class="string">'backup'</span>,</span></div><div class="line">    -<span class="ruby">&gt; master_log_file=<span class="string">'mysql-bin.000008'</span>,</span></div><div class="line">    -<span class="ruby">&gt; master_log_pos=<span class="number">120</span>;</span></div><div class="line">Query OK, 0 rows affected, 2 warnings (0.01 sec)</div></pre></td></tr></table></figure>
+<p>正确执行后启动Slave同步进程</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">mysql&gt; <span class="literal">start</span> <span class="literal">slave</span>;</div><div class="line"></div><div class="line">mysql&gt; <span class="literal">start</span> <span class="literal">slave</span>;</div><div class="line">Query OK, <span class="number">0</span> rows affected (<span class="number">0.01</span> sec)</div></pre></td></tr></table></figure>
+<p>主从同步检查：</p>
+<p>从：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line"><span class="string">mysql&gt;</span> <span class="string">show</span> <span class="string">slave</span> <span class="string">status\G</span></div><div class="line"><span class="string">***************************</span> <span class="number">1.</span> <span class="string">row</span> <span class="string">***************************</span></div><div class="line"><span class="attr">               Slave_IO_State:</span> <span class="string">Waiting</span> <span class="string">for</span> <span class="string">master</span> <span class="string">to</span> <span class="string">send</span> <span class="string">event</span></div><div class="line"><span class="attr">                  Master_Host:</span> <span class="number">192.168</span><span class="number">.1</span><span class="number">.170</span></div><div class="line"><span class="attr">                  Master_User:</span> <span class="string">backup</span></div><div class="line"><span class="attr">                  Master_Port:</span> <span class="number">3306</span></div><div class="line"><span class="attr">                Connect_Retry:</span> <span class="number">60</span></div><div class="line"><span class="attr">              Master_Log_File:</span> <span class="string">mysql-bin.000008</span></div><div class="line"><span class="attr">          Read_Master_Log_Pos:</span> <span class="number">120</span></div><div class="line"><span class="attr">               Relay_Log_File:</span> <span class="string">mysql-relay-bin.000002</span></div><div class="line"><span class="attr">                Relay_Log_Pos:</span> <span class="number">279</span></div><div class="line"><span class="attr">        Relay_Master_Log_File:</span> <span class="string">mysql-bin.000008</span></div><div class="line"><span class="attr">             Slave_IO_Running:</span> <span class="literal">Yes</span></div><div class="line"><span class="attr">            Slave_SQL_Running:</span> <span class="literal">Yes</span></div><div class="line"><span class="attr">              Replicate_Do_DB:</span></div><div class="line"><span class="attr">          Replicate_Ignore_DB:</span></div><div class="line"><span class="attr">           Replicate_Do_Table:</span></div><div class="line"><span class="attr">       Replicate_Ignore_Table:</span></div><div class="line"><span class="attr">      Replicate_Wild_Do_Table:</span></div><div class="line"><span class="attr">  Replicate_Wild_Ignore_Table:</span></div><div class="line"><span class="attr">                   Last_Errno:</span> <span class="number">0</span></div><div class="line"><span class="attr">                   Last_Error:</span></div><div class="line"><span class="attr">                 Skip_Counter:</span> <span class="number">0</span></div><div class="line"><span class="attr">          Exec_Master_Log_Pos:</span> <span class="number">120</span></div><div class="line"><span class="attr">              Relay_Log_Space:</span> <span class="number">448</span></div><div class="line"><span class="attr">              Until_Condition:</span> <span class="string">None</span></div><div class="line"><span class="attr">               Until_Log_File:</span></div><div class="line"><span class="attr">                Until_Log_Pos:</span> <span class="number">0</span></div><div class="line"><span class="attr">           Master_SSL_Allowed:</span> <span class="literal">No</span></div><div class="line"><span class="attr">           Master_SSL_CA_File:</span></div><div class="line"><span class="attr">           Master_SSL_CA_Path:</span></div><div class="line"><span class="attr">              Master_SSL_Cert:</span></div><div class="line"><span class="attr">            Master_SSL_Cipher:</span></div><div class="line"><span class="attr">               Master_SSL_Key:</span></div><div class="line"><span class="attr">        Seconds_Behind_Master:</span> <span class="number">0</span></div><div class="line"><span class="attr">Master_SSL_Verify_Server_Cert:</span> <span class="literal">No</span></div><div class="line"><span class="attr">                Last_IO_Errno:</span> <span class="number">0</span></div><div class="line"><span class="attr">                Last_IO_Error:</span></div><div class="line"><span class="attr">               Last_SQL_Errno:</span> <span class="number">0</span></div><div class="line"><span class="attr">               Last_SQL_Error:</span></div><div class="line"><span class="attr">  Replicate_Ignore_Server_Ids:</span></div><div class="line"><span class="attr">             Master_Server_Id:</span> <span class="number">1</span></div><div class="line"><span class="attr">                  Master_UUID:</span> <span class="string">d4280377-2fe1-11e6-8b17-525400e91531</span></div><div class="line"><span class="attr">             Master_Info_File:</span> <span class="string">/var/lib/mysql/master.info</span></div><div class="line"><span class="attr">                    SQL_Delay:</span> <span class="number">0</span></div><div class="line"><span class="attr">          SQL_Remaining_Delay:</span> <span class="literal">NULL</span></div><div class="line"><span class="attr">      Slave_SQL_Running_State:</span> <span class="string">Slave</span> <span class="string">has</span> <span class="string">read</span> <span class="string">all</span> <span class="string">relay</span> <span class="string">log;</span> <span class="string">waiting</span> <span class="string">for</span> <span class="string">the</span> <span class="string">slave</span> <span class="string">I/O</span> <span class="string">thread</span> <span class="string">to</span> <span class="string">update</span> <span class="string">it</span></div><div class="line"><span class="attr">           Master_Retry_Count:</span> <span class="number">86400</span></div><div class="line"><span class="attr">                  Master_Bind:</span></div><div class="line"><span class="attr">      Last_IO_Error_Timestamp:</span></div><div class="line"><span class="attr">     Last_SQL_Error_Timestamp:</span></div><div class="line"><span class="attr">               Master_SSL_Crl:</span></div><div class="line"><span class="attr">           Master_SSL_Crlpath:</span></div><div class="line"><span class="attr">           Retrieved_Gtid_Set:</span></div><div class="line"><span class="attr">            Executed_Gtid_Set:</span></div><div class="line"><span class="attr">                Auto_Position:</span> <span class="number">0</span></div><div class="line"><span class="number">1</span> <span class="string">row</span> <span class="string">in</span> <span class="string">set</span> <span class="string">(0.00</span> <span class="string">sec)</span></div></pre></td></tr></table></figure>
+<p>其中Slave_IO_Running 与 Slave_SQL_Running 的值都必须为YES，才表明状态正常。即YES状态，否则说明同步失败。<br>到这里，主从数据库设置工作已经完成，自己可以新建数据库和表，插入和修改数据，测试一下是否成功 .</p>
+<p>如果主服务器已经存在应用数据，则在进行主从复制时，需要做以下处理：<br>(1)主数据库进行锁表操作，不让数据再进行写入动作.</p>
+<figure class="highlight cos"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql&gt; FLUSH TABLES WITH <span class="keyword">READ</span> <span class="keyword">LOCK</span><span class="comment">;</span></div></pre></td></tr></table></figure>
+<p>(2)查看主数据库状态</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql&gt; show <span class="keyword">master</span> <span class="title">status</span>;</div></pre></td></tr></table></figure>
+<p>//显示所有本机上的二进制日志</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql&gt; SHOW <span class="keyword">MASTER</span> <span class="title">LOGS</span>;</div></pre></td></tr></table></figure>
+<p>(3)复制数据文件<br>将主服务器的数据文件（整个/var/lib/mysql 目录）复制到从服务器，建议通过tar归档压缩后再传到从服务器解压。  这里我写的目录是/var/lib/mysql 下面的 建议配置my.cnf 设置个/opt/mysql/data  单独存放数据。</p>
+<p>4)取消主数据库锁定</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">mysql&gt;</span><span class="bash"> UNLOCK TABLES;</span></div></pre></td></tr></table></figure>
+<p>2.3 验证主从复制效果</p>
+<p>主服务器上的操作</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">在主服务器上的表first_tb中插入记录</div><div class="line">mysql&gt; <span class="keyword">insert</span> <span class="keyword">into</span> first_tb <span class="keyword">values</span> (<span class="number">001</span>,’myself’);</div><div class="line">Query Ok, 1 row affected (0.00 sec)</div></pre></td></tr></table></figure>
+<p>在从服务器上查看</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">[root@mysql-2 mysql]<span class="comment"># mysql -uroot -pIhaozhuo_b313</span></div><div class="line">Warning: Using a password on the <span class="built_in">command</span> line interface can be insecure.</div><div class="line">Welcome to the MySQL monitor.  Commands end with ; or \g.</div><div class="line">Your MySQL connection id is 8</div><div class="line">Server version: 5.6.20-log MySQL Community Server (GPL)</div><div class="line"></div><div class="line">Copyright (c) 2000, 2014, Oracle and/or its affiliates. All rights reserved.</div><div class="line"></div><div class="line">Oracle is a registered trademark of Oracle Corporation and/or its</div><div class="line">affiliates. Other names may be trademarks of their respective</div><div class="line">owners.</div><div class="line"></div><div class="line">Type <span class="string">'help;'</span> or <span class="string">'\h'</span> <span class="keyword">for</span> help. Type <span class="string">'\c'</span> to clear the current input statement.</div><div class="line"></div><div class="line">mysql&gt; show databases;</div><div class="line">+--------------------+</div><div class="line">| Database           |</div><div class="line">+--------------------+</div><div class="line">| information_schema |</div><div class="line">| data               |</div><div class="line">| mysql              |</div><div class="line">| performance_schema |</div><div class="line">| <span class="built_in">test</span>               |</div><div class="line">| yjk                |</div><div class="line">+--------------------+</div><div class="line">6 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</div><div class="line"></div><div class="line">mysql&gt; use yjk;</div><div class="line">Reading table information <span class="keyword">for</span> completion of table and column names</div><div class="line">You can turn off this feature to get a quicker startup with -A</div><div class="line"></div><div class="line">Database changed</div><div class="line">mysql&gt; show tables;</div><div class="line">+---------------+</div><div class="line">| Tables_in_yjk |</div><div class="line">+---------------+</div><div class="line">| first_tb      |</div><div class="line">+---------------+</div><div class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</div></pre></td></tr></table></figure>
+<p>数据库first_db已经自动生成由此，整个MySQL主从复制的过程就完成了，接下来，我们进行MySQL读写分离的安装与配置。</p>
+<h4 id="在slave启动报错："><a href="#在slave启动报错：" class="headerlink" title="在slave启动报错："></a>在slave启动报错：</h4><p><code>“Last_IO_Error: Got fatal error 1236 from master when reading data from binary log: ‘Could not find first log file name in binary log index file’”</code></p>
+<p>解决：报错的原因主要是slave设置master的二进制文件名或pos值不对应！<br>先flush logs；清空日志，在查看下主数据库的状态 show master status;看下日志文件名字和position值；<br>再在slave中，执行：<code>CHANGE MASTER TO MASTER_LOG_FILE=‘二进制日志名’,MASTER_LOG_POS=值;</code><br>最后启动同步进程：<code>start slave；</code></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/04/05/Web服务技术/Nginx/Nginx 安全&优化&日志输出规范详细配置/" data-toggle="tooltip" data-placement="top" title="Nginx 安全&优化&日志输出规范详细配置">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/04/03/数据库/MySQL/MySqlbin-log日志文件恢复数据  /" data-toggle="tooltip" data-placement="top" title="利用MySql日志文件恢复数据">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#MySQL.Database" title="MySQL.Database">MySQL.Database</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yancy-cc";
+    var disqus_identifier = "http://blog.yancy.cc/2016/04/05/数据库/MySQL/【第六章】MySQL5.6 主从同步/";
+    var disqus_url = "http://blog.yancy.cc/2016/04/05/数据库/MySQL/【第六章】MySQL5.6 主从同步/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

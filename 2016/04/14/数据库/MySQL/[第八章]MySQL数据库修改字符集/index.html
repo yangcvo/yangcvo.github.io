@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          【第八章】MySQL数据库修改字符集 - Yancy的博客 | Yancy&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2016/04/14/数据库/MySQL/[第八章]MySQL数据库修改字符集/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#MySQL.Database" title="MySQL.Database">MySQL.Database</a>
+                        
+                    </div>
+                    <h1>【第八章】MySQL数据库修改字符集</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2016-04-14
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="mysql数据库修改字符集"><a href="#mysql数据库修改字符集" class="headerlink" title="mysql数据库修改字符集"></a>mysql数据库修改字符集</h1><p>这个一开始我用查看了下开发环境yjk数据库。</p>
+<p>mysql数据库修改字符集system variables的character_set_server改成utf8mb4</p>
+<p>查看字符集的对应的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">show variables like <span class="string">'character%'</span>;</div><div class="line">character_set_server =utf8</div></pre></td></tr></table></figure>
+<p>我直接到数据库里面修改。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">my.cnf</div><div class="line"></div><div class="line">下面修改：</div><div class="line">character_set_server=utf8mb4</div></pre></td></tr></table></figure>
+<p>重启服务器MySQL：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root<span class="symbol">@mysql</span> ~]<span class="meta"># /etc/init.d/mysqld stop</span></div><div class="line">Shutting down MySQL.... SUCCESS!</div><div class="line">[root<span class="symbol">@mysql</span> ~]<span class="meta"># /etc/init.d/mysqld start</span></div><div class="line">Starting MySQL. SUCCESS!</div></pre></td></tr></table></figure>
+<p>然后登陆到数据库查询。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">show variables like <span class="string">'character%'</span>;</div><div class="line"></div><div class="line">character_set_client	utf8</div><div class="line">character_set_connection	utf8</div><div class="line">character_set_database	utf8</div><div class="line">character_set_filesystem	binary</div><div class="line">character_set_results	utf8</div><div class="line">character_set_server	utf8mb4</div><div class="line">character_set_system	utf8</div><div class="line">character_sets_dir	/usr/<span class="built_in">local</span>/mysql/share/charsets/</div></pre></td></tr></table></figure>
+<p>###第二种修改字符集：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">mysql&gt; status;</div><div class="line">--------------</div><div class="line">mysql  Ver 14.14 Distrib 5.6.20, <span class="keyword">for</span> Linux (x86_64) using  EditLine wrapper</div><div class="line"></div><div class="line">Connection id: 		26825</div><div class="line">Current database:</div><div class="line">Current user:  		root@localhost</div><div class="line">SSL:   			Not <span class="keyword">in</span> use</div><div class="line">Current pager: 		stdout</div><div class="line">Using outfile: 		<span class="string">''</span></div><div class="line">Using delimiter:       	;</div><div class="line">Server version:		5.6.20-log MySQL Community Server (GPL)</div><div class="line">Protocol version:      	10</div><div class="line">Connection:    		Localhost via UNIX socket</div><div class="line">Server characterset:   	latin1</div><div class="line">Db     characterset:   	latin1</div><div class="line">Client characterset:   	utf8</div><div class="line">Conn.  characterset:   	utf8</div><div class="line">UNIX socket:   		/home/data/mysql/mysql.sock</div><div class="line">Uptime:			23 days 2 hours 55 min 7 sec</div><div class="line"></div><div class="line">Threads: 54  Questions: 2947856  Slow queries: 181  Opens: 545  Flush tables: 1  Open tables: 306  Queries per second avg: 1.475</div></pre></td></tr></table></figure>
+<p>默认客户端和服务器端都用了latin1编码，所以会出现乱码。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Server characterset:   	latin1</div><div class="line">Db     characterset:   	latin1</div><div class="line">Client characterset:   	utf8</div><div class="line">Conn.  characterset:   	utf8</div></pre></td></tr></table></figure>
+<p>2、修改mysql配置文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">vi /etc/my.cnf</div><div class="line"></div><div class="line"><span class="comment">#在[client]段增加下面代码</span></div><div class="line"></div><div class="line">default-character-set=utf8</div><div class="line"></div><div class="line"><span class="comment">#在[mysqld]段增加下面的代码</span></div><div class="line"></div><div class="line">default-storage-engine=INNODB</div><div class="line"></div><div class="line">character-set-server=utf8</div><div class="line"></div><div class="line">collation-server=utf8_general_ci</div><div class="line">:wq! <span class="comment">#保存退出</span></div></pre></td></tr></table></figure>
+<p>3、service mysqld restart #重启MySQL</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">mysql&gt; status;</div><div class="line">--------------</div><div class="line">mysql  Ver 14.14 Distrib 5.6.20, <span class="keyword">for</span> Linux (x86_64) using  EditLine wrapper</div><div class="line"></div><div class="line">Connection id: 		26825</div><div class="line">Current database:</div><div class="line">Current user:  		root@localhost</div><div class="line">SSL:   			Not <span class="keyword">in</span> use</div><div class="line">Current pager: 		stdout</div><div class="line">Using outfile: 		<span class="string">''</span></div><div class="line">Using delimiter:       	;</div><div class="line">Server version:		5.6.20-log MySQL Community Server (GPL)</div><div class="line">Protocol version:      	10</div><div class="line">Connection:    		Localhost via UNIX socket</div><div class="line">Server characterset:   	utf8</div><div class="line">Db     characterset:   	utf8</div><div class="line">Client characterset:   	utf8</div><div class="line">Conn.  characterset:   	utf8</div><div class="line">UNIX socket:   		/home/data/mysql/mysql.sock</div><div class="line">Uptime:			23 days 2 hours 55 min 7 sec</div><div class="line"></div><div class="line">Threads: 54  Questions: 2947856  Slow queries: 181  Opens: 545  Flush tables: 1  Open tables: 306  Queries per second avg: 1.475</div></pre></td></tr></table></figure>
+<p>show variables like ‘character<em>set</em>%’; #查看MySQL字符集</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">mysql&gt; show variables like <span class="string">'character_set_%'</span>;</div><div class="line">+--------------------------+----------------------------+</div><div class="line">| Variable_name            | Value                      |</div><div class="line">+--------------------------+----------------------------+</div><div class="line">| character_set_client     | utf8                       |</div><div class="line">| character_set_connection | utf8                       |</div><div class="line">| character_set_database   | utf8                       |</div><div class="line">| character_set_filesystem | binary                     |</div><div class="line">| character_set_results    | utf8                       |</div><div class="line">| character_set_server     | utf8                       |</div><div class="line">| character_set_system     | utf8                       |</div><div class="line">| character_sets_dir       | /usr/share/mysql/charsets/ |</div><div class="line">+--------------------------+----------------------------+</div><div class="line">8 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</div></pre></td></tr></table></figure>
+<p>####字符集参数说明：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">character_<span class="keyword">set</span>_client：客户端请求数据的字符集。</div><div class="line"></div><div class="line">character_<span class="keyword">set</span>_connection：从客户端接收到数据，然后传输的字符集。</div><div class="line"></div><div class="line">character_<span class="keyword">set</span>_database：</div><div class="line"></div><div class="line">默认数据库的字符集，无论默认数据库如何改变，都是这个字符集；如果没有默认数据库，</div><div class="line"></div><div class="line">使character_<span class="keyword">set</span>_server指定的字符集，此参数无需设置。</div><div class="line"></div><div class="line">character_<span class="keyword">set</span>_filesystem：</div><div class="line"></div><div class="line">把操作系统上文件名转化成此字符集，即把character_<span class="keyword">set</span>_client转换character_<span class="keyword">set</span>_filesystem，默认binary即可。</div><div class="line"></div><div class="line">character_<span class="keyword">set</span>_results：结果集的字符集。</div><div class="line"></div><div class="line">character_<span class="keyword">set</span>_server：数据库服务器的默认字符集。</div><div class="line"></div><div class="line">character_<span class="keyword">set</span>_system：这个值总是utf8，不需要设置，存储系统元数据的字符集。</div></pre></td></tr></table></figure>
+<p>####备注：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">MySQL 5.5之前的版本设置办法：</div><div class="line"></div><div class="line">在[client]段下添加</div><div class="line"></div><div class="line">default-character-<span class="keyword">set</span>=utf8</div><div class="line"></div><div class="line">在[mysqld]段下添加</div><div class="line"></div><div class="line"><span class="keyword">default</span>-<span class="built_in">character</span>-<span class="keyword">set</span>=utf8</div><div class="line"></div><div class="line">在[mysql]段下添加</div><div class="line"></div><div class="line"><span class="keyword">default</span>-<span class="built_in">character</span>-<span class="keyword">set</span>=utf8</div></pre></td></tr></table></figure>
+<p>注意，如果修改后不能启动报错，把[mysqld]段下default-character-set=utf8改为character_set_server=utf8，取消[client]段的设置。</p>
+<p>创建数据库的命令：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">Create</span> <span class="keyword">DATABASE</span> <span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> mydata <span class="keyword">default</span> <span class="keyword">charset</span> utf8 <span class="keyword">COLLATE</span> utf8_general_ci;</div></pre></td></tr></table></figure>
+<p>至此，修改MySQL数据库字符编码为UTF-8解决中文乱码教程完成。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/04/15/数据库/MySQL/mysql-proxy代理连接阿里云RDS/" data-toggle="tooltip" data-placement="top" title="【第十二章】Mysql-proxy代理连接阿里云RDS">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/04/13/数据库/MySQL/【第四章】MySQL数据库data目录迁移/" data-toggle="tooltip" data-placement="top" title="【第四章】MySQL数据库data目录迁移">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#MySQL.Database" title="MySQL.Database">MySQL.Database</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yancy-cc";
+    var disqus_identifier = "http://blog.yancy.cc/2016/04/14/数据库/MySQL/[第八章]MySQL数据库修改字符集/";
+    var disqus_url = "http://blog.yancy.cc/2016/04/14/数据库/MySQL/[第八章]MySQL数据库修改字符集/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s Blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

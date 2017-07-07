@@ -90,13 +90,6 @@
 
                         
                         <li>
-                            <a href="/about/About-me.html">About</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
                             <a href="/tags/">Tags</a>
                         </li>
                         
@@ -105,6 +98,13 @@
                         
                         <li>
                             <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
                         </li>
                         
                     
@@ -184,24 +184,20 @@
 
 <div class="post-preview">
 
-    <a href="/2016/05/23/Web服务技术/Nginx/Nginx+Tomcat实现负载均衡设置访问控制/">
+    <a href="/2016/05/23/Web服务技术/Nginx/Nginx多种安装与配置文件详解/">
         <h2 class="post-title">
-            Nginx+Tomcat实现负载均衡设置访问控制
+            Nginx多种安装与配置文件详解
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Nginx+Tomcat实现负载均衡设置访问控制一、环境准备
-Tomcat1：10.11.155.26
-Tomcat2：10.11.155.41
-Nginx：192.168.31.154 
+            安装nginx最近在弄灰度发布环境，之前nginx在测试和线上都有搭建配置。负载均衡配置（包括健康检查）、缓存（包括清空缓存）反向代理。就打算自己整理篇自己操作的文档，各种编译配置，今天自己也整理一份安装文档和nginx.conf配置选项的说明。
+选择稳定版本 我们编译安装nginx来定制自己的模块。
 
-在26和41上分别部署相同的Tomcat程序，修改index.jsp页面，把内容改为各自的IP地址.
-
-
-
-二、修改配置文件nginx.confNginx负载均衡，其实主要就是用upstream、ser......
+机器CentOS 6.6 x86_64。
+软件版本：Nginx 1.9.9
+nginx最......
         </div>
     </a>
     <p class="post-meta">
@@ -288,7 +284,55 @@ Warning: Using a password on the command line interface can be insecure.
 
 <div class="post-preview">
 
-    <a href="/2016/04/26/数据库/MySQL/MySQL5-6主从-优化-集群与读写分离-MySQL-Proxy-实践/">
+    <a href="/2016/04/29/数据库/MySQL/【第一章】Mysql数据库入门及安装/">
+        <h2 class="post-title">
+            【第一章】MySQL数据库入门及安装
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            安装方法一：yum安装方式1234567yum install -y gcc gcc-c++ make automake  yum --enablerepo=remi,remi-test list mysql mysql-serveryum --enablerepo=remi,remi-test install mysql mysql-server  mysql-devel/etc/init......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-04-29
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/04/27/数据库/MySQL/MySQL-slave连接master时-一直提示Slave-IO-Running-Connecting/">
+        <h2 class="post-title">
+            MySQL-slave连接master时,一直提示Slave_IO_Running:Connecting
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            MySQL主从同步出现Slave_IO_Running:Connecting
+MySQL主从的同步如果授权的时候有问题就会出现：Slave_IO_Running:Connecting
+
+MySQL-slave连接master时,一直提示Slave_IO_Running:Connecting
+
+
+通过master授予slave的同步账号，在slave上通过远程连接master是可以连接上的。但......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-04-27
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/04/26/数据库/MySQL/【第十章】MySQL5-6主从-优化-集群与读写分离-MySQL-Proxy-实践/">
         <h2 class="post-title">
             【第十章】MySQL5-6主从-优化-集群与读写分离-MySQL-Proxy-实践
         </h2>
@@ -318,22 +362,24 @@ MySQL5.6简介123456789(1) Mysql配置为Master:Slave的常用维护命令(2) My
 
 <div class="post-preview">
 
-    <a href="/2016/04/21/数据库/MySQL/构建MySQL+keepalived高可用自动切换/">
+    <a href="/2016/04/26/数据库/MySQL/【第十三章】MySQL 数据库优化(运维角度)  /">
         <h2 class="post-title">
-            构建MySQL+keepalived高可用自动切换
+            【第十三章】MySQL 数据库优化(运维角度)
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            构建MySQL+keepalived高可用自动切换问题描述：keepalived主要用于MySQL故障自动切换。那说到keepalived，keepalived到底是什么？
-keepalived是类似于layer3 ,4 &amp;7交换机制的软件，也就是平时我们说的3层4层和第7层交换。
-keepalived的作用keepalived的作用是检测web服务器的状态，如果有一台web服务器、......
+            MySQL 数据库优化(运维角度)数据库维护
+数据库维护是运维工程师或者DBA主要工作，包括性能监控、性能分析、性能调优、数据库备份和恢复等。
+一个成熟的数据库架构并不是一开始设计就具备高可用、高伸缩等特性的，它是随着用户量的增加，基础架构才逐渐完善。这篇博文主要谈MySQL数据库发展周期中所面临的问题及优化方案，暂且抛开前端应用不说，大致分为以下五个阶段：
+1、数据库表设计
+项目立项后，开......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-04-21
+        2016-04-26
     </p>
 
 </div>
@@ -341,24 +387,20 @@ keepalived的作用keepalived的作用是检测web服务器的状态，如果有
 
 <div class="post-preview">
 
-    <a href="/2016/04/16/数据库/MySQL/解决 mysql数据主从同步从库出现Slave_IO_Running: No/">
+    <a href="/2016/04/25/数据库/MySQL/mysql 远程连接不上，由于bind-address问题/">
         <h2 class="post-title">
-            解决 mysql数据主从同步从库出现Slave_IO_Running:No
+            Mysql 远程连接不上，由于bind-address问题
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            解决 mysql数据主从同步从库出现Slave_IO_Running: No摘要
-今天发现从数据没有写入，就觉得是不是哪里出现问题。主库的主机宕机了，从库启动正常，查看日志看看是哪里出现问题了。
-由于主库的主机192.168.1.170宕机,再次启来后，从库192.168.1.171连接主库发现报错. Slave_IO_Running: No 
-网上说：
-mysql replication ......
+            Mysql 远程连接不上，由于bind-address问题MySQL远程连接ERROR 2003 (HY000):Can’t connect to MySQL server on’XXXXX’(111) 的问题Can t connect to MySQL server on 16报错。刚安装了MySQL服务器，使用远程管理工具总是连接不上，因为知道mysql的默认端口是3306，于是使用te......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-04-16
+        2016-04-25
     </p>
 
 </div>
@@ -366,69 +408,23 @@ mysql replication ......
 
 <div class="post-preview">
 
-    <a href="/2016/04/15/数据库/MySQL/【第九章】MySQL优化连接数防止访问量过高的方法 /">
+    <a href="/2016/04/23/数据库/MySQL/Mysql配置为Master:Slave的常用维护命令/">
         <h2 class="post-title">
-            【第十一章】Mysql优化连接数防止访问量过高的方法
+            【第六章】Mysql配置为Master/Slave的常用维护命令
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Mysql优化连接数防止访问量过高的方法很多开发人员都会遇见”MySQL: ERROR 1040: Too many connections”的异常情况，造成这种情况的一种原因是访问量过高，MySQL服务器抗不住，这个时候就要考虑增加从服务器分散读压力；另一种原因就是MySQL配置文件中max_connections值过小。
-首先，我们来查看mysql的最大连接数：
-1234567mysql......
+            Mysql配置为Master/Slave的常用维护命令master端：
+123show master status;   #查看状态：show processlist;     #查看slave下MySQL进程信息reset master;         #慎用，将清空日志及同步position
+slave端：
+12345CHANGE MASTER TO MASTER_LOG_FILE=’......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-04-15
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/04/15/数据库/MySQL/mysql-proxy代理连接阿里云RDS/">
-        <h2 class="post-title">
-            【第十二章】Mysql-proxy代理连接阿里云RDS
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            使用mysql-proxy远程连接内网的数据库，如阿里云的RDS由于有个项目使用了阿里云的RDS，只能使用阿里云服务器内网连接RDS，很是麻烦，在公司办公的话，开发连接等等。
-希望能够用Navicat直接来管理RDS，在网上找了一下，还真的给我找到方法了，原来mysql有个mysql-proxy的工具，顾名思义就是代理连接的意思，使用方法如下：
-1234567891011121）首先需要先下......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-04-15
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/04/05/Web服务技术/Nginx/Nginx 安全&优化&日志输出规范详细配置/">
-        <h2 class="post-title">
-            Nginx 安全&优化&日志输出规范详细配置
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            ##1.Nginx日志审计
-① 参考配置操作(1)编辑 nginx.conf 配置文件
-将 error_log 前的“#”去掉，记录错误日志将 access_log 前的“#”去掉，记录访问日志(2)设置 access_log，修改配置文件如下：
-1234log_format formatname '$remote_addr - $remote_user [$time_local] '' "......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-04-05
+        2016-04-23
     </p>
 
 </div>
@@ -495,17 +491,19 @@ mysql replication ......
                             
                         
                             
-                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
-                            
-                        
-                            
-                        
-                            
                         
                             
                         
                             
                             <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
                             
                         
                             
@@ -523,15 +521,7 @@ mysql replication ......
                             
                         
                             
-                        
-                            
-                            <a href="/tags/#Personal life record" title="Personal life record" rel="7">Personal life record</a>
-                            
-                        
-                            
                             <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="4">Big data Hadoop</a>
-                            
-                        
                             
                         
                             
@@ -545,6 +535,12 @@ mysql replication ......
                             
                         
                             
+                            <a href="/tags/#Personal life record" title="Personal life record" rel="7">Personal life record</a>
+                            
+                        
+                            
+                        
+                            
                         
                             
                             <a href="/tags/#Operation safety" title="Operation safety" rel="7">Operation safety</a>
@@ -553,9 +549,9 @@ mysql replication ......
                             
                         
                             
-                        
-                            
                             <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
+                            
+                        
                             
                         
                             
@@ -575,7 +571,11 @@ mysql replication ......
                             
                         
                             
-                            <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="17">Virtualization-Docker</a>
+                        
+                            
+                        
+                            
+                        
                             
                         
                             
@@ -585,7 +585,7 @@ mysql replication ......
                             
                         
                             
-                        
+                            <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="17">Virtualization-Docker</a>
                             
                         
                             
@@ -593,13 +593,9 @@ mysql replication ......
                             
                         
                             
-                        
-                            
-                        
-                            
-                        
-                            
                             <a href="/tags/#MySQL.Database" title="MySQL.Database" rel="26">MySQL.Database</a>
+                            
+                        
                             
                         
                             

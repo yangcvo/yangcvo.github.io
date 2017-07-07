@@ -90,13 +90,6 @@
 
                         
                         <li>
-                            <a href="/about/About-me.html">About</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
                             <a href="/tags/">Tags</a>
                         </li>
                         
@@ -105,6 +98,13 @@
                         
                         <li>
                             <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
                         </li>
                         
                     
@@ -184,20 +184,26 @@
 
 <div class="post-preview">
 
-    <a href="/2016/03/22/数据库/MySQL/MySQL中binglog数据恢复与定时删除/">
+    <a href="/2016/04/13/数据库/MySQL/【第四章】MySQL数据库data目录迁移/">
         <h2 class="post-title">
-            【第十章】MySQL中binglog数据恢复与定时删除
+            【第四章】MySQL数据库data目录迁移
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            MySQL中binglog数据恢复与定时删除1234567891011121314//显示所有本机上的二进制日志mysql&gt; SHOW MASTER LOGS;//删除所有本机上的二进制日志mysql&gt; RESET MASTER;//删除所有创建时间在binary-log.xxx之前的二进制日志mysql&gt; PURGE MASTER LOGS TO 'binary-log.......
+            现在MySQL环境默认安装路径，数据库的data目录默认是在/var/lib下。
+这里我是用rpm安装方法安装，可以很方便的做好依赖，现在因为测试环境的数据库数据做主从，出于数据能方便管理比较安全性考虑目录迁移。
+这里的数据写死了，现在根目录下面空间百分百使用完，导致数据库挂了，所以这部已经挂载了一个新的空间，指定到该硬盘空间指定的目录。
+
+这里我们先关闭掉MySQL。
+
+1[root@my......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-03-22
+        2016-04-13
     </p>
 
 </div>
@@ -205,21 +211,22 @@
 
 <div class="post-preview">
 
-    <a href="/2016/03/22/数据库/MySQL/服务连接数据库出现报错：Could not get JDBC Connection; nested exception is java.sql.SQLException: Connections could not be acquired from the underlying database!"}/">
+    <a href="/2016/04/12/数据库/MySQL/【第五章】MySQL数据库备份及恢复命令 mysqldump,source的用法/">
         <h2 class="post-title">
-            服务连接数据库出现报错：Could not get JDBC Connection; nested exception is java.sql.SQLException/ Connections could not be acquired from the underlying database!"}
+            【第五章】MySQL数据库备份及恢复命令 mysqldump,source的用法
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            服务连接数据库出现报错：Could not get JDBC Connection; nested exception is java.sql.SQLException: Connections could not be acquired from the underlying database!”}排查问题分为几点：
-12341、ping一下数据的IP地址，看能否通: telnet 192......
+            1.导出整个数据库12mysqldump -u 用户名 -p -P3306 --default-character-set=utf8 数据库名 &gt; 导出的文件名(数据库默认编码是utf8)mysqldump -uroot -p -P3306 --default-character-set=utf8 yjk &gt; yjk.sql
+mysqldump备份报错:
+Got error: 1......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-03-22
+        2016-04-12
     </p>
 
 </div>
@@ -227,21 +234,23 @@
 
 <div class="post-preview">
 
-    <a href="/2016/03/21/shell编程入门到简单/shell入门到简单 学习总结1-12章/">
+    <a href="/2016/04/11/数据库/MySQL/【第三章】my.cnf 优化配置/">
         <h2 class="post-title">
-            shell入门到简单 学习总结1-12章
+            【第三章】my.cnf 优化配置
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            第一章Shell前言：Shell本身是一种用C语言编写的程序，从用户的角度来看，Shell是用户与Linux操作系统沟通的桥梁。用户既可以输入命令执行，又可以利用 Shell脚本编程，完成更加复杂的操作。在Linux GUI日益完善的今天在运维领域Shell编程仍然起着不可忽视的作用。深入地了解和熟练地掌握Shell编程，是每一个Linux用户的必修。
-1.1 Linux的Shell种类：B......
+            my.cnf 优化配置Mysql参数优化对于新手来讲，是比较难懂的东西，其实这个参数优化，是个很复杂的东西，对于不同的网站，及其在线量，访问量，帖子数量，网络情况，以及机器硬件配置都有关系，优化不可能一次性完成，需要不断的观察以及调试，才有可能得到最佳效果。
+个人在配置这个时候碰到很多的问题：
+比如出现配置完，MySQL启动报错：
+123456Starting MySQL...The ser......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-03-21
+        2016-04-11
     </p>
 
 </div>
@@ -249,20 +258,23 @@
 
 <div class="post-preview">
 
-    <a href="/2016/03/21/Web服务技术/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/">
+    <a href="/2016/04/07/数据库/MySQL/MySQL启动错误：mysql.sock丢失/">
         <h2 class="post-title">
-            tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0
+            【第六章】MySQL启动错误：mysql.sock丢失
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            tomcat性能优化：Java HotSpot(TM) 64-Bit Server VM warning: ignoring option PermSize=512m; support was removed in 8.0这个提示应该是升级JDK1.8以上 在Java的8命令行标志MaxPermSize已被删除。其原因是，持久代从热点堆中取出并转移到本机内存。所以为了消除这种信息编辑java......
+            mysql启动错误：解决mysql.sock丢失服务是启动的。
+1netstat -apn|grep 3360
+有启动进程。
+123[root@zentao proc]# mysql  -u root -pEnter password:ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/li......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-03-21
+        2016-04-07
     </p>
 
 </div>
@@ -270,21 +282,23 @@
 
 <div class="post-preview">
 
-    <a href="/2016/03/21/Linux笔记/YUM/本地Yum仓库搭建部署/">
+    <a href="/2016/04/05/Web服务技术/Nginx/Nginx 安全&优化&日志输出规范详细配置/">
         <h2 class="post-title">
-            Centos6.7 本地Yum仓库搭建部署
+            Nginx 安全&优化&日志输出规范详细配置
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            本地Yum仓库搭建部署搭建私有 yum 仓库服务端配置系统：Centos6.7去阿里镜像下载Centos6的yum源，安装系统eple-release源：
-12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364......
+            ##1.Nginx日志审计
+① 参考配置操作(1)编辑 nginx.conf 配置文件
+将 error_log 前的“#”去掉，记录错误日志将 access_log 前的“#”去掉，记录访问日志(2)设置 access_log，修改配置文件如下：
+1234log_format formatname '$remote_addr - $remote_user [$time_local] '' "......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-03-21
+        2016-04-05
     </p>
 
 </div>
@@ -292,22 +306,23 @@
 
 <div class="post-preview">
 
-    <a href="/2016/03/21/数据库/MySQL/MySQL使用Xtrabackup备份以及恢复 /">
+    <a href="/2016/04/05/数据库/MySQL/【第六章】MySQL5.6 主从同步/">
         <h2 class="post-title">
-            【第九章】MySQL使用Xtrabackup备份以及恢复
+            【第六章】MySQL5.6 主从同步
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            MySQL使用Xtrabackup备份以及恢复Xtrabackup是一个对InnoDB做数据备份的工具，支持在线热备份（备份时不影响数据读写），是商业备份工具InnoDB Hotbackup的一个很好的替代品。
-xtrabackup官方网址
-xtrabackup安装方法可以下载源码编译安装，也可以下载适合的RPM包或者yum进行安装。1 . 安装的Percona XtraBackup 来自P......
+            Mysql作为目前世界上使用最广泛的免费数据库，相信所有从事系统运维的工程师都一定接触过。但在实际的生产环境中，由单台Mysql作为独立的数据库是完全不能满足实际需求的，无论是在安全性，高可用性以及高并发等各个方面。
+
+主从复制的原理：
+分为同步复制和异步复制，实际复制架构中大部分为异步复制。 复制的基本过程如下：1).Slave上面的IO进程连接上Master，并请求从指定日志文件的指定位......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-03-21
+        2016-04-05
     </p>
 
 </div>
@@ -315,20 +330,22 @@ xtrabackup安装方法可以下载源码编译安装，也可以下载适合的R
 
 <div class="post-preview">
 
-    <a href="/2016/03/15/运维笔记/个人记录😆-走上全栈运维工程师学习笔记/">
+    <a href="/2016/04/03/数据库/MySQL/MySqlbin-log日志文件恢复数据  /">
         <h2 class="post-title">
-            个人记录😆-走上全栈运维工程师学习笔记
+            利用MySql日志文件恢复数据
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            个人运维学习笔记：1234567从2014年初就开始慢慢记录自己所接触和学习到的东西，慢慢的积累，整理出很多学习的好文章，在这里我并且记录下来。这是我现在维护的个人笔记库和博客不同，它们大多都不是直接来源于我的原创，而是我一边阅读一边整理加工而成的笔记列表.我的目的是将零散的知识点放在一个集中的地方.  第一：方便我自己查看和学习，可以更好的找到我想要的文档。 第二：可以给自己学习结果每年做......
+            利用 MySql日志文件 恢复数据实现了Mysql的主从服务器的复制，如何把从属服务器上的二进制日志如何恢复成和主服务器上相同的数据库。
+
+以前我错误的认为mysql的日志可以恢复到任何时间的状态，其实并不是这样，这个恢复是有前提的，就是你至少得有一个从日志记录开始后的数据库备份，通过日志恢复数据库实际上只是一个对以前操作的回放过程而已，不用想得太复杂，既然是回放你就得注意了，如果你执行了两......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-03-15
+        2016-04-03
     </p>
 
 </div>
@@ -336,25 +353,21 @@ xtrabackup安装方法可以下载源码编译安装，也可以下载适合的R
 
 <div class="post-preview">
 
-    <a href="/2016/03/14/数据库/MySQL/[第八章]MySQL数据库修改字符集/">
+    <a href="/2016/04/02/Web服务技术/Nginx/http response code 301 和 302分析总结/">
         <h2 class="post-title">
-            【第八章】MySQL数据库修改字符集
+            Http response code 301 和 302分析总结
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            mysql数据库修改字符集这个一开始我用查看了下开发环境yjk数据库。
-mysql数据库修改字符集system variables的character_set_server改成utf8mb4
-查看字符集的对应的：
-12show variables like 'character%';character_set_server =utf8
-我直接到数据库里面修改。
-1234my.cnf下面修改：......
+            http response code 301 和 302 了解多少呢。一．官方说法最近Nginx访问出现301和302这里就对301 302认真做了一次总结。
+123301，302 都是HTTP状态的编码，都代表着某个URL发生了转移，不同之处在于： 301 redirect: 301 代表永久性转移(Permanently Moved)。302 redirect: 302 代表暂时性转移(......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-03-14
+        2016-04-02
     </p>
 
 </div>
@@ -362,21 +375,22 @@ mysql数据库修改字符集system variables的character_set_server改成utf8mb
 
 <div class="post-preview">
 
-    <a href="/2016/03/13/数据库/MySQL/11个高级MySQL数据库面试问题和答案  /">
+    <a href="/2016/03/29/Web服务技术/Nginx/nginx基础篇-日志管理和切割/">
         <h2 class="post-title">
-            11个高级MySQL数据库面试问题和答案
+            Nginx基础篇-日志管理和切割
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            11个高级MySQL数据库面试问题和答案1. 如何使用SELECT语句找到你正在运行的服务器的版本并打印出当前数据库的名称?答：下面的语句的结果会显示服务器的版本和当前的数据库名称
-1234567mysql&gt; SELECT VERSION(), DATABASE();+------------+------------+| VERSION()  | DATABASE() |+-----......
+            前言：公司日志查看有时候不太规范，官网web服务日志这边整理了下Nginx日志输出优化。 
+一、日志分类Nginx日志主要分为两种，访问日志和错误日志。两种日志可以在http和server模块中配置，nginx有一个非常灵活的日志记录模式。每个级别的配置可以有各自独立的访问日志。日志格式通过log_format命令来定义
+1、访问日志访问日志主要记录客户端访问Nginx的每一个请求log_f......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-03-13
+        2016-03-29
     </p>
 
 </div>
@@ -384,24 +398,20 @@ mysql数据库修改字符集system variables的character_set_server改成utf8mb
 
 <div class="post-preview">
 
-    <a href="/2016/03/12/数据库/MySQL/MySQL 数据库优化(运维角度)  /">
+    <a href="/2016/03/29/Web服务技术/Nginx/Nginx基础篇-Nginx.conf配置文件详解/">
         <h2 class="post-title">
-            MySQL 数据库优化(运维角度)
+            Nginx基础篇-Nginx.conf配置文件详解
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            MySQL 数据库优化(运维角度)数据库维护
-数据库维护是运维工程师或者DBA主要工作，包括性能监控、性能分析、性能调优、数据库备份和恢复等。
-一个成熟的数据库架构并不是一开始设计就具备高可用、高伸缩等特性的，它是随着用户量的增加，基础架构才逐渐完善。这篇博文主要谈MySQL数据库发展周期中所面临的问题及优化方案，暂且抛开前端应用不说，大致分为以下五个阶段：
-1、数据库表设计
-项目立项后，开......
+            Nginx.conf配置文件详解Nginx配置文件主要分成四部分：main（全局设置）、server（主机设置）、upstream（上游服务器设置，主要为反向代理、负载均衡相关配置）和 location（URL匹配特定位置后的设置），每部分包含若干个指令。main部分设置的指令将影响其它所有部分的设置；server部分的指令主要用于指定虚拟主机域名、IP和端口；upstream的指令用于设置......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-03-12
+        2016-03-29
     </p>
 
 </div>
@@ -468,17 +478,19 @@ mysql数据库修改字符集system variables的character_set_server改成utf8mb
                             
                         
                             
-                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
-                            
-                        
-                            
-                        
-                            
                         
                             
                         
                             
                             <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
                             
                         
                             
@@ -496,15 +508,7 @@ mysql数据库修改字符集system variables的character_set_server改成utf8mb
                             
                         
                             
-                        
-                            
-                            <a href="/tags/#Personal life record" title="Personal life record" rel="7">Personal life record</a>
-                            
-                        
-                            
                             <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="4">Big data Hadoop</a>
-                            
-                        
                             
                         
                             
@@ -518,6 +522,12 @@ mysql数据库修改字符集system variables的character_set_server改成utf8mb
                             
                         
                             
+                            <a href="/tags/#Personal life record" title="Personal life record" rel="7">Personal life record</a>
+                            
+                        
+                            
+                        
+                            
                         
                             
                             <a href="/tags/#Operation safety" title="Operation safety" rel="7">Operation safety</a>
@@ -526,9 +536,9 @@ mysql数据库修改字符集system variables的character_set_server改成utf8mb
                             
                         
                             
-                        
-                            
                             <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
+                            
+                        
                             
                         
                             
@@ -548,7 +558,11 @@ mysql数据库修改字符集system variables的character_set_server改成utf8mb
                             
                         
                             
-                            <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="17">Virtualization-Docker</a>
+                        
+                            
+                        
+                            
+                        
                             
                         
                             
@@ -558,7 +572,7 @@ mysql数据库修改字符集system variables的character_set_server改成utf8mb
                             
                         
                             
-                        
+                            <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="17">Virtualization-Docker</a>
                             
                         
                             
@@ -566,13 +580,9 @@ mysql数据库修改字符集system variables的character_set_server改成utf8mb
                             
                         
                             
-                        
-                            
-                        
-                            
-                        
-                            
                             <a href="/tags/#MySQL.Database" title="MySQL.Database" rel="26">MySQL.Database</a>
+                            
+                        
                             
                         
                             
