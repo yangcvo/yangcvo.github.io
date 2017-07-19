@@ -90,14 +90,14 @@
 
                         
                         <li>
-                            <a href="/about/About-me.html">About</a>
+                            <a href="/archives/archives.html">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archives/archives.html">Archives</a>
+                            <a href="/about/About-me.html">About</a>
                         </li>
                         
                     
@@ -279,27 +279,6 @@ vim deploy.yml
 
 <div class="post-preview">
 
-    <a href="/2016/03/09/自动化+可视化/Ansible/Ansible小结（四）Ad-hoc与commands模块 /">
-        <h2 class="post-title">
-            Ansible小结（四）Ad-hoc与commands模块
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            ansible小结（四）Ad-hoc与commands模块Ad-Hoc 是指ansible下临时执行的一条命令，并且不需要保存的命令，对于复杂的命令后面会说playbook。讲到Ad-hoc 就要提到模块，所有的命令执行都要依赖于事先写好的模块，默认安装好的ansible 里面已经自带了很多模块，如：command、raw、shell、file、cron等，具体可以通过ansible-doc......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-03-09
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
     <a href="/2016/03/09/自动化+可视化/Ansible/ansible小结(五)常用模块/">
         <h2 class="post-title">
             Ansible小结 (五) 常用模块
@@ -312,6 +291,27 @@ vim deploy.yml
 1云模块、命令模块、数据库模块、文件模块、资产模块、消息模块、监控模块、网络模块、通知模块、包管理模块、源码控制模块、系统模块、单元模块、web设施模块、windows模块
 具体可以参看官方页面
 这里从官方分类的模块里选择最常用的一些模块进行介绍（comm......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-09
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/09/自动化+可视化/Ansible/Ansible小结（四）Ad-hoc与commands模块 /">
+        <h2 class="post-title">
+            Ansible小结（四）Ad-hoc与commands模块
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            ansible小结（四）Ad-hoc与commands模块Ad-Hoc 是指ansible下临时执行的一条命令，并且不需要保存的命令，对于复杂的命令后面会说playbook。讲到Ad-hoc 就要提到模块，所有的命令执行都要依赖于事先写好的模块，默认安装好的ansible 里面已经自带了很多模块，如：command、raw、shell、file、cron等，具体可以通过ansible-doc......
         </div>
     </a>
     <p class="post-meta">
@@ -349,18 +349,18 @@ vim deploy.yml
 
 <div class="post-preview">
 
-    <a href="/2016/03/07/自动化+可视化/Ansible/ansible小结（二）ansible架构 /">
+    <a href="/2016/03/07/自动化+可视化/Ansible/Ansible小结（三）ansible.cfg与默认配置 /">
         <h2 class="post-title">
-            Ansible小结（二）ansible架构
+            Ansible小结（三）ansible.cfg与默认配置
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Ansible 是一个模型驱动的配置管理器，支持多节点发布、远程任务执行。默认使用 SSH 进行远程连接。无需在被管理节点上安装附加软件，可使用各种编程语言进行扩展。
-
-上图为ansible的基本架构，从上图可以了解到其由以下部分组成：
-1234567核心：ansible核心模块（Core Modules）：这些都是ansible自带的模块 扩展模块（Custom Modules）：如果核心......
+            #Ansible小结（四）ansible.cfg与默认配置
+Ansible默认安装好后有一个配置文件/etc/ansible/ansible.cfg，该配置文件中定义了ansible的主机的默认配置部分，如默认是否需要输入密码、是否开启sudo认证、action_plugins插件的位置、hosts主机组的位置、是否开启log功能、默认端口、key文件位置等等。
+具体如下：
+12345678......
         </div>
     </a>
     <p class="post-meta">
@@ -398,18 +398,18 @@ Ansible的目标是最简单和最易用。它也有一个强烈关注安全性�
 
 <div class="post-preview">
 
-    <a href="/2016/03/07/自动化+可视化/Ansible/Ansible小结（三）ansible.cfg与默认配置 /">
+    <a href="/2016/03/07/自动化+可视化/Ansible/ansible小结（二）ansible架构 /">
         <h2 class="post-title">
-            Ansible小结（三）ansible.cfg与默认配置
+            Ansible小结（二）ansible架构
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            #Ansible小结（四）ansible.cfg与默认配置
-Ansible默认安装好后有一个配置文件/etc/ansible/ansible.cfg，该配置文件中定义了ansible的主机的默认配置部分，如默认是否需要输入密码、是否开启sudo认证、action_plugins插件的位置、hosts主机组的位置、是否开启log功能、默认端口、key文件位置等等。
-具体如下：
-12345678......
+            Ansible 是一个模型驱动的配置管理器，支持多节点发布、远程任务执行。默认使用 SSH 进行远程连接。无需在被管理节点上安装附加软件，可使用各种编程语言进行扩展。
+
+上图为ansible的基本架构，从上图可以了解到其由以下部分组成：
+1234567核心：ansible核心模块（Core Modules）：这些都是ansible自带的模块 扩展模块（Custom Modules）：如果核心......
         </div>
     </a>
     <p class="post-meta">
@@ -511,7 +511,15 @@ Ansible默认安装好后有一个配置文件/etc/ansible/ansible.cfg，该配�
                             
                         
                             
+                            <a href="/tags/#Performance and framework" title="Performance and framework" rel="2">Performance and framework</a>
+                            
+                        
+                            
+                        
+                            
                             <a href="/tags/#Personal life record" title="Personal life record" rel="7">Personal life record</a>
+                            
+                        
                             
                         
                             
@@ -519,13 +527,7 @@ Ansible默认安装好后有一个配置文件/etc/ansible/ansible.cfg，该配�
                             
                         
                             
-                        
-                            
                             <a href="/tags/#Kafka" title="Kafka" rel="3">Kafka</a>
-                            
-                        
-                            
-                            <a href="/tags/#Performance and framework" title="Performance and framework" rel="2">Performance and framework</a>
                             
                         
                             
@@ -540,8 +542,6 @@ Ansible默认安装好后有一个配置文件/etc/ansible/ansible.cfg，该配�
                         
                             
                             <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
-                            
-                        
                             
                         
                             
@@ -563,17 +563,21 @@ Ansible默认安装好后有一个配置文件/etc/ansible/ansible.cfg，该配�
                             
                         
                             
+                        
+                            
                             <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="17">Virtualization-Docker</a>
                             
                         
                             
-                        
-                            
-                        
-                            
-                        
-                            
                             <a href="/tags/#KVM" title="KVM" rel="7">KVM</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
                             
                         
                             
@@ -588,10 +592,6 @@ Ansible默认安装好后有一个配置文件/etc/ansible/ansible.cfg，该配�
                         
                             
                             <a href="/tags/#MySQL.Database" title="MySQL.Database" rel="26">MySQL.Database</a>
-                            
-                        
-                            
-                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
                             
                         
                             
