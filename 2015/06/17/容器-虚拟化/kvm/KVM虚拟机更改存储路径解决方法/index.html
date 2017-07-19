@@ -13,7 +13,7 @@
 
     <title>
         
-          KVM虚拟机更改存储路径解决方法 - SIMPLICITY IS PREREQUISITE FOR  RELIABILITY
+          KVM虚拟机更改存储路径解决方法 - Yancy&#39;s blog
         
     </title>
 
@@ -67,7 +67,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Yancy&#39;s Blog</a>
+            <a class="navbar-brand" href="/">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -90,13 +90,6 @@
 
                         
                         <li>
-                            <a href="/archives/archives.html">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
                             <a href="/about/About-me.html">About</a>
                         </li>
                         
@@ -105,6 +98,13 @@
                         
                         <li>
                             <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
                         </li>
                         
                     
@@ -224,7 +224,7 @@ virsh undefine mysql-2
 <p>这里又做错了一步：</p>
 <h3 id="如何取消定义虚拟机"><a href="#如何取消定义虚拟机" class="headerlink" title="如何取消定义虚拟机"></a>如何取消定义虚拟机</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/KVM2.png" alt=""></p>
 <p>我把自己辛辛苦苦的快照都删除了，然后取消了定义。</p>
-<h3 id="注意："><a href="#注意：" class="headerlink" title="注意："></a>注意：</h3><div class="tip"><br>发现取消了定义以后，我的/etc/libvirt/qemu/mysql-2.xml 已经被删除了，取消定义是会删除xml文件的。所以这个时候发现自己大错特错，之前忘记了一个重要的操作。<br><br>这里我发现我MySQL已经被删除了。可是镜像文件还是在/home/vm/mysql-2.img<br></div><br>还好我做了主从，删除了只是其中一台。这个时候求助了之前搞虚拟化的朋友–<code>甜橙大神</code>。<br><br><br>### 紧急修复<br><br>这里我在他的指导帮助下搞定了。<br><br>### 修复第一步：<br><br>我这里先拷贝了一份其他虚拟机的xml文件,做相应修改.<br><br>    cp nginx.xml mysql-2.xml<br><br>然后打开文件：<br><br>name uuid img 之类的都要修改<br><br><em> 先删除:uuid- uuid 可以不填-删除这行就行了<br><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;uuid&gt;876f7ff7<span class="_">-a</span>0e7<span class="_">-f</span>64d-fc3c-bc48fee28635&lt;/uuid&gt;</div></pre></td></tr></table></figure>
+<h3 id="注意："><a href="#注意：" class="headerlink" title="注意："></a>注意：</h3><div class="tip"><br>发现取消了定义以后，我的/etc/libvirt/qemu/mysql-2.xml 已经被删除了，取消定义是会删除xml文件的。所以这个时候发现自己大错特错，之前忘记了一个重要的操作。<br><br>这里我发现我MySQL已经被删除了。可是镜像文件还是在/home/vm/mysql-2.img<br></div><br>还好我做了主从，删除了只是其中一台。这个时候求助了之前搞虚拟化的朋友–<code>甜橙大神</code>。<br><br><br>### 紧急修复<br><br>这里我在他的指导帮助下搞定了。<br><br>### 修复第一步：<br><br>我这里先拷贝了一份其他虚拟机的xml文件,做相应修改.<br><br>    cp nginx.xml mysql-2.xml<br><br>然后打开文件：<br><br>name uuid img 之类的都要修改<br><br><em> 先删除:uuid- uuid 可以不填-删除这行就行了<br><br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">uuid</span>&gt;</span>876f7ff7-a0e7-f64d-fc3c-bc48fee28635<span class="tag">&lt;/<span class="name">uuid</span>&gt;</span></div></pre></td></tr></table></figure>
 
 </em> 改成自己恢复的镜像。<br><br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;<span class="keyword">source</span> <span class="keyword">file</span>=<span class="string">'/home/vm/mysql-2.img'</span><span class="regexp">/&gt;</span></div></pre></td></tr></table></figure><br><br><em> 修改网卡信息：<br><br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">mac</span> <span class="attr">address</span>=<span class="string">'52:54:00:e9:cb:c4'</span>/&gt;</span></div></pre></td></tr></table></figure><br><br>这里的是拷贝过来的，所以你稍微做下修改，我这里把F1改成了c4.
 
@@ -419,7 +419,7 @@ virsh undefine mysql-2
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Yancy&#39;s Blog 2017 
+                    Copyright &copy; SIMPLICITY IS PREREQUISITE FOR  RELIABILITY 2017 
                     <br>
                  Theme by <a href="http://blog.yancy.cc">Yancy</a>
                     <span style="display: inline-block; margin: 0 5px;">
