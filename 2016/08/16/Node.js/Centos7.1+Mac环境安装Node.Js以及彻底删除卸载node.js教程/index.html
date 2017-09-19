@@ -90,13 +90,6 @@
 
                         
                         <li>
-                            <a href="/archives/archives.html">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
                             <a href="/about/About-me.html">About</a>
                         </li>
                         
@@ -105,6 +98,13 @@
                         
                         <li>
                             <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
                         </li>
                         
                     
@@ -191,16 +191,10 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h3 id="Linux-Centos7安装Node-js-npm"><a href="#Linux-Centos7安装Node-js-npm" class="headerlink" title="Linux Centos7安装Node.js+npm:"></a>Linux Centos7安装Node.js+npm:</h3><p>安装相关依赖</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ yum -y install gcc make gcc-c++ openssl-devel wget</div><div class="line">$ wget http://nodejs.org/dist/v7.8.0/node-v7.8.0-linux-x64.tar.gz</div><div class="line">$ tar zxf node-v7.8.0-linux-x64.tar.gz &amp;&amp; <span class="built_in">cd</span> node-v7.8.0-linux-x64.tar.gz</div><div class="line">$ cp bin/* /usr/bin <span class="comment"># 拷贝执行目录，相当于去设置一个环境变量到用户的bin目录</span></div><div class="line">$ ln <span class="_">-s</span> /srv/node-v7.8.0-linux-x64/bin/npm /usr/bin/npm</div></pre></td></tr></table></figure>
-<p>检查一下版本号看是否安装成功</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@node srv]<span class="comment"># node -v</span></div><div class="line">v7.8.0</div><div class="line">[root@node bin]<span class="comment"># npm -v</span></div><div class="line">4.2.0</div></pre></td></tr></table></figure>
-<h3 id="卸载node-js"><a href="#卸载node-js" class="headerlink" title="卸载node.js"></a>卸载node.js</h3><p>用自带的包管理先删除一次</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum remove nodejs npm -y</div></pre></td></tr></table></figure>
-<p>依次类推，看你的操作系统用什么包管理，比如推出如果你是用brew 安装的 node 需要用 brew先删除一次 手动删除残留<br>进入 <code>/usr/local/lib</code>删除所有 <code>node 和 node_modules</code>文件夹 进入 /usr/local/include 删除所有 node 和 node_modules 文件夹 检查 ~ 文件夹里面的”local” “lib” “include” 文件夹，然后删除里面的所有 “node” 和 “node_modules” 文件夹 可以使用以下命令查找</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">find ~/ -name node  </div><div class="line">find ~/ -name node_modules</div></pre></td></tr></table></figure>
-<p>进入 /usr/local/bin 删除 node 的可执行文件</p>
-<p>以下步骤可选: 删除: <code>/usr/local/bin/npm</code> 删除: <code>/usr/local/share/man/man1/node.1</code>删除: <code>/usr/local/lib/dtrace/node.d</code>删除: <code>rm -rf /home/[homedir]/.npm</code>删除:<code>rm -rf /home/root/.npm</code></p>
+                <h3 id="linux-Centos7系统快速安装node-js-npm"><a href="#linux-Centos7系统快速安装node-js-npm" class="headerlink" title="linux Centos7系统快速安装node.js npm"></a>linux Centos7系统快速安装node.js npm</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">第一、选择合适的版本安装</div><div class="line"><span class="comment"># 4.x版本</span></div><div class="line">curl --silent --location https://rpm.nodesource.com/setup_4.x | bash -</div><div class="line"><span class="comment"># 5.x版本</span></div><div class="line">curl --silent --location https://rpm.nodesource.com/setup_5.x | bash -</div></pre></td></tr></table></figure>
+<p>如果是Centos7的话会提示报错<code>Requires: libhttp_parser.so.2()(64bit)</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">rpm -ivh https://kojipkgs.fedoraproject.org//packages/http-parser/2.7.1/3.el7/x86_64/http-parser-2.7.1-3.el7.x86_64.rpm &amp;&amp; yum -y install nodejs</div><div class="line"></div><div class="line">[root@logstash kibana-5.5.2]<span class="comment"># node -v</span></div><div class="line">v6.11.1</div><div class="line">[root@logstash kibana-5.5.2]<span class="comment"># npm -v</span></div><div class="line">3.10.10</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Centos6安装命令：</div><div class="line">rpm -ivh https://kojipkgs.fedoraproject.org/packages/http-parser/2.6.0/2.fc24/x86_64/http-parser-2.6.0-2.fc24.x86_64.rpm &amp;&amp; yum -y install nodejs</div></pre></td></tr></table></figure>
 <h3 id="Mac-OS安装"><a href="#Mac-OS安装" class="headerlink" title="Mac OS安装:"></a>Mac OS安装:</h3><blockquote>
 <p>安装报错304：</p>
 </blockquote>
@@ -234,15 +228,10 @@
                         </li>
                     
                 </ul>
+		 
 
                 
 
-                
-                <!-- disqus 评论框 start -->
-                <div class="comment">
-                    <div id="disqus_thread" class="disqus-thread"></div>
-                </div>
-                <!-- disqus 评论框 end -->
                 
 
             </div>
@@ -291,20 +280,6 @@
 
 
 
-<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES * * */
-    var disqus_shortname = "blog-yancy-cc";
-    var disqus_identifier = "http://blog.yancy.cc/2016/08/16/Node.js/Centos7.1+Mac环境安装Node.Js以及彻底删除卸载node.js教程/";
-    var disqus_url = "http://blog.yancy.cc/2016/08/16/Node.js/Centos7.1+Mac环境安装Node.Js以及彻底删除卸载node.js教程/";
-
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<!-- disqus 公共JS代码 end -->
 
 
 

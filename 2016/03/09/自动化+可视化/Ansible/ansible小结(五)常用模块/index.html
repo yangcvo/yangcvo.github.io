@@ -90,13 +90,6 @@
 
                         
                         <li>
-                            <a href="/archives/archives.html">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
                             <a href="/about/About-me.html">About</a>
                         </li>
                         
@@ -105,6 +98,13 @@
                         
                         <li>
                             <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
                         </li>
                         
                     
@@ -237,7 +237,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">root@salt ~]<span class="comment"># ansible cluster1:children -m copy -a "src=/opt/logstash.tar.gz dest=/srv/. 10.47.59.190 | SUCCESS =&gt; &#123;</span></div><div class="line">    <span class="string">"changed"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="string">"checksum"</span>: <span class="string">"9d15ea324f39d08cb379f59ffee9fa7ad2a62ab8"</span>,</div><div class="line">    <span class="string">"dest"</span>: <span class="string">"/srv/./logstash.tar.gz"</span>,</div><div class="line">    <span class="string">"gid"</span>: 0,</div><div class="line">    <span class="string">"group"</span>: <span class="string">"root"</span>,</div><div class="line">    <span class="string">"md5sum"</span>: <span class="string">"c151602e79a336ca363928dea68d2567"</span>,</div><div class="line">    <span class="string">"mode"</span>: <span class="string">"0644"</span>,</div><div class="line">    <span class="string">"owner"</span>: <span class="string">"root"</span>,</div><div class="line">    <span class="string">"size"</span>: 84431108,</div><div class="line">    <span class="string">"src"</span>: <span class="string">"/root/.ansible/tmp/ansible-tmp-1483939085.93-201327709717575/source"</span>,</div><div class="line">    <span class="string">"state"</span>: <span class="string">"file"</span>,</div><div class="line">    <span class="string">"uid"</span>: 0</div><div class="line">&#125;</div><div class="line">10.47.106.105 | SUCCESS =&gt; &#123;</div><div class="line">    <span class="string">"changed"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="string">"checksum"</span>: <span class="string">"9d15ea324f39d08cb379f59ffee9fa7ad2a62ab8"</span>,</div><div class="line">    <span class="string">"dest"</span>: <span class="string">"/srv/./logstash.tar.gz"</span>,</div><div class="line">    <span class="string">"gid"</span>: 0,</div><div class="line">    <span class="string">"group"</span>: <span class="string">"root"</span>,</div><div class="line">    <span class="string">"md5sum"</span>: <span class="string">"c151602e79a336ca363928dea68d2567"</span>,</div><div class="line">    <span class="string">"mode"</span>: <span class="string">"0644"</span>,</div><div class="line">    <span class="string">"owner"</span>: <span class="string">"root"</span>,</div><div class="line">    <span class="string">"size"</span>: 84431108,</div><div class="line">    <span class="string">"src"</span>: <span class="string">"/root/.ansible/tmp/ansible-tmp-1483939088.11-46151538408374/source"</span>,</div><div class="line">    <span class="string">"state"</span>: <span class="string">"file"</span>,</div><div class="line">    <span class="string">"uid"</span>: 0</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h4 id="批量控制解压文件"><a href="#批量控制解压文件" class="headerlink" title="批量控制解压文件"></a>批量控制解压文件</h4><p>批量解压命令：</p>
 <p><code>ansible cluster1:children -m shell -a  &quot;tar -zxvf /srv/logstash.tar.gz&quot; -C /srv/.</code></p>
-<h3 id="五、yum模块"><a href="#五、yum模块" class="headerlink" title="五、yum模块"></a>五、yum模块</h3><h6 id="yum安装使用："><a href="#yum安装使用：" class="headerlink" title="yum安装使用："></a>yum安装使用：</h6><p>使用yum包管理器来管理软件包，其选项有： </p>
+<h3 id="五、yum模块"><a href="#五、yum模块" class="headerlink" title="五、yum模块"></a>五、yum模块</h3><h5 id="yum安装使用："><a href="#yum安装使用：" class="headerlink" title="yum安装使用："></a>yum安装使用：</h5><p>使用yum包管理器来管理软件包，其选项有： </p>
 <ul>
 <li>config_file：yum的配置文件 </li>
 <li>disable_gpg_check：关闭gpg_check </li>
@@ -269,6 +269,62 @@
 <p>shell 模块 可以用的最多。查看目录执行文件等等。</p>
 <p>ansible修改线上服务器上的密码</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">ansible cluster1:children -m shell <span class="_">-a</span> <span class="string">"echo "</span>Ihaozhuo_b3314<span class="string">" | passwd --stdin "</span>root<span class="string">" "</span></div><div class="line"></div><div class="line">ansible cluster2:children -m shell <span class="_">-a</span> <span class="string">"echo "</span>Ihaozhuo_b3314<span class="string">" | passwd --stdin "</span>root<span class="string">" "</span></div><div class="line"></div><div class="line">ansible cluster3:children -m shell <span class="_">-a</span> <span class="string">"echo "</span>Ihaozhuo_b3314<span class="string">" | passwd --stdin "</span>root<span class="string">" "</span></div><div class="line"></div><div class="line">ansible zk1:children -m shell <span class="_">-a</span> <span class="string">"echo "</span>Ihaozhuo_b3314<span class="string">" | passwd --stdin "</span>root<span class="string">" "</span></div><div class="line"></div><div class="line">ansible  kafka1:children -m shell <span class="_">-a</span> <span class="string">"echo "</span>Ihaozhuo_b3314<span class="string">" | passwd --stdin "</span>root<span class="string">" "</span></div><div class="line"></div><div class="line">ansible  es1:children -m shell <span class="_">-a</span> <span class="string">"echo "</span>Ihaozhuo_b3314<span class="string">" | passwd --stdin "</span>root<span class="string">" "</span></div><div class="line"></div><div class="line">ansible  ihaozhuo1:children -m shell <span class="_">-a</span> <span class="string">"echo "</span>Ihaozhuo_b3314<span class="string">" | passwd --stdin "</span>root<span class="string">" "</span></div><div class="line"></div><div class="line">ansible  monitor1:children -m shell <span class="_">-a</span> <span class="string">"echo "</span>Ihaozhuo_b3314<span class="string">" | passwd --stdin "</span>root<span class="string">" "</span></div></pre></td></tr></table></figure>
+<h2 id="2、Ansible-总结举例常用模块学习"><a href="#2、Ansible-总结举例常用模块学习" class="headerlink" title="2、Ansible 总结举例常用模块学习"></a>2、Ansible 总结举例常用模块学习</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">shell &gt; ansible-doc <span class="_">-l</span>    <span class="comment"># 列出 Ansible 支持的模块</span></div><div class="line">shell &gt; ansible-doc ping  <span class="comment"># 查看该模块帮助信息</span></div></pre></td></tr></table></figure>
+<blockquote>
+<p>远程命令模块（ command / raw / script / shell ）</p>
+</blockquote>
+<p>command 作为 Ansible 的默认模块，可以运行远程权限范围所有的 shell 命令，不支持管道符。</p>
+<p>例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">shell &gt; ansible Client -m <span class="built_in">command</span> <span class="_">-a</span> <span class="string">"free -m"</span>               <span class="comment"># 查看 Client 分组主机内存使用情况</span></div></pre></td></tr></table></figure>
+<p>raw模块 [类似于command模块、支持管道传递]</p>
+<p>例：</p>
+<figure class="highlight nsis"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible Client -m raw -a <span class="string">"ifconfig eth0 |sed -n 2p |awk '&#123;print \<span class="variable">$2</span>&#125;' |awk -F: '&#123;print \<span class="variable">$2</span>&#125;'"</span></div></pre></td></tr></table></figure>
+<p>script 的功能是在远程主机执行主控端存储的 shell 脚本文件，相当于 scp + shell 组合。</p>
+<p>例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">shell &gt; ansible Client -m script <span class="_">-a</span> <span class="string">"/home/test.sh 12 34"</span>    <span class="comment"># 远程执行本地脚本</span></div></pre></td></tr></table></figure>
+<p>shell 的功能是执行远程主机上的 shell 脚本文件，支持管道符。</p>
+<p>例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">shell &gt; ansible Client -m shell <span class="_">-a</span> <span class="string">"/home/test.sh"</span>           <span class="comment"># 执行远程脚本</span></div></pre></td></tr></table></figure>
+<blockquote>
+<p>copy 模块（实现主控端向目标主机拷贝文件，类似于 scp 功能）</p>
+</blockquote>
+<p>例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">shell &gt; ansible Client -m copy <span class="_">-a</span> <span class="string">"src=/home/test.sh desc=/tmp/ owner=root group=root mode=0755"</span>   </div><div class="line"><span class="comment"># 向 Client 组中主机拷贝 test.sh 到 /tmp 下，属主、组为 root ，权限为 0755</span></div></pre></td></tr></table></figure>
+<blockquote>
+<p>stat 模块（获取远程文件状态信息，atime/ctime/mtime/md5/uid/gid 等信息）</p>
+</blockquote>
+<p>例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">shell &gt; ansible Client -m <span class="built_in">stat</span> <span class="_">-a</span> <span class="string">"path=/etc/syctl.conf"</span></div></pre></td></tr></table></figure>
+<blockquote>
+<p>get_url 模块（实现在远程主机下载指定 URL 到本地，支持 sha256sum 文件校验）</p>
+</blockquote>
+<p>例：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">shell</span><span class="bash"> &gt; ansible Client -m get_utl <span class="_">-a</span> <span class="string">"url=http://www.baidu.com dest=/tmp/index.html mode=0440 force=yes"</span></span></div></pre></td></tr></table></figure>
+<blockquote>
+<p>yum 模块（软件包管理）</p>
+</blockquote>
+<p>例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">shell &gt; ansible Client -m yum <span class="_">-a</span> <span class="string">"name=curl state=latest"</span></div></pre></td></tr></table></figure>
+<blockquote>
+<p>cron 模块（远程主机 crontab 配置）</p>
+</blockquote>
+<p>例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">shell &gt; ansible Client -m cron <span class="_">-a</span> <span class="string">"name='check dirs' hour='5,2' job='ls -alh &gt; /dev/null'"</span></div><div class="line"></div><div class="line">效果：</div><div class="line"></div><div class="line"><span class="comment"># Ansible: check dirs</span></div><div class="line">* 5,2 * * * ls -alh &gt; /dev/null</div></pre></td></tr></table></figure>
+<blockquote>
+<p>mount 模块（远程主机分区挂载）</p>
+</blockquote>
+<p>例：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">shell</span><span class="bash"> &gt; ansible Client -m mount <span class="_">-a</span> <span class="string">"name=/mnt/data src=/dev/sd0 fstype=ext4 opts=ro state=present"</span></span></div></pre></td></tr></table></figure>
+<blockquote>
+<p>service 模块（远程主机系统服务管理）</p>
+</blockquote>
+<p>例：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">shell</span><span class="bash"> &gt; ansible Client -m service <span class="_">-a</span> <span class="string">"name=nginx state=stoped"</span></span></div><div class="line"><span class="keyword">shell</span><span class="bash"> &gt; ansible Client -m service <span class="_">-a</span> <span class="string">"name=nginx state=restarted"</span></span></div><div class="line"><span class="keyword">shell</span><span class="bash"> &gt; ansible Client -m service <span class="_">-a</span> <span class="string">"name=nginx state=reloaded"</span></span></div></pre></td></tr></table></figure>
+<blockquote>
+<p>user 服务模块（远程主机用户管理）</p>
+</blockquote>
+<p>例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">shell &gt; ansible Client -m user <span class="_">-a</span> <span class="string">"name=wang comment='user wang'"</span></div><div class="line">shell &gt; ansible Client -m user <span class="_">-a</span> <span class="string">"name=wang state=absent remove=yes"</span>    <span class="comment"># 添加删除用户</span></div></pre></td></tr></table></figure>
 
 
                 <hr>
@@ -287,15 +343,10 @@
                         </li>
                     
                 </ul>
+		 
 
                 
 
-                
-                <!-- disqus 评论框 start -->
-                <div class="comment">
-                    <div id="disqus_thread" class="disqus-thread"></div>
-                </div>
-                <!-- disqus 评论框 end -->
                 
 
             </div>
@@ -346,20 +397,6 @@
 
 
 
-<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES * * */
-    var disqus_shortname = "blog-yancy-cc";
-    var disqus_identifier = "http://blog.yancy.cc/2016/03/09/自动化+可视化/Ansible/ansible小结(五)常用模块/";
-    var disqus_url = "http://blog.yancy.cc/2016/03/09/自动化+可视化/Ansible/ansible小结(五)常用模块/";
-
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<!-- disqus 公共JS代码 end -->
 
 
 

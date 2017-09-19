@@ -90,13 +90,6 @@
 
                         
                         <li>
-                            <a href="/archives/archives.html">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
                             <a href="/about/About-me.html">About</a>
                         </li>
                         
@@ -105,6 +98,13 @@
                         
                         <li>
                             <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
                         </li>
                         
                     
@@ -184,26 +184,21 @@
 
 <div class="post-preview">
 
-    <a href="/2015/10/21/LVM/LVM快速配置/">
+    <a href="/2016/01/21/日志分析平台/Elasticsearch/ELK-Elasticsearch-Logstash-Kibana-搭建日志集中分析平台实践/">
         <h2 class="post-title">
-            LVM快速配置
+            ELK(Elasticsearch + Logstash + Kibana)搭建日志集中分析平台实践
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            
-fdisk -l ，列出所有存储设备，假设存在/dev/sdb和/dev/sda1两个存储设备，并且hdb有6个分区，其中sdb5、sdb6两个分区未使用，sda1为U盘
-
-fdisk /dev/sdb，输入p查看hdb的分区情况及相应文件系统，输入t来更改文件系统，输入w保存退出，取消则输入q，具体例子如下：
-
-
-12345678fdisk /dev/sdb Command (m for......
+            关注可参考：本文将安装Elasticsearch-1.7.2, Logstash-1.5.5, Kibana-4.1.5。 请注意版本要求，有些组件需要响应的版本要求。logstash是负责搜集和转发日志的，es用于存储和检索，kibana提供web端的展现…他们是独立运行的，也可以部署在同一台机器，也可以不同的机器。
+可以关注我的Github上面有详细文档：https://github.c......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-10-21
+        2016-01-21
     </p>
 
 </div>
@@ -211,22 +206,22 @@ fdisk /dev/sdb，输入p查看hdb的分区情况及相应文件系统，输入t�
 
 <div class="post-preview">
 
-    <a href="/2015/10/10/自动化+可视化/saltstack/自动化运维工具--Saltstack安装部署配置使用/">
+    <a href="/2015/12/29/DNS/DNS安全章－DNS污染 /">
         <h2 class="post-title">
-            自动化运维工具--Saltstack安装部署配置使用
+            DNS服务器主从复制搭建
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            自动化运维工具–Saltstack安装部署配置使用前言：
-开始学saltstack的时候是在现在一家做CDN云加速的那是在2014年，salt刚刚出来所以我觉得我接触应该也算早的。 使用最多的同步下发的用到这个工具，下面我简单介绍和操作给大家看下。Salt 和 Puppet Chef 一样可以让你同时在多台服务器上执行命令也包括安装和配置软件。
-Salt 有两个主要的功能：配置管理和远程执行......
+            一 、什么是DNS污染 就是客户端发起正常的一次DNS请求，得到的确是一个异常或者不真实的DNS信息。一般造成这样的情况，很有可能DNS信息在某个环节被通过某种方式篡改。   
+二、有什么手段可以造成DNS污染 主要的方式，可以归纳为如下两种： 
+方式一、攻击者监测到DNS查询的请求报文时，伪装成DNS服务器向发出请求主机发送响应报文。因为DNS报文通常是无连接的UDP报文，没有确认机制，源......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-10-10
+        2015-12-29
     </p>
 
 </div>
@@ -234,21 +229,21 @@ Salt 有两个主要的功能：配置管理和远程执行......
 
 <div class="post-preview">
 
-    <a href="/2015/09/29/容器-虚拟化/kvm/KVM虚拟机如何进行克隆操作/">
+    <a href="/2015/12/10/自动化+可视化/saltstack/服务自动化部署平台之Saltstack总结/">
         <h2 class="post-title">
-            KVM虚拟机如何进行克隆操作
+            自动化运维工具-服务自动化部署平台之Saltstack总结
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            KVM虚拟机如何进行克隆操作我们知道，重复的事情做多了就需要上脚本或采用工具以便节省操作时间，提升工作效率，减低繁琐操作。本人也是懒人一个，相同的事情做多了，就想法子弄成脚本或采用工具去搞。KVM虚拟机的创建同样如此，我们不可能每次创建都要手工执行一次，于是就有了KVM克隆出现。克隆操作有两种方式：
-(1) KVM本机虚拟机直接克隆。(2) 通过复制配置文件与磁盘文件的虚拟机复制克隆(适用于......
+            服务自动化部署平台之Saltstack总结Saltstack是一个新的基础设施管理工具。目前处于快速发展阶段，可以看做是强化的Func+弱化的Puppet的组合。间接的反映出了saltstack的两大功能：远程执行和配置管理。
+SaltStack 保持了输入、输出、配置文件的一致性，所有文件均使用YAML格式。主要负责配置管理和远程执行（在远程主机运行预定义或任意的命令，也叫远程执行，这是 ......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-09-29
+        2015-12-10
     </p>
 
 </div>
@@ -256,31 +251,21 @@ Salt 有两个主要的功能：配置管理和远程执行......
 
 <div class="post-preview">
 
-    <a href="/2015/09/22/数据库/Mongodb/Red Hat企业版或CentOS的Linux上安装MongoDB/">
+    <a href="/2015/12/01/运维性能测试/Cento6-7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行/">
         <h2 class="post-title">
-            RedHat企业版或CentOS的Linux上yum方式安装MongoDB
+            Cento6.7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            ##RedHat企业版或CentOS的Linux上yum方式安装MongoDB
-
-概述
-
-
-官网翻译：
-
-使用本教程对使用Red Hat Enterprise Linux或CentOS的Linux版本5，6，7安装MongoDB中的.rpm软件包。虽然这些发行版包括自己的MongoDB包，官方MongoDB的包装一般都比较最新的。
-
-平台支持
-
-本安装指南只支持64位系统。请参阅平台支持的详......
+            APP测试神器：STF最近项目涉及到较多设备批量管理的需求，发现一工具可以批量对大量设备进行WEB端管理，工具主页：https://openstf.github.io/工具名STF（Smartphone Test Farm）
+STF (or Smartphone Test Farm) is a web application for debugging smartphones, smartw......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-09-22
+        2015-12-01
     </p>
 
 </div>
@@ -288,21 +273,20 @@ Salt 有两个主要的功能：配置管理和远程执行......
 
 <div class="post-preview">
 
-    <a href="/2015/09/22/数据库/Mongodb/Mongodb基本操作/">
+    <a href="/2015/11/25/Vsftpd/建立虚拟用户的vsftpd安装配置过程/">
         <h2 class="post-title">
-            Mongodb基本命令操作
+            建立虚拟用户的vsftpd安装配置过程
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Mongodb基本命令操作###MongoDB数据库基本用法
-123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869show dbs:显示数据库列表show collections：显示当前......
+            建立虚拟用户的vsftpd安装配置过程虚拟用户的特点是只能访问服务器为其提供的FTP服务，而不能访问系统的其它资源。所以，如果想让用户对FTP服务器站内具有写权限，但又不允许访问系统其它资源，可以使用虚拟用户来提高系统的安全性。在VSFTP中，认证这些虚拟用户使用的是单独的口令库文件（pam_userdb），由可插入认证模块（PAM）认证。使用这种方式更加安全，并且配置更加灵活。 下面介绍配......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-09-22
+        2015-11-25
     </p>
 
 </div>
@@ -310,23 +294,22 @@ Salt 有两个主要的功能：配置管理和远程执行......
 
 <div class="post-preview">
 
-    <a href="/2015/09/21/数据库/Mongodb/Mongodb启动的解决方法/">
+    <a href="/2015/11/21/Web服务技术/tomcat/搭建配置tomcat环境/">
         <h2 class="post-title">
-            Mongodb启动的解决方法
+            搭建配置tomcat环境
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            #Mongodb启动的解决方法
-####无法启动分析：
-遇到MongoDB突然无法启动，第一反应是删除mongod.lock。这个文件在MongoDB的数据库目录下，默认是/data/db。这是最常见的问题了，产生原因是MongoDB没有正常结束（比如被kill -9杀掉或是其他意外情况导致中断）。
-还一些其他情况会导致MongoDB无法启动。本文讨论的无法启动，是指：使用/etc/init......
+            先安装jdk-java环境首先先检查linux机器上是否有自带的jdk,一般不建议用yum安装，环境变量不方便自定义。
+java -version检查下就可以，如果有版本低的话可以先卸载掉方法如下：
+1234[root@localhost java]# rpm -qa|grep gcj 或者 rpm -qa|grep javalibgcj-4.1.2-44.el5java-1.4.2-gcj......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-09-21
+        2015-11-21
     </p>
 
 </div>
@@ -334,22 +317,22 @@ Salt 有两个主要的功能：配置管理和远程执行......
 
 <div class="post-preview">
 
-    <a href="/2015/09/19/数据库/Mongodb/centos安装MongoDB数据库、配置、主从同步、备份与恢复/">
+    <a href="/2015/11/20/自动化+可视化/saltstack/自动化运维工具--saltstack远程启动tomcat日志乱码 /">
         <h2 class="post-title">
-            Centos安装MongoDB数据库、配置、主从同步、备份与恢复
+            自动化运维工具--saltstack远程启动tomcat日志乱码
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Centos安装MongoDB数据库、配置、主从同步、备份与恢复mongodb个人的理解
- Mongo是一个高性能，开源，文档型数据库，MongoDB服务端可运行在Linux、Windows或OS X平台，支持32位和64位应用，默认端口为27017。推荐运行在64位平台，因为MongoDB在32位模式运行时支持的最大文件尺寸为2GB。 
-MongoDB把数据存储在文件中（默认路径为：/da......
+            自动化运维工具–saltstack远程启动tomcat日志乱码最近在线上发布tomcat，想做到自动部署，可是出现了问题，就是日志输出会有乱码，用户名的getMyUserInfo 是一堆乱码，salt原理系统字符集没太深入的研究，后来在墙外看到一篇文章很实用，就做了下自己的总结。
+开始我是salt执行远程脚本。
+1salt 'tomcat_A1' cmd.run '/etc/init.d/t......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-09-19
+        2015-11-20
     </p>
 
 </div>
@@ -357,20 +340,23 @@ MongoDB把数据存储在文件中（默认路径为：/da......
 
 <div class="post-preview">
 
-    <a href="/2015/09/18/数据库/Mongodb/Windows安装配置Mongodb/">
+    <a href="/2015/11/20/数据库/Redis/Redis与mamcache区别redis常用命令积累/">
         <h2 class="post-title">
-            Windows安装配置Mongodb
+            Redis与mamcache区别redis常用命令积累
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            前言   MongoDB环境的部署很简单。已经用过的人肯定会和我有相同的想法。首先在官网上下载对应的版本（http://www.mongodb.org/downloads）,要分清是自己的是32位还是64位的。      MongoDb的版本号，偶数的版本是稳定版，奇数是开发版。例如，1.2开头的是稳定版(1.2.0 , 1.2.1 , 1.2.2 等等) ，1.3开头的开发版（1.3.0 ......
+            redis与mamcache区别&amp;redis常用命令积累之前一直有在用mamcache集群，现在出来了redis用的多的还是现在的redis主从，集群等。
+##redis与mamcache区别
+也仔细了做了这两种存储数据库也叫内存数据库它们的区别：
+123456781、 Redis和Memcache都是将数据存放在内存中，都是内存数据库。不过memcache还可用于缓存其他东西，例如......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-09-18
+        2015-11-20
     </p>
 
 </div>
@@ -378,49 +364,24 @@ MongoDB把数据存储在文件中（默认路径为：/da......
 
 <div class="post-preview">
 
-    <a href="/2015/09/10/自动化+可视化/saltstack/自动化运维工具-Saltstack的详细介绍安装与使用以及语法开发操作/">
+    <a href="/2015/11/20/数据库/Redis/Redis安装报错-报错搜集/">
         <h2 class="post-title">
-            自动化运维工具-Saltstack的详细介绍安装与使用以及语法开发操作
+            Redis安装报错总结-文件解释
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            引言:自动化运维1:saltstack 的基本介绍2:salt 的安装
-服务端 
-安装
-配置文件 
-运行 
-注意事项
+            ###安装的时候最新安装包，3.0.7
+异常一：
+报错：error: jemalloc/jemalloc.h: No such file or directory
 
-
-客户端 
-安装
-配置文件
-运行
-注意事项
-
-
-
-3:salt 的使用:
-基础知识
-targeting 
-nodegroup 
-grains 
-pillar
-
-
-状态管理 
-state
-state 语法
-state 的逻辑关系 
-highstate
-salt schedul......
+12345zmalloc.h:50:31: error: jemalloc/jemalloc.h: No such file or directoryzmalloc.h:55:2: error: #error "Newer ve......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-09-10
+        2015-11-20
     </p>
 
 </div>
@@ -428,21 +389,20 @@ salt schedul......
 
 <div class="post-preview">
 
-    <a href="/2015/06/29/容器-虚拟化/kvm/kvm虚拟化小结（六）libguestfs-tools/">
+    <a href="/2015/11/20/Blog/AWS Centos7.3 搭建 Grav Cms 博客/">
         <h2 class="post-title">
-            kvm虚拟化小结（六）libguestfs-tools
+            EC2 Centos7.3搭建Grav Cms博客
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            libguestfs 是一组 Linux 下的 C 语言的 API ，用来访问虚拟机的磁盘映像文件。其项目主页是http://libguestfs.org/ ，该工具包内包含的工具有
-123456789virt-cat、virt-df、virt-ls、virt-copy-in、virt-copy-out、virt-edit、guestfs、guestmount、virt-list-files......
+            Grav官网环境要求：12345678REQUIREMENTSGrav has intentionally been designed with few requirements. You can easily run Grav on your local computer, as well as 99% of all Web hosting providers. If you have a......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-06-29
+        2015-11-20
     </p>
 
 </div>
@@ -487,17 +447,33 @@ salt schedul......
                     <div class="tags">
                         
                             
+                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="13">Big data Hadoop</a>
+                            
+                        
+                            
+                            <a href="/tags/#Kafka" title="Kafka" rel="10">Kafka</a>
+                            
+                        
+                            
+                            <a href="/tags/#Blog" title="Blog" rel="7">Blog</a>
+                            
+                        
+                            
+                        
+                            
                             <a href="/tags/#DNS" title="DNS" rel="3">DNS</a>
                             
                         
                             
-                            <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="6">Java+Tomcat notes</a>
+                            <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="7">Java+Tomcat notes</a>
                             
                         
                             
                             <a href="/tags/#Dubbo" title="Dubbo" rel="2">Dubbo</a>
                             
                         
+                            
+                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
                             
                         
                             
@@ -511,19 +487,13 @@ salt schedul......
                             
                         
                             
+                        
+                            
+                        
+                            
+                        
+                            
                             <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
-                            
-                        
                             
                         
                             
@@ -543,12 +513,6 @@ salt schedul......
                             
                         
                             
-                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="6">Big data Hadoop</a>
-                            
-                        
-                            
-                            <a href="/tags/#Kafka" title="Kafka" rel="3">Kafka</a>
-                            
                         
                             
                         
@@ -561,19 +525,19 @@ salt schedul......
                             
                         
                             
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="13">Performance monitoring</a>
+                            
+                        
+                            
                             <a href="/tags/#Operation safety" title="Operation safety" rel="7">Operation safety</a>
                             
                         
                             
                         
-                            
-                        
-                            
-                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
-                            
-                        
-                            
-                            <a href="/tags/#Blog" title="Blog" rel="6">Blog</a>
                             
                         
                             
@@ -593,19 +557,19 @@ salt schedul......
                             
                         
                             
-                        
+                            <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="18">Virtualization-Docker</a>
                             
                         
                             
-                            <a href="/tags/#KVM" title="KVM" rel="7">KVM</a>
+                            <a href="/tags/#KVM" title="KVM" rel="8">KVM</a>
                             
                         
                             
-                            <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="17">Virtualization-Docker</a>
+                            <a href="/tags/#Database" title="Database" rel="6">Database</a>
                             
                         
                             
-                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
+                            <a href="/tags/#zabbix" title="zabbix" rel="19">zabbix</a>
                             
                         
                             
@@ -619,7 +583,7 @@ salt schedul......
                             
                         
                             
-                            <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="6">Log analysis platform</a>
+                            <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="8">Log analysis platform</a>
                             
                         
                             

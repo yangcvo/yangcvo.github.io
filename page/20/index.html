@@ -90,13 +90,6 @@
 
                         
                         <li>
-                            <a href="/archives/archives.html">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
                             <a href="/about/About-me.html">About</a>
                         </li>
                         
@@ -105,6 +98,13 @@
                         
                         <li>
                             <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
                         </li>
                         
                     
@@ -184,21 +184,22 @@
 
 <div class="post-preview">
 
-    <a href="/2014/09/29/性能监控/Zabbix/zabbix监控MySQL-添加自定义监控项/">
+    <a href="/2014/11/27/Linux笔记/SSH/修改权限ssh登陆出现ssh-exchange-identification-read-Connection-reset-by-peer无法登陆问题/">
         <h2 class="post-title">
-            zabbix监控MySQL-添加自定义监控项
+            ACL 修改权限ssh登录报ssh_exchange_identification: read:Connection reset by peer无法登陆问题
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            zabbix监控MySQL前面一些简单的已在上一篇文章大概讲了zabbix原理和使用安装方法等等。在Zabbix的监控系统中通常是由Zabbix Server与Zabbix Agent一起配合实现监控。在Zabbix Agent内置了很多监控基础的监控项。参见
-这些监控项都是CPU, 文件系统, 网络，磁盘等基础的监控项，对于自己开发服务的监控，Zabbix提供了良好框架为用户实现监控和报警......
+            ACL修改权限出现了严重的问题：
+root用户下使用ACL在给开发给予某个文件夹下的所有文件改权限的时候，用了setfacl命令，咋一看这个命令没啥很正常，也能执行，但是后面的提示让人感觉很不对劲， 有一个/，这是个很危险的命令，有点常识的人都知道，根目录下的文件权限不可以乱动啊，当时吓了一跳，于是另开一个终端怎么也连接不上.
+12ssh root@192.168.1.204Connecti......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-09-29
+        2014-11-27
     </p>
 
 </div>
@@ -206,22 +207,23 @@
 
 <div class="post-preview">
 
-    <a href="/2014/09/13/Web服务技术/Apache/httpd进程非常多，查找被攻击的原因/">
+    <a href="/2014/11/24/Linux笔记/Zimbra/zimbra邮件系统的环境部署/">
         <h2 class="post-title">
-            httpd进程非常多，查找被攻击的原因
+            zimbra邮件系统的环境部署
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            前两天，公司托管在电信机房的vps服务器突然网络中断，运营商那边说我们的服务器不断往外发包，严重影响到机房的网络，所以把该机器的端口封了，无比蛋疼啊，无奈下只能亲自跑到机房解决问题。去到机房，使用top命令查看后发现httpd进程居然占到90%多的CPU。
-ps -aux |grep httpd |wc -l
-   发现有300多个httpd进程应该是受到SYN Flood攻击这时候没有直接......
+            zimbra本实验以CENTOS6.6 64位为例. 最小化安装外加开发包
+1.关闭防火墙1/etc/init.d/iptables stop
+这里说下如果没有关闭防火墙，一定要写规则增加iptables内容如下:
+1234567891011121314# enable zimbra ports-A INPUT -m state --state NEW -m tcp -p tcp --dpo......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-09-13
+        2014-11-24
     </p>
 
 </div>
@@ -229,28 +231,21 @@ ps -aux |grep httpd |wc -l
 
 <div class="post-preview">
 
-    <a href="/2014/09/07/Linux笔记/linux系统环境变量优化/">
+    <a href="/2014/11/24/Linux笔记/rrdtool/RRDTOOL编译安装一步一步解决多多依赖关系/">
         <h2 class="post-title">
-            linux系统环境变量优化
+            rrdtool 编译安装一步一步解决多多依赖关系
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            linux 系统环境变量优化可以统一写在/etc/profile.d/下面
-
-变化目录结构字体颜色:
-
-vim color.sh
-
-
-
-1234PS1='[\[\033[0;34m\]\u\[\033[0;37m\]@\[\033[0;35m\]\h\[\033[0;33m\] \w\[\033[0;37m\]]\[\033[0;31m\]\$\[\033[00m\] 'export PRO......
+            RRDTOOL 编译安装一步一步解决多多依赖关系在一些监控软件中需要借助rrdtool绘图，然后安装rrdtool这个画图工具的时候经常报错，下面就简单说明下安装步骤（Cenetos6.5 64bit）。 
+介绍RRDTOOL 是一个基于时间片的日志和绘图工具，有了她你可以轻松的绘制各种基于时间的可视化数据，用于做统计和监控非常合适。著名的开源监控软件Ganglia 就是采用的RRDTOOL......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-09-07
+        2014-11-24
     </p>
 
 </div>
@@ -258,22 +253,23 @@ vim color.sh
 
 <div class="post-preview">
 
-    <a href="/2014/08/19/容器-虚拟化/Vmware Exsi/Exsi报错：Failed to extend swap file from 0 kb to 5242880 kb./">
+    <a href="/2014/11/24/Blog/Ghost/Ghost-blog修改端口/">
         <h2 class="post-title">
-            Exsi报错：Failed to extend swap file from 0 kb to 5242880 kb.
+            Ghost-blog修改端口
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            昨天公司的esxi服务器碰到这么个问题；
- 问题描述大致 ：
-问题出来的过程是这样的，  这个esxi服务器上装了5个虚拟机，有windows，有centos；当我昨天在搭建namenode的构建的过程中，当我同时执行3个任务的时候，虚拟机就挂掉，提示“there is no more space for virtual disk jenkins-00002.vmdk. you might ......
+            Ghost 修改端口说下我这是bitnami 一键安装的，因为之前安装的6.0 版本升级用bitnami 一键安装了。
+这里需要修改的端口 就必须这几个地方：
+需要修改端口80-8088：
+123/opt/ghost-0.7.5-0/apache2/conf/httpd.conf/opt/ghost-0.7.5-0/apache2/conf/bitnami/bitnami.conf/opt/......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-08-19
+        2014-11-24
     </p>
 
 </div>
@@ -281,23 +277,22 @@ vim color.sh
 
 <div class="post-preview">
 
-    <a href="/2014/07/21/Linux笔记/Linux实用的一些命令/">
+    <a href="/2014/11/24/Blog/Ghost/Ghost博客：实现网站访问次数统计代码 /">
         <h2 class="post-title">
-            Linux实用的一些命令
+            Ghost博客：实现网站访问次数统计代码
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            #学习Linux 实用命令
-最近把之前学的慢慢整理出来，很多都是很实用的，而且一时想不起来的，就记录在这里了，不需要去查询资料，这样可以方便下次复习把不经常用的在看一遍。
-1. linux 下不解压查看tar.gz包中的文件列表12第一种方法：gunzip &lt;a.tar.gz |tar tvf -第二种方法：gzip  -dc a.tar.gz | tar tvf -
-###2. cp......
+            去年自己搭建了Ghost博客，更新了没多久发现一个问题，就是界面比WordPress好看多，可是功能就唯一好点还支撑Macdown，最近看了下想让自己的博客做到统计访问次数。
+就弄了篇文章，方便后期改进，也可以自己做参考。 
+目前 Ghost系统并未在后台提供设置统计代码的功能，也没有提供在主题（theme）中获取统计代码的能力。现在的解决办法是在主题模板中手动添加，这就需要对模板文件做些改......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-07-21
+        2014-11-24
     </p>
 
 </div>
@@ -305,24 +300,22 @@ vim color.sh
 
 <div class="post-preview">
 
-    <a href="/2014/06/24/Linux笔记/wkhtmltox/wkhtmltox源码安装实现HTML页面转成pdf效果/">
+    <a href="/2014/11/20/Blog/Ghost/Ghost博客：增加Disqus评论组件/">
         <h2 class="post-title">
-            wkhtmltox源码安装实现HTML页面转成pdf效果
+            Ghost博客：增加Disqus评论组件
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            wkhtmltopdf是一个将html页面转成pdf的工具。
-wkhtmltox项目主页：http://wkhtmltopdf.org/  支持html转pdf、image
-这段时间公司涉及到将html转成pdf/jpg的相关功能，我查了很多资料，网上大能找到的方法主要有以下两种：
-系统环境：系统最好CentOS release 6.5
-网上google wkhtmltopdf发现，wkht......
+            Ghost博客不自带评论功能的，这个是我想说的一个差评，不过简单的添加下评论组件还是比较简单的。
+Ghost作为一个极简的Blog系统，并没有文章评论系统。要实现评论系统，就需要借助第三方评论系统。 
+第三方系统比内置实现主要方便在无需维护用户系统，且大部分第三方系统都有较好的垃圾评论过滤机制，方便省心。 这里以多说为例，多说支持大多数现有blog系统，不过它的官网上没有ghost的选项，可......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-06-24
+        2014-11-20
     </p>
 
 </div>
@@ -330,21 +323,20 @@ wkhtmltox项目主页：http://wkhtmltopdf.org/  支持html转pdf、image
 
 <div class="post-preview">
 
-    <a href="/2014/06/16/Blog/Hexo/hexo常用命令笔记/">
+    <a href="/2014/10/21/性能监控/cacti/了解Cacti监控安装与配置/">
         <h2 class="post-title">
-            hexo常用命令笔记
+            了解Cacti监控安装与配置.md
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            hexo123npm install hexo -g #安装  npm update hexo -g #升级  hexo init #初始化
-简写12345hexo n "我的博客" == hexo new "我的博客" #新建文章hexo p == hexo publishhexo g == hexo generate#生成hexo s == hexo server #启动服务预览hexo......
+            什么是Cacti?Cacti， 在英文中的意思是仙人掌的意思，Cacti是一套基于PHP,MySQL,SNMP及RRDTool开发的网络流量监测图形分析工具。它通过snmpget来获取数据，使用 RRDtool绘画图形，而且你完全可以不需要了解RRDtool复杂的参数。它提供了非常强大的数据和用户管理功能，可以指定每一个用户能查看树状结构、host以及任何一张图，还可以与LDAP结合进行用户......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-06-16
+        2014-10-21
     </p>
 
 </div>
@@ -352,22 +344,23 @@ wkhtmltox项目主页：http://wkhtmltopdf.org/  支持html转pdf、image
 
 <div class="post-preview">
 
-    <a href="/2014/06/16/Blog/Hexo/hexo打包提示错误：ERROR Plugin load failed:hexo-generator-json-content/">
+    <a href="/2014/10/06/性能监控/Zabbix/zabbix监控80端口状态/">
         <h2 class="post-title">
-            hexo打包提示错误:ERROR Plugin load failed:hexo-generator-json-content
+            zabbix监控80端口状态
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            hexo打包提示错误:ERROR Plugin load failed:hexo-generator-json-content我操作：npm install -S hexo-generator-json-content 先安装打包代码出错。 
-这个我已经安装过了，执行：hexo g  就报错。
-12345678910111213141516171819202122232425➜  yangc......
+            目的：监控web主机80端口是否在供提服务。如果不在发出报警。zabbix监控web端上面的80端口，或者其他的端口都是可以实现的。
+在这里可以添加自带的模板-组态-模板-Template App HTTP Service 
+有自带的HTTP service is running 服务是否正常启动。
+这个是监测http的80端口，后期比如nginx，gitlab,或者其他服务的80端口。可以......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-06-16
+        2014-10-06
     </p>
 
 </div>
@@ -375,21 +368,25 @@ wkhtmltox项目主页：http://wkhtmltopdf.org/  支持html转pdf、image
 
 <div class="post-preview">
 
-    <a href="/2014/04/19/性能监控/Somekeping/用最简单易懂的方式安装smokeping/">
+    <a href="/2014/10/05/性能监控/Zabbix/zabbix邮件告警/">
         <h2 class="post-title">
-            用最简单的方式安装smokeping
+            zabbix邮件告警
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            smokeping这个监控还是很强大的，用这个监控是在第一家公司做IDC起家后面转型CDN云计算云加速。这个也是我学的最早的一款监控，在这里我用编译安装方式。也有脚本安装不过需要了解过somkeping安装过程会比较看的懂脚本。
-适用于宽带运营商维护和IDC机房维护可以检测本地网络的到上级运营商出口这段路由各个节点的稳定性            可以检测本地网络到各主要门户网站的延时，丢包率......
+            操作系统环境：CentOS release 6.7 (Final)
+zabbix版本2.4.7
+关于操作系统CentOS6.0 以下版本都是通过mail命令调用sendmail的sm-client发送邮件，所以如果关闭sendmail按照很多网上的文档是发不出邮件的。
+centos 6.0以上版本
+12默认已经安装好sendmail默认已经安装好postfix
+sendmail和postfi......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-04-19
+        2014-10-05
     </p>
 
 </div>
@@ -397,22 +394,23 @@ wkhtmltox项目主页：http://wkhtmltopdf.org/  支持html转pdf、image
 
 <div class="post-preview">
 
-    <a href="/2014/03/21/个人生活记录/About-me/">
+    <a href="/2014/10/04/性能监控/Zabbix/zabbix-故障总结/">
         <h2 class="post-title">
-            About-me
+            zabbix性能监控故障总结
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            1232017-5 - ~~~~~ Jollychic2016-1 - 2017.5 美年大健康-优健康  2014.4 -  2015.12 mmtrix-高升控股
-My dearest reader
-Welcome to my blog. I doubt you got to it by accident. With any luck, you got to it because of ......
+            1.zabbix红色弹出报错 zabbix server is not running: the information displayed may not be current
+排错:
+
+123456789101112131415161718192021222324251. 检查   /var/www/html/zabbix/conf/zabbix.conf.php 确定 $DB['DAT......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-03-21
+        2014-10-04
     </p>
 
 </div>
@@ -428,6 +426,10 @@ Welcome to my blog. I doubt you got to it by accident. With any luck, you got to
             <a href="/page/19/">&larr; Newer Posts</a>
         </li>
     
+    
+        <li class="next">
+            <a href="/page/21/">Older Posts &rarr;</a>
+        </li>
     
 </ul>
 
@@ -453,17 +455,33 @@ Welcome to my blog. I doubt you got to it by accident. With any luck, you got to
                     <div class="tags">
                         
                             
+                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="13">Big data Hadoop</a>
+                            
+                        
+                            
+                            <a href="/tags/#Kafka" title="Kafka" rel="10">Kafka</a>
+                            
+                        
+                            
+                            <a href="/tags/#Blog" title="Blog" rel="7">Blog</a>
+                            
+                        
+                            
+                        
+                            
                             <a href="/tags/#DNS" title="DNS" rel="3">DNS</a>
                             
                         
                             
-                            <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="6">Java+Tomcat notes</a>
+                            <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="7">Java+Tomcat notes</a>
                             
                         
                             
                             <a href="/tags/#Dubbo" title="Dubbo" rel="2">Dubbo</a>
                             
                         
+                            
+                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
                             
                         
                             
@@ -477,19 +495,13 @@ Welcome to my blog. I doubt you got to it by accident. With any luck, you got to
                             
                         
                             
+                        
+                            
+                        
+                            
+                        
+                            
                             <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
-                            
-                        
                             
                         
                             
@@ -509,12 +521,6 @@ Welcome to my blog. I doubt you got to it by accident. With any luck, you got to
                             
                         
                             
-                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="6">Big data Hadoop</a>
-                            
-                        
-                            
-                            <a href="/tags/#Kafka" title="Kafka" rel="3">Kafka</a>
-                            
                         
                             
                         
@@ -527,19 +533,19 @@ Welcome to my blog. I doubt you got to it by accident. With any luck, you got to
                             
                         
                             
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="13">Performance monitoring</a>
+                            
+                        
+                            
                             <a href="/tags/#Operation safety" title="Operation safety" rel="7">Operation safety</a>
                             
                         
                             
                         
-                            
-                        
-                            
-                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
-                            
-                        
-                            
-                            <a href="/tags/#Blog" title="Blog" rel="6">Blog</a>
                             
                         
                             
@@ -559,19 +565,19 @@ Welcome to my blog. I doubt you got to it by accident. With any luck, you got to
                             
                         
                             
-                        
+                            <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="18">Virtualization-Docker</a>
                             
                         
                             
-                            <a href="/tags/#KVM" title="KVM" rel="7">KVM</a>
+                            <a href="/tags/#KVM" title="KVM" rel="8">KVM</a>
                             
                         
                             
-                            <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="17">Virtualization-Docker</a>
+                            <a href="/tags/#Database" title="Database" rel="6">Database</a>
                             
                         
                             
-                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
+                            <a href="/tags/#zabbix" title="zabbix" rel="19">zabbix</a>
                             
                         
                             
@@ -585,7 +591,7 @@ Welcome to my blog. I doubt you got to it by accident. With any luck, you got to
                             
                         
                             
-                            <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="6">Log analysis platform</a>
+                            <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="8">Log analysis platform</a>
                             
                         
                             

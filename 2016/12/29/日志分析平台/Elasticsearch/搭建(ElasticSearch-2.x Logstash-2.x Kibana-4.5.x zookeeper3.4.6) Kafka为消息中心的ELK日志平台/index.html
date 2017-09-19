@@ -90,13 +90,6 @@
 
                         
                         <li>
-                            <a href="/archives/archives.html">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
                             <a href="/about/About-me.html">About</a>
                         </li>
                         
@@ -105,6 +98,13 @@
                         
                         <li>
                             <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
                         </li>
                         
                     
@@ -269,7 +269,7 @@
 <p>elk集群已安装配置完毕，我这里配置了nginx做下反向代理，走80端口出去。然后在nginx设置下内部公司访问不对外开放。</p>
 <h3 id="安装-head、marvel、bigdesk插件"><a href="#安装-head、marvel、bigdesk插件" class="headerlink" title="安装 head、marvel、bigdesk插件:"></a>安装 head、marvel、bigdesk插件:</h3><p>es1.5插件安装是<code>./plugin -install xxx</code>,而es2.4插件安装没有减号<code>./plugin install xxx</code></p>
 <p>1.5版本方法：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">* head插件</div><div class="line"></div><div class="line">插件安装方法1：</div><div class="line">/usr/<span class="built_in">local</span>/elasticsearch/bin/plugin -install mobz/elasticsearch-head</div><div class="line">重启es 即可。</div><div class="line">打开http://localhost:9200/_plugin/head/</div><div class="line"></div><div class="line">插件安装方法2：</div><div class="line">1.https://github.com/mobz/elasticsearch-head下载zip 解压</div><div class="line">2.建立elasticsearch-1.0.0\plugins\head\_site文件</div><div class="line">3.将解压后的elasticsearch-head-master文件夹下的文件copy到_site</div><div class="line">重启es 即可。</div><div class="line"></div><div class="line">打开http://localhost:9200/_plugin/head/</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">* head插件</div><div class="line"></div><div class="line">插件安装方法1：</div><div class="line">/usr/<span class="built_in">local</span>/elasticsearch/bin/plugin -install mobz/elasticsearch-head</div><div class="line">重启es 即可。</div><div class="line">打开http://localhost:9200/_plugin/head/</div><div class="line"></div><div class="line">插件安装方法2：</div><div class="line">1.https://github.com/mobz/elasticsearch-head下载zip 解压</div><div class="line">2.建立/usr/<span class="built_in">local</span>/elasticsearch/plugins/head/文件</div><div class="line">3.将解压后的elasticsearch-head-master文件夹下的文件copy到/usr/<span class="built_in">local</span>/elasticsearch/plugins/head/</div><div class="line">重启es 即可。</div><div class="line"></div><div class="line">打开http://localhost:9200/_plugin/head/</div></pre></td></tr></table></figure>
 <p>2.4版本以上安装：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">* head插件</div><div class="line"></div><div class="line">插件安装方法1：</div><div class="line">/usr/<span class="built_in">local</span>/elasticsearch/bin/plugin install mobz/elasticsearch-head</div><div class="line">重启es 即可。</div><div class="line">打开http://localhost:9200/_plugin/head/</div><div class="line"></div><div class="line">插件安装方法2：</div><div class="line">1.https://github.com/mobz/elasticsearch-head下载zip 解压</div><div class="line">2.建立elasticsearch-1.0.0\plugins\head\_site文件</div><div class="line">3.将解压后的elasticsearch-head-master文件夹下的文件copy到_site</div><div class="line">重启es 即可。</div><div class="line"></div><div class="line">打开http://localhost:9200/_plugin/head/</div></pre></td></tr></table></figure>
 <p>为了保障搜索服务的稳定性，增加了一台机器，将Elasticsearch部署成了集群模式， 部署到生产环境时发现，新的节点并不能被发现，后台发现阿里云并不支持多播，最后只能改为单播的方式配置了，好在之后一切顺利。</p>
@@ -342,15 +342,10 @@
                         </li>
                     
                 </ul>
+		 
 
                 
 
-                
-                <!-- disqus 评论框 start -->
-                <div class="comment">
-                    <div id="disqus_thread" class="disqus-thread"></div>
-                </div>
-                <!-- disqus 评论框 end -->
                 
 
             </div>
@@ -399,20 +394,6 @@
 
 
 
-<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES * * */
-    var disqus_shortname = "blog-yancy-cc";
-    var disqus_identifier = "http://blog.yancy.cc/2016/12/29/日志分析平台/Elasticsearch/搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台/";
-    var disqus_url = "http://blog.yancy.cc/2016/12/29/日志分析平台/Elasticsearch/搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台/";
-
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<!-- disqus 公共JS代码 end -->
 
 
 

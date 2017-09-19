@@ -90,13 +90,6 @@
 
                         
                         <li>
-                            <a href="/archives/archives.html">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
                             <a href="/about/About-me.html">About</a>
                         </li>
                         
@@ -105,6 +98,13 @@
                         
                         <li>
                             <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
                         </li>
                         
                     
@@ -184,22 +184,26 @@
 
 <div class="post-preview">
 
-    <a href="/2016/04/15/数据库/MySQL/mysql-proxy代理连接阿里云RDS/">
+    <a href="/2016/04/27/数据库/MySQL/MySQL-slave连接master时-一直提示Slave-IO-Running-Connecting/">
         <h2 class="post-title">
-            【第十二章】Mysql-proxy代理连接阿里云RDS
+            MySQL-slave连接master时,一直提示Slave_IO_Running:Connecting
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            使用mysql-proxy远程连接内网的数据库，如阿里云的RDS由于有个项目使用了阿里云的RDS，只能使用阿里云服务器内网连接RDS，很是麻烦，在公司办公的话，开发连接等等。
-希望能够用Navicat直接来管理RDS，在网上找了一下，还真的给我找到方法了，原来mysql有个mysql-proxy的工具，顾名思义就是代理连接的意思，使用方法如下：
-1234567891011121）首先需要先下......
+            MySQL主从同步出现Slave_IO_Running:Connecting
+MySQL主从的同步如果授权的时候有问题就会出现：Slave_IO_Running:Connecting
+
+MySQL-slave连接master时,一直提示Slave_IO_Running:Connecting
+
+
+通过master授予slave的同步账号，在slave上通过远程连接master是可以连接上的。但......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-04-15
+        2016-04-27
     </p>
 
 </div>
@@ -207,22 +211,29 @@
 
 <div class="post-preview">
 
-    <a href="/2016/04/15/数据库/MySQL/【第九章】MySQL优化连接数防止访问量过高的方法 /">
+    <a href="/2016/04/26/数据库/MySQL/【第十章】MySQL5-6主从-优化-集群与读写分离-MySQL-Proxy-实践/">
         <h2 class="post-title">
-            【第十一章】Mysql优化连接数防止访问量过高的方法
+            【第十章】MySQL5-6主从-优化-集群与读写分离-MySQL-Proxy-实践
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Mysql优化连接数防止访问量过高的方法很多开发人员都会遇见”MySQL: ERROR 1040: Too many connections”的异常情况，造成这种情况的一种原因是访问量过高，MySQL服务器抗不住，这个时候就要考虑增加从服务器分散读压力；另一种原因就是MySQL配置文件中max_connections值过小。
-首先，我们来查看mysql的最大连接数：
-1234567mysql......
+            title: ‘MySQL5.6主从,优化,集群与读写分离(MySQL-Proxy)实践’date: 2015-10-21 17:15:19tags:
+
+MySQLcategories: Database
+
+
+谢谢关注本blog 
+本文章已转到github上:
+可在这里查看:
+
+MySQL5.6简介123456789(1) Mysql配置为Master:Slave的常用维护命令(2) MyS......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-04-15
+        2016-04-26
     </p>
 
 </div>
@@ -230,25 +241,24 @@
 
 <div class="post-preview">
 
-    <a href="/2016/04/14/数据库/MySQL/[第八章]MySQL数据库修改字符集/">
+    <a href="/2016/04/26/数据库/MySQL/【第十三章】MySQL 数据库优化(运维角度)  /">
         <h2 class="post-title">
-            【第八章】MySQL数据库修改字符集
+            【第十三章】MySQL 数据库优化(运维角度)
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            mysql数据库修改字符集这个一开始我用查看了下开发环境yjk数据库。
-mysql数据库修改字符集system variables的character_set_server改成utf8mb4
-查看字符集的对应的：
-12show variables like 'character%';character_set_server =utf8
-我直接到数据库里面修改。
-1234my.cnf下面修改：......
+            MySQL 数据库优化(运维角度)数据库维护
+数据库维护是运维工程师或者DBA主要工作，包括性能监控、性能分析、性能调优、数据库备份和恢复等。
+一个成熟的数据库架构并不是一开始设计就具备高可用、高伸缩等特性的，它是随着用户量的增加，基础架构才逐渐完善。这篇博文主要谈MySQL数据库发展周期中所面临的问题及优化方案，暂且抛开前端应用不说，大致分为以下五个阶段：
+1、数据库表设计
+项目立项后，开......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-04-14
+        2016-04-26
     </p>
 
 </div>
@@ -256,26 +266,20 @@ mysql数据库修改字符集system variables的character_set_server改成utf8mb
 
 <div class="post-preview">
 
-    <a href="/2016/04/13/数据库/MySQL/【第四章】MySQL数据库data目录迁移/">
+    <a href="/2016/04/25/数据库/MySQL/mysql 远程连接不上，由于bind-address问题/">
         <h2 class="post-title">
-            【第四章】MySQL数据库data目录迁移
+            Mysql 远程连接不上，由于bind-address问题
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            现在MySQL环境默认安装路径，数据库的data目录默认是在/var/lib下。
-这里我是用rpm安装方法安装，可以很方便的做好依赖，现在因为测试环境的数据库数据做主从，出于数据能方便管理比较安全性考虑目录迁移。
-这里的数据写死了，现在根目录下面空间百分百使用完，导致数据库挂了，所以这部已经挂载了一个新的空间，指定到该硬盘空间指定的目录。
-
-这里我们先关闭掉MySQL。
-
-1[root@my......
+            Mysql 远程连接不上，由于bind-address问题MySQL远程连接ERROR 2003 (HY000):Can’t connect to MySQL server on’XXXXX’(111) 的问题Can t connect to MySQL server on 16报错。刚安装了MySQL服务器，使用远程管理工具总是连接不上，因为知道mysql的默认端口是3306，于是使用te......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-04-13
+        2016-04-25
     </p>
 
 </div>
@@ -283,22 +287,23 @@ mysql数据库修改字符集system variables的character_set_server改成utf8mb
 
 <div class="post-preview">
 
-    <a href="/2016/04/12/数据库/MySQL/【第五章】MySQL数据库备份及恢复命令 mysqldump,source的用法/">
+    <a href="/2016/04/23/数据库/MySQL/Mysql配置为Master:Slave的常用维护命令/">
         <h2 class="post-title">
-            【第五章】MySQL数据库备份及恢复命令 mysqldump,source的用法
+            【第六章】Mysql配置为Master/Slave的常用维护命令
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            1.导出整个数据库12mysqldump -u 用户名 -p -P3306 --default-character-set=utf8 数据库名 &gt; 导出的文件名(数据库默认编码是utf8)mysqldump -uroot -p -P3306 --default-character-set=utf8 yjk &gt; yjk.sql
-mysqldump备份报错:
-Got error: 1......
+            Mysql配置为Master/Slave的常用维护命令master端：
+123show master status;   #查看状态：show processlist;     #查看slave下MySQL进程信息reset master;         #慎用，将清空日志及同步position
+slave端：
+12345CHANGE MASTER TO MASTER_LOG_FILE=’......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-04-12
+        2016-04-23
     </p>
 
 </div>
@@ -306,23 +311,20 @@ Got error: 1......
 
 <div class="post-preview">
 
-    <a href="/2016/04/11/数据库/MySQL/【第三章】my.cnf 优化配置/">
+    <a href="/2016/04/22/数据库/MySQL/MySQL中binglog数据恢复与定时删除/">
         <h2 class="post-title">
-            【第三章】my.cnf 优化配置
+            【第十章】MySQL中binglog数据恢复与定时删除
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            my.cnf 优化配置Mysql参数优化对于新手来讲，是比较难懂的东西，其实这个参数优化，是个很复杂的东西，对于不同的网站，及其在线量，访问量，帖子数量，网络情况，以及机器硬件配置都有关系，优化不可能一次性完成，需要不断的观察以及调试，才有可能得到最佳效果。
-个人在配置这个时候碰到很多的问题：
-比如出现配置完，MySQL启动报错：
-123456Starting MySQL...The ser......
+            MySQL中binglog数据恢复与定时删除1234567891011121314//显示所有本机上的二进制日志mysql&gt; SHOW MASTER LOGS;//删除所有本机上的二进制日志mysql&gt; RESET MASTER;//删除所有创建时间在binary-log.xxx之前的二进制日志mysql&gt; PURGE MASTER LOGS TO 'binary-log.......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-04-11
+        2016-04-22
     </p>
 
 </div>
@@ -330,23 +332,21 @@ Got error: 1......
 
 <div class="post-preview">
 
-    <a href="/2016/04/07/数据库/MySQL/MySQL启动错误：mysql.sock丢失/">
+    <a href="/2016/04/22/数据库/MySQL/服务连接数据库出现报错：Could not get JDBC Connection; nested exception is java.sql.SQLException: Connections could not be acquired from the underlying database!"}/">
         <h2 class="post-title">
-            【第六章】MySQL启动错误：mysql.sock丢失
+            服务连接数据库出现报错：Could not get JDBC Connection; nested exception is java.sql.SQLException/ Connections could not be acquired from the underlying database!"}
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            mysql启动错误：解决mysql.sock丢失服务是启动的。
-1netstat -apn|grep 3360
-有启动进程。
-123[root@zentao proc]# mysql  -u root -pEnter password:ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/li......
+            服务连接数据库出现报错：Could not get JDBC Connection; nested exception is java.sql.SQLException: Connections could not be acquired from the underlying database!”}排查问题分为几点：
+12341、ping一下数据的IP地址，看能否通: telnet 192......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-04-07
+        2016-04-22
     </p>
 
 </div>
@@ -354,23 +354,21 @@ Got error: 1......
 
 <div class="post-preview">
 
-    <a href="/2016/04/05/Web服务技术/Nginx/Nginx 安全&优化&日志输出规范详细配置/">
+    <a href="/2016/04/21/数据库/MySQL/【第八章】大型网站应用中MySQL的架构演变史/">
         <h2 class="post-title">
-            Nginx 安全&优化&日志输出规范详细配置
+            【第八章】大型网站应用中MySQL的架构演变史
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            ##1.Nginx日志审计
-① 参考配置操作(1)编辑 nginx.conf 配置文件
-将 error_log 前的“#”去掉，记录错误日志将 access_log 前的“#”去掉，记录访问日志(2)设置 access_log，修改配置文件如下：
-1234log_format formatname '$remote_addr - $remote_user [$time_local] '' "......
+            Mysql架构的演化 没有什么东西是一成不变的，包含我们的理想和生活！MySQL作为一个免费的开源的关系型数据库，深受大家喜爱，从最初的无人问津到当下的去IOE，都体现出了MySQL举足轻重的作用。今天我们就从淘宝的发展来阐述MySQL在大型网站下的架构演变史！
+MySQL的可扩展性架构的可扩展性往往和并发是息息相关，没有并发的增长，也就没有必要做高可扩展性的架构，这里对可扩展性进行简单介绍......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-04-05
+        2016-04-21
     </p>
 
 </div>
@@ -378,23 +376,22 @@ Got error: 1......
 
 <div class="post-preview">
 
-    <a href="/2016/04/05/数据库/MySQL/【第六章】MySQL5.6 主从同步/">
+    <a href="/2016/04/21/数据库/MySQL/构建MySQL+keepalived高可用自动切换/">
         <h2 class="post-title">
-            【第六章】MySQL5.6 主从同步
+            构建MySQL+keepalived高可用自动切换
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Mysql作为目前世界上使用最广泛的免费数据库，相信所有从事系统运维的工程师都一定接触过。但在实际的生产环境中，由单台Mysql作为独立的数据库是完全不能满足实际需求的，无论是在安全性，高可用性以及高并发等各个方面。
-
-主从复制的原理：
-分为同步复制和异步复制，实际复制架构中大部分为异步复制。 复制的基本过程如下：1).Slave上面的IO进程连接上Master，并请求从指定日志文件的指定位......
+            构建MySQL+keepalived高可用自动切换问题描述：keepalived主要用于MySQL故障自动切换。那说到keepalived，keepalived到底是什么？
+keepalived是类似于layer3 ,4 &amp;7交换机制的软件，也就是平时我们说的3层4层和第7层交换。
+keepalived的作用keepalived的作用是检测web服务器的状态，如果有一台web服务器、......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-04-05
+        2016-04-21
     </p>
 
 </div>
@@ -402,22 +399,22 @@ Got error: 1......
 
 <div class="post-preview">
 
-    <a href="/2016/04/03/数据库/MySQL/MySqlbin-log日志文件恢复数据  /">
+    <a href="/2016/04/21/数据库/MySQL/MySQL使用Xtrabackup备份以及恢复 /">
         <h2 class="post-title">
-            利用MySql日志文件恢复数据
+            【第九章】MySQL使用Xtrabackup备份以及恢复
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            利用 MySql日志文件 恢复数据实现了Mysql的主从服务器的复制，如何把从属服务器上的二进制日志如何恢复成和主服务器上相同的数据库。
-
-以前我错误的认为mysql的日志可以恢复到任何时间的状态，其实并不是这样，这个恢复是有前提的，就是你至少得有一个从日志记录开始后的数据库备份，通过日志恢复数据库实际上只是一个对以前操作的回放过程而已，不用想得太复杂，既然是回放你就得注意了，如果你执行了两......
+            MySQL使用Xtrabackup备份以及恢复Xtrabackup是一个对InnoDB做数据备份的工具，支持在线热备份（备份时不影响数据读写），是商业备份工具InnoDB Hotbackup的一个很好的替代品。
+xtrabackup官方网址
+xtrabackup安装方法可以下载源码编译安装，也可以下载适合的RPM包或者yum进行安装。1 . 安装的Percona XtraBackup 来自P......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-04-03
+        2016-04-21
     </p>
 
 </div>
@@ -462,17 +459,33 @@ Got error: 1......
                     <div class="tags">
                         
                             
+                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="13">Big data Hadoop</a>
+                            
+                        
+                            
+                            <a href="/tags/#Kafka" title="Kafka" rel="10">Kafka</a>
+                            
+                        
+                            
+                            <a href="/tags/#Blog" title="Blog" rel="7">Blog</a>
+                            
+                        
+                            
+                        
+                            
                             <a href="/tags/#DNS" title="DNS" rel="3">DNS</a>
                             
                         
                             
-                            <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="6">Java+Tomcat notes</a>
+                            <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="7">Java+Tomcat notes</a>
                             
                         
                             
                             <a href="/tags/#Dubbo" title="Dubbo" rel="2">Dubbo</a>
                             
                         
+                            
+                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
                             
                         
                             
@@ -486,19 +499,13 @@ Got error: 1......
                             
                         
                             
+                        
+                            
+                        
+                            
+                        
+                            
                             <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
-                            
-                        
                             
                         
                             
@@ -518,12 +525,6 @@ Got error: 1......
                             
                         
                             
-                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="6">Big data Hadoop</a>
-                            
-                        
-                            
-                            <a href="/tags/#Kafka" title="Kafka" rel="3">Kafka</a>
-                            
                         
                             
                         
@@ -536,19 +537,19 @@ Got error: 1......
                             
                         
                             
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="13">Performance monitoring</a>
+                            
+                        
+                            
                             <a href="/tags/#Operation safety" title="Operation safety" rel="7">Operation safety</a>
                             
                         
                             
                         
-                            
-                        
-                            
-                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
-                            
-                        
-                            
-                            <a href="/tags/#Blog" title="Blog" rel="6">Blog</a>
                             
                         
                             
@@ -568,19 +569,19 @@ Got error: 1......
                             
                         
                             
-                        
+                            <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="18">Virtualization-Docker</a>
                             
                         
                             
-                            <a href="/tags/#KVM" title="KVM" rel="7">KVM</a>
+                            <a href="/tags/#KVM" title="KVM" rel="8">KVM</a>
                             
                         
                             
-                            <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="17">Virtualization-Docker</a>
+                            <a href="/tags/#Database" title="Database" rel="6">Database</a>
                             
                         
                             
-                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
+                            <a href="/tags/#zabbix" title="zabbix" rel="19">zabbix</a>
                             
                         
                             
@@ -594,7 +595,7 @@ Got error: 1......
                             
                         
                             
-                            <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="6">Log analysis platform</a>
+                            <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="8">Log analysis platform</a>
                             
                         
                             

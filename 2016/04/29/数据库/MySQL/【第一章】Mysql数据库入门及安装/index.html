@@ -90,13 +90,6 @@
 
                         
                         <li>
-                            <a href="/archives/archives.html">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
                             <a href="/about/About-me.html">About</a>
                         </li>
                         
@@ -105,6 +98,13 @@
                         
                         <li>
                             <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
                         </li>
                         
                     
@@ -197,7 +197,7 @@
 <p>b. 下载Linux对应的RPM包，如：CentOS6.4_64对应的RPM包，如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">1	[root@localhost rpm]<span class="comment"># ll</span></div><div class="line">2	total 74364</div><div class="line">3	-rw-r--r--. 1 root root 18442536 Dec 11 20:19 MySQL-client-5.6.15-1.el6.x86_64.rpm</div><div class="line">4	-rw-r--r--. 1 root root  3340660 Dec 11 20:06 MySQL-devel-5.6.15-1.el6.x86_64.rpm</div><div class="line">5	-rw-r--r--. 1 root root 54360600 Dec 11 20:03 MySQL-server-5.6.15-1.el6.x86_64.rpm</div></pre></td></tr></table></figure>
 <p>c. 安装MySQL</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">1	[root@localhost rpm]<span class="comment"># rpm -ivh MySQL-server-5.6.15-1.el6.x86_64.rpm</span></div><div class="line"> 如果安装不上，--nodeps —force 强制安装</div><div class="line">2	[root@localhost rpm]<span class="comment"># rpm -ivh MySQL-devel-5.6.15-1.el6.x86_64.rpm</span></div><div class="line">3	[root@localhost rpm]<span class="comment"># rpm -ivh MySQL-client-5.6.15-1.el6.x86_64.rpm</span></div><div class="line">4	<span class="comment">#修改配置文件位置</span></div><div class="line">5	[root@localhost rpm]<span class="comment"># cp /usr/share/mysql/my-default.cnf /etc/my.cnf</span></div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">1	[root@localhost rpm]<span class="comment"># rpm -ivh MySQL-server-5.6.15-1.el6.x86_64.rpm</span></div><div class="line"> 如果安装不上，--nodeps —force 强制安装</div><div class="line"></div><div class="line">[root@localhost opt]<span class="comment"># rpm -ivh MySQL-server-5.6.15-1.el6.x86_64.rpm</span></div><div class="line">error: Failed dependencies:</div><div class="line">	libaio.so.1()(64bit) is needed by MySQL-server-5.6.15-1.el6.x86_64</div><div class="line">	libaio.so.1(LIBAIO_0.1)(64bit) is needed by MySQL-server-5.6.15-1.el6.x86_64</div><div class="line">	libaio.so.1(LIBAIO_0.4)(64bit) is needed by MySQL-server-5.6.15-1.el6.x86_64</div><div class="line">	</div><div class="line">下载地址：</div><div class="line">http://mirror.centos.org/centos/6/os/x86_64/Packages/libaio-0.3.107-10.el6.x86_64.rpm</div><div class="line">安装完成后，即可成功安装MySQL-server-5.5.25a-1.rhel5.x86_64.rpm</div><div class="line"></div><div class="line">[root@localhost opt]<span class="comment"># rpm -ivh libaio-0.3.107-10.el6.x86_64.rpm</span></div><div class="line">Preparing...                <span class="comment">########################################### [100%]</span></div><div class="line">   1:libaio                 <span class="comment">########################################### [100%]</span></div><div class="line">[root@localhost opt]<span class="comment"># rpm -ivh MySQL-server-5.6.20-1.el6.x86_64.rpm</span></div><div class="line">Preparing...                <span class="comment">########################################### [100%]</span></div><div class="line">   1:MySQL-server           <span class="comment">########################################### ( 19%)</span></div><div class="line">   	</div><div class="line">2	[root@localhost rpm]<span class="comment"># rpm -ivh MySQL-devel-5.6.15-1.el6.x86_64.rpm</span></div><div class="line">3	[root@localhost rpm]<span class="comment"># rpm -ivh MySQL-client-5.6.15-1.el6.x86_64.rpm</span></div><div class="line">4	<span class="comment">#修改配置文件位置</span></div><div class="line">5	[root@localhost rpm]<span class="comment"># cp /usr/share/mysql/my-default.cnf /etc/my.cnf</span></div></pre></td></tr></table></figure>
 <p>d. 初始化MySQL及设置密码</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="number">1</span>	[root@localhost rpm]<span class="comment"># /usr/bin/mysql_install_db</span></div><div class="line"><span class="number">2</span>	[root@localhost rpm]<span class="comment"># service mysql start</span></div><div class="line"><span class="number">3</span>	[root@localhost rpm]<span class="comment"># cat /root/.mysql_secret  #查看root账号密码</span></div><div class="line"><span class="number">4</span>	<span class="comment"># The random password set for the root user at Wed Dec 11 23:32:50 2013 (local time): qKTaFZnl</span></div><div class="line"><span class="number">5</span>	[root@localhost ~]<span class="comment"># mysql -uroot –pqKTaFZnl</span></div><div class="line"><span class="number">6</span>	mysql&gt; SET PASSWORD = PASSWORD(<span class="string">'123456'</span>);    <span class="comment">#设置密码为123456</span></div><div class="line"><span class="number">7</span>	mysql&gt; <span class="keyword">exit</span></div><div class="line"><span class="number">8</span>	[root@localhost ~]<span class="comment"># mysql -uroot -p123456</span></div><div class="line">e. 允许远程登陆</div><div class="line"></div><div class="line"><span class="number">01</span>	mysql&gt; use mysql;</div><div class="line"><span class="number">02</span>	mysql&gt; select host,user,password from user;</div><div class="line"><span class="number">03</span>	+-----------------------+------+-------------------------------------------+</div><div class="line"><span class="number">04</span>	| host                  | user | password                                  |</div><div class="line"><span class="number">05</span>	+-----------------------+------+-------------------------------------------+</div><div class="line"><span class="number">06</span>	| localhost             | root | *<span class="number">6</span>BB4837EB74329105EE4568DDA7DC67ED2CA2AD9 |</div><div class="line"><span class="number">07</span>	| localhost.localdomain | root | *<span class="number">1237</span>E2CE819C427B0D8174456DD83C47480D37E8 |</div><div class="line"><span class="number">08</span>	| <span class="number">127.0</span>.<span class="number">0.1</span>             | root | *<span class="number">1237</span>E2CE819C427B0D8174456DD83C47480D37E8 |</div><div class="line"><span class="number">09</span>	| ::<span class="number">1</span>                   | root | *<span class="number">1237</span>E2CE819C427B0D8174456DD83C47480D37E8 |</div><div class="line"><span class="number">10</span>	+-----------------------+------+-------------------------------------------+</div><div class="line"><span class="number">11</span>	 </div><div class="line"><span class="number">12</span>	mysql&gt; update user set password=password(<span class="string">'123456'</span>) where user=<span class="string">'root'</span>;</div><div class="line"><span class="number">13</span>	mysql&gt; update user set host=<span class="string">'%'</span> where user=<span class="string">'root'</span> and host=<span class="string">'localhost'</span>;</div><div class="line"><span class="number">14</span>	mysql&gt; flush privileges;</div><div class="line"><span class="number">15</span>	mysql&gt; <span class="keyword">exit</span></div></pre></td></tr></table></figure>
 <p>f. 设置开机自启动</p>
@@ -237,24 +237,19 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2016/04/29/数据库/MySQL/mysql安装php以后报错：Can't connect to local MySQL server through socket ':var:lib:mysql:mysql.sock' (2) /" data-toggle="tooltip" data-placement="top" title="MySQL安装php以后报错：Can't connect to local MySQL server through socket '/var/lib/mysql/mysql.sock' (2)">&larr; Previous Post</a>
+                            <a href="/2016/05/05/个人生活记录/黄山之旅/" data-toggle="tooltip" data-placement="top" title="黄山之旅">&larr; Previous Post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2016/04/27/数据库/MySQL/MySQL-slave连接master时-一直提示Slave-IO-Running-Connecting/" data-toggle="tooltip" data-placement="top" title="MySQL-slave连接master时,一直提示Slave_IO_Running:Connecting">Next Post &rarr;</a>
+                            <a href="/2016/04/29/数据库/MySQL/mysql安装php以后报错：Can't connect to local MySQL server through socket ':var:lib:mysql:mysql.sock' (2) /" data-toggle="tooltip" data-placement="top" title="MySQL安装php以后报错：Can't connect to local MySQL server through socket '/var/lib/mysql/mysql.sock' (2)">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
+		 
 
                 
 
-                
-                <!-- disqus 评论框 start -->
-                <div class="comment">
-                    <div id="disqus_thread" class="disqus-thread"></div>
-                </div>
-                <!-- disqus 评论框 end -->
                 
 
             </div>
@@ -303,20 +298,6 @@
 
 
 
-<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES * * */
-    var disqus_shortname = "blog-yancy-cc";
-    var disqus_identifier = "http://blog.yancy.cc/2016/04/29/数据库/MySQL/【第一章】Mysql数据库入门及安装/";
-    var disqus_url = "http://blog.yancy.cc/2016/04/29/数据库/MySQL/【第一章】Mysql数据库入门及安装/";
-
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<!-- disqus 公共JS代码 end -->
 
 
 

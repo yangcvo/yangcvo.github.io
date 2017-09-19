@@ -90,13 +90,6 @@
 
                         
                         <li>
-                            <a href="/archives/archives.html">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
                             <a href="/about/About-me.html">About</a>
                         </li>
                         
@@ -105,6 +98,13 @@
                         
                         <li>
                             <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
                         </li>
                         
                     
@@ -184,25 +184,21 @@
 
 <div class="post-preview">
 
-    <a href="/2015/06/28/容器-虚拟化/kvm/kvm磁盘虚拟化技术应用/">
+    <a href="/2015/11/19/数据库/Redis/Redis-Sentinel哨兵服务实现redis主从集群搭建及容灾部署/">
         <h2 class="post-title">
-            kvm磁盘虚拟化技术应用
+            Redis主从集群搭建及容灾部署
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            镜像创建：
-qemu-img create 命令。 
--f 参数指定镜像格式，默认的话是raw格式。 
-123456qemu-img create test 50G生成出是默认的raw格式指定格式：qcow2qemu-img create test.qcow2 -f qcow2 50G
-qcow2 格式 文件特别小，压缩比tar压缩效率高很多。在镜像传输上非常有意义。
-raw是不支持快照的，......
+            Redis-主从复制原理及分析Slave向Master同步的实现是：Slave向Master发出同步请求（发送sync命令），Master先dump出rdb文件，然后将rdb文件全量传输给slave，然后Master把缓存的写命令转发给Slave，初次同步完成。
+以及以后的同步实现是：123Master将变量的快照直接实时依次发送给各个Slave。但不管什么原因导致Slave和Master断......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-06-28
+        2015-11-19
     </p>
 
 </div>
@@ -210,20 +206,21 @@ raw是不支持快照的，......
 
 <div class="post-preview">
 
-    <a href="/2015/06/18/容器-虚拟化/kvm/KVM虚拟化 (二) help帮助文档大全/">
+    <a href="/2015/11/01/自动化+可视化/saltstack/自动化运维工具--SaltStack-分组（使用记录,groups） /">
         <h2 class="post-title">
-            KVM虚拟化 (二) help帮助文档大全
+            自动化运维工具--SaltStack-分组（使用记录,groups）
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            基本语句用法：12345678910111213141516virsh start x       启动名字为x的非活动虚拟机virsh create x.xml    创建虚拟机（创建后，虚拟机立     即执行，成为活动主机）virsh suspend x          暂停虚拟机virsh resume x           启动暂停的虚拟机virsh shutdown x   ......
+            自动化运维工具–SaltStack-分组（使用记录,groups）在使用 SaltStack 对主机进行批量管理的时候，因为不同的服务器组所做的业务功能不同，因此为了更加方便的管理，为了便于管理功能业务相似的minion,Saltstack提供了分组的模式，因为线上机器多，不可能每次都是“*”或者“ip主机名” 这样不现实的。
+所以我们现在都是提供分组，哪里的机器分哪个组这样你操作起来就方便......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-06-18
+        2015-11-01
     </p>
 
 </div>
@@ -231,25 +228,20 @@ raw是不支持快照的，......
 
 <div class="post-preview">
 
-    <a href="/2015/06/17/容器-虚拟化/kvm/kvm虚拟化(三)虚拟机快速克隆/">
+    <a href="/2015/11/01/自动化+可视化/saltstack/自动化运维工具--Saltstack写sls语法批量部署zabbix_agent/">
         <h2 class="post-title">
-            KVM虚拟机更改存储路径解决方法
+            自动化运维工具--Saltstack写sls语法批量部署zabbix_agent
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            kvm虚拟化(三)虚拟机快速克隆第一步：
-在复制之前需要的操作：
-有一个DHCP服务用于IP地址自动获取，获取后期VNC修改静态IP地址开启VNC远程桌面设置网卡为自动获取IP地址安装必要的补丁程序执行setupmgr和Sysprep（关机）复制关机后的VM镜像模板文件
-举例：
-我的kvm镜像都是指定在同一个数据挂载目录下面：
-12345678910111213141516171819 /o......
+            Saltstack批量部署zabbix_agent服务12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576epel_install:  file.managed......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-06-17
+        2015-11-01
     </p>
 
 </div>
@@ -257,24 +249,26 @@ raw是不支持快照的，......
 
 <div class="post-preview">
 
-    <a href="/2015/06/17/容器-虚拟化/kvm/KVM虚拟机更改存储路径解决方法/">
+    <a href="/2015/10/21/LVM/LVM快速配置/">
         <h2 class="post-title">
-            KVM虚拟机更改存储路径解决方法
+            LVM快速配置
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            玩kvm的2014年开始慢慢接触了，发现功能特别大，比vm好用，vm是基于Windows上面需要安装客户端登陆很麻烦,也有人说也有web管理端其实我觉得运维在kvm伸缩现在很火的openstack也是底层kvm去生成虚拟机的。
-kvm 在之前的搭建环境 一开始安装指定的虚拟机镜像没有放到挂载单独的一块硬盘路径。后果会不堪设想。
-kvm服务器：
-IP：192.168.1.250
-镜像存储路径：......
+            
+fdisk -l ，列出所有存储设备，假设存在/dev/sdb和/dev/sda1两个存储设备，并且hdb有6个分区，其中sdb5、sdb6两个分区未使用，sda1为U盘
+
+fdisk /dev/sdb，输入p查看hdb的分区情况及相应文件系统，输入t来更改文件系统，输入w保存退出，取消则输入q，具体例子如下：
+
+
+12345678fdisk /dev/sdb Command (m for......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-06-17
+        2015-10-21
     </p>
 
 </div>
@@ -282,28 +276,22 @@ IP：192.168.1.250
 
 <div class="post-preview">
 
-    <a href="/2015/06/16/容器-虚拟化/kvm/KVM虚拟化(六)调整虚拟机CPU大小,添加memory内存,添加虚拟机硬盘disk,虚拟机内存减半现象/">
+    <a href="/2015/10/10/自动化+可视化/saltstack/自动化运维工具--Saltstack安装部署配置使用/">
         <h2 class="post-title">
-            KVM虚拟化(六)调整虚拟机CPU大小,添加memory内存,添加虚拟机硬盘disk,虚拟机内存减半现象
+            自动化运维工具--Saltstack安装部署配置使用
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            调整虚拟机CPU大小
-这个是我需要修改的虚拟机dataname1
-操作这些都需要shutdown off
-
-1virsh # shutdown dataname1
-
-查看你要修改的虚拟机的配置信息。 
-
-12345678910111213141516171819202122[root@kvm ~]# virsh欢迎使用 virsh，虚拟化的交互式终端。输入：'help' 来获得命令的帮助信息......
+            自动化运维工具–Saltstack安装部署配置使用前言：
+开始学saltstack的时候是在现在一家做CDN云加速的那是在2014年，salt刚刚出来所以我觉得我接触应该也算早的。 使用最多的同步下发的用到这个工具，下面我简单介绍和操作给大家看下。Salt 和 Puppet Chef 一样可以让你同时在多台服务器上执行命令也包括安装和配置软件。
+Salt 有两个主要的功能：配置管理和远程执行......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-06-16
+        2015-10-10
     </p>
 
 </div>
@@ -311,22 +299,20 @@ IP：192.168.1.250
 
 <div class="post-preview">
 
-    <a href="/2015/04/01/运维安全/使用AIDE做Linux高级入侵检测文件监控/">
+    <a href="/2015/09/29/容器-虚拟化/kvm/kvm管理平台webvirtmgr的部署/">
         <h2 class="post-title">
-            使用AIDE做Linux高级入侵检测文件监控
+            KVM管理平台webvirtmgr的部署
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            1、aide介绍
-AIDE(Adevanced Intrusion Detection Environment,高级入侵检测环境)是个入侵检测工具，主要用途是检查文本的完整性。
-AIDE能够构造一个指定文档的数据库，他使用aide.conf作为其配置文档。AIDE数据库能够保存文档的各种属性，包括：权限(permission)、索引节点序号(inode number)、所属用户(user)、......
+            安装kvm:12345678910Setup libvirt and KVMcurl http://retspen.github.io/libvirt-bootstrap.sh | sudo shvim /etc/sysconfig/selinux   //关闭selinuxSELINUX=disabledps -e|grep libvirtd   //查看是否启动chkconfig lib......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-04-01
+        2015-09-29
     </p>
 
 </div>
@@ -334,21 +320,21 @@ AIDE能够构造一个指定文档的数据库，他使用aide.conf作为其配�
 
 <div class="post-preview">
 
-    <a href="/2015/02/26/python/python及常用工具的安装 /">
+    <a href="/2015/09/29/容器-虚拟化/kvm/KVM虚拟机如何进行克隆操作/">
         <h2 class="post-title">
-            python及常用工具的安装
+            KVM虚拟机如何进行克隆操作
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            python及常用工具的安装现在python一般情况下我们使用的2.7版本.系统自带的是2.6版本，可以在官方https://www.python.org/downloads/ 下载,它的安装还是很简单的。tar包下载后可以直接解压，configure、make、make install即可。
-python安装以后注意：这里要强调一下的是安装Python后很有可能linux的yum就不能正常......
+            KVM虚拟机如何进行克隆操作我们知道，重复的事情做多了就需要上脚本或采用工具以便节省操作时间，提升工作效率，减低繁琐操作。本人也是懒人一个，相同的事情做多了，就想法子弄成脚本或采用工具去搞。KVM虚拟机的创建同样如此，我们不可能每次创建都要手工执行一次，于是就有了KVM克隆出现。克隆操作有两种方式：
+(1) KVM本机虚拟机直接克隆。(2) 通过复制配置文件与磁盘文件的虚拟机复制克隆(适用于......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-02-26
+        2015-09-29
     </p>
 
 </div>
@@ -356,21 +342,21 @@ python安装以后注意：这里要强调一下的是安装Python后很有可�
 
 <div class="post-preview">
 
-    <a href="/2015/02/25/Vsftpd/建立虚拟用户的vsftpd安装配置报错问题收集/">
+    <a href="/2015/09/22/数据库/Mongodb/Mongodb基本操作/">
         <h2 class="post-title">
-            建立虚拟用户的vsftpd安装配置报错问题收集
+            Mongodb基本命令操作
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            vsftp报错问题收集1. 解决vsftp错误500 OOPS: cannot change directory:/home/** 目录123打开/etc/selinux/config将selinux=enforcing或permissive改成disabled。然后给目录权限：给那个www目录设置vsftp的权限，或者直接777.
-2. 530 Login incorrect1234567......
+            Mongodb基本命令操作###MongoDB数据库基本用法
+123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869show dbs:显示数据库列表show collections：显示当前......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-02-25
+        2015-09-22
     </p>
 
 </div>
@@ -378,23 +364,31 @@ python安装以后注意：这里要强调一下的是安装Python后很有可�
 
 <div class="post-preview">
 
-    <a href="/2015/02/24/Supervisor监控进程/Supervisor 进程持久化监控工具 /">
+    <a href="/2015/09/22/数据库/Mongodb/Red Hat企业版或CentOS的Linux上安装MongoDB/">
         <h2 class="post-title">
-            Supervisor 监控进程
+            RedHat企业版或CentOS的Linux上yum方式安装MongoDB
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Supervisor 监控进程在重要的一些服务运行时间较长有时候，进程突然终止服务，可能是没有资源了，也可能是意外，比如说：因为 OOM 被杀；或者由于 BUG 导致崩溃；亦或者误操作等等，此时，我们需要重新启动进程。
-使用 Supervisor 的原因
-如果你有很多进程在跑，不时还需要 start/stop/restart 一下进程
-如果哪天由于某种原因，进程挂了，你需要重启进程或定时执行......
+            ##RedHat企业版或CentOS的Linux上yum方式安装MongoDB
+
+概述
+
+
+官网翻译：
+
+使用本教程对使用Red Hat Enterprise Linux或CentOS的Linux版本5，6，7安装MongoDB中的.rpm软件包。虽然这些发行版包括自己的MongoDB包，官方MongoDB的包装一般都比较最新的。
+
+平台支持
+
+本安装指南只支持64位系统。请参阅平台支持的详......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-02-24
+        2015-09-22
     </p>
 
 </div>
@@ -402,23 +396,23 @@ python安装以后注意：这里要强调一下的是安装Python后很有可�
 
 <div class="post-preview">
 
-    <a href="/2015/02/23/性能与架构/CDN加速助力高并发网站架构/">
+    <a href="/2015/09/21/数据库/Mongodb/Mongodb启动的解决方法/">
         <h2 class="post-title">
-            CDN加速助力高并发网站架构
+            Mongodb启动的解决方法
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            CDN加速助力高并发网站架构
-架构说明：用户通过互联网访问网站需要经过的节点如下：一、要通过域名解析在域名解析处有两种方式1、自建，自建需要在域名解析前架设防火墙。
-2、使用现有的域名解析提供商，需要设置成CNAME,其实就是另一个域名解析，进行跳转。在刚开始的时候建议先用CNAME方式，部署不影响用户现有方式，容易被用户接受，而且不用暂时不用担心第一级dns的问题。
-总之，如果要建设idc......
+            #Mongodb启动的解决方法
+####无法启动分析：
+遇到MongoDB突然无法启动，第一反应是删除mongod.lock。这个文件在MongoDB的数据库目录下，默认是/data/db。这是最常见的问题了，产生原因是MongoDB没有正常结束（比如被kill -9杀掉或是其他意外情况导致中断）。
+还一些其他情况会导致MongoDB无法启动。本文讨论的无法启动，是指：使用/etc/init......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-02-23
+        2015-09-21
     </p>
 
 </div>
@@ -463,17 +457,33 @@ python安装以后注意：这里要强调一下的是安装Python后很有可�
                     <div class="tags">
                         
                             
+                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="13">Big data Hadoop</a>
+                            
+                        
+                            
+                            <a href="/tags/#Kafka" title="Kafka" rel="10">Kafka</a>
+                            
+                        
+                            
+                            <a href="/tags/#Blog" title="Blog" rel="7">Blog</a>
+                            
+                        
+                            
+                        
+                            
                             <a href="/tags/#DNS" title="DNS" rel="3">DNS</a>
                             
                         
                             
-                            <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="6">Java+Tomcat notes</a>
+                            <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="7">Java+Tomcat notes</a>
                             
                         
                             
                             <a href="/tags/#Dubbo" title="Dubbo" rel="2">Dubbo</a>
                             
                         
+                            
+                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
                             
                         
                             
@@ -487,19 +497,13 @@ python安装以后注意：这里要强调一下的是安装Python后很有可�
                             
                         
                             
+                        
+                            
+                        
+                            
+                        
+                            
                             <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
-                            
-                        
                             
                         
                             
@@ -519,12 +523,6 @@ python安装以后注意：这里要强调一下的是安装Python后很有可�
                             
                         
                             
-                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="6">Big data Hadoop</a>
-                            
-                        
-                            
-                            <a href="/tags/#Kafka" title="Kafka" rel="3">Kafka</a>
-                            
                         
                             
                         
@@ -537,19 +535,19 @@ python安装以后注意：这里要强调一下的是安装Python后很有可�
                             
                         
                             
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="13">Performance monitoring</a>
+                            
+                        
+                            
                             <a href="/tags/#Operation safety" title="Operation safety" rel="7">Operation safety</a>
                             
                         
                             
                         
-                            
-                        
-                            
-                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
-                            
-                        
-                            
-                            <a href="/tags/#Blog" title="Blog" rel="6">Blog</a>
                             
                         
                             
@@ -569,19 +567,19 @@ python安装以后注意：这里要强调一下的是安装Python后很有可�
                             
                         
                             
-                        
+                            <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="18">Virtualization-Docker</a>
                             
                         
                             
-                            <a href="/tags/#KVM" title="KVM" rel="7">KVM</a>
+                            <a href="/tags/#KVM" title="KVM" rel="8">KVM</a>
                             
                         
                             
-                            <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="17">Virtualization-Docker</a>
+                            <a href="/tags/#Database" title="Database" rel="6">Database</a>
                             
                         
                             
-                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
+                            <a href="/tags/#zabbix" title="zabbix" rel="19">zabbix</a>
                             
                         
                             
@@ -595,7 +593,7 @@ python安装以后注意：这里要强调一下的是安装Python后很有可�
                             
                         
                             
-                            <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="6">Log analysis platform</a>
+                            <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="8">Log analysis platform</a>
                             
                         
                             

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          EC2 Centos7.3搭建Grav Cms博客 - Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2015/11/20/Blog/AWS Centos7.3 搭建 Grav Cms 博客/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jolly-Yancy&#39;s blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Blog" title="Blog">Blog</a>
+                        
+                    </div>
+                    <h1>EC2 Centos7.3搭建Grav Cms博客</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2015-11-20
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="Grav官网环境要求："><a href="#Grav官网环境要求：" class="headerlink" title="Grav官网环境要求："></a>Grav官网环境要求：</h2><figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">REQUIREMENTS</div><div class="line"></div><div class="line">Grav has intentionally been designed <span class="keyword">with</span> few requirements. You can easily <span class="built_in">run</span> Grav <span class="keyword">on</span> your <span class="keyword">local</span> computer, <span class="keyword">as</span> well <span class="keyword">as</span> <span class="number">99</span>% <span class="keyword">of</span> all Web hosting providers. If you have a pen handy, jot down <span class="keyword">the</span> following Grav system requirements:</div><div class="line"></div><div class="line">Webserver (Apache, Nginx, LiteSpeed, Lightly, IIS, etc.)</div><div class="line">PHP <span class="number">5.5</span><span class="number">.9</span> <span class="keyword">or</span> higher</div><div class="line">hmm... <span class="keyword">that</span>'s <span class="keyword">it</span> really, (<span class="keyword">but</span> please look <span class="keyword">at</span> php requirements <span class="keyword">for</span> a smooth experience)!</div><div class="line">Grav <span class="keyword">is</span> built <span class="keyword">with</span> plain <span class="built_in">text</span> files <span class="keyword">for</span> your content. There <span class="keyword">is</span> no database needed.</div></pre></td></tr></table></figure>
+<blockquote>
+<p>安装Grav是一个微不足道的过程。其实没有真正的安装。您有三个安装Grav的选项。第一个也是最简单的方法是简单地下载zip存档，并解压缩。第二种方式是与作曲家一起安装。第三种方法是直接从GitHub克隆源项目，然后运行包含的脚本命令来安装所需的依赖项：</p>
+</blockquote>
+<h2 id="Step-2-—-INSTALLATION-NGINX"><a href="#Step-2-—-INSTALLATION-NGINX" class="headerlink" title="Step 2 — INSTALLATION NGINX"></a>Step 2 — INSTALLATION NGINX</h2><figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[root<span class="symbol">@blog</span> ~]<span class="meta"># cat /etc/redhat-release</span></div><div class="line">Red Hat Enterprise Linux Server release <span class="number">7.3</span> (Maipo)</div><div class="line"></div><div class="line"></div><div class="line">[root<span class="symbol">@blog</span> ~]<span class="meta"># wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-10.noarch.rpm </span></div><div class="line">[root<span class="symbol">@blog</span> ~]<span class="meta"># rpm -ivh epel-release-7-10.noarch.rpm</span></div><div class="line">[root<span class="symbol">@blog</span> ~]<span class="meta"># yum install nginx -y</span></div><div class="line">[root<span class="symbol">@blog</span> ~]<span class="meta"># nginx -v</span></div><div class="line">nginx version: nginx/<span class="number">1.10</span><span class="number">.2</span></div><div class="line"></div><div class="line">php <span class="number">7</span> 的安装需要更多的步骤，因为 centos7上的源里，只有 php <span class="number">4.6</span> ，而 grav 要求 php 的最低版本是 php5以上的。索性这里就直接更新到 php <span class="number">7.</span></div></pre></td></tr></table></figure>
+<p><a href="https://www.hostinger.com/tutorials/how-to-install-lemp-centos7" target="_blank" rel="external">How-to-install-lemp-centos7</a></p>
+<h2 id="Step-3-—-Installing-PHP-v7-1-0"><a href="#Step-3-—-Installing-PHP-v7-1-0" class="headerlink" title="Step 3 — Installing PHP v7.1.0"></a>Step 3 — Installing PHP v7.1.0</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">The first thing that we will <span class="keyword">do</span> is install additional CentOS repo <span class="built_in">which</span> contains required packages <span class="keyword">for</span> PHP v7.1:</div><div class="line"></div><div class="line">wget http://rpms.remirepo.net/enterprise/remi-release-7.rpm</div><div class="line">rpm -Uvh remi-release-7.rpm</div><div class="line"></div><div class="line">Enable php71 repository <span class="built_in">which</span> is disabled by default:</div><div class="line"></div><div class="line">yum install yum-utils -y</div><div class="line">yum-config-manager --enable remi-php71</div><div class="line"></div><div class="line">Install common modules:</div><div class="line"></div><div class="line">yum install php-fpm php -y</div><div class="line"></div><div class="line">[root@blog ~]<span class="comment"># php -v</span></div><div class="line">PHP 7.1.7 (cli) (built: Jul  6 2017 13:31:15) ( NTS )</div><div class="line">Copyright (c) 1997-2017 The PHP Group</div><div class="line">Zend Engine v3.1.0, Copyright (c) 1998-2017 Zend Technologies</div></pre></td></tr></table></figure>
+<h2 id="Step-4-Configure-nginx-php-fpm"><a href="#Step-4-Configure-nginx-php-fpm" class="headerlink" title="Step 4 - Configure nginx / php-fpm"></a>Step 4 - Configure nginx / php-fpm</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div></pre></td><td class="code"><pre><div class="line">vim /etc/nginx/nginx.conf</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment"># For more information on configuration, see:</span></div><div class="line"><span class="comment">#   * Official English Documentation: http://nginx.org/en/docs/</span></div><div class="line"><span class="comment">#   * Official Russian Documentation: http://nginx.org/ru/docs/</span></div><div class="line">user nginx;</div><div class="line"><span class="comment">#        &#125;</span></div><div class="line">worker_processes auto;</div><div class="line">error_log /var/<span class="built_in">log</span>/nginx/error.log;</div><div class="line">pid /run/nginx.pid;</div><div class="line"></div><div class="line"><span class="comment"># Load dynamic modules. See /usr/share/nginx/README.dynamic.</span></div><div class="line">include /usr/share/nginx/modules/*.conf;</div><div class="line"></div><div class="line">events &#123;</div><div class="line">    worker_connections 1024;</div><div class="line">&#125;</div><div class="line"></div><div class="line">http &#123;</div><div class="line">    log_format  main  <span class="string">'$remote_addr - $remote_user [$time_local] "$request" '</span></div><div class="line">                      <span class="string">'$status $body_bytes_sent "$http_referer" '</span></div><div class="line">                      <span class="string">'"$http_user_agent" "$http_x_forwarded_for"'</span>;</div><div class="line"></div><div class="line">    access_log  /var/<span class="built_in">log</span>/nginx/access.log  main;</div><div class="line"></div><div class="line">    sendfile            on;</div><div class="line">    tcp_nopush          on;</div><div class="line">    tcp_nodelay         on;</div><div class="line">    keepalive_timeout   65;</div><div class="line">    types_hash_max_size 2048;</div><div class="line"></div><div class="line">    include             /etc/nginx/mime.types;</div><div class="line">    default_type        application/octet-stream;</div><div class="line"></div><div class="line">    <span class="comment"># Load modular configuration files from the /etc/nginx/conf.d directory.</span></div><div class="line">    <span class="comment"># See http://nginx.org/en/docs/ngx_core_module.html#include</span></div><div class="line">    <span class="comment"># for more information.</span></div><div class="line">    include /etc/nginx/conf.d/*.conf;</div><div class="line"></div><div class="line">    server &#123;</div><div class="line">        listen       80 default_server;</div><div class="line">        listen       [::]:80 default_server;</div><div class="line">        server_name  _;</div><div class="line">        root         /usr/share/nginx/html;</div><div class="line">        index index.php index.html;</div><div class="line"></div><div class="line">        <span class="comment"># Load configuration files for the default server block.</span></div><div class="line">        include /etc/nginx/default.d/*.conf;</div><div class="line"></div><div class="line">        location / &#123;</div><div class="line">                try_files <span class="variable">$uri</span> <span class="variable">$uri</span>/ =404;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        location ~ \.php$ &#123;</div><div class="line">        try_files <span class="variable">$uri</span> =404;</div><div class="line">        fastcgi_pass unix:/var/run/php-fpm/php-fpm.sock;</div><div class="line">        fastcgi_index index.php;</div><div class="line">        fastcgi_param SCRIPT_FILENAME <span class="variable">$document_root</span><span class="variable">$fastcgi_script_name</span>;</div><div class="line">        include fastcgi_params;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        error_page 404 /404.html;</div><div class="line">            location = /40x.html &#123;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        error_page 500 502 503 504 /50x.html;</div><div class="line">            location = /50x.html &#123;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">$ systemctl start nginx</div><div class="line">$ systemctl <span class="built_in">enable</span> nginx</div><div class="line"></div><div class="line">yum 安装的 nginx 相关文件目录位置。</div><div class="line">配置文件：/etc/nginx/nginx.conf</div><div class="line">html 目录：/usr/share/nginx/html/</div><div class="line"><span class="built_in">log</span> 目录：/var/<span class="built_in">log</span>/nginx/</div></pre></td></tr></table></figure>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line">vim /etc/php-fpm.d/www.conf</div><div class="line">修改如下内容，把用户和组都改成 nginx，listen 监听方式由监听端口 <span class="number">9000</span> 改成监听 sock 连接。</div><div class="line"></div><div class="line">user = apache -&gt; user = nginx</div><div class="line">group = apache -&gt; group = nginx</div><div class="line">listen.owner = nobody -&gt; listen.owner = nginx</div><div class="line">listen.group = nobody -&gt; listen.group = nginx</div><div class="line">listen = <span class="number">127.0</span>.<span class="number">0</span>.<span class="number">1</span><span class="symbol">:</span><span class="number">9000</span> -&gt; listen = <span class="regexp">/var/run</span><span class="regexp">/php-fpm/php</span>-fpm.sock</div><div class="line"></div><div class="line"></div><div class="line">启动 php-fpm ，并设定为系统启动</div><div class="line"></div><div class="line"><span class="variable">$ </span>systemctl start php-fpm.service</div><div class="line"><span class="variable">$ </span>systemctl enable php-fpm.service</div><div class="line"></div><div class="line">创建 /usr/share/nginx/html/info.php，内容如下：</div><div class="line"></div><div class="line">&lt;?php phpinfo();</div><div class="line"></div><div class="line">确保 nginx 和 php-fpm 都运行正确，打开连接，访问 info.php ，注意是 http 访问。</div><div class="line"></div><div class="line"><span class="symbol">http:</span>/<span class="regexp">/18.220.37.149/info</span>.php</div><div class="line">这里的ip是上面设定的 Google Cloud vm 的外网 ip 地址。</div><div class="line"></div><div class="line">[root<span class="variable">@blog</span> ~]<span class="comment"># netstat -ntulp | grep nginx</span></div><div class="line">tcp        <span class="number">0</span>      <span class="number">0</span> <span class="number">0</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">0</span><span class="symbol">:</span><span class="number">80</span>              <span class="number">0</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">0</span><span class="symbol">:*</span>               LISTEN      <span class="number">5628</span>/<span class="symbol">nginx:</span> master</div><div class="line">tcp6       <span class="number">0</span>      <span class="number">0</span> <span class="symbol">:</span><span class="symbol">:</span><span class="symbol">:</span><span class="number">80</span>                   <span class="symbol">:</span><span class="symbol">:</span><span class="symbol">:*</span>                    LISTEN      <span class="number">5628</span>/<span class="symbol">nginx:</span> master</div><div class="line"></div><div class="line"></div><div class="line">为了不出现权限问题，我们需要切换到 nginx 用户去进行操作。如果是在 root 上安装 grav 并运行的话，会遇到权限的问题。这里一定要注意。</div><div class="line"></div><div class="line"><span class="variable">$ </span>chown -R <span class="symbol">nginx:</span>nginx /usr/share/nginx/</div><div class="line"><span class="variable">$ </span>chown -R <span class="symbol">nginx:</span>nginx /usr/share/php/</div><div class="line">cd /home</div><div class="line"><span class="variable">$ </span>cd /home</div><div class="line"><span class="variable">$ </span>mkdir nginx</div><div class="line"><span class="variable">$ </span>chown -R <span class="symbol">nginx:</span>nginx nginx/</div><div class="line"><span class="variable">$ </span>vim /etc/passwd</div><div class="line"><span class="symbol">nginx:</span><span class="symbol">x:</span><span class="number">997</span><span class="symbol">:</span><span class="number">995</span><span class="symbol">:Nginx</span> web <span class="symbol">server:</span>/var/lib/<span class="symbol">nginx:</span>/sbin/nologin 修改为 <span class="symbol">nginx:</span><span class="symbol">x:</span><span class="number">997</span><span class="symbol">:</span><span class="number">995</span><span class="symbol">:Nginx</span> web <span class="symbol">server:</span>/home/<span class="symbol">nginx:</span>/bin/bash</div><div class="line"><span class="variable">$ </span>su nginx</div></pre></td></tr></table></figure>
+<h2 id="Option-1-Install-from-ZIP-package"><a href="#Option-1-Install-from-ZIP-package" class="headerlink" title="Option 1: Install from ZIP package"></a>Option 1: Install from ZIP package</h2><p>The easiest way to install Grav is to download the ZIP package and extract it:</p>
+<p>Download the latest-and-greatest Grav or Grav + Admin package.<br>Extract the ZIP file in the webroot of your web server, e.g.<code>~/webroot/grav</code></p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">wget getgrav.org<span class="meta-keyword">/download/</span>skeletons<span class="meta-keyword">/blog-site/</span><span class="number">1.1</span><span class="number">.1</span></div><div class="line">unzip <span class="number">1.1</span><span class="number">.1</span></div><div class="line">cd grav-skeleton-blog-site/</div><div class="line">mv * <span class="meta-keyword">/usr/</span>share<span class="meta-keyword">/nginx/</span>html/</div><div class="line">mv .htaccess <span class="meta-keyword">/usr/</span>share<span class="meta-keyword">/nginx/</span>html/</div></pre></td></tr></table></figure>
+<p>接下来就是问题处理时间了，你会发现各种权限问题！这个地方，折腾了好久。</p>
+<p>问题1：<code>&#39;mbstring&#39; extension is not loaded. This is required for Grav to run correctly</code></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">$ yum <span class="keyword">install</span> php-mbstring -y</div><div class="line">重启 php-fpm</div><div class="line">$ systemctl <span class="keyword">stop</span> php-fpm</div><div class="line">$ systemctl <span class="keyword">start</span> php-fpm</div><div class="line"></div><div class="line">问题<span class="number">2</span>：<span class="keyword">HTTP</span> <span class="keyword">ERROR</span> <span class="number">500</span></div><div class="line"></div><div class="line">查看 /<span class="keyword">var</span>/<span class="keyword">log</span>/nginx/error.log 信息如下</div><div class="line"></div><div class="line"> *<span class="number">20</span> FastCGI sent <span class="keyword">in</span> stderr: <span class="string">"PHP message: PHP Fatal error:  Uncaught RuntimeException: Creating directo</span></div><div class="line">ry '/usr/share/nginx/html/cache//compiled/files' failed on error mkdir(): Permission denied in /usr/share/nginx/html/vendor/rockettheme/too</div><div class="line">lbox/File/src/File.php:420</div><div class="line"></div><div class="line">这里说是没有权限。查找了各种方法说是 SELinux-specific 的事。</div><div class="line"></div><div class="line"></div><div class="line">$ chcon -Rv --type=httpd_sys_rw_content_t /usr/share/nginx/</div><div class="line"></div><div class="line">问题3： /usr/share/nginx/html/cache 没有权限</div><div class="line"></div><div class="line">2017/07/20 11:58:58 [error] 5948#0: *1 FastCGI sent in stderr: "PHP message: PHP Fatal <span class="keyword">error</span>:  Uncaught RuntimeException: Creating <span class="keyword">directory</span> <span class="string">'/usr/share/nginx/html/cache//compiled/files'</span> <span class="keyword">failed</span> <span class="keyword">on</span> <span class="keyword">error</span> mkdir(): Permission denied <span class="keyword">in</span> /usr/<span class="keyword">share</span>/nginx/html/vendor/rockettheme/toolbox/<span class="keyword">File</span>/src/File.php:<span class="number">424</span></div><div class="line">Stack <span class="keyword">trace</span>:</div><div class="line"></div><div class="line">$chown -R nginx:nginx  /usr/<span class="keyword">share</span>/nginx/</div><div class="line"></div><div class="line">问题<span class="number">4</span>： session_start(): <span class="keyword">open</span>(/<span class="keyword">var</span>/lib/php/<span class="keyword">session</span>/sess_6gue7o1hfpqvgr866s25ek154d, O_RDWR) <span class="keyword">failed</span>: Permission denied (<span class="number">13</span>)</div><div class="line"></div><div class="line">发现是 /<span class="keyword">var</span>/lib/php 目录没有权限问题。</div><div class="line"></div><div class="line">$ cd /<span class="keyword">var</span>/lib</div><div class="line">$ chown -R nginx:nginx php/</div><div class="line"></div><div class="line"></div><div class="line">问题<span class="number">5</span>：php gd / <span class="keyword">xml</span> / zip 找不到</div><div class="line"></div><div class="line">$ yum <span class="keyword">install</span> php-zip php-<span class="keyword">xml</span> php-gd</div><div class="line">$ systemctl <span class="keyword">stop</span> php-fpm</div><div class="line">$ systemctl <span class="keyword">start</span> php-fpm</div></pre></td></tr></table></figure>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/blog_Grav.png" alt=""></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/blog_Grav_02.png" alt=""></p>
+<h2 id="安装-grav-admin-和-grav-theme-masonry"><a href="#安装-grav-admin-和-grav-theme-masonry" class="headerlink" title="安装 grav-admin 和 grav-theme-masonry"></a>安装 grav-admin 和 grav-theme-masonry</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> /usr/share/nginx/html/</span></div><div class="line"><span class="meta">$</span><span class="bash"> bin/gpm install admin</span></div><div class="line"></div><div class="line">访问：http://18.220.37.149/admin 根据提示信息配置用户名信息。</div></pre></td></tr></table></figure>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/blog_Grav_03.png" alt=""></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2015/11/20/数据库/Redis/Redis安装报错-报错搜集/" data-toggle="tooltip" data-placement="top" title="Redis安装报错总结-文件解释">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2015/11/19/数据库/Redis/Redis-Sentinel哨兵服务实现redis主从集群搭建及容灾部署/" data-toggle="tooltip" data-placement="top" title="Redis主从集群搭建及容灾部署">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Blog" title="Blog">Blog</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Jolly-Yancy&#39;s blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

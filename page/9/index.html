@@ -90,13 +90,6 @@
 
                         
                         <li>
-                            <a href="/archives/archives.html">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
                             <a href="/about/About-me.html">About</a>
                         </li>
                         
@@ -105,6 +98,13 @@
                         
                         <li>
                             <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
                         </li>
                         
                     
@@ -184,22 +184,21 @@
 
 <div class="post-preview">
 
-    <a href="/2016/05/24/Web服务技术/Nginx/nginx解决办法-503-Service.Temporarily.Unavailable/">
+    <a href="/2016/06/29/运维安全/生产环境-Linux系统安全设置/">
         <h2 class="post-title">
-            Nginx解决办法-503-Service.Temporarily.Unavailable
+            生产环境-Linux系统安全统一配置
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            503 Service Temporarily Unavailable 解决办法-nginx因为最近公司微信抽奖活动项目环境  - ginx做负载均衡限制某个IP同一时间段的访问次数。
-就是防止有人同一个IP不断请求，网站刷新后经常出现503 Service Temporarily Unavailable错误，有时有可以，联想到最近在nginx.conf里做了单ip访问次数限制.
-(limi......
+            今天整理下Linux系统在生产环境安全几点：
+12345678910111201) 生产环境统一不要用root，统一添加普通用户，管理员操作通过sudo授权管理。02）更改默认的远程连接SSH服务端口及禁止root用户远程连接，这里关闭外围IP使用22端口，写防火墙规则，然后禁用root，这样统一使用普通用户统一管理。03）定时自动服务器时间，写到计划任务里面，如果机房管理服务器，最好搭建台......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-05-24
+        2016-06-29
     </p>
 
 </div>
@@ -207,25 +206,26 @@
 
 <div class="post-preview">
 
-    <a href="/2016/05/23/Web服务技术/Nginx/Nginx多种安装与配置文件详解/">
+    <a href="/2016/06/29/运维安全/ 化解自己的阿里云服务器被黑客攻击-暴力破解/">
         <h2 class="post-title">
-            Nginx多种安装与配置文件详解
+            化解自己的阿里云服务器被黑客攻击-暴力破解
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            安装nginx最近在弄灰度发布环境，之前nginx在测试和线上都有搭建配置。负载均衡配置（包括健康检查）、缓存（包括清空缓存）反向代理。就打算自己整理篇自己操作的文档，各种编译配置，今天自己也整理一份安装文档和nginx.conf配置选项的说明。
-选择稳定版本 我们编译安装nginx来定制自己的模块。
+            说明下：因为阿里云服务器我是用来自己搭建blog 的做了一些简单的监控。
+因为防止被攻击瘫痪，做到安全防范，可是今天晚上吃完饭，发现又被人攻击，是印度和巴西IP地址暴力破解方式一直在尝试破解我密码。
+1还好我在阿里云上面使用了云盾告警，其实它这个一般般，只能提醒，不能有效阻止黑客攻击。
 
-机器CentOS 6.6 x86_64。
-软件版本：Nginx 1.9.9
-nginx最......
+收到告警以后，马上打开电脑去云盾上面查看下。
+
+然后看了以后发现问题不大，可是上机器查看，发现有不断的攻......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-05-23
+        2016-06-29
     </p>
 
 </div>
@@ -233,29 +233,25 @@ nginx最......
 
 <div class="post-preview">
 
-    <a href="/2016/05/23/Web服务技术/Nginx/Nginx+Tomcat实现负载均衡设置访问控制/">
+    <a href="/2016/06/29/运维安全/安全的SSH与CentOS的7谷歌身份验证双因素身份验证/">
         <h2 class="post-title">
-            Nginx+Tomcat实现负载均衡设置访问控制
+            安全的SSH与CentOS的7谷歌身份验证双因素身份验证
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Nginx+Tomcat实现负载均衡设置访问控制一、环境准备
-Tomcat1：10.11.155.26
-Tomcat2：10.11.155.41
-Nginx：192.168.31.154 
+            安装谷歌身份验证
+什么是谷歌身份验证官方github详细介绍
 
-在26和41上分别部署相同的Tomcat程序，修改index.jsp页面，把内容改为各自的IP地址.
+概述谷歌身份验证项目包括一次性密码生成器为多个移动平台上的实现，以及一个可插拔的身份验证模块（PAM）整个的一次性密码是基于服务器和设备与谷歌，验证程序的时间安装在同步之中。在设备和服务器然后会知道什么一次性代码是正确的，在30秒内，然后它会改变。
 
-
-
-二、修改配置文件nginx.confNginx负载均衡，其实主要就是用upstream、ser......
+SSH访问始终是关键，你可能要想方设法提高你的SSH访问的安全性。在这篇文章中......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-05-23
+        2016-06-29
     </p>
 
 </div>
@@ -263,24 +259,21 @@ Nginx：192.168.31.154
 
 <div class="post-preview">
 
-    <a href="/2016/05/22/Web服务技术/Nginx/Nginx+Keepalived实现高可用Web负载均衡 /">
+    <a href="/2016/06/22/性能监控/Zabbix/zabbix3-0实现微信报警/">
         <h2 class="post-title">
-            Nginx+Keepalived实现高可用Web负载均衡
+            zabbix3.0实现微信报警
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Nginx+Keepalived实现高可用Web负载均衡一、需求场景：通过之前的一篇文章：
-Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用的负载均衡，但是单个的Nginx会存在单点隐患，如果Nginx挂掉，那么全部的Tomcat应用都将变得不可用，所以实现Nginx的高可用是必不可少的一步。
-
-二、说明
-高可用 HA（High Availability）......
+            前言：  因为我已经在测试环境和·生产环境·都实现了微信和邮件告警。今天有空就写了篇文档后期可以在复习下，现实生产环境中，我们通常使用邮件和短信接受zabbix报警信息，但是邮件经常被工作人员搁置在角落中甚至被设置为垃圾邮件被过滤掉。公司的短信接口又太贵，复杂环境中使用短息报警会使运维成本增加很多。微信提供了很好的第三方接口，我们可以利用微信报警以求降低运维成本。
+   这里我现在公司也用第......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-05-22
+        2016-06-22
     </p>
 
 </div>
@@ -288,22 +281,22 @@ Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用�
 
 <div class="post-preview">
 
-    <a href="/2016/05/21/数据库/MySQL/MySQL 5.6 警告信息 command line interface can be insecure 修复/">
+    <a href="/2016/06/21/性能监控/Zabbix/zabbix3-0部署jmx监控tomcat/">
         <h2 class="post-title">
-            MySQL5.6警告信息command line interface can be insecure修复
+            zabbix3.0部署jmx监控tomcat
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            MySQL 5.6 警告信息 command line interface can be insecure 修复在命令行输入密码，就会提示这些安全警告信息。
-Warning: Using a password on the command line interface can be insecure.
-注: mysql -u root -pPASSWORD 或 mysqldump -u ro......
+            zabbix提供了一个java gateway的应用去监控jmx（Java Management Extensions，即Java管理扩展）是一个为应用程序、设备、系统等植入管理功能的框架。JMX可以跨越一系列异构操作系统平台、系统体系结构和网络传输协议，灵活的开发无缝集成的系统、网络和服务管理应用。
+一. Zabbix 的JMX监控架构
+一：部署环境123Centos   6.7Zabbi......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-05-21
+        2016-06-21
     </p>
 
 </div>
@@ -311,25 +304,20 @@ Warning: Using a password on the command line interface can be insecure.
 
 <div class="post-preview">
 
-    <a href="/2016/05/05/个人生活记录/黄山之旅/">
+    <a href="/2016/06/21/性能监控/Zabbix/zabbix3.0 poller processes more than 75% busy警报问题解决/">
         <h2 class="post-title">
-            黄山之旅
+            Zabbix3.0 poller processes more than 75% busy警报问题解决
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            俗话说：“五岳归来不看山,黄山归来不看岳.”黄山以奇松、怪石、云海、温泉、冬雪“五绝”闻名中外.2016年5月1号 我和女票一起去黄山看日出。
-出发前来一张： 
-
-
-4月29号我匆匆忙忙的买好了前往黄山风景区的大巴汽车票，第一次去也不懂很多，前提安排都没做好准备就出发了因为当天看5月1号是天气预报说雷阵雨转中雨，就害怕看日出的泡汤。
-4月30号我和女票一起坐长途大巴到黄山风景区差不多4个多小......
+            虽然Zabbix的监控警报各种有，但chengyang使用碰到最多的几个莫过于内存耗尽，网络不通，IO太慢还有这个“Zabbix poller processes more than 75% busy”了。一开始的时候因为这个即不影响使用也持续一会儿就自行解决就没有多在意。然后随着数据库的增大，Zabbix消耗的内存可是越来越多，Poller processes（轮询）开始天天Busy了，最......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-05-05
+        2016-06-21
     </p>
 
 </div>
@@ -337,22 +325,21 @@ Warning: Using a password on the command line interface can be insecure.
 
 <div class="post-preview">
 
-    <a href="/2016/04/29/数据库/MySQL/mysql安装php以后报错：Can't connect to local MySQL server through socket ':var:lib:mysql:mysql.sock' (2) /">
+    <a href="/2016/06/21/Web服务技术/tomcat/记一次线上tomcat内存不足配置并发优化过程/">
         <h2 class="post-title">
-            MySQL安装php以后报错：Can't connect to local MySQL server through socket '/var/lib/mysql/mysql.sock' (2)
+            记一次线上tomcat内存不足配置并发优化过程
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            mysql安装php以后报错Can’t connect to local MySQL server through socket ‘/var/lib/mysql/mysql.sock’ (2)这种情况是mysql -uroot -p 密码 一直正确 不能登录需要在配置文件里面从新写
-12vim /etc/my.cnfsocket=/var/lib/mysql/mysql.sock
-这是我客户......
+            前言：tomcat的内存使用配置,最大连接数配置。如何修改配置呢，在/tomcat的/bin/下面有个这个脚本文件。catailna.sh 脚本文件。 如果windows 是bat设置tomcat的使用内存，也其实就是设置jim的使用参数。
+设置Tomcat启动的初始内存其初始空间(即-Xms)是物理内存的1/64，最大空间(-Xmx)是物理内存的1/4。可以利用JVM提供的-Xmn -Xm......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-04-29
+        2016-06-21
     </p>
 
 </div>
@@ -360,20 +347,26 @@ Warning: Using a password on the command line interface can be insecure.
 
 <div class="post-preview">
 
-    <a href="/2016/04/29/数据库/MySQL/【第一章】Mysql数据库入门及安装/">
+    <a href="/2016/06/21/性能监控/Zabbix/zabbix监控tcp连接数/">
         <h2 class="post-title">
-            【第一章】MySQL数据库入门及安装
+            zabbix监控tcp连接数
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            安装方法一：yum安装方式1234567yum install -y gcc gcc-c++ make automake  yum --enablerepo=remi,remi-test list mysql mysql-serveryum --enablerepo=remi,remi-test install mysql mysql-server  mysql-devel/etc/init......
+            系统环境:
+CentOS release 6.7 (Final)
+zabbix.3.0.3
+zabbix-server端：首先创建脚本 Shell
+12mkdir /usr/local/zabbix/scripts[root@zabbix scripts]# vim /usr/local/zabbix/scripts/tcp_connections.sh
+script：
+1234567891......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-04-29
+        2016-06-21
     </p>
 
 </div>
@@ -381,26 +374,27 @@ Warning: Using a password on the command line interface can be insecure.
 
 <div class="post-preview">
 
-    <a href="/2016/04/27/数据库/MySQL/MySQL-slave连接master时-一直提示Slave-IO-Running-Connecting/">
+    <a href="/2016/06/19/性能监控/Zabbix/zabbix-server3-0-3版本环境安装部署/">
         <h2 class="post-title">
-            MySQL-slave连接master时,一直提示Slave_IO_Running:Connecting
+            zabbix-server3.0.3版本环境安装部署
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            MySQL主从同步出现Slave_IO_Running:Connecting
-MySQL主从的同步如果授权的时候有问题就会出现：Slave_IO_Running:Connecting
+            系统环境：
+192.168.1.170 MySQL主 
+192.168.1.183 zabbix-server
 
-MySQL-slave连接master时,一直提示Slave_IO_Running:Connecting
+CentOS Linux release 7.2.1511 (Core)
 
-
-通过master授予slave的同步账号，在slave上通过远程连接master是可以连接上的。但......
+zabbix源码下载 : http://www.zabbix.com/download.php
+依赖下载： https://github.com/zabbixcn/curl-rpm/tree/master......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-04-27
+        2016-06-19
     </p>
 
 </div>
@@ -408,29 +402,22 @@ MySQL-slave连接master时,一直提示Slave_IO_Running:Connecting
 
 <div class="post-preview">
 
-    <a href="/2016/04/26/数据库/MySQL/【第十章】MySQL5-6主从-优化-集群与读写分离-MySQL-Proxy-实践/">
+    <a href="/2016/06/18/性能监控/Zabbix/zabbix-server2-4全新升级3-0版本/">
         <h2 class="post-title">
-            【第十章】MySQL5-6主从-优化-集群与读写分离-MySQL-Proxy-实践
+            zabbix-server2.4全新升级3.0版本
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            title: ‘MySQL5.6主从,优化,集群与读写分离(MySQL-Proxy)实践’date: 2015-10-21 17:15:19tags:
-
-MySQLcategories: Database
-
-
-谢谢关注本blog 
-本文章已转到github上:
-可在这里查看:
-
-MySQL5.6简介123456789(1) Mysql配置为Master:Slave的常用维护命令(2) MyS......
+            zabbix3.0出来了一段时间了，最近忍不住把公司原来的2.4.7版本升级到了3.0。zabbix升级其实很简单，基本步骤为：备份-&gt;重新安装新版本。接下来简单写下这次升级的操作和问题
+1、 关闭zabbix server防止有新的数据提交到数据库中、直接关闭数据库效果也是一样的。这里我先关闭掉我的服务：
+12/etc/init.d/zabbix_server stop  关闭了se......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-04-26
+        2016-06-18
     </p>
 
 </div>
@@ -475,17 +462,33 @@ MySQL5.6简介123456789(1) Mysql配置为Master:Slave的常用维护命令(2) My
                     <div class="tags">
                         
                             
+                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="13">Big data Hadoop</a>
+                            
+                        
+                            
+                            <a href="/tags/#Kafka" title="Kafka" rel="10">Kafka</a>
+                            
+                        
+                            
+                            <a href="/tags/#Blog" title="Blog" rel="7">Blog</a>
+                            
+                        
+                            
+                        
+                            
                             <a href="/tags/#DNS" title="DNS" rel="3">DNS</a>
                             
                         
                             
-                            <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="6">Java+Tomcat notes</a>
+                            <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="7">Java+Tomcat notes</a>
                             
                         
                             
                             <a href="/tags/#Dubbo" title="Dubbo" rel="2">Dubbo</a>
                             
                         
+                            
+                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
                             
                         
                             
@@ -499,19 +502,13 @@ MySQL5.6简介123456789(1) Mysql配置为Master:Slave的常用维护命令(2) My
                             
                         
                             
+                        
+                            
+                        
+                            
+                        
+                            
                             <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
-                            
-                        
                             
                         
                             
@@ -531,12 +528,6 @@ MySQL5.6简介123456789(1) Mysql配置为Master:Slave的常用维护命令(2) My
                             
                         
                             
-                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="6">Big data Hadoop</a>
-                            
-                        
-                            
-                            <a href="/tags/#Kafka" title="Kafka" rel="3">Kafka</a>
-                            
                         
                             
                         
@@ -549,19 +540,19 @@ MySQL5.6简介123456789(1) Mysql配置为Master:Slave的常用维护命令(2) My
                             
                         
                             
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="13">Performance monitoring</a>
+                            
+                        
+                            
                             <a href="/tags/#Operation safety" title="Operation safety" rel="7">Operation safety</a>
                             
                         
                             
                         
-                            
-                        
-                            
-                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
-                            
-                        
-                            
-                            <a href="/tags/#Blog" title="Blog" rel="6">Blog</a>
                             
                         
                             
@@ -581,19 +572,19 @@ MySQL5.6简介123456789(1) Mysql配置为Master:Slave的常用维护命令(2) My
                             
                         
                             
-                        
+                            <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="18">Virtualization-Docker</a>
                             
                         
                             
-                            <a href="/tags/#KVM" title="KVM" rel="7">KVM</a>
+                            <a href="/tags/#KVM" title="KVM" rel="8">KVM</a>
                             
                         
                             
-                            <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="17">Virtualization-Docker</a>
+                            <a href="/tags/#Database" title="Database" rel="6">Database</a>
                             
                         
                             
-                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
+                            <a href="/tags/#zabbix" title="zabbix" rel="19">zabbix</a>
                             
                         
                             
@@ -607,7 +598,7 @@ MySQL5.6简介123456789(1) Mysql配置为Master:Slave的常用维护命令(2) My
                             
                         
                             
-                            <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="6">Log analysis platform</a>
+                            <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="8">Log analysis platform</a>
                             
                         
                             

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？ - Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2017/07/30/日志分析平台/Elasticsearch/研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jolly-Yancy&#39;s blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Log analysis platform" title="Log analysis platform">Log analysis platform</a>
+                        
+                    </div>
+                    <h1>研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2017-07-30
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>ES 现在普遍大公司都已经在使用，有的用来做数据存储，也有做性能监控，也有做日志收集，跟大数据结合做日志分析。<br>今天在家无聊研究官网学习了下Elasticsearch5.0.0 功能新增哪些，个人觉得ES也是现在开源日志分析平台比较火的，从14年开始陆续使用频率不断提升。<br>之前也有了解过Graylog  现在比ES 做数据存储分析 不错的是Graylog 比ES性能好。</p>
+<p>废话不多说了哈哈</p>
+<h3 id="Elasticsearch-5-0-0发布"><a href="#Elasticsearch-5-0-0发布" class="headerlink" title="Elasticsearch 5.0.0发布"></a>Elasticsearch 5.0.0发布</h3><p>2016年10月26日发布 Elasticsearch 5.0.0 今天去下载吧！你知道你想。</p>
+<p><a href="https://www.elastic.co/downloads/elasticsearch" target="_blank" rel="external">下载Elasticsearch 5.0.0</a><br><a href="https://www.elastic.co/guide/en/elasticsearch/reference/5.0/release-notes-5.0.0.html" target="_blank" rel="external">Elasticsearch 5.0.0发行说明</a><br><a href="https://www.elastic.co/guide/en/elasticsearch/reference/5.0/release-notes-5.0.0.html" target="_blank" rel="external">弹性搜索5.0突破变化</a></p>
+<p>Elasticsearch 5.0.0对大家有所帮助 这是有史以来最快，最安全，最具弹性，最简单易用的Elasticsearch版本，它具有一系列增强功能和新功能。</p>
+<ul>
+<li>索引性能</li>
+<li>取食节点</li>
+<li>无痛脚本</li>
+<li>新的数据结构</li>
+<li>搜索和聚合</li>
+<li>用户友好</li>
+<li>弹性</li>
+<li>Java REST客户端</li>
+<li>迁移助手</li>
+</ul>
+<blockquote>
+<p>下面从官网上面翻译得来的：</p>
+</blockquote>
+<h3 id="索引性能"><a href="#索引性能" class="headerlink" title="索引性能"></a>索引性能</h3><p>由于包括更好的数字数据结构（参见新数据结构）的一些更改，索引吞吐量在5.0.0中有了显着改善，锁中的争用减少，阻止对同一文档的并发更新，以及减少事务日志时的锁定需求。异步translog fsyncing将特别有利于旋转磁盘的用户，而依赖Elasticsearch自动生成文档ID时，仅追加用例（基于思考时间的事件）具有很大的吞吐量提高。对实时文档GET的支持的内部变化意味着索引缓冲区可用的内存更多，垃圾收集时间少得多。</p>
+<p>根据您的用例，您可能会看到在提高吞吐量的25％至80％之间。</p>
+<h3 id="Ingest节点"><a href="#Ingest节点" class="headerlink" title="Ingest节点"></a>Ingest节点</h3><p>　　向Elasticsearch添加数据更简单了。Logstash是一个强大的工具，而一些较小的用户只需要过滤器，不需要它所提供的众多路由选项。因此，Elastic将一些最流行的Logstash过滤器（如grok、split）直接在Elasticsearch中实现为处理器。多个处理器可以组合成一个管道，在索引时应用到文档上。</p>
+<h3 id="Painless脚本"><a href="#Painless脚本" class="headerlink" title="Painless脚本"></a>Painless脚本</h3><p>　　Elasticsearch中很多地方用到了脚本，而出于安全考虑，脚本在默认情况下是禁用的，这令人相当失望。为此，Elastic开发了一种新的脚本语言Painless。该语言更快、更安全，而且默认是启用的。不仅如此，它的执行速度是Groovy的4倍，而且正在变得更快。Painless已经成为默认脚本语言，而Groovy、Javascript和Python都遭到弃用。要了解有关这门新语言的更多信息，请点击这里。</p>
+<h3 id="新数据结构"><a href="#新数据结构" class="headerlink" title="新数据结构"></a>新数据结构</h3><p>　　Lucene 6带来了一个新的Points 数据结构K-D树，用于存储数值型和地理位置字段，彻底改变了数值型值的索引和搜索方式。基准测试表明，Points将查询速度提升了36%，将索引速度提升了71%，而占用的磁盘和内存空间分别减少了66%和85%（参见“在5.0中搜索数值”）。</p>
+<h4 id="搜索和聚合"><a href="#搜索和聚合" class="headerlink" title="搜索和聚合"></a>搜索和聚合</h4><p>　　借助即时聚合，Kibana图表生成速度显著提升。Elastic用一年的时间对搜索API进行了重构，Elasticsearch现在可以更巧妙地执行范围查询，只针对已经发生变化的索引重新计算聚合，而不是针对每个查询从头开始重新计算。在搜索方面，默认的相关性计算已经由TF/IDF换成了更先进的BM25。补全建议程序经过了完全重写，将已删除的文档也考虑了进来。</p>
+<h3 id="更友好"><a href="#更友好" class="headerlink" title="更友好"></a>更友好</h3><p>　　Elasticsearch 5.0更安全、更易用。他们采用了“尽早提示”的方法。如果出现了问题，则新版本会及早给出提示。例如，Elasticsearch 5.0会严格验证设置。如果它不能识别某项设置的值，就会给出提示和建议。不仅如此，集群和索引设置现在可以通过null进行解除。此外，还有其他的一些改进，例如，rollover和shrink API启用了一种新的模式来管理基于时间的索引，引入新的cluster-allocation-explain API，简化索引创建。</p>
+<h3 id="弹性"><a href="#弹性" class="headerlink" title="弹性"></a>弹性</h3><p>　　Elasticsearch分布式模型的每一部分都被分解、重构和简化，提升了可靠性。集群状态更新现在会等待集群中的所有节点确认。如果一个“复制片（replica shard）”被“主片（primary）”标记为失败，则主片会等待“主节点（master）”的响应。索引现在使用数据路径中的UUID，而不是索引名，避免了命名冲突。另外，Elasticsearch现在进行启动检查，确保系统配置没有问题。配置比较麻烦，但如果只是试用，开发人员也可以选择localhost-only模式，避免繁琐的配置。另外，新版本还增加了断路器及其他一些软限制，限制请求使用的内存大小，保护集群免受恶意用户攻击。<br>　　此外，该版本还提供了一个底层的Java REST/HTTP客户端，可以用于监听、日志记录、请求轮询、故障节点重试等。它使用Java 7，将依赖降到了最低，比Transport客户端的依赖冲突少。而在基准测试中，它的性能并不输于Transport客户端。不过，这是一个底层客户端，目前还没有提供任何查询构建器或辅助器。它的输入参数和输出结果都是JSON。<br>　　需要注意的是，该版本引入了许多破坏性更改，好在他们提供了一个迁移辅助插件，可以帮助开发人员从Elasticsearch 2.3.x/2.4.x迁移到Elasticsearch 5.0。如果是从更早的Elasticsearch版本向最新的5.0版本迁移，则请查阅升级文档。</p>
+<h3 id="Java-REST客户端"><a href="#Java-REST客户端" class="headerlink" title="Java REST客户端"></a>Java REST客户端</h3><p>经过多年的等待，我们终于发布了一个低级的Java HTTP / REST客户端。它提供了一个简单的HTTP客户端，具有最少的依赖关系，可以处理嗅探，记录，循环请求，并重试节点故障。它使用的REST层历史上比Java API更稳定，这意味着它可以跨越升级使用，甚至可能在主要版本之间进行升级。它与Java 7一起工作，并且具有最小的依赖性，导致比传输客户端更少的依赖冲突。它只是HTTP，因此可以像所有其他HTTP客户端一样进行防火墙/代理。在我们的基准测试中，Java REST客户端 与Transport客户端的功能类似。</p>
+<p>请注意，这是一个低级客户端。在这个阶段，我们不提供任何可以在IDE中自动完成的查询构建器或帮助器。它是JSON-in，JSON-out，由你来构建JSON。开发不会停止在这里 - 我们将添加一个API，它将帮助您构建查询并解析响应。您可以按照问题＃19055中的更改进行操作。</p>
+<h3 id="迁移助手"><a href="#迁移助手" class="headerlink" title="迁移助手"></a>迁移助手</h3><p>Elasticsearch Migration Helper是一个网站插件，可以帮助从<code>Elasticsearch 2.3.x / 2.4.x</code>迁移到Elasticsearch 5.0。它有三个工具：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">集群检查</div><div class="line">对集群，节点和索引执行一系列检查，并提醒您升级之前需要解决的任何已知问题。</div><div class="line"><span class="selector-tag">Reindex</span>助手</div><div class="line">在<span class="selector-tag">v2</span><span class="selector-class">.0</span><span class="selector-class">.0</span>之前创建的索引需要重新编号，才能在<span class="selector-tag">Elasticsearch</span> 5<span class="selector-class">.x</span>中使用。<span class="selector-tag">reindex</span>帮助器点击一个按钮升级旧索引。</div><div class="line">弃用日志</div><div class="line"><span class="selector-tag">Elasticsearch</span>附带了一个弃用记录器，每当使用不推荐使用的功能时，它将记录消息。此工具可启用或禁用群集上的弃用日志记录。</div></pre></td></tr></table></figure>
+<p>官网推荐迁移文档：Instruction for <a href="(https://github.com/elastic/elasticsearch-migration/blob/2.x/README.asciidoc">install the Elasticsearch migration helper. </a>)</p>
+<h3 id="Elasticsearch-5-0-0-安装需要哪些要求。"><a href="#Elasticsearch-5-0-0-安装需要哪些要求。" class="headerlink" title="Elasticsearch 5.0.0 安装需要哪些要求。"></a>Elasticsearch 5.0.0 安装需要哪些要求。</h3><p>Elasticsearch需要依赖Java JDK1.8</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/08/11/日志分析平台/Elasticsearch/ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述/" data-toggle="tooltip" data-placement="top" title="ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/07/30/Bigdata-hadoop/Kafka/Kafka日志存储解析与实践数据存储优化/" data-toggle="tooltip" data-placement="top" title="Kafka日志存储解析与实践数据存储优化">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Log analysis platform" title="Log analysis platform">Log analysis platform</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Jolly-Yancy&#39;s blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

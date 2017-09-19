@@ -90,13 +90,6 @@
 
                         
                         <li>
-                            <a href="/archives/archives.html">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
                             <a href="/about/About-me.html">About</a>
                         </li>
                         
@@ -105,6 +98,13 @@
                         
                         <li>
                             <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
                         </li>
                         
                     
@@ -184,21 +184,23 @@
 
 <div class="post-preview">
 
-    <a href="/2015/12/10/自动化+可视化/saltstack/服务自动化部署平台之Saltstack总结/">
+    <a href="/2016/03/07/自动化+可视化/Ansible/Ansible小结（三）ansible.cfg与默认配置 /">
         <h2 class="post-title">
-            自动化运维工具-服务自动化部署平台之Saltstack总结
+            Ansible小结（三）ansible.cfg与默认配置
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            服务自动化部署平台之Saltstack总结Saltstack是一个新的基础设施管理工具。目前处于快速发展阶段，可以看做是强化的Func+弱化的Puppet的组合。间接的反映出了saltstack的两大功能：远程执行和配置管理。
-SaltStack 保持了输入、输出、配置文件的一致性，所有文件均使用YAML格式。主要负责配置管理和远程执行（在远程主机运行预定义或任意的命令，也叫远程执行，这是 ......
+            #Ansible小结（四）ansible.cfg与默认配置
+Ansible默认安装好后有一个配置文件/etc/ansible/ansible.cfg，该配置文件中定义了ansible的主机的默认配置部分，如默认是否需要输入密码、是否开启sudo认证、action_plugins插件的位置、hosts主机组的位置、是否开启log功能、默认端口、key文件位置等等。
+具体如下：
+12345678......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-12-10
+        2016-03-07
     </p>
 
 </div>
@@ -206,21 +208,23 @@ SaltStack 保持了输入、输出、配置文件的一致性，所有文件均�
 
 <div class="post-preview">
 
-    <a href="/2015/12/01/运维性能测试/Cento6-7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行/">
+    <a href="/2016/03/07/自动化+可视化/Ansible/ansible小结（二）ansible架构 /">
         <h2 class="post-title">
-            Cento6.7安装WEB端批量移动设备管理控制工具STF的环境搭建和运行
+            Ansible小结（二）ansible架构
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            APP测试神器：STF最近项目涉及到较多设备批量管理的需求，发现一工具可以批量对大量设备进行WEB端管理，工具主页：https://openstf.github.io/工具名STF（Smartphone Test Farm）
-STF (or Smartphone Test Farm) is a web application for debugging smartphones, smartw......
+            Ansible 是一个模型驱动的配置管理器，支持多节点发布、远程任务执行。默认使用 SSH 进行远程连接。无需在被管理节点上安装附加软件，可使用各种编程语言进行扩展。
+
+上图为ansible的基本架构，从上图可以了解到其由以下部分组成：
+1234567核心：ansible核心模块（Core Modules）：这些都是ansible自带的模块 扩展模块（Custom Modules）：如果核心......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-12-01
+        2016-03-07
     </p>
 
 </div>
@@ -228,20 +232,23 @@ STF (or Smartphone Test Farm) is a web application for debugging smartphones, sm
 
 <div class="post-preview">
 
-    <a href="/2015/11/25/Vsftpd/建立虚拟用户的vsftpd安装配置过程/">
+    <a href="/2016/03/07/数据库/MySQL/[第七章]MySQL读写分离/">
         <h2 class="post-title">
-            建立虚拟用户的vsftpd安装配置过程
+            【第七章】MySQL读写分离
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            建立虚拟用户的vsftpd安装配置过程虚拟用户的特点是只能访问服务器为其提供的FTP服务，而不能访问系统的其它资源。所以，如果想让用户对FTP服务器站内具有写权限，但又不允许访问系统其它资源，可以使用虚拟用户来提高系统的安全性。在VSFTP中，认证这些虚拟用户使用的是单独的口令库文件（pam_userdb），由可插入认证模块（PAM）认证。使用这种方式更加安全，并且配置更加灵活。 下面介绍配......
+            MySQL读写分离1234场景描述：数据库Master主服务器：192.168.10.130数据库Slave从服务器：192.168.10.131MySQL-Proxy调度服务器：192.168.10.132
+以下操作，均是在192.168.10.132即MySQL-Proxy调度服务器 上进行的。
+3.1 MySQL的安装与配置具体的安装过程与上文相同。
+3.2 检查系统所需软件包通过 r......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-11-25
+        2016-03-07
     </p>
 
 </div>
@@ -249,22 +256,24 @@ STF (or Smartphone Test Farm) is a web application for debugging smartphones, sm
 
 <div class="post-preview">
 
-    <a href="/2015/11/21/Web服务技术/tomcat/搭建配置tomcat环境/">
+    <a href="/2016/02/28/DNS/DNS服务使用dig查询解析/">
         <h2 class="post-title">
-            搭建配置tomcat环境
+            DNS服务使用dig查询解析
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            先安装jdk-java环境首先先检查linux机器上是否有自带的jdk,一般不建议用yum安装，环境变量不方便自定义。
-java -version检查下就可以，如果有版本低的话可以先卸载掉方法如下：
-1234[root@localhost java]# rpm -qa|grep gcj 或者 rpm -qa|grep javalibgcj-4.1.2-44.el5java-1.4.2-gcj......
+            ##使用dig查询DNS解析
+今天整理下前段时间搭建的DNS主从服务器，DNS主从复制虚拟域名设置等等，总结写了篇文档：DNS服务器主从复制搭建
+这里就顺便写了下dig使用查询DNS解析：
+一般来说linux下查询域名解析有两种选择，nslookup或者dig，而在使用上我觉得dig更加方便顺手。如果是在centos下的话，只要yum装上dig这个包就可以使用dig命令了。
+nslookup......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-11-21
+        2016-02-28
     </p>
 
 </div>
@@ -272,22 +281,32 @@ java -version检查下就可以，如果有版本低的话可以先卸载掉方�
 
 <div class="post-preview">
 
-    <a href="/2015/11/20/自动化+可视化/saltstack/自动化运维工具--saltstack远程启动tomcat日志乱码 /">
+    <a href="/2016/02/26/python/Python学习一路潇潇洒洒磕磕碰碰😁/">
         <h2 class="post-title">
-            自动化运维工具--saltstack远程启动tomcat日志乱码
+            Python学习一路潇潇洒洒磕磕碰碰😁
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            自动化运维工具–saltstack远程启动tomcat日志乱码最近在线上发布tomcat，想做到自动部署，可是出现了问题，就是日志输出会有乱码，用户名的getMyUserInfo 是一堆乱码，salt原理系统字符集没太深入的研究，后来在墙外看到一篇文章很实用，就做了下自己的总结。
-开始我是salt执行远程脚本。
-1salt 'tomcat_A1' cmd.run '/etc/init.d/t......
+            Python运维编程 （第一关）Topics
+
+Python介绍（不详讲）
+安装、环境准备 （不详细讲）
+
+
+学习 输入和输出 （raw_input）和（print）
+
+12&gt;&gt;&gt;name = raw_input('please enter your name: ')print 'hello,', name
+
+学习 Python基础 应该始终坚持使用4个空格的缩进.
+
+...
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-11-20
+        2016-02-26
     </p>
 
 </div>
@@ -295,23 +314,22 @@ java -version检查下就可以，如果有版本低的话可以先卸载掉方�
 
 <div class="post-preview">
 
-    <a href="/2015/11/20/数据库/Redis/Redis与mamcache区别redis常用命令积累/">
+    <a href="/2016/02/25/Web服务技术/Nginx/Nginx限制IP访问权限或限制某个IP同一时间段的访问次数/">
         <h2 class="post-title">
-            Redis与mamcache区别redis常用命令积累
+            Nginx限制IP访问权限或限制某个IP同一时间段的访问次数
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            redis与mamcache区别&amp;redis常用命令积累之前一直有在用mamcache集群，现在出来了redis用的多的还是现在的redis主从，集群等。
-##redis与mamcache区别
-也仔细了做了这两种存储数据库也叫内存数据库它们的区别：
-123456781、 Redis和Memcache都是将数据存放在内存中，都是内存数据库。不过memcache还可用于缓存其他东西，例如......
+            nginx限制ip访问 nginx访问权限看下配置：
+这里我只允许我公司IP访问：
+12345678910111213141516  server &#123;        listen       80;        server_name  kibana.ihaozhuo.com;        location / &#123;             index        i......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-11-20
+        2016-02-25
     </p>
 
 </div>
@@ -319,24 +337,21 @@ java -version检查下就可以，如果有版本低的话可以先卸载掉方�
 
 <div class="post-preview">
 
-    <a href="/2015/11/20/数据库/Redis/Redis安装报错-报错搜集/">
+    <a href="/2016/02/14/个人生活记录/在一起的第588天💕/">
         <h2 class="post-title">
-            Redis安装报错总结-文件解释
+            在一起的第588天💕
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            ###安装的时候最新安装包，3.0.7
-异常一：
-报错：error: jemalloc/jemalloc.h: No such file or directory
-
-12345zmalloc.h:50:31: error: jemalloc/jemalloc.h: No such file or directoryzmalloc.h:55:2: error: #error "Newer ve......
+            今天2016年2月14日我们的第二个情人节： 夜已经很深了，我还坐在电脑前写信给你,慢慢把我们在一起点点滴滴记录下来,这些天总是有很多话想对你说,但对你的思念扰乱了我所有的思绪。我不知道该说些什么或怎么说？说心里话，和你的每一天我很快乐很幸福，是我一生中从未有过的！真的XXL。
+   在这个13亿茫茫人海当中，你已我相距1325公里因缘分而相识，因相趣而相知，你是一个文文静静，高高大大，很懂......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-11-20
+        2016-02-14
     </p>
 
 </div>
@@ -344,21 +359,22 @@ java -version检查下就可以，如果有版本低的话可以先卸载掉方�
 
 <div class="post-preview">
 
-    <a href="/2015/11/19/数据库/Redis/Redis-Sentinel哨兵服务实现redis主从集群搭建及容灾部署/">
+    <a href="/2016/01/30/日志分析平台/Elasticsearch/elasticsearch的索引定时自动清理/">
         <h2 class="post-title">
-            Redis主从集群搭建及容灾部署
+            elasticsearch的索引定时自动清理
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Redis-主从复制原理及分析Slave向Master同步的实现是：Slave向Master发出同步请求（发送sync命令），Master先dump出rdb文件，然后将rdb文件全量传输给slave，然后Master把缓存的写命令转发给Slave，初次同步完成。
-以及以后的同步实现是：123Master将变量的快照直接实时依次发送给各个Slave。但不管什么原因导致Slave和Master断......
+            elasticsearch的索引定时自动清理之前用 logstash来做日志收集 并用 elasticsearch来搜索，因为日志没有进行过滤，没几天就发现elasticsearch的索引文件大的吓人，之前还真没清理过。其实要说清理也简单，直接到 elasticsearch data文件夹里删掉就行了，写个脚本定期清理集群es的日志数据。
+这里我清理1月7号的。
+这里后面是索引名称。app_......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-11-19
+        2016-01-30
     </p>
 
 </div>
@@ -366,21 +382,20 @@ java -version检查下就可以，如果有版本低的话可以先卸载掉方�
 
 <div class="post-preview">
 
-    <a href="/2015/11/01/自动化+可视化/saltstack/自动化运维工具--SaltStack-分组（使用记录,groups） /">
+    <a href="/2016/01/29/日志分析平台/Elasticsearch/logstash如何收集tomcat日志分析/">
         <h2 class="post-title">
-            自动化运维工具--SaltStack-分组（使用记录,groups）
+            logstash如何写tomcat,redis,nginx日志收集规则
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            自动化运维工具–SaltStack-分组（使用记录,groups）在使用 SaltStack 对主机进行批量管理的时候，因为不同的服务器组所做的业务功能不同，因此为了更加方便的管理，为了便于管理功能业务相似的minion,Saltstack提供了分组的模式，因为线上机器多，不可能每次都是“*”或者“ip主机名” 这样不现实的。
-所以我们现在都是提供分组，哪里的机器分哪个组这样你操作起来就方便......
+            logstash如何收集tomcat日志分析（可以参考我下面写的模板）1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162我想实现对tomcat的日志采集，正常应该创建一个file的input，这个input指定了监......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-11-01
+        2016-01-29
     </p>
 
 </div>
@@ -388,20 +403,27 @@ java -version检查下就可以，如果有版本低的话可以先卸载掉方�
 
 <div class="post-preview">
 
-    <a href="/2015/11/01/自动化+可视化/saltstack/自动化运维工具--Saltstack写sls语法批量部署zabbix_agent/">
+    <a href="/2016/01/28/DNS/DNS服务器主从复制搭建/">
         <h2 class="post-title">
-            自动化运维工具--Saltstack写sls语法批量部署zabbix_agent
+            DNS服务器主从复制搭建
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Saltstack批量部署zabbix_agent服务12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576epel_install:  file.managed......
+            DNS 服务器主从复制搭建最近部署测试环境和灰度发布环境，之前已经整改过一次，因为需要扩容添加，所以这次操作就把实现的过程记录下来了。 
+实现环境：centos 6.7 x86_64
+
+主DNS服务器：192.168.1.173
+从DNS服务器：192.168.1.174
+
+实验步骤1、关闭网络防火墙及SElinux（主从DNS服务器上都要有此操作）
+123[root@LAN_redis2 ......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2015-11-01
+        2016-01-28
     </p>
 
 </div>
@@ -446,17 +468,33 @@ java -version检查下就可以，如果有版本低的话可以先卸载掉方�
                     <div class="tags">
                         
                             
+                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="13">Big data Hadoop</a>
+                            
+                        
+                            
+                            <a href="/tags/#Kafka" title="Kafka" rel="10">Kafka</a>
+                            
+                        
+                            
+                            <a href="/tags/#Blog" title="Blog" rel="7">Blog</a>
+                            
+                        
+                            
+                        
+                            
                             <a href="/tags/#DNS" title="DNS" rel="3">DNS</a>
                             
                         
                             
-                            <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="6">Java+Tomcat notes</a>
+                            <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="7">Java+Tomcat notes</a>
                             
                         
                             
                             <a href="/tags/#Dubbo" title="Dubbo" rel="2">Dubbo</a>
                             
                         
+                            
+                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
                             
                         
                             
@@ -470,19 +508,13 @@ java -version检查下就可以，如果有版本低的话可以先卸载掉方�
                             
                         
                             
+                        
+                            
+                        
+                            
+                        
+                            
                             <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
-                            
-                        
                             
                         
                             
@@ -502,12 +534,6 @@ java -version检查下就可以，如果有版本低的话可以先卸载掉方�
                             
                         
                             
-                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="6">Big data Hadoop</a>
-                            
-                        
-                            
-                            <a href="/tags/#Kafka" title="Kafka" rel="3">Kafka</a>
-                            
                         
                             
                         
@@ -520,19 +546,19 @@ java -version检查下就可以，如果有版本低的话可以先卸载掉方�
                             
                         
                             
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="13">Performance monitoring</a>
+                            
+                        
+                            
                             <a href="/tags/#Operation safety" title="Operation safety" rel="7">Operation safety</a>
                             
                         
                             
                         
-                            
-                        
-                            
-                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="12">Performance monitoring</a>
-                            
-                        
-                            
-                            <a href="/tags/#Blog" title="Blog" rel="6">Blog</a>
                             
                         
                             
@@ -552,19 +578,19 @@ java -version检查下就可以，如果有版本低的话可以先卸载掉方�
                             
                         
                             
-                        
+                            <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="18">Virtualization-Docker</a>
                             
                         
                             
-                            <a href="/tags/#KVM" title="KVM" rel="7">KVM</a>
+                            <a href="/tags/#KVM" title="KVM" rel="8">KVM</a>
                             
                         
                             
-                            <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="17">Virtualization-Docker</a>
+                            <a href="/tags/#Database" title="Database" rel="6">Database</a>
                             
                         
                             
-                            <a href="/tags/#zabbix" title="zabbix" rel="18">zabbix</a>
+                            <a href="/tags/#zabbix" title="zabbix" rel="19">zabbix</a>
                             
                         
                             
@@ -578,7 +604,7 @@ java -version检查下就可以，如果有版本低的话可以先卸载掉方�
                             
                         
                             
-                            <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="6">Log analysis platform</a>
+                            <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="8">Log analysis platform</a>
                             
                         
                             

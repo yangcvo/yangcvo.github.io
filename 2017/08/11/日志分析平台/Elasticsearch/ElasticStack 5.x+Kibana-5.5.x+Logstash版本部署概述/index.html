@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述 - Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2017/08/11/日志分析平台/Elasticsearch/ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jolly-Yancy&#39;s blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/About-me.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Log analysis platform" title="Log analysis platform">Log analysis platform</a>
+                        
+                    </div>
+                    <h1>ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2017-08-11
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="ElasticStack-5-x-Kibana-5-5-x-Logstash版本部署概述"><a href="#ElasticStack-5-x-Kibana-5-5-x-Logstash版本部署概述" class="headerlink" title="ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述"></a>ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述</h1><h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p><code>ELK=ElasticSearch + Logstash + Kibana</code></p>
+<p>Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一款开源分布式日志系统，一般说来包括了Elasticsearch、Logstash和Kibana，涵盖了后端日志采集、日志搜索服务和前端数据展示等功能。<br>本文将会对Elastic Stack的安装部署流程进行一系列简单的介绍，并记录下了一些部署过程中遇到的坑及解决方法。</p>
+<p>对于一个软件或互联网公司来说，对计算资源和应用进行监控和告警是非常基础的需求。对于大公司或成熟公司，一个高度定制化的监控系统应该已经存在了很长时间并且非常成熟了。而对于一个初创公司或小公司来说，如何利用现有开源工具快速搭建一套日志监控及分析平台是需要探索的事情。</p>
+<h3 id="监控系统的用户："><a href="#监控系统的用户：" class="headerlink" title="监控系统的用户："></a>监控系统的用户：</h3><ul>
+<li>运维，开发，产品</li>
+</ul>
+<p>监控系统应该可以解决如下的问题：</p>
+<ul>
+<li>监控server的各项基础指标，比如<code>memory,cpu,load,network</code>等</li>
+<li>监控应用的状态。</li>
+<li>搜集应用日志，并进行分析和统计。通过日志分析和统计可得到应用的访问统计，异常统计，业务统计。具有进行大规模日志数据的分析和处理能力。</li>
+<li>可制定告警规则。各种监控数据进入系统后，可以根据条件触发告警，实时的将应用异常情况推送到运维、开发或业务人员的IM/SMS上。</li>
+<li>可定制的看板。可以将各种实时统计或报表直观的显示出来。</li>
+</ul>
+<h3 id="可选方案："><a href="#可选方案：" class="headerlink" title="可选方案："></a>可选方案：</h3><p>日志宝，日志易，Logtail(阿里云) 这是我们后面换 <code>Graylog</code>这个是一批黑马 也分享出来。</p>
+<p>优势：使用简单<br>劣势：需上传日志到外部，不灵活，不易扩展，需付费</p>
+<p>flume-ng + kafka + spark streaming + hbase(es/mysql) + zepplin/自研web展示</p>
+<p>优势：<code>灵活，易于扩展，数据分析和处理能力强</code><br>劣势：<code>开发难度高，周期长，维护成本高</code></p>
+<h3 id="ELK优势和劣势："><a href="#ELK优势和劣势：" class="headerlink" title="ELK优势和劣势："></a>ELK优势和劣势：</h3><p>优势：<code>开源成熟解决方案，使用简单，扩展能力强</code><br>劣势：<code>日志分析和处理依靠logstash完成，处理能力较低，无法适应复杂的日志分析场景</code><br>结论：<code>初步选择ELK搭建起监控平台，其能够满足当前较为简单的监控和分析需求。未来如果不能适应，再考虑其他方案。</code></p>
+<p>在本次实践中，我们所部署的ELK分布式日志系统，其架构大致如下：</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/elasticstack_011.png" alt=""><br>首先在各日志产生机上部署收集器<code>Filebeat</code>，然后Filebeat将监控到的log文件变化数据传至Kafka集群，<code>Logstash</code>负责将数据从<code>kafka</code>中拉取下来，并进行字段解析，向<code>Elasticsearch</code>输出结构化后的日志，<code>Kibana负责将Elasticsearch</code>中的数据进行可视化。</p>
+<p>【重点参考】：<a href="http://kibana.logstash.es/content/" target="_blank" rel="external">ELK中文书</a></p>
+<h3 id="一、Elasticsearch的部署"><a href="#一、Elasticsearch的部署" class="headerlink" title="一、Elasticsearch的部署"></a>一、Elasticsearch的部署</h3><p>首先在<code>https://www.elastic.co</code>中找到ES的安装包。下文中所用的安装包均为Linux 64的<code>tar.gz</code>压缩包，解压即可用。官网安装方法:<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html" target="_blank" rel="external">Installation example with tar</a></p>
+<p><code>Elasticsearch</code>至少需要<code>Java 8</code>。在撰写本文时，建议您使用<code>Oracle JDK</code>版本<code>1.8.0_131</code>。Java安装因平台而异，所以我们在这里不再赘述。Oracle的推荐安装文档可以在Oracle的网站上找到。在安装Elasticsearch之前，请先检查您的Java版本，然后再运行（如果需要，请相应地进行安装/升级）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">java -version</div><div class="line"><span class="built_in">echo</span> <span class="variable">$JAVA_HOME</span></div><div class="line"></div><div class="line">curl -L -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.5.2.tar.gz</div><div class="line">tar -xvf elasticsearch-5.5.2.tar.gz</div><div class="line"><span class="built_in">cd</span> elasticsearch-5.5.2/bin</div><div class="line">./elasticsearch <span class="_">-d</span> 后台启动</div><div class="line"></div><div class="line">这里我切换普通es用户启动，记得给予权限。</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[root@logstash ~]<span class="comment"># curl http://localhost:9200?pretty</span></div><div class="line">&#123;</div><div class="line">  <span class="string">"name"</span> : <span class="string">"s-28M-e"</span>,</div><div class="line">  <span class="string">"cluster_name"</span> : <span class="string">"elasticsearch"</span>,</div><div class="line">  <span class="string">"cluster_uuid"</span> : <span class="string">"0U3blQviRcSG_pq8KFQ5EA"</span>,</div><div class="line">  <span class="string">"version"</span> : &#123;</div><div class="line">    <span class="string">"number"</span> : <span class="string">"5.5.2"</span>,</div><div class="line">    <span class="string">"build_hash"</span> : <span class="string">"b2f0c09"</span>,</div><div class="line">    <span class="string">"build_date"</span> : <span class="string">"2017-08-14T12:33:14.154Z"</span>,</div><div class="line">    <span class="string">"build_snapshot"</span> : <span class="literal">false</span>,</div><div class="line">    <span class="string">"lucene_version"</span> : <span class="string">"6.6.0"</span></div><div class="line">  &#125;,</div><div class="line">  <span class="string">"tagline"</span> : <span class="string">"You Know, for Search"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="1-1-Elasticsearch的配置"><a href="#1-1-Elasticsearch的配置" class="headerlink" title="1.1 Elasticsearch的配置"></a>1.1 Elasticsearch的配置</h3><p>ES的配置文件在解压根目录下的config文件夹中，其中elasticsearch.yml是主配置文件。<br>以基本可用作为部署目标，在该文件中仅需要设置几个重要参数：</p>
+<ol>
+<li><code>cluster.name、node.name</code>这两者顾名思义，作为集群和节点的标识符。</li>
+<li><code>Paths部分下的path.data和path.logs</code>，表示ES的数据存放位置，前者为数据存储位置，后者为ES的log存储位置。请尽量放到剩余空间足够的地方，此外在进行调优时有一种方法是将数据放置到SSD上。</li>
+<li><code>bootstrap.memory_lock: true</code>，设为true以确保ES拥有足够的JVM内存。</li>
+<li><code>network.host: localhost和http.port</code>，在此处设置ES对外服务的IP地址与端口<br>设置完以上几项参数后，即可在ES根目录下使用命令./bin/elasticsearch启动ES进程。也有相应的后台启动方式，具体不赘述。</li>
+</ol>
+<p><strong>主要配置文件</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[elasticsearch@logstash elasticsearch-5.5.2]$ cat config/elasticsearch.yml | grep -Pv <span class="string">"^$|^#"</span></div><div class="line">cluster.name: jolly-cluster</div><div class="line">node.name: es-jollychic-node1</div><div class="line">path.data: /data/elasticsearch/es-data</div><div class="line">path.logs: /data/elasticsearch/es-logs</div><div class="line">bootstrap.memory_lock: <span class="literal">true</span></div><div class="line">network.host: 10.11.10.26</div><div class="line">http.port: 9200</div></pre></td></tr></table></figure>
+<p>es 配置完以后启动会出现报错：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">[2017-08-19T22:06:01,722][INFO ][o.e.n.Node               ] [es-jollychic-node1] initializing ...</div><div class="line">[2017-08-19T22:06:01,789][INFO ][o.e.e.NodeEnvironment    ] [es-jollychic-node1] using [1] data paths, mounts [[/data (/dev/mapper/sdb--vg-sdb--lv)]], net usable_space [190.2gb], net total_space [196.7gb], spins? [possibly], types [ext4]</div><div class="line">[2017-08-19T22:06:01,789][INFO ][o.e.e.NodeEnvironment    ] [es-jollychic-node1] heap size [1.9gb], compressed ordinary object pointers [<span class="literal">true</span>]</div><div class="line">[2017-08-19T22:06:01,790][INFO ][o.e.n.Node               ] [es-jollychic-node1] node name [es-jollychic-node1], node ID [yjFGVTcIRg2YQectzevnOA]</div><div class="line">[2017-08-19T22:06:01,790][INFO ][o.e.n.Node               ] [es-jollychic-node1] version[5.5.2], pid[13530], build[b2f0c09/2017-08-14T12:33:14.154Z], OS[Linux/3.10.0-514.26.2.el7.x86_64/amd64], JVM[Oracle Corporation/Java HotSpot(TM) 64-Bit Server VM/1.8.0_144/25.144-b01]</div><div class="line">[2017-08-19T22:06:01,790][INFO ][o.e.n.Node               ] [es-jollychic-node1] JVM arguments [-Xms2g, -Xmx2g, -XX:+UseConcMarkSweepGC, -XX:CMSInitiatingOccupancyFraction=75, -XX:+UseCMSInitiatingOccupancyOnly, -XX:+AlwaysPreTouch, -Xss1m, -Djava.awt.headless=<span class="literal">true</span>, -Dfile.encoding=UTF-8, -Djna.nosys=<span class="literal">true</span>, -Djdk.io.permissionsUseCanonicalPath=<span class="literal">true</span>, -Dio.netty.noUnsafe=<span class="literal">true</span>, -Dio.netty.noKeySetOptimization=<span class="literal">true</span>, -Dio.netty.recycler.maxCapacityPerThread=0, -D<span class="built_in">log</span>4j.shutdownHookEnabled=<span class="literal">false</span>, -D<span class="built_in">log</span>4j2.disable.jmx=<span class="literal">true</span>, -D<span class="built_in">log</span>4j.skipJansi=<span class="literal">true</span>, -XX:+HeapDumpOnOutOfMemoryError, -Des.path.home=/usr/<span class="built_in">local</span>/elasticsearch-5.5.2]</div><div class="line">[2017-08-19T22:06:02,583][INFO ][o.e.p.PluginsService     ] [es-jollychic-node1] loaded module [aggs-matrix-stats]</div><div class="line">[2017-08-19T22:06:02,583][INFO ][o.e.p.PluginsService     ] [es-jollychic-node1] loaded module [ingest-common]</div><div class="line">[2017-08-19T22:06:02,586][INFO ][o.e.p.PluginsService     ] [es-jollychic-node1] loaded module [lang-expression]</div><div class="line">[2017-08-19T22:06:02,586][INFO ][o.e.p.PluginsService     ] [es-jollychic-node1] loaded module [lang-groovy]</div><div class="line">[2017-08-19T22:06:02,586][INFO ][o.e.p.PluginsService     ] [es-jollychic-node1] loaded module [lang-mustache]</div><div class="line">[2017-08-19T22:06:02,587][INFO ][o.e.p.PluginsService     ] [es-jollychic-node1] loaded module [lang-painless]</div><div class="line">[2017-08-19T22:06:02,587][INFO ][o.e.p.PluginsService     ] [es-jollychic-node1] loaded module [parent-join]</div><div class="line">[2017-08-19T22:06:02,587][INFO ][o.e.p.PluginsService     ] [es-jollychic-node1] loaded module [percolator]</div><div class="line">[2017-08-19T22:06:02,587][INFO ][o.e.p.PluginsService     ] [es-jollychic-node1] loaded module [reindex]</div><div class="line">[2017-08-19T22:06:02,587][INFO ][o.e.p.PluginsService     ] [es-jollychic-node1] loaded module [transport-netty3]</div><div class="line">[2017-08-19T22:06:02,587][INFO ][o.e.p.PluginsService     ] [es-jollychic-node1] loaded module [transport-netty4]</div><div class="line">[2017-08-19T22:06:02,587][INFO ][o.e.p.PluginsService     ] [es-jollychic-node1] no plugins loaded</div><div class="line">[2017-08-19T22:06:04,212][INFO ][o.e.d.DiscoveryModule    ] [es-jollychic-node1] using discovery <span class="built_in">type</span> [zen]</div><div class="line">[2017-08-19T22:06:04,635][INFO ][o.e.n.Node               ] [es-jollychic-node1] initialized</div><div class="line">[2017-08-19T22:06:04,635][INFO ][o.e.n.Node               ] [es-jollychic-node1] starting ...</div><div class="line">[2017-08-19T22:06:04,812][INFO ][o.e.t.TransportService   ] [es-jollychic-node1] publish_address &#123;10.11.10.26:9300&#125;, bound_addresses &#123;10.11.10.26:9300&#125;</div><div class="line">[2017-08-19T22:06:04,821][INFO ][o.e.b.BootstrapChecks    ] [es-jollychic-node1] bound or publishing to a non-loopback or non-link-local address, enforcing bootstrap checks</div><div class="line">[2017-08-19T22:06:04,823][ERROR][o.e.b.Bootstrap          ] [es-jollychic-node1] node validation exception</div><div class="line">[1] bootstrap checks failed</div><div class="line">[1]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]</div><div class="line">[2017-08-19T22:06:04,825][INFO ][o.e.n.Node               ] [es-jollychic-node1] stopping ...</div><div class="line">[2017-08-19T22:06:04,840][INFO ][o.e.n.Node               ] [es-jollychic-node1] stopped</div><div class="line">[2017-08-19T22:06:04,840][INFO ][o.e.n.Node               ] [es-jollychic-node1] closing ...</div><div class="line">[2017-08-19T22:06:04,851][INFO ][o.e.n.Node               ] [es-jollychic-node1] closed</div></pre></td></tr></table></figure>
+<ul>
+<li>如果修改完会报错，修改下Linux系统参数。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">max file descriptors [4096] <span class="keyword">for</span> elasticsearch process likely too low, increase to at least [65536]</div><div class="line">max number of threads [1024] <span class="keyword">for</span> user [lishang] likely too low, increase to at least [2048]</div><div class="line">解决：切换到root用户，编辑limits.conf 添加类似如下内容</div><div class="line">vi /etc/security/limits.conf </div><div class="line"></div><div class="line">添加如下内容:</div><div class="line"></div><div class="line">* soft nofile 65536</div><div class="line">* hard nofile 131072</div><div class="line">* soft nproc 2048</div><div class="line">* hard nproc 4096</div><div class="line"></div><div class="line">问题三：max number of threads [1024] <span class="keyword">for</span> user [lish] likely too low, increase to at least [2048]</div><div class="line"></div><div class="line">解决：切换到root用户，进入limits.d目录下修改配置文件。</div><div class="line">vi /etc/security/limits.d/90-nproc.conf </div><div class="line">修改如下内容：</div><div class="line"></div><div class="line">* soft nproc 1024</div><div class="line"><span class="comment">#修改为</span></div><div class="line">* soft nproc 2048</div><div class="line"></div><div class="line">问题四：max virtual memory areas vm.max_map_count [65530] likely too low, increase to at least [262144]</div><div class="line"></div><div class="line">解决：切换到root用户修改配置sysctl.conf</div><div class="line"></div><div class="line">vi /etc/sysctl.conf </div><div class="line">添加下面配置：</div><div class="line">vm.max_map_count=655360</div><div class="line">并执行命令：</div><div class="line">sysctl -p</div><div class="line">然后，重新启动elasticsearch，即可启动成功。</div></pre></td></tr></table></figure>
+<h3 id="集群健康检查-Cluster-Health"><a href="#集群健康检查-Cluster-Health" class="headerlink" title="集群健康检查 Cluster Health"></a>集群健康检查 Cluster Health</h3><p>要检查群集的运行状况，我们将使用<a href="https://www.elastic.co/guide/en/elasticsearch/reference/5.5/cat.html" target="_blank" rel="external">_catAPI</a>。您可以在<a href="https://www.elastic.co/guide/en/kibana/5.5/console-kibana.html" target="_blank" rel="external">Kibana</a>的控制台中运行以下命令，方法是 单击“查看控制台”或curl单击下面的“复制为CURL”链接并将其粘贴到终端中。</p>
+<p><strong>创建索引：</strong><br>第一个命令使用PUT创建了一个叫做“customer”的索引。我们简单地将pretty附加到调用的尾部，使其以美观的形式打印出JSON响应 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -XPUT <span class="string">'http://10.11.10.26:9200/customer?pretty'</span></div></pre></td></tr></table></figure>
+<p>我们也可以得到我们集群中节点的列表如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@logstash ~]<span class="comment">#  curl -XGET http://10.11.10.26:9200/_cat/nodes?v</span></div><div class="line">ip          heap.percent ram.percent cpu load_1m load_5m load_15m node.role master name</div><div class="line">10.11.10.26           14          96  18    0.02    0.60     0.58 mdi       *      es-jollychic-node1</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@logstash ~]<span class="comment">#  curl -XGET http://10.11.10.26:9200/_cat/master?help</span></div><div class="line">id   |   | node id</div><div class="line">host | h | host name</div><div class="line">ip   |   | ip address</div><div class="line">node | n | node name</div></pre></td></tr></table></figure>
+<p>查看所有连接的索引：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">[elasticsearch@logstash ~]$ curl <span class="_">-s</span>XGET <span class="string">"http://<span class="variable">$(hostname)</span>:9200/_cat/indices?v"</span></div><div class="line">health status index                                     uuid                   pri rep docs.count docs.deleted store.size pri.store.size</div><div class="line">yellow open   <span class="built_in">log</span>-wms31-web-product-2017.08.25          LIKJyNXrRcmQSt8aXRoyLg   5   1        614            0    361.6kb        361.6kb</div><div class="line">yellow open   <span class="built_in">log</span>-payment-center-product-2017.08.26     w-ucGJUoTDOdhEkfrq9g-g   5   1    1712756            0    808.4mb        808.4mb</div><div class="line">yellow open   .kibana                                   p9MnvKHRS6K_jCeBtB7CXA   1   1         18            1     77.8kb         77.8kb</div><div class="line">yellow open   <span class="built_in">log</span>-jcm-product-2017.08.25                Cs0XHa-xRQOHxt1-HYz1Xw   5   1   46303455            0      8.1gb          8.1gb</div><div class="line">yellow open   <span class="built_in">log</span>-spm_mq-product-2017.08.25             FXYNV08zQselbnVKK7k01g   5   1     465127            0    148.1mb        148.1mb</div><div class="line">yellow open   <span class="built_in">log</span>-erpsearchservice-product-2017.08.26   Z4ECtHCJS2uma_UTxJqDLw   5   1       2217            0     15.3mb         15.3mb</div><div class="line">yellow open   <span class="built_in">log</span>-wms31-web-product-2017.08.24          mYAhjM5UQFyIZAN8nFeYQQ   5   1     951572            0    237.5mb        237.5mb</div><div class="line">yellow open   <span class="built_in">log</span>-spm_mq-product-2017.08.26             -PJCMMVqRwWXux8V5SRbCA   5   1    1457469            0    503.1mb        503.1mb</div><div class="line">yellow open   <span class="built_in">log</span>-jcm-product-2017.08.26                Jp7jQdciSMyrDmc82Y8YPQ   5   1   12753864            0      1.8gb          1.8gb</div><div class="line">yellow open   <span class="built_in">log</span>-gp-export-product-2017.08.26          tsFNVopYRXCM4vrCfU7IbQ   5   1     809526            0    169.8mb        169.8mb</div><div class="line">yellow open   <span class="built_in">log</span>-mq-product-2017.08.25                 dxXemS5RR_OpohepAUNcfg   5   1   32670880            0      5.6gb          5.6gb</div><div class="line">yellow open   <span class="built_in">log</span>-wms31-pda-product-2017.08.26          nE6s79S4RN2qIFkUt-FJsg   5   1       2323            0      1.6mb          1.6mb</div><div class="line">yellow open   <span class="built_in">log</span>-erpsearchservice-product-2017.08.25   Mj3-2ZrBRSuJaZQebPqcWA   5   1        369            0    390.6kb        390.6kb</div><div class="line">yellow open   <span class="built_in">log</span>-wms31-web-product-2017.08.26          X3GUYOZtTW6g1eGV_YW0HQ   5   1     275155            0     65.9mb         65.9mb</div><div class="line">yellow open   <span class="built_in">log</span>-mq-product-2017.08.26                 PwkQ9eOcQl2ie0f2fpnVRg   5   1   12519174            0      2.5gb          2.5gb</div><div class="line">yellow open   <span class="built_in">log</span>-wms31_mq_consumer-product-2017.08.26  iG3bCUybSamJC9l58RlbNw   5   1      25703            0     13.1mb         13.1mb</div><div class="line">yellow open   <span class="built_in">log</span>-spm-product-2017.08.25                fr2fFfTKTOSl8Pm7qfU7eA   5   1        438            0    436.8kb        436.8kb</div><div class="line">yellow open   <span class="built_in">log</span>-dataexporttask-product-2017.08.26     01lRzmfYTDaFj9nXvTnmEg   5   1    1283861            0    145.2mb        145.2mb</div><div class="line">yellow open   <span class="built_in">log</span>-spm-task-scheduler-product-2017.08.26 7We8iXEHSYmk168PO6zUVA   5   1     463587            0    108.9mb        108.9mb</div><div class="line">yellow open   <span class="built_in">log</span>-wms-product-2017.08.25                XvyfywXmTYybccS1GLIkAw   5   1          1            0      8.1kb          8.1kb</div><div class="line">yellow open   <span class="built_in">log</span>-payment-center-product-2017.08.25     wUlvN1VhQ5Wb0pFgg1BkgA   5   1     691080            0    332.5mb        332.5mb</div><div class="line">yellow open   <span class="built_in">log</span>-dataexport-product-2017.08.26         SOh6vF8LQnOOWLsI9R_CcA   5   1     850019            0    499.5mb        499.5mb</div><div class="line">yellow open   <span class="built_in">log</span>-image-finder-product-2017.08.26       OGkYlpkzTPKReMsArJoyVA   5   1       9752            0      2.2mb          2.2mb</div><div class="line">yellow open   <span class="built_in">log</span>-gplatform_v2-product-2017.08.26       XEp5aM23SfaHfZ8qkgMjQw   5   1       8521            0      2.8mb          2.8mb</div><div class="line">yellow open   <span class="built_in">log</span>-payment-center-product-2017.08.24     4NDXMAQKRQqljZ1pcGp8yQ   5   1      70898            0       39mb           39mb</div><div class="line">yellow open   <span class="built_in">log</span>-wms31-pda-product-2017.08.25          caYLQMwlSZmBYl0YeZohpQ   5   1        237            0    214.8kb        214.8kb</div><div class="line">yellow open   <span class="built_in">log</span>-wms-product-2017.08.22                3NLXCSLyQJ2JHoCCeS41xQ   5   1          1            0      8.1kb          8.1kb</div></pre></td></tr></table></figure>
+<p>删除指定索引：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -XDELETE <span class="string">"http://<span class="variable">$(hostname)</span>:9200/log-wms-product-2017.08.19"</span></div></pre></td></tr></table></figure>
+<h3 id="1-2-Elasticsearch-5-x的Bootstrap-Checks"><a href="#1-2-Elasticsearch-5-x的Bootstrap-Checks" class="headerlink" title="1.2 Elasticsearch 5.x的Bootstrap Checks"></a>1.2 Elasticsearch 5.x的Bootstrap Checks</h3><p>Elasticsearch在升级到5.x版本后，启动时会强制执行<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html" target="_blank" rel="external">Bootstrap Checks</a>(官方文档)<br>其中经常性的问题是需要增大系统可使用的最大FileDescriptors数（参考<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/file-descriptors.html）" target="_blank" rel="external">https://www.elastic.co/guide/en/elasticsearch/reference/current/file-descriptors.html）</a><br>剩下的其他问题可以查询官方文档。</p>
+<h3 id="1-3-Elasticsearch的X-pack插件"><a href="#1-3-Elasticsearch的X-pack插件" class="headerlink" title="1.3 Elasticsearch的X-pack插件"></a>1.3 Elasticsearch的X-pack插件</h3><p><code>X-pack</code>是官方提供的一系列集成插件，包括了<code>alert、monitor、secure</code>等功能，十分强大（但是并不免费）。<br>在ELK 5.0中安装大部分插件仅需要输入命令：<code>./bin/elasticsearch-plugin install &lt;plugin name&gt;</code>即可<br><code>X-pack</code>插件安装后会自动开启ELK的权限功能，需要注意的是如果启用了<code>X-pack</code>，则在向ES输入数据或发起API请求时，均需要附带相应的auth信息。<br>考虑到X-pack并非免费且价格昂贵，暂时不安装X-pack包。</p>
+<h3 id="1-4-Elasticsearch的Head插件"><a href="#1-4-Elasticsearch的Head插件" class="headerlink" title="1.4 Elasticsearch的Head插件"></a>1.4 Elasticsearch的Head插件</h3><p><code>Head</code>插件作为<code>ELK 2.x</code>版本中较为通用的前端管理插件，在<code>ELK 5.x</code>版本中无法直接使用<code>./bin/elasticsearch-plugin install head</code>的方式安装，但是可以采取standalone的方式进行运行。</p>
+<p>参考官方文档：<a href="https://github.com/mobz/elasticsearch-head#running-with-built-in-server" target="_blank" rel="external">elasticsearch-head</a></p>
+<p>一篇较好的<a href="http://www.cnblogs.com/xing901022/p/6030296.html" target="_blank" rel="external">ES 5.x安装Head的博文：</a></p>
+<p>【特别注意】：暂时没有找到x-pack和head相互兼容的方法，目前由于认证的问题，如果<code>启用了x-pack的secure</code>功能，会导致head插件无法连接ES集群。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">git <span class="built_in">clone</span> git://github.com/mobz/elasticsearch-head.git</div><div class="line"><span class="built_in">cd</span> elasticsearch-head</div><div class="line">npm install</div><div class="line">npm run start</div><div class="line">open http://localhost:9100/</div></pre></td></tr></table></figure>
+<ul>
+<li>修改head目录下的Gruntfile.js配置，head默认监听127.0.0.1 新增：hostname: ‘0.0.0.0’</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># vim Gruntfile.js</span></div><div class="line">                connect: &#123;</div><div class="line">                        server: &#123;</div><div class="line">                                options: &#123;</div><div class="line">                                        hostname: <span class="string">'0.0.0.0'</span>,</div><div class="line">                                        port: 9100,</div><div class="line">                                        base: <span class="string">'.'</span>,</div><div class="line">                                        keepalive: <span class="literal">true</span></div><div class="line">                                &#125;</div><div class="line">                        &#125;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">        &#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>修改elasticsearch配置文件 elasticsearch.yml</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">http.cors.enabled: <span class="literal">true</span></div><div class="line">http.cors.allow-origin: <span class="string">"*"</span></div></pre></td></tr></table></figure>
+<ul>
+<li>重启elasticsearch，并启动node </li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ln <span class="_">-s</span> /usr/<span class="built_in">local</span>/elasticsearch-head/node_modules/grunt/bin/grunt /usr/bin/grunt</div><div class="line"></div><div class="line">后台启动：grunt server &amp;</div></pre></td></tr></table></figure>
+<ul>
+<li>访问效果：</li>
+</ul>
+<p><img src="media/15033045476000.jpg" alt=""></p>
+<h3 id="1-5-Elasticsearch-Kibana"><a href="#1-5-Elasticsearch-Kibana" class="headerlink" title="1.5 Elasticsearch-Kibana"></a>1.5 Elasticsearch-Kibana</h3><p>RPM方法安装参考官网文档：<a href="https://www.elastic.co/guide/en/kibana/current/rpm.html#rpm" target="_blank" rel="external">使用RPM 编辑安装Kibana</a></p>
+<p>Running Kibana on Docker: <a href="https://www.elastic.co/guide/en/kibana/current/_pulling_the_image.html" target="_blank" rel="external">Docker 搭建方法</a></p>
+<p>tar方式安装Kibana </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">wget https://artifacts.elastic.co/downloads/kibana/kibana-5.5.2-linux-x86_64.tar.gz</div><div class="line">sha1sum kibana-5.5.2-linux-x86_64.tar.gz </div><div class="line">tar -xzf kibana-5.5.2-linux-x86_64.tar.gz</div><div class="line"><span class="built_in">cd</span> kibana/</div></pre></td></tr></table></figure>
+<h3 id="通过配置文件编辑配置Kibana"><a href="#通过配置文件编辑配置Kibana" class="headerlink" title="通过配置文件编辑配置Kibana"></a>通过配置文件编辑配置Kibana</h3><p><code>kibana.yml</code>启动时Kibana服务器从文件读取属性。默认设置配置Kibana运行<code>localhost:5601</code>。要更改主机或端口号，或者连接到在其他机器上运行的<code>Elasticsearch</code>，您需要更新kibana.yml文件。您还可以启用SSL并设置各种其他选项。</p>
+<p>kibana.yml 全部基本配置 ：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">server.port:</div><div class="line">默认值：5601 Kibana由后端服务器提供服务。此设置指定要使用的端口。</div><div class="line"></div><div class="line">server.host:</div><div class="line">默认值：“localhost”此设置指定后端服务器的主机。</div><div class="line"></div><div class="line">server.basePath:</div><div class="line">如果您在代理服务器后面运行，则允许您指定安装Kibana的路径。这仅影响由Kibana生成的URL，您的代理预期在将请求转发给Kibana之前删除basePath值。此设置无法以斜杠（/）结尾。</div><div class="line"></div><div class="line">server.maxPayloadBytes:</div><div class="line">默认值：1048576传入服务器请求的最大有效负载大小（以字节为单位）。</div><div class="line"></div><div class="line">server.name:</div><div class="line">默认值：“your-hostname”用于标识此Kibana实例的人性化显示名称。</div><div class="line"></div><div class="line">server.defaultRoute:</div><div class="line">默认值：“/ app / kibana”此设置指定打开Kibana时的默认路由。打开Kibana时，您可以使用此设置修改着陆页。</div><div class="line"></div><div class="line">elasticsearch.url:</div><div class="line">默认值：“http：// localhost：9200”用于所有查询的Elasticsearch实例的URL。</div><div class="line"></div><div class="line">elasticsearch.preserveHost:</div><div class="line">默认值：<span class="literal">true</span>当此设置的值为真时，Kibana使用server.host设置中指定的主机名。当此设置的值为<span class="literal">false</span>，Kibana使用连接到此Kibana实例的主机的主机名。</div><div class="line"></div><div class="line">kibana.index:</div><div class="line">默认：“.kibana” Kibana使用Elasticsearch中的索引来存储已保存的搜索，可视化和仪表板。如果索引不存在，Kibana将创建一个新的索引。</div><div class="line"></div><div class="line">kibana.defaultAppId:</div><div class="line">默认值：“discover”要加载的默认应用程序。</div><div class="line"></div><div class="line">tilemap.url:</div><div class="line">Kibana用于在tilemap可视化中显示地图图块的tile服务的URL。默认情况下，Kibana从外部元数据服务读取此URL，但用户仍然可以覆盖此参数以使用自己的Tile Map Service。例如：<span class="string">"https://tiles.elastic.co/v2/default/&#123;z&#125;/&#123;x&#125;/&#123;y&#125;.png?elastic_tile_service_tos=agree&amp;my_app_name=kibana"</span></div><div class="line"></div><div class="line">tilemap.options.minZoom:</div><div class="line">默认值：1最小缩放级别。</div><div class="line"></div><div class="line">tilemap.options.maxZoom:</div><div class="line">默认值：10最大缩放级别。</div><div class="line"></div><div class="line">tilemap.options.attribution:</div><div class="line">默认值：<span class="string">"© [Elastic Maps Service](https://www.elastic.co/elastic-maps-service)"</span>地图属性字符串。</div><div class="line"></div><div class="line">regionmap</div><div class="line">指定用于区域映射可视化的其他矢量图层。每个层对象都指向一个外部矢量文件，其中包含一个geojson FeatureCollection。该文件必须使用WGS84坐标参考系，并且只包括多边形。如果文件托管在与Kibana不同的域上，则服务器需要启用CORS，因此Kibana可以下载该文件。url字段也用作文件的唯一标识符。每个图层可以包含多个字段，以指示要公开的geojson要素的哪些属性。field.description是在Region Map可视化的字段菜单中显示的人类可读文本。也可以添加可选的归因值。以下示例显示有效的regionmap配置。</div><div class="line"></div><div class="line">regionmap：</div><div class="line">  层：</div><div class="line">     - 名称：“法国部”</div><div class="line">       url：“http://my.cors.enabled.server.org/france_departements.geojson”</div><div class="line">       归因：“INRAP”</div><div class="line">       字段：</div><div class="line">          - 名称：“部门”</div><div class="line">            说明：“全部名称”</div><div class="line">          - 名称：“INSEE”</div><div class="line">            说明：“INSEE数字标识符”</div><div class="line"></div><div class="line">elasticsearch.username: 和 elasticsearch.password:</div><div class="line">如果您的Elasticsearch受到基本身份验证的保护，这些设置将提供Kibana服务器在启动时对Kibana索引执行维护所用的用户名和密码。您的Kibana用户仍然需要使用通过Kibana服务器代理的Elasticsearch进行身份验证。</div><div class="line"></div><div class="line">server.ssl.enabled</div><div class="line">默认值：“<span class="literal">false</span>”启用从Kibana服务器到浏览器的传出请求的SSL。当设置为<span class="literal">true</span>，</div><div class="line">server.ssl.certificate并server.ssl.key要求</div><div class="line"></div><div class="line">server.ssl.certificate: 和 server.ssl.key:</div><div class="line">路由到PEM格式的SSL证书和SSL密钥文件。</div><div class="line"></div><div class="line">server.ssl.keyPassphrase</div><div class="line">将用于解密私钥的密码短语。该值是可选的，因为密钥可能未被加密。</div><div class="line"></div><div class="line">server.ssl.certificateAuthorities</div><div class="line">列出可信赖的PEM编码证书文件的路径。</div><div class="line"></div><div class="line">server.ssl.supportedProtocols</div><div class="line">默认值：TLSv1，TLSv1.1，TLSv1.2 支持的版本协议。有效协议：TLSv1，TLSv1.1，TLSv1.2</div><div class="line"></div><div class="line">server.ssl.cipherSuites</div><div class="line">默认值：ECDHE-RSA-AES128-GCM-SHA256，ECDHE-ECDSA-AES128-GCM-SHA256，ECDHE-RSA-AES256-GCM-SHA384，ECDHE-ECDSA-AES256-GCM-SHA384，DHE-RSA-AES128-GCM- SHA256，ECDHE-RSA-AES128-SHA256，DHE-RSA-AES128-SHA256，ECDHE-RSA-AES256-SHA384，DHE-RSA-AES256-SHA384，ECDHE-RSA-AES256-SHA256，DHE-RSA-AES256-SHA256， HIGH，！aNULL，！eNULL，！EXPORT，！DES，！RC4，！MD5，！PSK，！SRP，！CAMELLIA。格式和有效选项的详细信息可通过[OpenSSL密码列表格式文档]（ https://www.openssl.org/docs/man1.0.2/apps/ciphers.html<span class="comment">#CIPHER-LIST-FORMAT）获得。</span></div><div class="line"></div><div class="line"></div><div class="line">elasticsearch.ssl.certificate: 和 elasticsearch.ssl.key:</div><div class="line">提供PEM格式SSL证书和密钥文件路径的可选设置。这些文件验证您的Elasticsearch后端使用相同的密钥文件。</div><div class="line"></div><div class="line">elasticsearch.ssl.keyPassphrase</div><div class="line">将用于解密私钥的密码短语。该值是可选的，因为密钥可能未被加密。</div><div class="line"></div><div class="line">elasticsearch.ssl.certificateAuthorities:</div><div class="line">可选设置，使您能够指定Elasticsearch实例的证书颁发机构的PEM文件的路径列表。</div><div class="line"></div><div class="line">elasticsearch.ssl.verificationMode:</div><div class="line">默认值：full控制证书的验证。有效值是none，certificate和full。 full执行主机名验证，certificate不执行。</div><div class="line"></div><div class="line">elasticsearch.pingTimeout:</div><div class="line">默认值：elasticsearch.requestTimeout设置时间（以毫秒为单位）等待弹性搜索响应ping的值。</div><div class="line"></div><div class="line">elasticsearch.requestTimeout:</div><div class="line">默认值：30000等待后端或弹性搜索的响应的时间（毫秒）。该值必须为正整数。</div><div class="line"></div><div class="line">elasticsearch.requestHeadersWhitelist:</div><div class="line">默认值：[ <span class="string">'authorization'</span> ]要发送到Elasticsearch的Kibana客户端标题列表。要发送没有客户端标题，请将此值设置为[]（空列表）。</div><div class="line"></div><div class="line">elasticsearch.customHeaders:</div><div class="line">默认值：&#123;&#125;要发送到Elasticsearch的标题名称和值。无论elasticsearch.requestHeadersWhitelist配置如何，客户端头都不能覆盖任何自定义头文件。</div><div class="line"></div><div class="line">elasticsearch.shardTimeout:</div><div class="line">默认值：0 Elasticsearch等待分片响应的时间（以毫秒为单位）。设置为0以禁用。</div><div class="line"></div><div class="line">elasticsearch.startupTimeout:</div><div class="line">默认值：5000重试之前等待Kibana启动时的弹性搜索的时间（以毫秒为单位）。</div><div class="line"></div><div class="line">pid.file:</div><div class="line">指定Kibana创建进程ID文件的路径。</div><div class="line"></div><div class="line">logging.dest:</div><div class="line">默认值：stdout允许您指定Kibana存储日志输出的文件。</div><div class="line"></div><div class="line">logging.silent:</div><div class="line">默认值：<span class="literal">false</span>将此设置的值设置<span class="literal">true</span>为禁止所有日志输出。</div><div class="line"></div><div class="line">logging.quiet:</div><div class="line">默认值：<span class="literal">false</span>将此设置的值设置<span class="literal">true</span>为禁止除错误消息之外的所有日志输出。</div><div class="line"></div><div class="line">logging.verbose</div><div class="line">默认值：<span class="literal">false</span>将此设置的值设置为<span class="literal">true</span>记录所有事件，包括系统使用情况信息和所有请求。</div><div class="line"></div><div class="line">ops.interval</div><div class="line">默认值：5000设置采样系统和进程性能指标的间隔（以毫秒为单位）。最小值为100。</div><div class="line"></div><div class="line">status.allowAnonymous</div><div class="line">默认值：<span class="literal">false</span>如果启用了身份验证，<span class="literal">true</span>请将其设置为允许未经身份验证的用户访问Kibana服务器状态API和状态页面。</div><div class="line"></div><div class="line">cpu.cgroup.path.override</div><div class="line">覆盖cgroup cpu路径，以不一致的方式安装 /proc/self/cgroup</div><div class="line"></div><div class="line">cpuacct.cgroup.path.override</div><div class="line">在与不一致的方式安装时，覆盖cgroup cpuacct路径 /proc/self/cgroup</div><div class="line"></div><div class="line">console.enabled</div><div class="line">默认值：<span class="literal">true</span>设置为<span class="literal">false</span>以禁用控制台。切换此操作将导致服务器在下次启动时重新生成资源，这可能会在页面开始投放之前造成延迟。</div><div class="line"></div><div class="line">elasticsearch.tribe.url:</div><div class="line">用于所有查询的Elasticsearch部落实例的可选URL。</div><div class="line"></div><div class="line">elasticsearch.tribe.username: 和 elasticsearch.tribe.password:</div><div class="line">如果您的Elasticsearch受到基本身份验证的保护，这些设置将提供Kibana服务器在启动时对Kibana索引执行维护所用的用户名和密码。您的Kibana用户仍然需要使用通过Kibana服务器代理的Elasticsearch进行身份验证。</div><div class="line"></div><div class="line">elasticsearch.tribe.ssl.certificate: 和 elasticsearch.tribe.ssl.key:</div><div class="line">提供PEM格式SSL证书和密钥文件路径的可选设置。这些文件验证您的Elasticsearch后端使用相同的密钥文件。</div><div class="line"></div><div class="line">elasticsearch.tribe.ssl.keyPassphrase</div><div class="line">将用于解密私钥的密码短语。该值是可选的，因为密钥可能未被加密。</div><div class="line"></div><div class="line">elasticsearch.tribe.ssl.certificateAuthorities:</div><div class="line">可选设置，使您能够为您的部落Elasticsearch实例的证书颁发机构指定PEM文件的路径。</div><div class="line"></div><div class="line">elasticsearch.tribe.ssl.verificationMode:</div><div class="line">默认值：full控制证书的验证。有效值是none，certificate和full。full执行主机名验证，</div><div class="line">certificate不执行。</div><div class="line"></div><div class="line">elasticsearch.tribe.pingTimeout:</div><div class="line">默认值：elasticsearch.tribe.requestTimeout设置时间（以毫秒为单位）等待弹性搜索响应ping的值。</div><div class="line"></div><div class="line">elasticsearch.tribe.requestTimeout:</div><div class="line">默认值：30000等待后端或弹性搜索的响应的时间（毫秒）。该值必须为正整数。</div><div class="line"></div><div class="line">elasticsearch.tribe.requestHeadersWhitelist:</div><div class="line">默认值：[ <span class="string">'authorization'</span> ]要发送到Elasticsearch的Kibana客户端标题列表。要发送没有客户端标题，请将此值设置为[]（空列表）。</div><div class="line"></div><div class="line">elasticsearch.tribe.customHeaders:</div><div class="line">默认值：&#123;&#125;要发送到Elasticsearch的标题名称和值。无论</div><div class="line">elasticsearch.tribe.requestHeadersWhitelist配置如何，客户端头都不能覆盖任何自定义头文件。</div></pre></td></tr></table></figure>
+<p>根据不同的需求配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@logstash config]<span class="comment"># cat kibana.yml | grep -Pv "^#|^$"</span></div><div class="line">server.port: 5601</div><div class="line">server.host: <span class="string">"10.11.10.26"</span></div><div class="line">server.name: <span class="string">"jollychic-log"</span></div><div class="line">elasticsearch.url: <span class="string">"http://10.11.10.26:9200"</span></div><div class="line">elasticsearch.preserveHost: <span class="literal">true</span></div><div class="line">kibana.index: <span class="string">".kibana"</span></div></pre></td></tr></table></figure>
+<p>配置好配置，启动服务：<code>./bin/kibana &amp; 后台启动</code></p>
+<h3 id="1-6访问Kibana"><a href="#1-6访问Kibana" class="headerlink" title="1.6访问Kibana"></a>1.6访问Kibana</h3><ul>
+<li>检查Kibana状态</li>
+</ul>
+<p>您可以通过导航到达Kibana服务器的状态页面localhost:5601/status。状态页面显示有关服务器资源使用情况的信息，并列出已安装的插件。</p>
+<p><code>http://10.11.10.26:5601/status</code></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/elasticstack_022.png" alt=""></p>
+<ul>
+<li>配置索引模式<br>指定与一个或多个弹性搜索索引的名称相匹配的索引模式。默认情况下，Kibana猜测您正在使用由Logstash提供给Elasticsearch的数据。如果是这样，您可以使用默认值logstash-<em>作为索引模式。星号（</em>）匹配索引名称中的零个或多个字符。如果您的弹性搜索索引遵循其他命名约定，请输入适当的模式。“模式”也可以简单地是单个索引的名称。<br>选择包含要用于执行基于时间的比较的时间戳的索引字段。Kibana读取索引映射以列出包含时间戳的所有字段。如果您的索引没有基于时间的数据，请禁用索引包含基于时间的事件选项。</li>
+</ul>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/elasticstack_033.png" alt=""></p>
+<ul>
+<li>选择索引查看日志</li>
+</ul>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/elasticstack_044.png" alt=""></p>
+<p>官网中在生产环境中使用Kibana 说的很详细：<a href="https://www.elastic.co/guide/en/kibana/current/production.html" target="_blank" rel="external">在生产环境中使用Kibana</a></p>
+<p>上面是我logstash已经搭建配置好索引才能获取到。下面讲如何部署logstash</p>
+<h2 id="二、Logstash的部署"><a href="#二、Logstash的部署" class="headerlink" title="二、Logstash的部署"></a>二、Logstash的部署</h2><p>与Elasticsearch类似，在官网下载压缩包后，解压即可用。</p>
+<p>在非高级场景下，Logstash本身不需要进行太多的配置（配置文件在logstash根目录下的<code>./config/logstash.yml</code>），高级场景请参考官方文档。<br>logstash的启动命令为:<code>./bin/logstash -f &lt;pipeline_conf_file&gt; --config.reload.automatic</code>，其中-f指定了pipeline配置文件的位置<code>，--config.reload.automatic</code>指定了pipeline配置文件可以进行热加载。<br>本次我们使用Logstash作为日志解析模块（Logstash其实也可以作为日志采集器），重点需要配置pipeline的三大部分：<code>input、filter和output。pipeline</code>文件需要自己创建。</p>
+<h3 id="Installing-Logstash"><a href="#Installing-Logstash" class="headerlink" title="Installing Logstash"></a>Installing Logstash</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">java version <span class="string">"1.8.0_65"</span></div><div class="line">Java(TM) SE Runtime Environment (build 1.8.0_65-b17)</div><div class="line">Java HotSpot(TM) 64-Bit Server VM (build 25.65-b01, mixed mode)</div><div class="line"></div><div class="line">rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch</div><div class="line"></div><div class="line">vim /etc/yum.repos.d/logstash.repo</div><div class="line">[logstash-5.x]</div><div class="line">name=Elastic repository <span class="keyword">for</span> 5.x packages</div><div class="line">baseurl=https://artifacts.elastic.co/packages/5.x/yum</div><div class="line">gpgcheck=1</div><div class="line">gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch</div><div class="line">enabled=1</div><div class="line">autorefresh=1</div><div class="line"><span class="built_in">type</span>=rpm-md</div><div class="line"></div><div class="line">sudo yum install logstash</div></pre></td></tr></table></figure>
+<p>首先，我们通过运行最基本的<code>Logstash</code>管道来测试您的<code>Logstash</code>安装。</p>
+<p><code>Logstash</code>管道有两个必需的元素，<code>input</code>并且<code>output</code>，和一个可选的元素，<code>filter</code>。输入插件消耗来自源的数据，过滤器插件会按照您指定的方式修改数据，并且输出插件将数据写入到目的地。</p>
+<p><img src="https://www.elastic.co/guide/en/logstash/current/static/images/basic_logstash_pipeline.png" alt=""></p>
+<p>要测试您的Logstash安装，运行最基本的Logstash管道。例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> logstash-5.5.2</div><div class="line">bin / logstash <span class="_">-e</span><span class="string">'input &#123;stdin &#123;&#125;&#125; output &#123;stdout &#123;&#125;&#125;'</span></div></pre></td></tr></table></figure>
+<p>该<code>-e</code>标志使您能够直接从命令行指定配置。在命令行中指定配置可以快速测试配置，而无需在迭代之间编辑文件。示例中的流水线从标准输入端输入，<code>stdin并stdout</code>以结构化格式将该输入移动到标准输出 。</p>
+<p>启动<code>Logstash</code>后，等到看到<code>“Pipeline main started”</code>，然后hello world在命令提示符下输入：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">hello world</div><div class="line">2017-07-21T01:22:14.405+0000 0.0.0.0 hello world</div></pre></td></tr></table></figure>
+<p>Logstash将时间戳和IP地址信息添加到消息中。通过在运行Logstash的shell中发出CTRL-D命令退出Logstash 。</p>
+<p>logstash的配置片段：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">#character at the beginning of a line indicates a comment. Use</span></div><div class="line"><span class="comment"># comments to describe your configuration.</span></div><div class="line">input &#123;</div><div class="line">    udp &#123;</div><div class="line">        port =&gt; 25826</div><div class="line">        buffer_size =&gt; 1452</div><div class="line">        workers =&gt; 3          <span class="comment"># Default is 2</span></div><div class="line">        queue_size =&gt; 30000   <span class="comment"># Default is 2000</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">output &#123;</div><div class="line">  elasticsearch &#123;</div><div class="line">    hosts =&gt; [ <span class="string">"10.11.10.26:9200"</span> ]</div><div class="line">    user =&gt; logstash</div><div class="line">    password =&gt; logstash</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>☺待整理续写~~</strong></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/08/18/Web服务技术/tomcat/tomcat Java heap space 内存溢出/" data-toggle="tooltip" data-placement="top" title="tomcat Java heap space 内存溢出">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/07/30/日志分析平台/Elasticsearch/研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？/" data-toggle="tooltip" data-placement="top" title="研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Log analysis platform" title="Log analysis platform">Log analysis platform</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Jolly-Yancy&#39;s blog 2017 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
