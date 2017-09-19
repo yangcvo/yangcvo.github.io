@@ -90,13 +90,6 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
                             <a href="/about/About-me.html">About</a>
                         </li>
                         
@@ -105,6 +98,13 @@
                         
                         <li>
                             <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -247,7 +247,7 @@
 <hr>
 <h3 id="设置开机自动启动"><a href="#设置开机自动启动" class="headerlink" title="设置开机自动启动"></a>设置开机自动启动</h3><p>1.写个启动脚本放到/etc/rc.d/init.d/zookeeper</p>
 <p>这里touch zookeeper &amp;&amp; chmod +x zookeeper &amp;&amp; vim zookeeper</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">!/bin/bash</div><div class="line"><span class="comment">#chkconfig:2345 20 90</span></div><div class="line"><span class="comment">#description:zookeeper</span></div><div class="line"><span class="comment">#processname:zookeeper</span></div><div class="line"><span class="built_in">export</span> JAVA_HOME=/srv/jdk1.8.0_66</div><div class="line"><span class="built_in">export</span> PATH=<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$PATH</span></div><div class="line"><span class="keyword">case</span> <span class="variable">$1</span> <span class="keyword">in</span></div><div class="line">         start) su root /srv/zookeeper-3.3.6/bin/zkServer.sh start;;</div><div class="line">         stop) su root /srv/zookeeper-3.3.6/bin/zkServer.sh stop;;</div><div class="line">         status) su root /srv/zookeeper-3.3.6/bin/zkServer.sh status;;</div><div class="line">         restart) su root /srv/zookeeper-3.3.6/bin/zkServer.shrestart;;</div><div class="line">         *)  <span class="built_in">echo</span> <span class="string">"requirestart|stop|status|restart"</span>  ;;</div><div class="line"><span class="keyword">esac</span></div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">!/bin/bash</div><div class="line"><span class="comment">#chkconfig:2345 20 90</span></div><div class="line"><span class="comment">#description:zookeeper</span></div><div class="line"><span class="comment">#processname:zookeeper</span></div><div class="line"><span class="built_in">export</span> JAVA_HOME=/srv/jdk1.8.0_66</div><div class="line"><span class="built_in">export</span> PATH=<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$PATH</span></div><div class="line"><span class="keyword">case</span> <span class="variable">$1</span> <span class="keyword">in</span></div><div class="line">    start) su root /srv/zookeeper-3.3.6/bin/zkServer.sh start;;</div><div class="line">    stop) su root /srv/zookeeper-3.3.6/bin/zkServer.sh stop;;</div><div class="line">    status) su root /srv/zookeeper-3.3.6/bin/zkServer.sh status;;</div><div class="line">    restart) su root /srv/zookeeper-3.3.6/bin/zkServer.shrestart;;</div><div class="line">    *)  <span class="built_in">echo</span> <span class="string">"requirestart|stop|status|restart"</span>;;</div><div class="line"><span class="keyword">esac</span></div></pre></td></tr></table></figure>
 <p>2.设置开机启动</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chkconfig zookeeper on</div></pre></td></tr></table></figure>
 <p>3.验证</p>
@@ -293,7 +293,7 @@
                     
                     
                         <li class="next">
-                            <a href="/2017/05/08/Bigdata-hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/" data-toggle="tooltip" data-placement="top" title="Bigdata-hadoop新增节点集群启动请求异常：Last contact：200">Next Post &rarr;</a>
+                            <a href="/2017/05/08/Bigdata-hadoop/HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群 /" data-toggle="tooltip" data-placement="top" title="HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群">Next Post &rarr;</a>
                         </li>
                     
                 </ul>

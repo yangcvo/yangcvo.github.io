@@ -13,11 +13,11 @@
 
     <title>
         
-          Yancy&#39;s blog
+          Elasticsearch1.7版本的索引定时自动清理 - Yancy&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="http://blog.yancy.cc/archives/2016/11/">
+    <link rel="canonical" href="http://blog.yancy.cc/2016/01/30/日志分析平台/Elasticsearch/Elasticsearch1.7版本的索引定时自动清理/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -147,7 +147,167 @@
 
 
     <!-- Main Content -->
-    <!-- Default Archive layout, we use archives instead. -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Log analysis platform" title="Log analysis platform">Log analysis platform</a>
+                        
+                    </div>
+                    <h1>Elasticsearch1.7版本的索引定时自动清理</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2016-01-30
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="elasticsearch的索引定时自动清理"><a href="#elasticsearch的索引定时自动清理" class="headerlink" title="elasticsearch的索引定时自动清理"></a>elasticsearch的索引定时自动清理</h1><p>之前用 logstash来做日志收集 并用 elasticsearch来搜索，因为日志没有进行过滤，没几天就发现elasticsearch的索引文件大的吓人，之前还真没清理过。其实要说清理也简单，直接到 elasticsearch data文件夹里删掉就行了，写个脚本定期清理集群es的日志数据。</p>
+<p>这里我清理1月7号的。</p>
+<p>这里后面是索引名称。<br>app_error-2017.01.07</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@es_01 sh]<span class="comment"># curl -XDELETE 'http://10.47.88.206:9200/app_error-2017.01.07'</span></div><div class="line">&#123;<span class="string">"acknowledged"</span>:<span class="literal">true</span>&#125;[root@es_01 sh]<span class="comment">#</span></div></pre></td></tr></table></figure>
+<p>shell 7天清理一次数据写在计划任务里面：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"></div><div class="line">now=`date +%Y%m%d`</div><div class="line"><span class="built_in">echo</span> <span class="variable">$now</span></div><div class="line">days_07_before=`date <span class="_">-d</span> <span class="string">"<span class="variable">$now</span> 7 days ago"</span> +%Y.%m.%d`</div><div class="line"><span class="built_in">echo</span> <span class="variable">$days_30_before</span></div><div class="line">curl -XDELETE <span class="string">"http://10.47.88.206:9200/app_error-<span class="variable">$days_07_before</span>"</span> &gt; /dev/null 2&gt;&amp;1</div><div class="line">curl -XDELETE <span class="string">"http://10.47.88.206:9200/app_info-<span class="variable">$days_07_before</span>"</span> &gt; /dev/null 2&gt;&amp;1</div><div class="line">curl -XDELETE <span class="string">"http://10.47.88.206:9200/logback_app_error-<span class="variable">$days_07_before</span>"</span> &gt; /dev/null 2&gt;&amp;1</div><div class="line">curl -XDELETE <span class="string">"http://10.47.88.206:9200/logback_app_info-<span class="variable">$days_07_before</span>"</span> &gt; /dev/null 2&gt;&amp;1</div></pre></td></tr></table></figure>
+<p>计划任务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">10 0 * * * /opt/sh/logstash-null.sh</div></pre></td></tr></table></figure>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/02/14/个人生活记录/在一起的第588天💕/" data-toggle="tooltip" data-placement="top" title="在一起的第588天💕">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/01/29/日志分析平台/Elasticsearch/logstash如何收集tomcat日志分析/" data-toggle="tooltip" data-placement="top" title="logstash如何写tomcat,redis,nginx日志收集规则">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Log analysis platform" title="Log analysis platform">Log analysis platform</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
 
     <!-- Footer -->
     <!-- Footer -->
