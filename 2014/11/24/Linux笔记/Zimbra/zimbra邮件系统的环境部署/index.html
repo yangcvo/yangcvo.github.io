@@ -67,7 +67,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Jolly-Yancy&#39;s blog</a>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -90,6 +90,13 @@
 
                         
                         <li>
+                            <a href="/archives/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
                             <a href="/about/About-me.html">About</a>
                         </li>
                         
@@ -98,13 +105,6 @@
                         
                         <li>
                             <a href="/tags/">Tags</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/archives/archives.html">Archives</a>
                         </li>
                         
                     
@@ -249,7 +249,7 @@
 <figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">ps</span> -ef | <span class="keyword">grep</span> -i zimbra</div></pre></td></tr></table></figure>
 <p>如果看到还有zimbra进程，就用下面的命令，kill掉进程</p>
 <p>2 用kill -9强制杀死进程:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">kill</span> -9 &lt;zimbra的进程号&gt;</div></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">kill -9 <span class="tag">&lt;<span class="name">zimbra的进程号</span>&gt;</span></div></pre></td></tr></table></figure>
 <p>3执行以下命令:</p>
 <figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">df</span></div></pre></td></tr></table></figure>
 <p>如果你能看到 “amavisd”</p>
@@ -258,7 +258,7 @@
 <p>4进入你安装时解压出来的源文件目录（即安装文件目录）</p>
 <figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cd /<span class="params">&lt;tmp_tar_install_dir&gt;</span><span class="meta-keyword">/zcs/</span></div></pre></td></tr></table></figure>
 <p>tmp_tar_install_dir：你的文件路径，如我所下载来的安装包，都是放在/usr/local/src下面的，然后把安装包改名成zcs，这个你应该明白吧？不明白？可联系我</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/src/zcs/</div></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cd <span class="regexp">/usr/</span>local<span class="regexp">/src/</span>zcs<span class="regexp">/</span></div></pre></td></tr></table></figure>
 <figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root<span class="symbol">@linuxyw</span> zcs]<span class="meta"># ls</span></div><div class="line">README.txt data install.sh readme_binary_en_US.txt util</div><div class="line">bin docs packages readme_source_en_US.txt</div><div class="line">[root<span class="symbol">@linuxyw</span> zcs]<span class="meta"># pwd</span></div><div class="line">/usr/<span class="keyword">local</span>/src/zcs</div></pre></td></tr></table></figure>
 <p>5)执行以下命令：</p>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./install<span class="selector-class">.sh</span> -u</div></pre></td></tr></table></figure>
@@ -273,7 +273,7 @@
 <p>9) 在/etc/syslog.conf中删除以下几行，一般在文件最后的位置（如果你是用centos6.x系统，文件名应该/etc/rsyslog.conf</p>
 <figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">local0.* -/<span class="built_in">var</span>/<span class="keyword">log</span>/zimbra.<span class="keyword">log</span></div><div class="line">      auth.* -/<span class="built_in">var</span>/<span class="keyword">log</span>/zimbra.<span class="keyword">log</span></div><div class="line">      mail.* -/<span class="built_in">var</span>/<span class="keyword">log</span>/zimbra.<span class="keyword">log</span></div></pre></td></tr></table></figure>
 <p>10) 执行以下命令，删除日志配置文件(CentOS, RHEL)</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rm <span class="_">-f</span> /etc/logrotate.d/zimbra</div></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rm -f <span class="regexp">/etc/</span>logrotate.d<span class="regexp">/zimbra</span></div></pre></td></tr></table></figure>
 <p>11) 在 /etc/prelink.conf文件中删除以下内容 (CentOS, RHEL)</p>
 <figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># added for Zimbra</span></div><div class="line">-l /opt/zimbra/<span class="class"><span class="keyword">lib</span></span></div><div class="line">-l /opt/zimbra/sleepycat/<span class="class"><span class="keyword">lib</span></span></div><div class="line">-l /opt/zimbra/openldap/<span class="class"><span class="keyword">lib</span></span></div><div class="line">-l /opt/zimbra/cyrus-sasl/<span class="class"><span class="keyword">lib</span></span></div><div class="line">-l /opt/zimbra/mysql/<span class="class"><span class="keyword">lib</span></span></div></pre></td></tr></table></figure>
 <p>12) 在/etc/rc* 中删除zimbra自启动(CentOS, RHEL)</p>
@@ -293,12 +293,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2014/11/27/Linux笔记/SSH/修改权限ssh登陆出现ssh-exchange-identification-read-Connection-reset-by-peer无法登陆问题/" data-toggle="tooltip" data-placement="top" title="ACL 修改权限ssh登录报ssh_exchange_identification: read:Connection reset by peer无法登陆问题">&larr; Previous Post</a>
+                            <a href="/2014/11/24/Linux笔记/rrdtool/RRDTOOL编译安装一步一步解决多多依赖关系/" data-toggle="tooltip" data-placement="top" title="rrdtool 编译安装一步一步解决多多依赖关系">&larr; Previous Post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2014/11/24/Linux笔记/rrdtool/RRDTOOL编译安装一步一步解决多多依赖关系/" data-toggle="tooltip" data-placement="top" title="rrdtool 编译安装一步一步解决多多依赖关系">Next Post &rarr;</a>
+                            <a href="/2014/11/24/Blog/Ghost/Ghost-blog修改端口/" data-toggle="tooltip" data-placement="top" title="Ghost-blog修改端口">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -451,7 +451,7 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Jolly-Yancy&#39;s blog 2017 
+                    Copyright &copy; Yancy&#39;s blog 2017 
                     <br>
                  Theme by <a href="http://blog.yancy.cc">Yancy</a>
                     <span style="display: inline-block; margin: 0 5px;">
