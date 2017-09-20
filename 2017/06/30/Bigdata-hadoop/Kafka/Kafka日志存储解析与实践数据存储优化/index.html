@@ -1,20 +1,130 @@
-extends partial/layout.pug
+<!DOCTYPE html>
+<html>
 
-block site_title
-    != page.title + ' | ' + config.title
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Kafka日志存储解析与实践数据存储优化 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
 
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name='description', content=desc)
+<body>
 
-block container
-    include mixins/post.pug
-    +post(page)
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/archives" class="header__link">Archive</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/ARCHIVES" class="header__link">ARCHIVES</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
 
-block pagination
-    include mixins/paginator.pug
-    +post()
-    include partial/comment.pug
+	<main>
+		<article>
+	
+		<h1>Kafka日志存储解析与实践数据存储优化</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-06-30</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Big-data-Hadoop/">Big data Hadoop</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
+			</span>
+		
+	</div>
 
-block copyright
-    include partial/copyright.pug
+	
+
+	
+		<h1 id="Kafka日志存储解析与实践数据存储优化"><a href="#Kafka日志存储解析与实践数据存储优化" class="headerlink" title="Kafka日志存储解析与实践数据存储优化"></a>Kafka日志存储解析与实践数据存储优化</h1><p>kafka是一款分布式消息发布和订阅的系统，具有高性能和高吞吐率。 </p>
+<h4 id="Kafka的名词解释"><a href="#Kafka的名词解释" class="headerlink" title="Kafka的名词解释"></a>Kafka的名词解释</h4><ul>
+<li>1，<code>Broker</code>： 一个单独的kafka机器节点就称为一个broker，多个broker组成的集群，称为kafka集群</li>
+<li>2，<code>Topic</code>：类似数据库中的一个表，我们将数据存储在Topic里面，当然这只是逻辑上的，在物理上，一个Topic 可能被多个Broker分区存储，这对用户是透明的，用户只需关注消息的产生于消费即可.</li>
+<li>3，<code>Partition</code>：类似分区表，每个Topic可根据设置将数据存储在多个整体有序的Partition中，每个顺序化partition会生成2个文件，一个是index文件一个是log文件，index文件存储索引和偏移量，log文件存储具体的数据.</li>
+<li>4，<code>Producer</code>：生产者，向Topic里面发送消息的角色 </li>
+<li>5，<code>Consumer</code>：消费者，从Topic里面读取消息的角色 </li>
+<li>6，<code>Consumer Group</code>：每个Consumer属于一个特定的消费者组，可为Consumer指定group name，如果不指定默认属于group </li>
+</ul>
+<p><strong>集群安装略过~</strong></p>
+<h4 id="日志存储"><a href="#日志存储" class="headerlink" title="日志存储"></a>日志存储</h4><p>Kafka的data是保存在文件系统中的。Kafka中的Message是以topic为基本单位组织的，不同的topic之间是相互独立的。</p>
+<p>每个topic又可以分成几个不同的partition，每个topic有几个partition是在创建topic时指定的，每个partition存储一部分Message。</p>
+<p><code>partition</code>是以文件的形式存储在文件系统中，比如，创建了一个名为<code>kakfa-node1</code>的topic，其有12个partition，那么在Kafka的数据目录中(由配置文件中的log.dirs指定的)中就有这样5个目录: </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[jollybi@kafka1 kafka-logs]$ ll</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-0</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-1</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-10</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-11</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-2</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-3</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-4</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-5</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-6</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-7</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-8</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-9</div></pre></td></tr></table></figure>
+<p>其命名规则为<code>&lt;topic_name&gt;-&lt;partition_id&gt;</code>，里面存储的分别就是这12个<code>partition</code>的数据。<br><code>zookeeper</code>会将分区平均分配创建到不同的<code>broker</code>上，例如</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[jollybi@kafka1 tools]$ ./kafka_2.10-0.8.2.1/bin/kafka-topics.sh  --describe --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281  --topic kakfa-node1</div><div class="line">Topic:kakfa-node1	PartitionCount:12	ReplicationFactor:3	Configs:</div><div class="line">	Topic: kakfa-node1	Partition: 0	Leader: 1	Replicas: 1,2,3	Isr: 1,2,3</div><div class="line">	Topic: kakfa-node1	Partition: 1	Leader: 2	Replicas: 2,3,1	Isr: 2,3,1</div><div class="line">	Topic: kakfa-node1	Partition: 2	Leader: 3	Replicas: 3,1,2	Isr: 3,1,2</div><div class="line">	Topic: kakfa-node1	Partition: 3	Leader: 1	Replicas: 1,3,2	Isr: 1,3,2</div><div class="line">	Topic: kakfa-node1	Partition: 4	Leader: 2	Replicas: 2,1,3	Isr: 2,1,3</div><div class="line">	Topic: kakfa-node1	Partition: 5	Leader: 3	Replicas: 3,2,1	Isr: 3,2,1</div><div class="line">	Topic: kakfa-node1	Partition: 6	Leader: 1	Replicas: 1,2,3	Isr: 1,2,3</div><div class="line">	Topic: kakfa-node1	Partition: 7	Leader: 2	Replicas: 2,3,1	Isr: 2,3,1</div><div class="line">	Topic: kakfa-node1	Partition: 8	Leader: 3	Replicas: 3,1,2	Isr: 3,1,2</div><div class="line">	Topic: kakfa-node1	Partition: 9	Leader: 1	Replicas: 1,3,2	Isr: 1,3,2</div><div class="line">	Topic: kakfa-node1	Partition: 10	Leader: 2	Replicas: 2,1,3	Isr: 2,1,3</div><div class="line">	Topic: kakfa-node1	Partition: 11	Leader: 3	Replicas: 3,2,1	Isr: 3,2,1</div></pre></td></tr></table></figure>
+<p>Isr表示分区创建在哪个broker上。<br>Partition中的每条Message由offset来表示它在这个partition中的偏移量，这个offset不是该Message在partition数据文件中的实际存储位置，而是逻辑上一个值，它唯一确定了partition中的一条Message。因此，可以认为offset是partition中Message的id。partition中的每条Message包含了以下三个属性：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="title">offset</span></div><div class="line"><span class="type">MessageSize</span></div><div class="line"><span class="class"><span class="keyword">data</span></span></div></pre></td></tr></table></figure>
+<p>其中offset为long型，MessageSize为int32，表示data有多大，data为message的具体内容。</p>
+<h4 id="Kafka通过分段和索引的方式来提高查询效率"><a href="#Kafka通过分段和索引的方式来提高查询效率" class="headerlink" title="Kafka通过分段和索引的方式来提高查询效率"></a>Kafka通过分段和索引的方式来提高查询效率</h4><ul>
+<li>1）分段</li>
+</ul>
+<p>Kafka解决查询效率的手段之一是将数据文件分段，比如有100条Message，它们的offset是从0到99。假设将数据文件分成5段，第一段为0-19，第二段为20-39，以此类推，每段放在一个单独的数据文件里面，数据文件以该段中最小的offset命名。这样在查找指定offset的Message的时候，用二分查找就可以定位到该Message在哪个段中。</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[jollybi@kafka1 kafka-logs]$ ll /data/tools/kafka_2.10-0.8.2.1/kafka-logs/</div><div class="line">total 548</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-0</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-1</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-10</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-11</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-2</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-3</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-4</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-5</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-6</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-7</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-8</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-9</div></pre></td></tr></table></figure>
+<h5 id="2）为数据文件建索引"><a href="#2）为数据文件建索引" class="headerlink" title="2）为数据文件建索引"></a>2）为数据文件建索引</h5><p>数据文件分段使得可以在一个较小的数据文件中查找对应offset的Message了，但是这依然需要顺序扫描才能找到对应<code>offset的Message</code>。为了进一步提高查找的效率，Kafka为每个分段后的数据文件建立了索引文件，文件名与数据文件的名字是一样的，只是文件扩展名为.index。<br>索引文件中包含若干个索引条目，每个条目表示数据文件中一条Message的索引。索引包含两个部分（均为4个字节的数字），分别为相对<code>offset和position</code>。</p>
+<p>相对<code>offset</code>：因为数据文件分段以后，每个数据文件的起始offset不为0，相对offset表示这条Message相对于其所属数据文件中最小的offset的大小。举例，分段后的一个数据文件的offset是从20开始，那么offset为25的Message在index文件中的相对offset就是25-20 = 5。存储相对offset可以减小索引文件占用的空间。</p>
+<p><code>position</code>，表示该条<code>Message</code>在数据文件中的绝对位置。只要打开文件并移动文件指针到这个position就可以读取对应的<code>Message</code>了。<br>index文件中并没有为数据文件中的每条Message建立索引，而是采用了稀疏存储的方式，每隔一定字节的数据建立一条索引。这样避免了索引文件占用过多的空间，从而可以将索引文件保留在内存中。但缺点是没有建立索引的Message也不能一次定位到其在数据文件的位置，从而需要做一次顺序扫描，但是这次顺序扫描的范围就很小了。</p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2017/06/30/Bigdata-hadoop/Kafka/Kafka日志存储解析与实践数据存储优化/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<p>Hi there, <br />welcome to my Blog glad you found it. Have a look around, will you?</p>
+</div>
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="https://hexo.io/">Hexo</a> | Theme <a href="https://github.com/HoverBaum/meilidu-hexo">MeiliDu</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

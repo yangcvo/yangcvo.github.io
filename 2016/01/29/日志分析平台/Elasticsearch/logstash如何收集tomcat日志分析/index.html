@@ -1,20 +1,107 @@
-extends partial/layout.pug
+<!DOCTYPE html>
+<html>
 
-block site_title
-    != page.title + ' | ' + config.title
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>logstash如何写tomcat,redis,nginx日志收集规则 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
 
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name='description', content=desc)
+<body>
 
-block container
-    include mixins/post.pug
-    +post(page)
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/archives" class="header__link">Archive</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/ARCHIVES" class="header__link">ARCHIVES</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
 
-block pagination
-    include mixins/paginator.pug
-    +post()
-    include partial/comment.pug
+	<main>
+		<article>
+	
+		<h1>logstash如何写tomcat,redis,nginx日志收集规则</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-01-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Log-analysis-platform/">Log analysis platform</a>
+			</span>
+		
+	</div>
 
-block copyright
-    include partial/copyright.pug
+	
+
+	
+		<h5 id="logstash如何收集tomcat日志分析（可以参考我下面写的模板）"><a href="#logstash如何收集tomcat日志分析（可以参考我下面写的模板）" class="headerlink" title="logstash如何收集tomcat日志分析（可以参考我下面写的模板）"></a>logstash如何收集tomcat日志分析（可以参考我下面写的模板）</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line">我想实现对tomcat的日志采集，正常应该创建一个file的input，这个input指定了监听的文件或者目录....然后过滤器（如果没有特殊要求，先可以不进行解析，原始的日志直接存就行）....最后使用一个elastcisearch插件，发送到es中去.</div><div class="line"></div><div class="line">input &#123;</div><div class="line">        stdin&#123;&#125;</div><div class="line"></div><div class="line">        file &#123;</div><div class="line">                <span class="built_in">type</span> =&gt; <span class="string">"tomcat_card"</span></div><div class="line">                path =&gt; <span class="string">"/srv/tomcat/logs/card/*.log"</span></div><div class="line">                start_position =&gt; <span class="string">"beginning"</span></div><div class="line">        &#125;</div><div class="line">        file &#123;</div><div class="line">                <span class="built_in">type</span> =&gt; <span class="string">"tomcat_family"</span></div><div class="line">                path =&gt; <span class="string">"/srv/tomcat/logs/family/*.log"</span></div><div class="line">                start_position =&gt; <span class="string">"beginning"</span></div><div class="line"></div><div class="line">        &#125;</div><div class="line">        file &#123;</div><div class="line">                <span class="built_in">type</span> =&gt; <span class="string">"tomcat_mission"</span></div><div class="line">                path =&gt; <span class="string">"/srv/tomcat/logs/mission/*.log"</span></div><div class="line">                start_position =&gt; <span class="string">"beginning"</span></div><div class="line"></div><div class="line">        &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">filter &#123;</div><div class="line"></div><div class="line">        grok &#123;</div><div class="line">                match =&gt; [</div><div class="line">                                <span class="string">"message"</span>, <span class="string">"%&#123;TIMESTAMP_ISO8601:logdate&#125; %&#123;WORD:loglevel&#125;%&#123;SPACE&#125;%&#123;NOTSPACE:loggername&#125; - %&#123;GREEDYDATA:msg&#125;"</span>,</div><div class="line">                                <span class="string">"message"</span>, <span class="string">"%&#123;GREEDYDATA:msg&#125;"</span></div><div class="line">                         ]</div><div class="line"></div><div class="line">        &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">output&#123;</div><div class="line">        <span class="keyword">if</span> [<span class="built_in">type</span>] == <span class="string">"tomcat_card"</span> &#123;</div><div class="line">        elasticsearch &#123;</div><div class="line">                host =&gt; <span class="string">"192.168.1.234"</span></div><div class="line">                protocol =&gt; <span class="string">"http"</span></div><div class="line">                index   =&gt; <span class="string">"tomcat_card-%&#123;+YYYYY.MM.dd&#125;"</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line">        <span class="keyword">if</span> [<span class="built_in">type</span>] == <span class="string">"tomcat_family"</span> &#123;</div><div class="line">        elasticsearch &#123;</div><div class="line">                host =&gt; <span class="string">"192.168.1.234"</span></div><div class="line">                protocol =&gt; <span class="string">"http"</span></div><div class="line">                index   =&gt; <span class="string">"tomcat_card-%&#123;+YYYYY.MM.dd&#125;"</span></div><div class="line">        &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> [<span class="built_in">type</span>] == <span class="string">"tomcat_mission"</span> &#123;</div><div class="line">        elasticsearch &#123;</div><div class="line">                host =&gt; <span class="string">"192.168.1.234"</span></div><div class="line">                protocol =&gt; <span class="string">"http"</span></div><div class="line">                index   =&gt; <span class="string">"tomcat_mission-%&#123;+YYYYY.MM.dd&#125;"</span></div><div class="line">                &#125;</div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="logstash日志采集nginx配置"><a href="#logstash日志采集nginx配置" class="headerlink" title="logstash日志采集nginx配置"></a>logstash日志采集nginx配置</h5><p>/etc/logstash/conf.d/nginx.conf</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">input &#123;</div><div class="line">file &#123;</div><div class="line">path =&gt; <span class="string">"/data/wwwlogs/nginx_json.log"</span></div><div class="line">codec =&gt; <span class="string">"json"</span></div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">filter &#123;</div><div class="line">mutate &#123;</div><div class="line">split =&gt; [ <span class="string">"upstreamtime"</span>, <span class="string">","</span> ]</div><div class="line">&#125;</div><div class="line">mutate &#123;</div><div class="line">convert =&gt; [ <span class="string">"upstreamtime"</span>, <span class="string">"float"</span> ]</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">output &#123;</div><div class="line">kafka &#123;</div><div class="line">bootstrap_servers =&gt; <span class="string">"10.0.0.11:9092"</span></div><div class="line">topic_id =&gt; <span class="string">"logstash"</span></div><div class="line">compression_type =&gt; <span class="string">"gzip"</span></div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="创建一个从日志文件读取，并写入redis的配置文件-本文件采用默认方式进行输入，输出"><a href="#创建一个从日志文件读取，并写入redis的配置文件-本文件采用默认方式进行输入，输出" class="headerlink" title="创建一个从日志文件读取，并写入redis的配置文件(本文件采用默认方式进行输入，输出)"></a>创建一个从日志文件读取，并写入redis的配置文件(本文件采用默认方式进行输入，输出)</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#cat agent.conf</span></div><div class="line">input &#123;</div><div class="line">    file &#123;</div><div class="line">        path =&gt; <span class="string">"/var/log/httpd/access_log"</span>    //设置读取的日志路径</div><div class="line">        sincedb_path =&gt; <span class="string">"../.sincedb"</span></div><div class="line">        <span class="built_in">type</span> =&gt; <span class="string">"httpd"</span></div><div class="line">        start_position =&gt; <span class="string">"beginning"</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">output &#123;</div><div class="line">    redis &#123;</div><div class="line">        host =&gt; [<span class="string">"127.0.0.1"</span>]</div><div class="line">        port =&gt; 6379</div><div class="line">        batch =&gt; <span class="literal">true</span></div><div class="line">            batch_events =&gt; 5</div><div class="line">            data_type =&gt; <span class="string">"list"</span></div><div class="line">            key =&gt; <span class="string">"logstash:redis"</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">配置一个从redis读取日志并输出到es的配置文件</div><div class="line"></div><div class="line"><span class="comment">#cat index.conf</span></div><div class="line">input &#123;</div><div class="line">  redis &#123;</div><div class="line">    host =&gt; [<span class="string">"127.0.0.1"</span>]</div><div class="line">    port =&gt; 6379</div><div class="line">    data_type =&gt; <span class="string">"list"</span></div><div class="line">    key =&gt; “<span class="built_in">log</span> stash:redis<span class="string">"</span></div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">output &#123;</div><div class="line">        elasticsearch &#123;</div><div class="line">        host =&gt; "127.0.0.1<span class="string">"</span></div><div class="line">        protocol =&gt; "http<span class="string">"</span></div><div class="line">        index =&gt; "logstash-%&#123;<span class="built_in">type</span>&#125;-%&#123;+YYYY.MM.dd&#125;<span class="string">"</span></div><div class="line">        index_type =&gt; "%&#123;<span class="built_in">type</span>&#125;<span class="string">"</span></div><div class="line">        &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">启动logstash</div></pre></td></tr></table></figure>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/01/29/日志分析平台/Elasticsearch/logstash如何收集tomcat日志分析/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<p>Hi there, <br />welcome to my Blog glad you found it. Have a look around, will you?</p>
+</div>
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="https://hexo.io/">Hexo</a> | Theme <a href="https://github.com/HoverBaum/meilidu-hexo">MeiliDu</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

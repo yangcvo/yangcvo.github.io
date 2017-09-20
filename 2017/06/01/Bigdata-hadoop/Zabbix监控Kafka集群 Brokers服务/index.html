@@ -1,20 +1,147 @@
-extends partial/layout.pug
+<!DOCTYPE html>
+<html>
 
-block site_title
-    != page.title + ' | ' + config.title
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Zabbix监控Kafka集群 Brokers服务 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
 
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name='description', content=desc)
+<body>
 
-block container
-    include mixins/post.pug
-    +post(page)
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/archives" class="header__link">Archive</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/ARCHIVES" class="header__link">ARCHIVES</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
 
-block pagination
-    include mixins/paginator.pug
-    +post()
-    include partial/comment.pug
+	<main>
+		<article>
+	
+		<h1>Zabbix监控Kafka集群 Brokers服务</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-06-01</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Kafka/">Kafka</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a> <a class="article__tag-link" href="/tags/Zabbix/">Zabbix</a>
+			</span>
+		
+	</div>
 
-block copyright
-    include partial/copyright.pug
+	
+
+	
+		<h2 id="Zabbix监控Kafka集群-Brokers服务"><a href="#Zabbix监控Kafka集群-Brokers服务" class="headerlink" title="Zabbix监控Kafka集群 Brokers服务"></a>Zabbix监控Kafka集群 Brokers服务</h2><h4 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h4><p>公司让我处理Hadoop及相关服务监控、报警这里主要讲kafka集群服务。这里我也看了几篇kafka相关文章，好文贴出来：</p>
+<ul>
+<li><a href="http://www.infoq.com/cn/articles/kafka-analysis-part-1" target="_blank" rel="external">infoq kafka 入门了解</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-kafka/index.html" target="_blank" rel="external">kafka 工作原理介绍</a></li>
+</ul>
+<p>在我们公司主要Kafka 的几个特性非常满足我们的需求：可扩展性、数据分区、低延迟、处理大量不同消费者的能力。</p>
+<p>而这里我想帮忙BI团队实现Kafka全面监控。分两点：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">1. 监控Kafka Brokers服务</div><div class="line">2. 监控Kafka Lag堆积数</div></pre></td></tr></table></figure>
+<p>对于Kafka的监控，已经有现成的开源软件了，在我们公司内部也使用了一段时间，有两种方案。我们公司用第三种方案。<br>一般都会选择两个开源的工具：KafkaOffsetMonitor和kafka-web-console，这两款我都有用过.</p>
+<ul>
+<li>Kafka三款监控工具比较</li>
+</ul>
+<p>目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1、Kafka Web Conslole</div><div class="line">2、Kafka Manager</div><div class="line">3、KafkaOffsetMonitor</div></pre></td></tr></table></figure>
+<p><a href="https://github.com/quantifind/KafkaOffsetMonitor" target="_blank" rel="external">KafkaOffsetMonitor</a>：最大的好处就是配置简单，只需要配个zookeeper的地址就能用了，坑爹的地方就是不能自动刷新，手动刷新时耗时较长，而且有时候都刷不出来，另外就是图像用了一段时间就完全显示不了了，不知道大家是不是这样。</p>
+<p><a href="https://github.com/claudemamo/kafka-web-console" target="_blank" rel="external">kafka-web-console</a>：相比与前者，数据是落地的，因此刷新较快，而且支持在前端自定义zookeeper的地址，还能列出实时的topic里的具体内容。但是搭建比较复杂，而且github上的默认数据库是H2的，像我们一般用mysql的，还得自己转化。另外在用的过程中，我遇到一个问题，在连接kafka的leader失败的时候，会一直重试，其结果就是导致我kafka的那台机子连接数过高，都到2w了，不知道是不是它的一个bug。</p>
+<p>具体介绍以及安装在我另外篇博文。这里不详细讲解开源软件，这里用zabbix监控Kafka Brokers服务。</p>
+<h4 id="kafka-monitoring-Brokers服务"><a href="#kafka-monitoring-Brokers服务" class="headerlink" title="kafka-monitoring Brokers服务"></a>kafka-monitoring Brokers服务</h4><p>操作系统环境：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Centos 7.1 </div><div class="line">64G内存</div><div class="line">2T磁盘空间，指定kafka写入数据目录。</div></pre></td></tr></table></figure>
+<p>说明下:</p>
+<p>监控Brokers是利用Zabbix JMX监控获取数据。</p>
+<p>☝️第一步：不用解释前提你在zabbix-server端已经安装过abbix-java-gataway 如果没有安装可以看下面，安装过可以略过第一步。</p>
+<p>1.0 安装配置zabbix-java-gataway</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">yum install -y zabbix-java-gataway</div><div class="line">vi /etc/zabbix/zabbix_java_gateway.conf</div><div class="line">START_POLLERS=10 </div><div class="line">Uncoment并设置为StartJavaPollers = 5 更改JavaGateway的 IP = IP_address_java_gateway</div><div class="line">``` </div><div class="line">1.1 重新启动zabbix-server</div><div class="line"></div><div class="line">```bash</div><div class="line">/etc/init.d/zabbix-java-gataway restart</div><div class="line">chkconfig --level 345 zabbix-java-gataway on</div><div class="line">/etc/init.d/zabbix-java-gataway start</div></pre></td></tr></table></figure>
+<p>☝️第二步：Kafka配置</p>
+<p>这里我们服务器给大数据那边安装在指定用户目录下面：/home/jollybi/tools/kafka_2.10-0.8.2.1</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">su - jollybi 进入相应用户</div><div class="line">vim /home/jollybi/tools/kafka_2.10-0.8.2.1/kafka-run-class.sh</div><div class="line"></div><div class="line">从</div><div class="line"></div><div class="line"><span class="comment"># JMX settings</span></div><div class="line"><span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$KAFKA_JMX_OPTS</span>"</span> ]; <span class="keyword">then</span></div><div class="line">KAFKA_JMX_OPTS=<span class="string">"-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -   Dcom.sun.management.jmxremote.ssl=false "</span></div><div class="line"><span class="keyword">fi</span></div><div class="line">至</div><div class="line"></div><div class="line"><span class="comment"># JMX settings</span></div><div class="line"><span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$KAFKA_JMX_OPTS</span>"</span> ]; <span class="keyword">then</span></div><div class="line">KAFKA_JMX_OPTS=<span class="string">"-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=12345 -    Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false "</span></div><div class="line"><span class="keyword">fi</span></div></pre></td></tr></table></figure>
+<p>重启服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">/home/jollybi/tools/kafka_2.10-0.8.2.1/bin/kafka-server-stop.sh</div><div class="line">/home/jollybi/tools/kafka_2.10-0.8.2.1/bin/kafka-server-start.sh</div></pre></td></tr></table></figure>
+<p>☝️第三步：导入模板登录到您的zabbix网页.</p>
+<p>导入模板登录到您的zabbix网页</p>
+<p>单击配置 - &gt;模板 - &gt;导入</p>
+<p>下载模板 <a href="https://github.com/yangcvo/Zabbix-Monitoring-Kafka" target="_blank" rel="external">zbx_kafka_templates.xml</a> 并上传到zabbix然后将此模板添加到Kafka并在zabbix上配置JMX接口</p>
+<p>输入Kafka IP地址和JMX端口如果看到jmx图标，您配置了JMX监控好！</p>
+<ul>
+<li>查看数据：</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Brokers_01.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Brokers_02.png" alt=""></figure></p>
+<ul>
+<li>查看效果图：</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Brokers_03.png" alt=""></figure></p>
+<p>参考官网监控指标的含义;</p>
+<p><a href="http://docs.confluent.io/current/kafka/monitoring.html" target="_blank" rel="external">Servilo Metrics broker Metrics</a><br><a href="http://docs.confluent.io/current/kafka/monitoring.html" target="_blank" rel="external">Producer Metrics Global Request Metrics</a><br><a href="http://docs.confluent.io/current/kafka/monitoring.html" target="_blank" rel="external">Global Connection Metrics</a></p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2017/06/01/Bigdata-hadoop/Zabbix监控Kafka集群 Brokers服务/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<p>Hi there, <br />welcome to my Blog glad you found it. Have a look around, will you?</p>
+</div>
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="https://hexo.io/">Hexo</a> | Theme <a href="https://github.com/HoverBaum/meilidu-hexo">MeiliDu</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>
