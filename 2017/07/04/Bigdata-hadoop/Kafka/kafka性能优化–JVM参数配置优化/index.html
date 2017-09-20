@@ -1,20 +1,471 @@
-extends partial/layout
 
-block site_title
-    != page.title + " · " + config.title
+ <!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>Kafka性能优化–JVM参数配置优化 | Yancy&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Yancy">
+    
+    <meta name="description" content="Kafka Broker个数决定因素　　磁盘容量：首先考虑的是所需保存的消息所占用的总磁盘容量和每个broker所能提供的磁盘空间。如果Kafka集群需要保留 10 TB数据，单个broker能存储 2 TB，那么我们需要的最小Kafka集群大小5个broker。此外，如果启用副本参数，则对应的存储">
+    
+    
+    
+    
+    <link rel="alternate" href="atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            var _bdId ='391982416296a0d54221f59fe35250d4';
+             hm.src = "//hm.baidu.com/hm.js?" + _bdId;
+             var s = document.getElementsByTagName("script")[0]; 
+             s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+     
+</head>
 
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
+  <body>
+    <header>
+      <div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Yancy&#39;s blog">Yancy&#39;s blog</a></h1>
+				<a class="blog-motto">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+					<li>
+					
+                                            <form class="search" action=http://zhannei.baidu.com/cse/search target="_blank">
+                                            <label>Search</label>
+                                        <input name="s" type="hidden" value= null ><input type="text" name="q" size="30" placeholder="搜索"><br>
+					
+					</li>
+				</ul>
+                            </nav>			
+</div>
 
-block container
-    include mixins/post
-    +post(page)
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/07/04/Bigdata-hadoop/Kafka/kafka性能优化–JVM参数配置优化/" title="Kafka性能优化–JVM参数配置优化" itemprop="url">Kafka性能优化–JVM参数配置优化</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://blog.yancy.cc" title="Yancy">Yancy</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2017-07-04T03:22:00.000Z" itemprop="datePublished">2017-07-04</time>
+    更新日期:<time datetime="2017-09-20T05:34:59.000Z" itemprop="dateModified">2017-09-20</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Kafka-Broker个数决定因素"><span class="toc-number">1.</span> <span class="toc-text">Kafka Broker个数决定因素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kafka集群稳定"><span class="toc-number">2.</span> <span class="toc-text">Kafka集群稳定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#主要是启动脚本和log4j基本参数的设置和优化，这些参数藏的比较深。"><span class="toc-number">3.</span> <span class="toc-text">主要是启动脚本和log4j基本参数的设置和优化，这些参数藏的比较深。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1、JVM参数配置优化"><span class="toc-number">4.</span> <span class="toc-text">1、JVM参数配置优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、打开JMX端口"><span class="toc-number">5.</span> <span class="toc-text">2、打开JMX端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、调整log4j的日志级别"><span class="toc-number">6.</span> <span class="toc-text">3、调整log4j的日志级别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、性能优化技巧"><span class="toc-number">7.</span> <span class="toc-text">4、性能优化技巧</span></a></li></ol>
+		</div>
+		
+		<h3 id="Kafka-Broker个数决定因素"><a href="#Kafka-Broker个数决定因素" class="headerlink" title="Kafka Broker个数决定因素"></a>Kafka Broker个数决定因素</h3><p>　　磁盘容量：首先考虑的是所需保存的消息所占用的总磁盘容量和每个broker所能提供的磁盘空间。如果Kafka集群需要保留 10 TB数据，单个broker能存储 2 TB，那么我们需要的最小Kafka集群大小5个broker。此外，如果启用副本参数，则对应的存储空间需至少增加一倍（取决于副本参数）。这意味着对应的Kafka集群至少需要 10 个broker。</p>
+<p>　　请求量：另外一个要考虑的是Kafka集群处理请求的能力。这主要取决于对Kafka client请求的网络处理能力，特别是，有多个consumer或者网路流量不稳定。如果，高峰时刻，单个broker的网络流量达到80%，这时是撑不住两个consumer的，除非有两个broker。再者，如果启用了副本参数，则需要考虑副本这个额外的consumer。也可以扩展多个broker来减少磁盘的吞吐量和系统内存。</p>
+<h3 id="Kafka集群稳定"><a href="#Kafka集群稳定" class="headerlink" title="Kafka集群稳定"></a>Kafka集群稳定</h3><p>GC调优<br>　　调GC是门手艺活，幸亏Java 7引进了G1 垃圾回收，使得GC调优变的没那么难。G1主要有两个配置选项来调优：MaxGCPauseMillis 和 InitiatingHeapOccupancyPercent，具体参数设置可以参考Google，这里不赘述。</p>
+<p>　　Kafka broker能够有效的利用堆内存和对象回收，所以这些值可以调小点。对于 64Gb内存，Kafka运行堆内存5Gb，MaxGCPauseMillis 和 InitiatingHeapOccupancyPercent 分别设置为 20毫秒和 35。Kafka的启动脚本使用的不是 G1回收，需要在环境变量中加入。</p>
+<h3 id="主要是启动脚本和log4j基本参数的设置和优化，这些参数藏的比较深。"><a href="#主要是启动脚本和log4j基本参数的设置和优化，这些参数藏的比较深。" class="headerlink" title="主要是启动脚本和log4j基本参数的设置和优化，这些参数藏的比较深。"></a>主要是启动脚本和log4j基本参数的设置和优化，这些参数藏的比较深。</h3><h3 id="1、JVM参数配置优化"><a href="#1、JVM参数配置优化" class="headerlink" title="1、JVM参数配置优化"></a>1、JVM参数配置优化</h3><p>如果使用的CMS GC算法，建议JVM Heap不要太大，在4GB以内就可以。JVM太大，导致Major GC或者Full GC产生的“stop the world”时间过长，导致broker和zk之间的session超时，比如重新选举controller节点和提升follow replica为leader replica。<br>JVM也不能过小，否则会导致频繁地触发gc操作，也影响Kafka的吞吐量。另外，需要避免CMS GC过程中的发生promotion failure和concurrent failure问题。CMSInitiatingOccupancyFraction=70可以预防concurrent failure问题，提前出发Major GC。<br>Kafka JVM参数可以直接修改启动脚本<code>bin/kafka-server-start.sh</code><br>中的变量值。下面是一些基本参数，也可以根据实际的gc状况和调试GC需要增加一些相关的参数。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">export</span> KAFKA_HEAP_OPTS=<span class="string">"-Xmx4G -Xms4G -Xmn2G -XX:PermSize=64m -XX:MaxPermSize=128m  -XX:SurvivorRatio=6  -XX:CMSInitiatingOccupancyFraction=70 -XX:+UseCMSInitiatingOccupancyOnly"</span></div></pre></td></tr></table></figure>
+<p>需要关注gc日志中的YGC时间以及CMS GC里面的CMS-initial-mark和CMS-remark两个阶段的时间，这些GC过程是“stop the world”方式完成的。</p>
+<blockquote>
+<p>jdk1.8 优化的话会提示MaxPermSize=128m,PermSize=64m 字面意思是MaxPermSize不需要我们配置了,jdk1.8 版本功能其实已不需要这个优化参数：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[jollybi@kafka3 kafka_2.10-0.8.2.1]$ /data/tools/kafka_2.10-0.8.2.1/bin/kafka-server-start.sh /data/tools/kafka_2.10-0.8.2.1/config/server.properties &amp;</div><div class="line">[1] 10312</div><div class="line">[jollybi@kafka3 kafka_2.10-0.8.2.1]$ Java HotSpot(TM) 64-Bit Server VM warning: ignoring option PermSize=64m; support was removed <span class="keyword">in</span> 8.0</div><div class="line">Java HotSpot(TM) 64-Bit Server VM warning: ignoring option MaxPermSize=128m; support was removed <span class="keyword">in</span> 8.0</div><div class="line"></div><div class="line">优化参数：</div><div class="line"><span class="built_in">export</span> KAFKA_HEAP_OPTS=<span class="string">"-Xmx4G -Xms4G -Xmn2G  -XX:SurvivorRatio=6  -XX:CMSInitiatingOccupancyFraction=70 -XX:+UseCMSInitiatingOccupancyOnly"</span></div><div class="line"><span class="built_in">export</span> JMX_PORT=<span class="string">"9999"</span>  <span class="comment">### Kafka Manager监控监听jmx端口,如果没有可不设置。</span></div></pre></td></tr></table></figure>
+<h3 id="2、打开JMX端口"><a href="#2、打开JMX端口" class="headerlink" title="2、打开JMX端口"></a>2、打开JMX端口</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">主要是为了通过JMX端口监控Kafka Broker信息。可以在bin/kafka-server-start.sh中打开JMX端口变量。</div><div class="line"><span class="built_in">export</span> JMX_PORT=9999</div></pre></td></tr></table></figure>
+<h3 id="3、调整log4j的日志级别"><a href="#3、调整log4j的日志级别" class="headerlink" title="3、调整log4j的日志级别"></a>3、调整log4j的日志级别</h3><p>如果集群中topic和partition数量较大时，因为log4j的日志级别太低，导致进程持续很长的时间在打印日志。日志量巨大，导致很多额外的性能开销。特别是contoller日志级别为trace级别，这点比较坑。<br>Tips 通过JMX端口设置log4j日志级别，不用重启broker节点</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">设置日志级别：</div><div class="line">java -jar cmdline-jmxclient-0.10.3.jar - localhost:9999 kafka:<span class="built_in">type</span>=kafka.Log4jController <span class="built_in">set</span>LogLevel=kafka.controller,INFO</div><div class="line">java -jar cmdline-jmxclient-0.10.3.jar - localhost:9999 kafka:<span class="built_in">type</span>=kafka.Log4jController <span class="built_in">set</span>LogLevel=state.change.logger,INFO</div><div class="line"> </div><div class="line">检查日志级别：</div><div class="line">java -jar cmdline-jmxclient-0.10.3.jar - localhost:9999 kafka:<span class="built_in">type</span>=kafka.Log4jController getLogLevel=kafka.controller</div><div class="line">java -jar cmdline-jmxclient-0.10.3.jar - localhost:9999 kafka:<span class="built_in">type</span>=kafka.Log4jController getLogLevel=state.change.logger</div></pre></td></tr></table></figure>
+<h3 id="4、性能优化技巧"><a href="#4、性能优化技巧" class="headerlink" title="4、性能优化技巧"></a>4、性能优化技巧</h3><p>4.1、配置合适的partitons数量。</p>
+<p>这似乎是kafka新手必问得问题。首先，我们必须理解，partiton是kafka的并行单元。从producer和broker的视角看，向不同的partition写入是完全并行的；而对于consumer，并发数完全取决于partition的数量，即，如果consumer数量大于partition数量，则必有consumer闲置。所以，我们可以认为kafka的吞吐与partition时线性关系。partition的数量要根据吞吐来推断，假定p代表生产者写入单个partition的最大吞吐，c代表消费者从单个partition消费的最大吞吐，我们的目标吞吐是t，那么partition的数量应该是t/p和t/c中较大的那一个。实际情况中，p的影响因素有批处理的规模，压缩算法，确认机制和副本数等，然而，多次benchmark的结果表明，单个partition的最大写入吞吐在10MB/sec左右；c的影响因素是逻辑算法，需要在不同场景下实测得出。</p>
+<p>这个结论似乎太书生气和不实用。我们通常建议partition的数量一定要大于等于消费者的数量来实现最大并发。官方曾测试过1万个partition的情况，所以不需要太担心partition过多的问题。下面的知识会有助于读者在生产环境做出最佳的选择：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">a、一个partition就是一个存储kafka-log的目录。</div><div class="line">b、一个partition只能寄宿在一个broker上。</div><div class="line">c、单个partition是可以实现消息的顺序写入的。</div><div class="line">d、单个partition只能被单个消费者进程消费，与该消费者所属于的消费组无关。这样做，有助于实现顺序消费。</div><div class="line">e、单个消费者进程可同时消费多个partition，即partition限制了消费端的并发能力。</div><div class="line">f、partition越多则file和memory消耗越大，要在服务器承受服务器设置。</div><div class="line">g、每个partition信息都存在所有的zk节点中。</div><div class="line">h、partition越多则失败选举耗时越长。</div><div class="line">k、offset是对每个partition而言的，partition越多，查询offset就越耗时。</div><div class="line">i、partition的数量是可以动态增加的（只能加不能减）。</div></pre></td></tr></table></figure>
+<p>我们建议的做法是，如果是3个broker的集群，有5个消费者，那么建议partition的数量是15，也就是broker和consumer数量的最小公倍数。当然，也可以是一个大于消费者的broker数量的倍数，比如6或者9，还请读者自行根据实际环境裁定。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
 
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Kafka/">Kafka</a>
+  </div>
 
-block copyright
-    include partial/copyright
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Big-data-Hadoop/">Big data Hadoop</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://blog.yancy.cc/2017/07/04/Bigdata-hadoop/Kafka/kafka性能优化–JVM参数配置优化/" data-title="Kafka性能优化–JVM参数配置优化 | Yancy&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/07/30/日志分析平台/Elasticsearch/研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？/" title="研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/06/30/Bigdata-hadoop/Kafka/Kafka日志存储解析与实践数据存储优化/"  title="Kafka日志存储解析与实践数据存储优化">
+ <strong>NEXT:</strong><br/> 
+ <span>Kafka日志存储解析与实践数据存储优化
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	
+	<div class="ds-thread" data-title="Kafka性能优化–JVM参数配置优化" data-thread-key="Bigdata-hadoop/Kafka/kafka性能优化–JVM参数配置优化" data-author-key="Yancy" data-url="http://blog.yancy.cc/post/Bigdata-hadoop/Kafka/kafka性能优化–JVM参数配置优化"></div>
+	
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Kafka-Broker个数决定因素"><span class="toc-number">1.</span> <span class="toc-text">Kafka Broker个数决定因素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kafka集群稳定"><span class="toc-number">2.</span> <span class="toc-text">Kafka集群稳定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#主要是启动脚本和log4j基本参数的设置和优化，这些参数藏的比较深。"><span class="toc-number">3.</span> <span class="toc-text">主要是启动脚本和log4j基本参数的设置和优化，这些参数藏的比较深。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1、JVM参数配置优化"><span class="toc-number">4.</span> <span class="toc-text">1、JVM参数配置优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、打开JMX端口"><span class="toc-number">5.</span> <span class="toc-text">2、打开JMX端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、调整log4j的日志级别"><span class="toc-number">6.</span> <span class="toc-text">3、调整log4j的日志级别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、性能优化技巧"><span class="toc-number">7.</span> <span class="toc-text">4、性能优化技巧</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		
+		
+		
+		
+	</div>
+</div>
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Big-data-Hadoop/" title="Big data Hadoop">Big data Hadoop<sup>3</sup></a></li>
+		
+			<li><a href="/categories/Kafka/" title="Kafka">Kafka<sup>2</sup></a></li>
+		
+			<li><a href="/categories/大数据/" title="大数据">大数据<sup>10</sup></a></li>
+		
+			<li><a href="/categories/日志分析平台/" title="日志分析平台">日志分析平台<sup>8</sup></a></li>
+		
+			<li><a href="/categories/生活/" title="生活">生活<sup>6</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Ambari/" title="Ambari">Ambari<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Big-data-Hadoop/" title="Big data Hadoop">Big data Hadoop<sup>8</sup></a></li>
+		
+			<li><a href="/tags/Countly/" title="Countly">Countly<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Elasticsearch/" title="Elasticsearch">Elasticsearch<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Kafka/" title="Kafka">Kafka<sup>10</sup></a></li>
+		
+			<li><a href="/tags/Kibana/" title="Kibana">Kibana<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Log-analysis-platform/" title="Log analysis platform">Log analysis platform<sup>8</sup></a></li>
+		
+			<li><a href="/tags/Personal-life-record/" title="Personal life record">Personal life record<sup>6</sup></a></li>
+		
+			<li><a href="/tags/Zabbix/" title="Zabbix">Zabbix<sup>2</sup></a></li>
+		
+			<li><a href="/tags/ZooKeeper/" title="ZooKeeper">ZooKeeper<sup>1</sup></a></li>
+		
+			<li><a href="/tags/旅行日记/" title="旅行日记">旅行日记<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2017 
+		
+		<a href="http://blog.yancy.cc" target="_blank" title="Yancy">Yancy</a>
+		
+            && Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> && Theme by <a href="http://gengbiao.me" target="_blank" title="coney">coney</a>
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+<script>
+    
+        var _bdImg = '4';
+    
+    window._bd_share_config={
+        "common":{
+            "bdSnsKey":{
+
+            },
+            "bdText":"",
+            "bdMini":"2",
+            "bdMiniList":[
+                "qzone",
+                "tsina",
+                "weixin",
+                "renren",
+                "tqq",
+                "tieba",
+                "douban",
+                "sqq",
+                "diandian",
+                "huaban",
+                "youdao",
+                "mail",
+                "ty",
+                "fbook",
+                "twi",
+                "linkedin",
+                "copy",
+                "print"
+            ],
+            "bdPic":"",
+            "bdStyle":"0",
+            "bdSize":"16"
+        },
+        "slide":{
+            "type":"slide",
+            "bdImg":_bdImg,
+            "bdPos":"right",
+            "bdTop":"350"
+        },
+        "image":{
+            "viewList":[
+                "weixin",
+                "qzone",
+                "tsina",
+                "renren",
+                "douban",
+                "tqq"
+            ],
+            "viewText":"分享：",
+            "viewSize":"16"
+        },
+        "selectShare":{
+            "bdContainerClass":null,
+            "bdSelectMiniList":[
+                "weixin",
+                "qzone",
+                "tsina",
+                "renren",
+                "douban",
+                "tqq"
+            ]
+        }
+    };
+    with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'null', 'null');  
+ga('send', 'pageview');
+</script>
+
+
+  </body>
+</html>
+

@@ -1,20 +1,491 @@
-extends partial/layout
 
-block site_title
-    != page.title + " · " + config.title
+ <!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>Bigdata-Kafka三款监控工具比较 | Yancy&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Yancy">
+    
+    <meta name="description" content="在之前的博客中，介绍了Kafka Web Console这个监控工具，在生产环境中使用，运行一段时间后，发现该工具会和Kafka生产者、消费者、ZooKeeper建立大量连接，从而导致网络阻塞。并且这个Bug也在其他使用者中出现过，看来使用开源工具要慎重！该Bug暂未得到修复，不得已，只能研究下其他">
+    
+    
+    
+    
+    <link rel="alternate" href="atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            var _bdId ='391982416296a0d54221f59fe35250d4';
+             hm.src = "//hm.baidu.com/hm.js?" + _bdId;
+             var s = document.getElementsByTagName("script")[0]; 
+             s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+     
+</head>
 
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
+  <body>
+    <header>
+      <div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Yancy&#39;s blog">Yancy&#39;s blog</a></h1>
+				<a class="blog-motto">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+					<li>
+					
+                                            <form class="search" action=http://zhannei.baidu.com/cse/search target="_blank">
+                                            <label>Search</label>
+                                        <input name="s" type="hidden" value= null ><input type="text" name="q" size="30" placeholder="搜索"><br>
+					
+					</li>
+				</ul>
+                            </nav>			
+</div>
 
-block container
-    include mixins/post
-    +post(page)
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/06/29/Bigdata-hadoop/Kafka/Bigdata-Kafka三款监控工具比较/" title="Bigdata-Kafka三款监控工具比较" itemprop="url">Bigdata-Kafka三款监控工具比较</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://blog.yancy.cc" title="Yancy">Yancy</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2017-06-29T06:46:00.000Z" itemprop="datePublished">2017-06-29</time>
+    更新日期:<time datetime="2017-08-23T10:44:53.000Z" itemprop="dateModified">2017-08-23</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1、Kafka-Web-Conslole"><span class="toc-number">1.</span> <span class="toc-text">1、Kafka Web Conslole</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2、Kafka-Manager"><span class="toc-number">2.</span> <span class="toc-text">2、Kafka Manager</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3、KafkaOffsetMonitor"><span class="toc-number">3.</span> <span class="toc-text">3、KafkaOffsetMonitor</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+		</div>
+		
+		<p>在之前的博客中，介绍了<code>Kafka Web Console</code>这个监控工具，在生产环境中使用，运行一段时间后，发现该工具会和Kafka生产者、消费者、ZooKeeper建立大量连接，从而导致网络阻塞。并且这个Bug也在其他使用者中出现过，看来使用开源工具要慎重！该Bug暂未得到修复，不得已，只能研究下其他同类的Kafka监控软件。</p>
+<p>通过研究，发现主流的三种kafka监控程序分别为：</p>
+<ul>
+<li>1、Kafka Web Conslole</li>
+<li>2、Kafka Manager</li>
+<li>3、KafkaOffsetMonitor</li>
+</ul>
+<p>现在依次介绍以上三种工具：</p>
+<h2 id="1、Kafka-Web-Conslole"><a href="#1、Kafka-Web-Conslole" class="headerlink" title="1、Kafka Web Conslole"></a>1、Kafka Web Conslole</h2><p>使用Kafka Web Console，可以监控：</p>
+<ul>
+<li>Brokers列表</li>
+<li>Kafka 集群中 Topic列表，及对应的Partition、LogSiz e等信息</li>
+<li>点击Topic，可以浏览对应的Consumer Groups、Offset、Lag等信息</li>
+<li>生产和消费流量图、消息预览…</li>
+</ul>
+<p>程序运行后，会定时去读取kafka集群分区的日志长度，读取完毕后，连接没有正常释放，一段时间后产生大量的socket连接，导致网络堵塞。</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/Kafka_web_console.png" alt=""></p>
+<h2 id="2、Kafka-Manager"><a href="#2、Kafka-Manager" class="headerlink" title="2、Kafka Manager"></a>2、Kafka Manager</h2><p>雅虎开源的Kafka集群管理工具:</p>
+<ul>
+<li>管理几个不同的集群</li>
+<li>监控集群的状态(topics, brokers, 副本分布, 分区分布)</li>
+<li>产生分区分配(Generate partition assignments)基于集群的当前状态</li>
+<li>重新分配分区</li>
+</ul>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka_manager.png" alt=""></p>
+<h2 id="3、KafkaOffsetMonitor"><a href="#3、KafkaOffsetMonitor" class="headerlink" title="3、KafkaOffsetMonitor"></a>3、KafkaOffsetMonitor</h2><ul>
+<li>KafkaOffsetMonitor可以实时监控：</li>
+<li>Kafka集群状态</li>
+<li>Topic、Consumer Group列表</li>
+<li>图形化展示topic和consumer之间的关系</li>
+<li>图形化展示consumer的Offset、Lag等信息</li>
+</ul>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafkaoffsetmonitor.png" alt=""></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过使用，个人总结以上三种监控程序的优缺点：</p>
+<p><a href="https://github.com/claudemamo/kafka-web-console" target="_blank" rel="external">Kafka Web Console</a>：监控功能较为全面，可以预览消息，监控Offset、Lag等信息，但存在bug，不建议在生产环境中使用。</p>
+<p><a href="https://github.com/yahoo/kafka-manager" target="_blank" rel="external">Kafka Manager</a>：偏向Kafka集群管理，若操作不当，容易导致集群出现故障。对Kafka实时生产和消费消息是通过JMX实现的。没有记录Offset、Lag等信息。</p>
+<p><a href="https://github.com/quantifind/KafkaOffsetMonitor" target="_blank" rel="external">KafkaOffsetMonitor</a>：程序一个jar包的形式运行，部署较为方便。只有监控功能，使用起来也较为安全。</p>
+<p>若只需要监控功能，推荐使用KafkaOffsetMonito，若偏重Kafka集群管理，推荐使用Kafka Manager。</p>
+<p>因为都是开源程序，稳定性欠缺。故需先了解清楚目前已存在哪些Bug，多测试一下，避免出现类似于Kafka Web Console的问题。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
 
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Big-data-Hadoop/">Big data Hadoop</a><a href="/tags/Kafka/">Kafka</a>
+  </div>
 
-block copyright
-    include partial/copyright
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/大数据/">大数据</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://blog.yancy.cc/2017/06/29/Bigdata-hadoop/Kafka/Bigdata-Kafka三款监控工具比较/" data-title="Bigdata-Kafka三款监控工具比较 | Yancy&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/06/29/Bigdata-hadoop/Kafka/Kafka-node模块实现调用js发送数据/" title="Bigdata-Kafka-node模块实现调用js发送数据">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  Bigdata-Kafka-node模块实现调用js发送数据</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/06/29/Bigdata-hadoop/Kafka/如何手动更新Kafka中某个Topic的偏移量/"  title="Bigdata-如何手动更新Kafka中某个Topic的偏移量">
+ <strong>NEXT:</strong><br/> 
+ <span>Bigdata-如何手动更新Kafka中某个Topic的偏移量
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	
+	<div class="ds-thread" data-title="Bigdata-Kafka三款监控工具比较" data-thread-key="Bigdata-hadoop/Kafka/Bigdata-Kafka三款监控工具比较" data-author-key="Yancy" data-url="http://blog.yancy.cc/post/Bigdata-hadoop/Kafka/Bigdata-Kafka三款监控工具比较"></div>
+	
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1、Kafka-Web-Conslole"><span class="toc-number">1.</span> <span class="toc-text">1、Kafka Web Conslole</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2、Kafka-Manager"><span class="toc-number">2.</span> <span class="toc-text">2、Kafka Manager</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3、KafkaOffsetMonitor"><span class="toc-number">3.</span> <span class="toc-text">3、KafkaOffsetMonitor</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		
+		
+		
+		
+	</div>
+</div>
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Big-data-Hadoop/" title="Big data Hadoop">Big data Hadoop<sup>3</sup></a></li>
+		
+			<li><a href="/categories/Kafka/" title="Kafka">Kafka<sup>2</sup></a></li>
+		
+			<li><a href="/categories/大数据/" title="大数据">大数据<sup>10</sup></a></li>
+		
+			<li><a href="/categories/日志分析平台/" title="日志分析平台">日志分析平台<sup>8</sup></a></li>
+		
+			<li><a href="/categories/生活/" title="生活">生活<sup>6</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Ambari/" title="Ambari">Ambari<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Big-data-Hadoop/" title="Big data Hadoop">Big data Hadoop<sup>8</sup></a></li>
+		
+			<li><a href="/tags/Countly/" title="Countly">Countly<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Elasticsearch/" title="Elasticsearch">Elasticsearch<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Kafka/" title="Kafka">Kafka<sup>10</sup></a></li>
+		
+			<li><a href="/tags/Kibana/" title="Kibana">Kibana<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Log-analysis-platform/" title="Log analysis platform">Log analysis platform<sup>8</sup></a></li>
+		
+			<li><a href="/tags/Personal-life-record/" title="Personal life record">Personal life record<sup>6</sup></a></li>
+		
+			<li><a href="/tags/Zabbix/" title="Zabbix">Zabbix<sup>2</sup></a></li>
+		
+			<li><a href="/tags/ZooKeeper/" title="ZooKeeper">ZooKeeper<sup>1</sup></a></li>
+		
+			<li><a href="/tags/旅行日记/" title="旅行日记">旅行日记<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2017 
+		
+		<a href="http://blog.yancy.cc" target="_blank" title="Yancy">Yancy</a>
+		
+            && Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> && Theme by <a href="http://gengbiao.me" target="_blank" title="coney">coney</a>
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+<script>
+    
+        var _bdImg = '4';
+    
+    window._bd_share_config={
+        "common":{
+            "bdSnsKey":{
+
+            },
+            "bdText":"",
+            "bdMini":"2",
+            "bdMiniList":[
+                "qzone",
+                "tsina",
+                "weixin",
+                "renren",
+                "tqq",
+                "tieba",
+                "douban",
+                "sqq",
+                "diandian",
+                "huaban",
+                "youdao",
+                "mail",
+                "ty",
+                "fbook",
+                "twi",
+                "linkedin",
+                "copy",
+                "print"
+            ],
+            "bdPic":"",
+            "bdStyle":"0",
+            "bdSize":"16"
+        },
+        "slide":{
+            "type":"slide",
+            "bdImg":_bdImg,
+            "bdPos":"right",
+            "bdTop":"350"
+        },
+        "image":{
+            "viewList":[
+                "weixin",
+                "qzone",
+                "tsina",
+                "renren",
+                "douban",
+                "tqq"
+            ],
+            "viewText":"分享：",
+            "viewSize":"16"
+        },
+        "selectShare":{
+            "bdContainerClass":null,
+            "bdSelectMiniList":[
+                "weixin",
+                "qzone",
+                "tsina",
+                "renren",
+                "douban",
+                "tqq"
+            ]
+        }
+    };
+    with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'null', 'null');  
+ga('send', 'pageview');
+</script>
+
+
+  </body>
+</html>
+

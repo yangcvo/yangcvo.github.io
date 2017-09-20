@@ -1,20 +1,483 @@
-extends partial/layout
 
-block site_title
-    != page.title + " · " + config.title
+ <!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警 | Yancy&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Yancy">
+    
+    <meta name="description" content="Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警前面一篇讲了我们监控kafka集群Brokers服务状态监控。生产环境监控，可以在Zabbix中对Kafka进行监控，一种是监控JMX端口，另外一种是直接写脚本，使用bin/kafka-run-class">
+    
+    
+    
+    
+    <link rel="alternate" href="atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            var _bdId ='391982416296a0d54221f59fe35250d4';
+             hm.src = "//hm.baidu.com/hm.js?" + _bdId;
+             var s = document.getElementsByTagName("script")[0]; 
+             s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+     
+</head>
 
-block description
-    - var desc = page.desc || page.title + ' - ' + config.author;
-    meta(name="description", content=desc)
+  <body>
+    <header>
+      <div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Yancy&#39;s blog">Yancy&#39;s blog</a></h1>
+				<a class="blog-motto">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+					<li>
+					
+                                            <form class="search" action=http://zhannei.baidu.com/cse/search target="_blank">
+                                            <label>Search</label>
+                                        <input name="s" type="hidden" value= null ><input type="text" name="q" size="30" placeholder="搜索"><br>
+					
+					</li>
+				</ul>
+                            </nav>			
+</div>
 
-block container
-    include mixins/post
-    +post(page)
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/05/29/Bigdata-hadoop/Zabbix-Monitoring Kafka Consumer | kafka的监控和告警/" title="Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警" itemprop="url">Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://blog.yancy.cc" title="Yancy">Yancy</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2017-05-29T09:56:03.000Z" itemprop="datePublished">2017-05-29</time>
+    更新日期:<time datetime="2017-09-19T08:37:10.000Z" itemprop="dateModified">2017-09-19</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Zabbix-Monitoring-Kafka集群-Consumer-kafka的监控和告警"><span class="toc-number">1.</span> <span class="toc-text">Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#脚本放到kafka服务器-etc-zabbix-下面，并配合zabbix监控。"><span class="toc-number">1.1.</span> <span class="toc-text">脚本放到kafka服务器/etc/zabbix/下面，并配合zabbix监控。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#然后zabbix-agentd-conf扩展配置"><span class="toc-number">1.2.</span> <span class="toc-text">然后zabbix_agentd.conf扩展配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#zabbix设置Key"><span class="toc-number">1.3.</span> <span class="toc-text">zabbix设置Key</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#然后配置图形。"><span class="toc-number">2.</span> <span class="toc-text">然后配置图形。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查看最新数据图："><span class="toc-number">3.</span> <span class="toc-text">查看最新数据图：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#这里我对未消费告警定时60分钟触发一次。"><span class="toc-number">4.</span> <span class="toc-text">这里我对未消费告警定时60分钟触发一次。</span></a></li></ol>
+		</div>
+		
+		<h3 id="Zabbix-Monitoring-Kafka集群-Consumer-kafka的监控和告警"><a href="#Zabbix-Monitoring-Kafka集群-Consumer-kafka的监控和告警" class="headerlink" title="Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警"></a>Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警</h3><p>前面一篇讲了我们监控kafka集群Brokers服务状态监控。生产环境监控，可以在Zabbix中对Kafka进行监控，一种是监控JMX端口，另外一种是直接写脚本，使用bin/kafka-run-class.sh里提供的相关方法类。</p>
+<p>根据我们的业务场景，最为主要的的是监控消费者Lag的情况。所有我直接写脚本了。<br>我们对某一个Topic的30个分区，每个分区，当前Consumer的Lag情况。<br>当然还可以生成汇总图，在此不做多展示。在Zabbix中配置对应的Triggers，当Lag超过阀值，实现报警。</p>
+<p>这里我用命令在kafka当中一台服务器获取了其中一个Topic group的Lag。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[jollybi@countly2 kafka_2.10]$ </div><div class="line">bin/kafka-run-class.sh kafka.tools.ConsumerOffsetChecker --zookeeper 75.126.39.4:2281,75.126.5.2:2281,75.126.5.1:2281 --group group_zybi --topic mongotail_lz4  </div><div class="line">消费组           话题id                        分区ID 当前已消费的条数   总条数         未消费的            </div><div class="line">Group           Topic                          Pid Offset          <span class="built_in">log</span>Size         Lag             Owner</div><div class="line">group_zybi      mongotail_lz4                  0   1092163900      2253744158      1161580258      none</div><div class="line">group_zybi      mongotail_lz4                  1   1092281117      2253795899      1161514782      none</div><div class="line">group_zybi      mongotail_lz4                  2   1092834883      2253771036      1160936153      none</div><div class="line">group_zybi      mongotail_lz4                  3   1092822121      2253772916      1160950795      none</div><div class="line">group_zybi      mongotail_lz4                  4   1092040532      2253775432      1161734900      none</div><div class="line">group_zybi      mongotail_lz4                  5   1095163824      2253744329      1158580505      none</div><div class="line">group_zybi      mongotail_lz4                  6   1097623779      2253781500      1156157721      none</div><div class="line">group_zybi      mongotail_lz4                  7   1097459357      2253782032      1156322675      none</div><div class="line">group_zybi      mongotail_lz4                  8   1099080546      2253741287      1154660741      none</div><div class="line">group_zybi      mongotail_lz4                  9   1099028190      2253785053      1154756863      none</div><div class="line">group_zybi      mongotail_lz4                  10  1099535928      2253795680      1154259752      none</div><div class="line">group_zybi      mongotail_lz4                  11  1099701993      2253742880      1154040887      none</div></pre></td></tr></table></figure>
+<p>其实命令大体的逻辑就是通过Consumer获取到当前的offset，就能有lag信息了，如何写成脚本获取我们想要的消费和未消费与总消息条数呢。</p>
+<p>脚本贴出来了，很简单理解，把自己获取到topic的消费条数过滤。我公司有两个主题topic分别对不同组获取lag.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line">[root@countly2 zabbix]<span class="comment"># vim monitor_kafka.sh</span></div><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"></div><div class="line"><span class="built_in">export</span> JAVA_HOME=/home/jollybi/tools/java-7-sun</div><div class="line"><span class="built_in">export</span> CLASSPATH=<span class="variable">$CLASSPATH</span>:.:<span class="variable">$JAVA_HOME</span>/lib:<span class="variable">$JAVA_HOME</span>/jre/lib</div><div class="line"><span class="built_in">export</span> PATH=<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$JAVA_HOME</span>/jre/bin:<span class="variable">$PATH</span></div><div class="line">topic=mongotail_lz4_imp</div><div class="line">group=group_imp</div><div class="line"></div><div class="line"><span class="comment">#topic2</span></div><div class="line"></div><div class="line">topic2=mongotail_lz4</div><div class="line">group2=group_event</div><div class="line">group3=group_event_spm</div><div class="line"></div><div class="line"><span class="comment">#启动目录</span></div><div class="line">kafkaserver=/home/jollybi/tools/kafka_2.10-0.8.2.1/bin/kafka-run-class.sh</div><div class="line">zk=75.126.39.4:2281,75.126.5.2:2281,75.126.5.8:2281</div><div class="line"></div><div class="line"><span class="keyword">function</span> imp_lag &#123;</div><div class="line"><span class="built_in">echo</span> <span class="string">"`<span class="variable">$kafkaserver</span> kafka.tools.ConsumerOffsetChecker --zookeeper <span class="variable">$zk</span> --group <span class="variable">$group</span>  --topic <span class="variable">$topic</span>  | sed -n 2p | awk '&#123;print <span class="variable">$6</span>&#125;'`"</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">function</span> imp_logsize &#123;</div><div class="line"><span class="built_in">echo</span> <span class="string">"`<span class="variable">$kafkaserver</span> kafka.tools.ConsumerOffsetChecker --zookeeper <span class="variable">$zk</span> --group <span class="variable">$group</span>  --topic <span class="variable">$topic</span>  | sed -n 2p | awk '&#123;print <span class="variable">$5</span>&#125;'`"</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">function</span> imp_offset &#123;</div><div class="line"><span class="built_in">echo</span> <span class="string">"`<span class="variable">$kafkaserver</span> kafka.tools.ConsumerOffsetChecker --zookeeper <span class="variable">$zk</span> --group <span class="variable">$group</span>  --topic <span class="variable">$topic</span>  | sed -n 2p | awk '&#123;print <span class="variable">$4</span>&#125;'`"</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">function</span> event_spm_lag &#123;</div><div class="line"><span class="built_in">echo</span> <span class="string">"`<span class="variable">$kafkaserver</span> kafka.tools.ConsumerOffsetChecker --zookeeper <span class="variable">$zk</span> --group <span class="variable">$group2</span>  --topic <span class="variable">$topic2</span>  | sed -n 2p | awk '&#123;print <span class="variable">$6</span>&#125;'`"</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">function</span> event_spm_logsize &#123;</div><div class="line"><span class="built_in">echo</span> <span class="string">"`<span class="variable">$kafkaserver</span> kafka.tools.ConsumerOffsetChecker --zookeeper <span class="variable">$zk</span> --group <span class="variable">$group2</span>  --topic <span class="variable">$topic2</span>  | sed -n 2p | awk '&#123;print <span class="variable">$5</span>&#125;'`"</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">function</span> event_spm_offset &#123;</div><div class="line"><span class="built_in">echo</span> <span class="string">"`<span class="variable">$kafkaserver</span> kafka.tools.ConsumerOffsetChecker --zookeeper <span class="variable">$zk</span> --group <span class="variable">$group2</span>  --topic <span class="variable">$topic2</span>  | sed -n 2p | awk '&#123;print <span class="variable">$4</span>&#125;'`"</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">function</span> event_lag &#123;</div><div class="line"><span class="built_in">echo</span> <span class="string">"`<span class="variable">$kafkaserver</span> kafka.tools.ConsumerOffsetChecker --zookeeper <span class="variable">$zk</span> --group <span class="variable">$group3</span>  --topic <span class="variable">$topic2</span>  | sed -n 2p | awk '&#123;print <span class="variable">$6</span>&#125;'`"</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">function</span> event_logsize &#123;</div><div class="line"><span class="built_in">echo</span> <span class="string">"`<span class="variable">$kafkaserver</span> kafka.tools.ConsumerOffsetChecker --zookeeper <span class="variable">$zk</span> --group <span class="variable">$group3</span>  --topic <span class="variable">$topic2</span>  | sed -n 2p | awk '&#123;print <span class="variable">$5</span>&#125;'`"</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">function</span> event_offset &#123;</div><div class="line"><span class="built_in">echo</span> <span class="string">"`<span class="variable">$kafkaserver</span> kafka.tools.ConsumerOffsetChecker --zookeeper <span class="variable">$zk</span> --group <span class="variable">$group3</span>  --topic <span class="variable">$topic2</span>  | sed -n 2p | awk '&#123;print <span class="variable">$4</span>&#125;'`"</span></div><div class="line">&#125;</div><div class="line"><span class="comment"># Run the requested function</span></div><div class="line"><span class="variable">$1</span></div></pre></td></tr></table></figure>
+<p>⏰ <strong>这里脚本我更新过了，这个脚本实现是当个分片的消费情况。 不是总的消费和未消费的取到的值。</strong><br>🎋 需要原脚本的留言喔，下面步骤都是一样的效果。</p>
+<h4 id="脚本放到kafka服务器-etc-zabbix-下面，并配合zabbix监控。"><a href="#脚本放到kafka服务器-etc-zabbix-下面，并配合zabbix监控。" class="headerlink" title="脚本放到kafka服务器/etc/zabbix/下面，并配合zabbix监控。"></a>脚本放到kafka服务器/etc/zabbix/下面，并配合zabbix监控。</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@countly2 zabbix]<span class="comment"># ll</span></div><div class="line">total 8</div><div class="line">-rwxrwxr-x 1 jollybi jollybi 1932 Jun  7 10:40 monitor_kafka.sh</div><div class="line">-rw-r--r-- 1 root    root     218 Jun  7 14:19 zabbix_agentd.conf</div><div class="line">drwxr-xr-x 2 root    root      45 Sep 20  2016 zabbix_agentd.d</div></pre></td></tr></table></figure>
+<h4 id="然后zabbix-agentd-conf扩展配置"><a href="#然后zabbix-agentd-conf扩展配置" class="headerlink" title="然后zabbix_agentd.conf扩展配置"></a>然后zabbix_agentd.conf扩展配置</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">UserParameter=kafka.[*],/etc/zabbix/monitor_kafka.sh <span class="variable">$1</span></div></pre></td></tr></table></figure>
+<blockquote>
+<p>也可以这么写：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">UserParameter=kafka.imp_lag,/etc/zabbix/monitor_kafka.sh imp_lag</div><div class="line">UserParameter=kafka.imp_offset,/etc/zabbix/monitor_kafka.sh imp_offset</div><div class="line">UserParameter=kafka.imp_logsize,/etc/zabbix/monitor_kafka.sh imp_logsize</div><div class="line">UserParameter=kafka.event_spm_lag,/etc/zabbix/monitor_kafka.sh event_spm_lag</div><div class="line">UserParameter=kafka.event_spm_logsize,/etc/zabbix/monitor_kafka.sh event_spm_logsize</div><div class="line">UserParameter=kafka.event_spm_offset,/etc/zabbix/monitor_kafka.sh event_spm_offset </div><div class="line">UserParameter=kafka.event_lag,/etc/zabbix/monitor_kafka.sh event_lag</div><div class="line">UserParameter=kafka.event_offset,/etc/zabbix/monitor_kafka.sh event_offset</div><div class="line">UserParameter=kafka.event_logsize,/etc/zabbix/monitor_kafka.sh event_logsize</div></pre></td></tr></table></figure>
+<p>这里写键值就不需要加[]</p>
+<p>然后配置完成重启zabbix-agent服务。</p>
+<h4 id="zabbix设置Key"><a href="#zabbix设置Key" class="headerlink" title="zabbix设置Key"></a>zabbix设置Key</h4><p>zabbix-组态-模板-创建模板。</p>
+<p>创建：KafkaConsumers模板<br>然后点击KafkaConsumers模板，创建相应的项目:kafka.event_lag 未消费的条数 </p>
+<p>设置zabbix代理。默认的代理方式。</p>
+<p>zabbix,key 键值</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">kafka.[event_lag]</div></pre></td></tr></table></figure>
+<p>数据类型默认浮点就可以了。 后面应用集选择下KafkaConsumers 即可。</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Consumer.01.png" alt=""><br>陆陆续续配置完所有项目。</p>
+<h3 id="然后配置图形。"><a href="#然后配置图形。" class="headerlink" title="然后配置图形。"></a>然后配置图形。</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Consumer.02.png" alt=""></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Consumer.04.png" alt=""></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Consumer.05.png" alt=""></p>
+<h3 id="查看最新数据图："><a href="#查看最新数据图：" class="headerlink" title="查看最新数据图："></a>查看最新数据图：</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Consumer.06.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Consumer.07.png" alt=""></p>
+<p>出现问题第一时间发送报警消息。<br>报警的Trigger触发规则也是对lag的值做报警，具体阀值设置为多少，还是看大家各自业务需求了。</p>
+<h3 id="这里我对未消费告警定时60分钟触发一次。"><a href="#这里我对未消费告警定时60分钟触发一次。" class="headerlink" title="这里我对未消费告警定时60分钟触发一次。"></a>这里我对未消费告警定时60分钟触发一次。</h3><p>⚠️注释：设置group_event_lag最近消息条数的60分钟时间之内一直超过200万消费则报警</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Consumer.08.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Consumer.09.png" alt=""></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Consumer.10.png" alt=""></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
 
-block pagination
-    include mixins/paginator
-    +post()
-    include partial/comment
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Kafka/">Kafka</a><a href="/tags/Zabbix/">Zabbix</a>
+  </div>
 
-block copyright
-    include partial/copyright
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Kafka/">Kafka</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://blog.yancy.cc/2017/05/29/Bigdata-hadoop/Zabbix-Monitoring Kafka Consumer | kafka的监控和告警/" data-title="Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警 | Yancy&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/06/01/Bigdata-hadoop/Zabbix监控Kafka集群 Brokers服务/" title="Zabbix监控Kafka集群 Brokers服务">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  Zabbix监控Kafka集群 Brokers服务</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/05/28/Bigdata-hadoop/Kafka/Bigdata-Kafka集群快速搭建与增删改查命令讲解/"  title="Bigdata-Kafka集群快速搭建与命令讲解">
+ <strong>NEXT:</strong><br/> 
+ <span>Bigdata-Kafka集群快速搭建与命令讲解
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	
+	<div class="ds-thread" data-title="Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警" data-thread-key="Bigdata-hadoop/Zabbix-Monitoring Kafka Consumer | kafka的监控和告警" data-author-key="Yancy" data-url="http://blog.yancy.cc/post/Bigdata-hadoop/Zabbix-Monitoring Kafka Consumer | kafka的监控和告警"></div>
+	
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Zabbix-Monitoring-Kafka集群-Consumer-kafka的监控和告警"><span class="toc-number">1.</span> <span class="toc-text">Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#脚本放到kafka服务器-etc-zabbix-下面，并配合zabbix监控。"><span class="toc-number">1.1.</span> <span class="toc-text">脚本放到kafka服务器/etc/zabbix/下面，并配合zabbix监控。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#然后zabbix-agentd-conf扩展配置"><span class="toc-number">1.2.</span> <span class="toc-text">然后zabbix_agentd.conf扩展配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#zabbix设置Key"><span class="toc-number">1.3.</span> <span class="toc-text">zabbix设置Key</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#然后配置图形。"><span class="toc-number">2.</span> <span class="toc-text">然后配置图形。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查看最新数据图："><span class="toc-number">3.</span> <span class="toc-text">查看最新数据图：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#这里我对未消费告警定时60分钟触发一次。"><span class="toc-number">4.</span> <span class="toc-text">这里我对未消费告警定时60分钟触发一次。</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		
+		
+		
+		
+	</div>
+</div>
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Big-data-Hadoop/" title="Big data Hadoop">Big data Hadoop<sup>3</sup></a></li>
+		
+			<li><a href="/categories/Kafka/" title="Kafka">Kafka<sup>2</sup></a></li>
+		
+			<li><a href="/categories/大数据/" title="大数据">大数据<sup>10</sup></a></li>
+		
+			<li><a href="/categories/日志分析平台/" title="日志分析平台">日志分析平台<sup>8</sup></a></li>
+		
+			<li><a href="/categories/生活/" title="生活">生活<sup>6</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Ambari/" title="Ambari">Ambari<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Big-data-Hadoop/" title="Big data Hadoop">Big data Hadoop<sup>8</sup></a></li>
+		
+			<li><a href="/tags/Countly/" title="Countly">Countly<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Elasticsearch/" title="Elasticsearch">Elasticsearch<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Kafka/" title="Kafka">Kafka<sup>10</sup></a></li>
+		
+			<li><a href="/tags/Kibana/" title="Kibana">Kibana<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Log-analysis-platform/" title="Log analysis platform">Log analysis platform<sup>8</sup></a></li>
+		
+			<li><a href="/tags/Personal-life-record/" title="Personal life record">Personal life record<sup>6</sup></a></li>
+		
+			<li><a href="/tags/Zabbix/" title="Zabbix">Zabbix<sup>2</sup></a></li>
+		
+			<li><a href="/tags/ZooKeeper/" title="ZooKeeper">ZooKeeper<sup>1</sup></a></li>
+		
+			<li><a href="/tags/旅行日记/" title="旅行日记">旅行日记<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2017 
+		
+		<a href="http://blog.yancy.cc" target="_blank" title="Yancy">Yancy</a>
+		
+            && Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> && Theme by <a href="http://gengbiao.me" target="_blank" title="coney">coney</a>
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+<script>
+    
+        var _bdImg = '4';
+    
+    window._bd_share_config={
+        "common":{
+            "bdSnsKey":{
+
+            },
+            "bdText":"",
+            "bdMini":"2",
+            "bdMiniList":[
+                "qzone",
+                "tsina",
+                "weixin",
+                "renren",
+                "tqq",
+                "tieba",
+                "douban",
+                "sqq",
+                "diandian",
+                "huaban",
+                "youdao",
+                "mail",
+                "ty",
+                "fbook",
+                "twi",
+                "linkedin",
+                "copy",
+                "print"
+            ],
+            "bdPic":"",
+            "bdStyle":"0",
+            "bdSize":"16"
+        },
+        "slide":{
+            "type":"slide",
+            "bdImg":_bdImg,
+            "bdPos":"right",
+            "bdTop":"350"
+        },
+        "image":{
+            "viewList":[
+                "weixin",
+                "qzone",
+                "tsina",
+                "renren",
+                "douban",
+                "tqq"
+            ],
+            "viewText":"分享：",
+            "viewSize":"16"
+        },
+        "selectShare":{
+            "bdContainerClass":null,
+            "bdSelectMiniList":[
+                "weixin",
+                "qzone",
+                "tsina",
+                "renren",
+                "douban",
+                "tqq"
+            ]
+        }
+    };
+    with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'null', 'null');  
+ga('send', 'pageview');
+</script>
+
+
+  </body>
+</html>
+
