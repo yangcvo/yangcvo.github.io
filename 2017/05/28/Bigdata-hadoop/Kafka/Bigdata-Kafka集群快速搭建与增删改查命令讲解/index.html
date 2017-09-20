@@ -1,202 +1,100 @@
-<!DOCTYPE html>
-<html>
+
+ <!DOCTYPE HTML>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   
-  
-  <title>Bigdata-Kafka集群快速搭建与命令讲解 | Yancy&#39;s blog</title>
-  <meta name="viewport" content="width=device-width">
-  <meta name="description" content="Bigdata-Kafka集群快速搭建与命令讲解kafka集群和zookeeper集群规范12345678910111213141516171819kafka集群和zookeeper集群规范kafka版本：kafka_2.10-0.8.2.1zookeeper版本：zookeeper-3.4.5启动用户：jollybikafka安装目录：/data/tools/kafka新建消息目录：/data/">
-<meta name="keywords" content="Big data Hadoop,Kafka">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Bigdata-Kafka集群快速搭建与命令讲解">
-<meta property="og:url" content="http://blog.yancy.cc/2017/05/28/Bigdata-hadoop/Kafka/Bigdata-Kafka集群快速搭建与增删改查命令讲解/index.html">
-<meta property="og:site_name" content="Yancy&#39;s blog">
-<meta property="og:description" content="Bigdata-Kafka集群快速搭建与命令讲解kafka集群和zookeeper集群规范12345678910111213141516171819kafka集群和zookeeper集群规范kafka版本：kafka_2.10-0.8.2.1zookeeper版本：zookeeper-3.4.5启动用户：jollybikafka安装目录：/data/tools/kafka新建消息目录：/data/">
-<meta property="og:updated_time" content="2017-09-19T08:35:25.000Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Bigdata-Kafka集群快速搭建与命令讲解">
-<meta name="twitter:description" content="Bigdata-Kafka集群快速搭建与命令讲解kafka集群和zookeeper集群规范12345678910111213141516171819kafka集群和zookeeper集群规范kafka版本：kafka_2.10-0.8.2.1zookeeper版本：zookeeper-3.4.5启动用户：jollybikafka安装目录：/data/tools/kafka新建消息目录：/data/">
-  
-  
-  <link rel="shortcut icon" href="/icons/favicon.ico" type="image/x-icon" />
-  <link rel="apple-touch-icon" sizes="57x57" href="/icons/apple-touch-icon-57x57.png">
-  <link rel="apple-touch-icon" sizes="60x60" href="/icons/apple-touch-icon-60x60.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="/icons/apple-touch-icon-72x72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="/icons/apple-touch-icon-76x76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="/icons/apple-touch-icon-114x114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="/icons/apple-touch-icon-120x120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="/icons/apple-touch-icon-144x144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/icons/apple-touch-icon-152x152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon-180x180.png">
-  <link rel="icon" type="image/png" href="/icons/favicon-16x16.png" sizes="16x16">
-  <link rel="icon" type="image/png" href="/icons/favicon-32x32.png" sizes="32x32">
-  <link rel="icon" type="image/png" href="/icons/favicon-96x96.png" sizes="96x96">
-  <link rel="icon" type="image/png" href="/icons/android-chrome-192x192.png" sizes="192x192">
-  <meta name="msapplication-square70x70logo" content="/icons/smalltile.png" />
-  <meta name="msapplication-square150x150logo" content="/icons/mediumtile.png" />
-  <meta name="msapplication-wide310x150logo" content="/icons/widetile.png" />
-  <meta name="msapplication-square310x310logo" content="/icons/largetile.png" />
-  
-  <link rel="stylesheet" type="text/css" href="/css/style.css">
-  
-  <link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
-  <script src="//cdn.bootcss.com/jquery/2.1.0/jquery.min.js" type="text/javascript"></script>
-
-  
-
-  
-  
+    <title>Bigdata-Kafka集群快速搭建与命令讲解 | Yancy&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Yancy">
+    
+    <meta name="description" content="Bigdata-Kafka集群快速搭建与命令讲解kafka集群和zookeeper集群规范12345678910111213141516171819kafka集群和zookeeper集群规范kafka版本：kafka_2.10-0.8.2.1zookeeper版本：zookeeper-3.4.5启动">
+    
+    
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="yangaov" />
+    <meta name="twitter:title" content="Bigdata-Kafka集群快速搭建与命令讲解 | Yancy&#39;s blog" />
+      
+    
+    
+    <link rel="alternate" href="atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="Yancy&#39;s blog" title="Yancy&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Yancy&#39;s blog">Yancy&#39;s blog</a></h1>
+				<h2 class="blog-motto">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/sitemap.xml">Sitemap</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:blog.yancy.cc">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
 
-<body>
-  <div id="container">
-    <header id="header" class="print-invisible">
-  <div id="header-main" class="header-inner">
-    <div class="outer">
-      <a href="/" id="logo"><span class="site-title">Yancy&#39;s blog</span></a>
-      <nav id="main-nav">
-        
-      </nav>
-      
-      <nav id="sub-nav">
-        <div class="profile" id="profile-nav">
-          <a id="profile-anchor" href="javascript:;"><img class="avatar" src="/"><i class="fa fa-caret-down"></i></a>
-        </div>
-      </nav>
-      
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"> </button><input type="hidden" name="sitesearch" value="http://blog.yancy.cc"></form>
-      </div>
-    </div>
-  </div>
-  <div id="main-nav-mobile" class="header-sub header-inner">
-    <table class="menu outer">
-      <tr>
-      
-      <td>
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.yancy.cc"></form>
-      </td>
-      </tr>
-    </table>
-  </div>
-</header>
-    <div class="outer">
-      
-        <aside id="profile">
-  <div class="inner profile-inner">
-  	<div class="base-info profile-block">
-      <img id="avatar" src="/">
-      <h2 id="name">Pan Jiabang</h2>
-      <h3 id="title">undefined</h3>
-      <span id="location"><i class="fa fa-map-marker"></i>undefined</span>
-      <a id="follow" href="undefined" target="_blank">FOLLOW</a>
-    </div>
-    <div class="article-info profile-block">
-      <div class="article-info-block">
-        29
-        <span>posts</span>
-      </div>
-      <div class="article-info-block">
-        11
-        <span>tags</span>
-      </div>
-    </div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
     
+      <a href="/2017/05/28/Bigdata-hadoop/Kafka/Bigdata-Kafka集群快速搭建与增删改查命令讲解/" title="Bigdata-Kafka集群快速搭建与命令讲解" itemprop="url">Bigdata-Kafka集群快速搭建与命令讲解</a>
+  </h1>
+  <p class="article-author">By
     
-    <div class="contact-info profile-block">
-      <table class="contact-list">
-        <tr>
-        
-        
-        
-        <td><a href="http://github.com/JamesPan" target="_blank" title="github"><i   class="fa fa-github"></i></a></td>
-        
-        
-        
-        <td><a href="http://weibo.com/panjiabang" target="_blank" title="weibo"><i   class="fa fa-weibo"></i></a></td>
-        
-        
-        
-        <td><a href="https://twitter.com/_JamesPan_" target="_blank" title="twitter"><i   class="fa fa-twitter"></i></a></td>
-        
-        
-        
-          
-        
-        <td><a href="https://telegram.me/jamespan" target="_blank" title="telegram"><i   class="fa fa-paper-plane"></i></a></td>
-        
-        
-        
-        <td><a href="/atom.xml" target="_blank" title="rss"><i   class="fa fa-rss"></i></a></td>
-        
-        </tr>
-      </table>
-    </div>
-    
-  </div>
-</aside>
-      
-      <section id="main"><article id="post-Bigdata-hadoop/Kafka/Bigdata-Kafka集群快速搭建与增删改查命令讲解" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      Bigdata-Kafka集群快速搭建与命令讲解
-    </h1>
-  
-
-        
-        <div class="article-meta">
-          <div class="article-date">
-  <div class="article-date" style="display:inline;">
-    <i class="fa fa-upload" aria-hidden="true"></i>
+      <a href="http://blog.yancy.cc" title="Yancy">Yancy</a>
+    </p>
+  <p class="article-time">
     <time datetime="2017-05-28T06:46:00.000Z" itemprop="datePublished">2017-05-28</time>
-  </div>
-  <div style="display:inline;">
-    <i class="fa fa-edit" aria-hidden="true"></i>
-    <time datetime="2017-09-19T08:35:25.000Z" itemprop="dateUpdated">2017-09-19</time>
-  </div>
-</div>
-
-          
-<div class="article-category">
-	<i class="fa fa-line-chart"></i>
-	<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span> Hits
-</div>
-
-
-          
-<div class="article-category">
-	<a href="https://raw.githubusercontent.com/JamesPan/blog-src/master/source/_posts/Bigdata-hadoop/Kafka/Bigdata-Kafka集群快速搭建与增删改查命令讲解.md" target="_blank"><i class="fa fa-code"></i></a>
-</div>
-
-
-
-          
-<div class="article-author"><i class="fa fa-user"></i>
-  
-  <a href="http://blog.yancy.cc" title="Yancy">Yancy</a>
-</div>
-  
-
-        </div>
-        
-      </header>
+    更新日期:<time datetime="2017-09-19T08:35:25.000Z" itemprop="dateModified">2017-09-19</time>
     
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-        <div id="toc" class="toc-article">
-          <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Bigdata-Kafka集群快速搭建与命令讲解"><span class="toc-number">1.</span> <span class="toc-text">Bigdata-Kafka集群快速搭建与命令讲解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#kafka集群和zookeeper集群规范"><span class="toc-number">1.0.1.</span> <span class="toc-text">kafka集群和zookeeper集群规范</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Step1-配置-etc-hosts-（3台一致）"><span class="toc-number">1.0.2.</span> <span class="toc-text">Step1: 配置/etc/hosts （3台一致）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Step2-KafKa集群搭建"><span class="toc-number">1.0.3.</span> <span class="toc-text">Step2: KafKa集群搭建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置data目录，最好不要用默认的-tmp-kafka-logs"><span class="toc-number">1.0.4.</span> <span class="toc-text">设置data目录，最好不要用默认的/tmp/kafka-logs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Step3-集群机器快速拷贝配置"><span class="toc-number">1.0.5.</span> <span class="toc-text">Step3: 集群机器快速拷贝配置:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Step4-启动-kafka集群"><span class="toc-number">1.0.6.</span> <span class="toc-text">Step4:启动 kafka集群</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Step5-测试集群"><span class="toc-number">1.0.6.1.</span> <span class="toc-text">Step5:测试集群</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kafka常用命令"><span class="toc-number">1.0.7.</span> <span class="toc-text">Kafka常用命令</span></a></li></ol></li></ol></li></ol>
-        </div>
-      
-        <h1 id="Bigdata-Kafka集群快速搭建与命令讲解"><a href="#Bigdata-Kafka集群快速搭建与命令讲解" class="headerlink" title="Bigdata-Kafka集群快速搭建与命令讲解"></a>Bigdata-Kafka集群快速搭建与命令讲解</h1><h3 id="kafka集群和zookeeper集群规范"><a href="#kafka集群和zookeeper集群规范" class="headerlink" title="kafka集群和zookeeper集群规范"></a>kafka集群和zookeeper集群规范</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">kafka集群和zookeeper集群规范</div><div class="line">kafka版本：kafka_2.10-0.8.2.1</div><div class="line">zookeeper版本：zookeeper-3.4.5</div><div class="line"></div><div class="line">启动用户：jollybi</div><div class="line">kafka安装目录：/data/tools/</div><div class="line">kafka新建消息目录：/data/tools/kafka_2.10-0.8.2.1/kafka-logs</div><div class="line"></div><div class="line">启动用户：jollybi</div><div class="line">zookeeper安装目录：/data/tools/</div><div class="line">zookeeper新建日志目录：/data/tools/zookeeper-3.4.5/tmp/logs</div><div class="line"></div><div class="line">统一配置hosts</div><div class="line"></div><div class="line"></div><div class="line">10.155.90.153 kafka1.jollychic.com kafka1</div><div class="line">10.155.90.155 kafka2.jollychic.com kafka2</div><div class="line">10.155.90.138 kafka3.jollychic.com kafka3</div></pre></td></tr></table></figure>
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Bigdata-Kafka集群快速搭建与命令讲解"><span class="toc-number">1.</span> <span class="toc-text">Bigdata-Kafka集群快速搭建与命令讲解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#kafka集群和zookeeper集群规范"><span class="toc-number">1.0.1.</span> <span class="toc-text">kafka集群和zookeeper集群规范</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Step1-配置-etc-hosts-（3台一致）"><span class="toc-number">1.0.2.</span> <span class="toc-text">Step1: 配置/etc/hosts （3台一致）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Step2-KafKa集群搭建"><span class="toc-number">1.0.3.</span> <span class="toc-text">Step2: KafKa集群搭建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置data目录，最好不要用默认的-tmp-kafka-logs"><span class="toc-number">1.0.4.</span> <span class="toc-text">设置data目录，最好不要用默认的/tmp/kafka-logs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Step3-集群机器快速拷贝配置"><span class="toc-number">1.0.5.</span> <span class="toc-text">Step3: 集群机器快速拷贝配置:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Step4-启动-kafka集群"><span class="toc-number">1.0.6.</span> <span class="toc-text">Step4:启动 kafka集群</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Step5-测试集群"><span class="toc-number">1.0.6.1.</span> <span class="toc-text">Step5:测试集群</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kafka常用命令"><span class="toc-number">1.0.7.</span> <span class="toc-text">Kafka常用命令</span></a></li></ol></li></ol></li></ol>
+		</div>
+		
+		<h1 id="Bigdata-Kafka集群快速搭建与命令讲解"><a href="#Bigdata-Kafka集群快速搭建与命令讲解" class="headerlink" title="Bigdata-Kafka集群快速搭建与命令讲解"></a>Bigdata-Kafka集群快速搭建与命令讲解</h1><h3 id="kafka集群和zookeeper集群规范"><a href="#kafka集群和zookeeper集群规范" class="headerlink" title="kafka集群和zookeeper集群规范"></a>kafka集群和zookeeper集群规范</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">kafka集群和zookeeper集群规范</div><div class="line">kafka版本：kafka_2.10-0.8.2.1</div><div class="line">zookeeper版本：zookeeper-3.4.5</div><div class="line"></div><div class="line">启动用户：jollybi</div><div class="line">kafka安装目录：/data/tools/</div><div class="line">kafka新建消息目录：/data/tools/kafka_2.10-0.8.2.1/kafka-logs</div><div class="line"></div><div class="line">启动用户：jollybi</div><div class="line">zookeeper安装目录：/data/tools/</div><div class="line">zookeeper新建日志目录：/data/tools/zookeeper-3.4.5/tmp/logs</div><div class="line"></div><div class="line">统一配置hosts</div><div class="line"></div><div class="line"></div><div class="line">10.155.90.153 kafka1.jollychic.com kafka1</div><div class="line">10.155.90.155 kafka2.jollychic.com kafka2</div><div class="line">10.155.90.138 kafka3.jollychic.com kafka3</div></pre></td></tr></table></figure>
 <p>本文使用了3台机器部署Kafka集群，IP和主机名对应关系如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">10.155.90.153 kafka1.jollychic.com kafka1</div><div class="line">10.155.90.155 kafka2.jollychic.com kafka2</div><div class="line">10.155.90.138 kafka3.jollychic.com kafka3</div></pre></td></tr></table></figure>
 <h3 id="Step1-配置-etc-hosts-（3台一致）"><a href="#Step1-配置-etc-hosts-（3台一致）" class="headerlink" title="Step1: 配置/etc/hosts （3台一致）"></a>Step1: 配置/etc/hosts （3台一致）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">127.0.0.1 localhost.localdomain localhost</div><div class="line">10.155.90.153 kafka1.jollychic.com kafka1</div><div class="line">10.155.90.155 kafka2.jollychic.com kafka2</div><div class="line">10.155.90.138 kafka3.jollychic.com kafka3</div></pre></td></tr></table></figure>
@@ -216,235 +114,308 @@
 <h4 id="Step5-测试集群"><a href="#Step5-测试集群" class="headerlink" title="Step5:测试集群"></a>Step5:测试集群</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div></pre></td><td class="code"><pre><div class="line"><span class="comment">### 默认创建kafka Topic:  1个副本备份 1个分区消费</span></div><div class="line"></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 1 --partitions 1 --topic mongotail_lz4</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 1 --partitions 1 --topic mongotail_lz4_imp</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 大数据这边需要12个分区这里我删除Topic重新创建Topic：</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 删除kafka Topic:</span></div><div class="line"></div><div class="line"></div><div class="line">第一步：删除kafka topic</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --delete --topic  mongotail_lz4 </div><div class="line"></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --delete --topic  mongotail_lz4_imp</div><div class="line"></div><div class="line"><span class="comment">### 这是由于删除topic没删干净会报错：</span></div><div class="line"></div><div class="line">org.apache.kafka.common.errors.UnknownTopicOrPartitionException: This server does not host this topic-partition.</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 删除线程执行删除操作的真正逻辑是：</span></div><div class="line">1. 它首先会给当前所有broker发送更新元数据信息的请求，告诉这些broker说这个topic要删除了，你们可以把它的信息从缓存中删掉了</div><div class="line">2. 开始删除这个topic的所有分区</div><div class="line">2.1 给所有broker发请求，告诉它们这些分区要被删除。broker收到后就不再接受任何在这些分区上的客户端请求了</div><div class="line">2.2 把每个分区下的所有副本都置于OfflineReplica状态，这样ISR就不断缩小，当leader副本最后也被置于OfflineReplica状态时leader信息将被更新为-1</div><div class="line">2.3 将所有副本置于ReplicaDeletionStarted状态</div><div class="line">2.4 副本状态机捕获状态变更，然后发起StopReplicaRequest给broker，broker接到请求后停止所有fetcher线程、移除缓存，然后删除底层<span class="built_in">log</span>文件</div><div class="line">2.5 关闭所有空闲的Fetcher线程</div><div class="line">    </div><div class="line"><span class="comment">### 第二步：删除zookeeper相关的路径：</span></div><div class="line">[jollybi@kafka1 zookeeper-3.4.5]$ ./bin/zkCli.sh -server 127.0.0.1:2281 </div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 1] rmr /brokers/topics/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 0] rmr /consumers/group_ml_general/offsets/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 1] rmr /consumers/group_ml_general/owners/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 3] rmr  /config/topics/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 4] rmr /admin/delete_topics/mongotail_lz4</div><div class="line"></div><div class="line"><span class="comment">### 删除topic上面消费组 </span></div><div class="line"></div><div class="line">删除 ZooKeeper 下面的 /consumers/[group_id] 路径就可以了。ZooKeeper 原生API只支持删除空的路径，所以建议你使用 curator framework 进行这个删除操作，ZkPaths.deleteChildren 会递归式地删除整个路径（包括子路径）。</div><div class="line"></div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 0] rmr /consumers/kafka-node1-imp-group</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 1] rmr /consumers/kafka-node1-group</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 2] rmr /consumers/console-consumer-59053</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 3] rmr /consumers/</div><div class="line"></div><div class="line"></div><div class="line">1、设置配置文件允许删除</div><div class="line">delete.topic.enable=<span class="literal">true</span> 配置添加到 config/server.properties</div><div class="line">2、执行删除命令</div><div class="line">./bin/kafka-topics.sh --zookeeper localhost:2181 --delete --topic <span class="built_in">test</span>-topic</div><div class="line"></div><div class="line">在zookeeper中确认：</div><div class="line"></div><div class="line"> 删除zookeeper下/brokers/topics/<span class="built_in">test</span>-topic节点</div><div class="line"> 删除zookeeper下/config/topics/<span class="built_in">test</span>-topic节点</div><div class="line"> 删除zookeeper下/admin/delete_topics/<span class="built_in">test</span>-topic节点</div><div class="line"> </div><div class="line">consumer 的话 删除groupid</div><div class="line"> </div><div class="line"></div><div class="line"><span class="comment">### 重启kafka集群</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 大数据kafka建topic，不能建一个分区，那样吞吐量上不去，不够用，我们以前建了12个分区的</span></div><div class="line"><span class="comment">### 创建新 kafka Topic: 3个副本，12个分区</span></div><div class="line"></div><div class="line"> ./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 3 --partitions 12  --topic mongotail_lz4</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 3 --partitions 12  --topic mongotail_lz4_imp</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 查看创建的Topic:</span></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh  --describe --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281  --topic mongotail_lz4</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh  --describe --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281  --topic mongotail_lz4_imp</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 查看集群情况：</span></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh  --describe --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281  --topic mongotail_lz4</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### kafka生产客户端生产数据命令：</span></div><div class="line"></div><div class="line">./bin/kafka-console-producer.sh --broker-list 75.126.39.124:9292,75.126.5.162:9292,75.126.5.178:9292 --topic mongotail_lz4_imp                      </div><div class="line">......</div><div class="line">my <span class="built_in">test</span> message 1</div><div class="line">my <span class="built_in">test</span> message 2</div><div class="line">^C</div><div class="line"><span class="comment">### kafka消费客户端数据命令 现在我们来看看消息：</span></div><div class="line"></div><div class="line"> ./bin/kafka-console-consumer.sh --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  --fm-beginning --topic mongotail_lz4_imp</div><div class="line">......</div><div class="line">my <span class="built_in">test</span> message 1</div><div class="line">my <span class="built_in">test</span> message 2</div><div class="line"></div><div class="line">^C</div></pre></td></tr></table></figure>
 <h3 id="Kafka常用命令"><a href="#Kafka常用命令" class="headerlink" title="Kafka常用命令"></a>Kafka常用命令</h3><p>以下是kafka常用命令行总结：  </p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">1、 list topic 显示所有topic</div><div class="line">./bin/kafka-topics.sh --list --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281</div><div class="line"></div><div class="line">2、 查看topic的详细信息  </div><div class="line"> ./bin/kafka-topics.sh --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  -describe -topic mongotail_lz4_imp</div><div class="line"></div><div class="line">3、为topic增加partition分区 参数：--alter --partitions</div><div class="line">./bin/kafka-topics.sh  --alter --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  --partitions 20 --topic mongotail_lz4_imp</div><div class="line"></div><div class="line">4、kafka生产者客户端命令  </div><div class="line">./bin/kafka-console-producer.sh --broker-list 75.126.39.124:9292,75.126.5.162:9292,75.126.5.178:9292 --topic mongotail_lz4_imp                        </div><div class="line"></div><div class="line">5、kafka消费者客户端命令  </div><div class="line">./bin/kafka-console-consumer.sh --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  --fm-beginning --topic </div><div class="line"></div><div class="line">6、kafka服务启动  </div><div class="line">./kafka-server-start.sh -daemon ../config/server.properties   </div><div class="line"></div><div class="line">7、下线broker  </div><div class="line">./kafka-run-class.sh kafka.admin.ShutdownBroker --zookeeper 127.0.0.1:2181 --broker <span class="comment">#brokerId# --num.retries 3 --retry.interval.ms 60  </span></div><div class="line">shutdown broker  </div><div class="line"></div><div class="line">8、删除topic  </div><div class="line">./kafka-run-class.sh kafka.admin.DeleteTopicCommand --topic <span class="built_in">test</span>KJ1 --zookeeper 127.0.0.1:2181  </div><div class="line">./kafka-topics.sh --zookeeper localhost:2181 --delete --topic <span class="built_in">test</span>KJ1  </div><div class="line"></div><div class="line">9、查看consumer组内消费的offset  </div><div class="line">./kafka-run-class.sh kafka.tools.ConsumerOffsetChecker --zookeeper localhost:2181 --group <span class="built_in">test</span> --topic <span class="built_in">test</span>KJ1</div></pre></td></tr></table></figure>
+  
+	</div>
+		<footer class="article-footer clearfix">
 
-      
-    </div>
-    
-
-    
-
-    
-
-    <footer class="article-footer print-invisible">
-      
-      
-    <a class="article-category-link" href="/categories/大数据/">大数据</a>
-
- 
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Kafka/">Kafka</a></li></ul>
-
-
-    </footer>
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Big-data-Hadoop/">Big data Hadoop</a><a href="/tags/Kafka/">Kafka</a>
   </div>
-  
-    
-<nav id="article-nav" class="print-invisible">
-  
-    <a href="/2017/05/29/Bigdata-hadoop/Zabbix-Monitoring Kafka Consumer | kafka的监控和告警/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2017/05/27/Bigdata-hadoop/zookeeper/Bigdata-ZooKeeper的配置详解优化/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Bigdata-ZooKeeper的配置详解优化</div>
-    </a>
-  
-</nav>
 
-  
-</article>
-<div class="print-invisible">
-  
 
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/大数据/">大数据</a>
 </div>
 
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://blog.yancy.cc/2017/05/28/Bigdata-hadoop/Kafka/Bigdata-Kafka集群快速搭建与增删改查命令讲解/" data-title="Bigdata-Kafka集群快速搭建与命令讲解 | Yancy&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/05/29/Bigdata-hadoop/Zabbix-Monitoring Kafka Consumer | kafka的监控和告警/" title="Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/05/27/Bigdata-hadoop/zookeeper/Bigdata-ZooKeeper的配置详解优化/"  title="Bigdata-ZooKeeper的配置详解优化">
+ <strong>NEXT:</strong><br/> 
+ <span>Bigdata-ZooKeeper的配置详解优化
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
 </section>
-      
-        <aside id="sidebar" class="print-invisible">
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">recents</h3>
-    <div class="widget">
-      <ul id="recent-post" class="">
-        
-          <li>
-            
-            <div class="item-thumbnail">
-              <a href="/2017/08/11/日志分析平台/Elasticsearch/ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述/" class="thumbnail">
-  
-    <span style="background-image:url(//i.imgur.com/w2aNvOlm.jpg)" alt="ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述" class="thumbnail-image"></span>
-  
-</a>
-            </div>
-            
-            <div class="item-inner">
-              
-              <p class="item-title"><a href="/2017/08/11/日志分析平台/Elasticsearch/ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述/" class="title">ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述</a></p>
-              <p class="item-category"><a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a></p>
-              <p class="item-date"><time datetime="2017-08-11T09:56:03.000Z" itemprop="datePublished">2017-08-11</time></p>
-            </div>
-          </li>
-        
-          <li>
-            
-            <div class="item-thumbnail">
-              <a href="/2017/07/30/日志分析平台/Elasticsearch/研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？/" class="thumbnail">
-  
-    <span style="background-image:url(//i.imgur.com/w2aNvOlm.jpg)" alt="研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？" class="thumbnail-image"></span>
-  
-</a>
-            </div>
-            
-            <div class="item-inner">
-              
-              <p class="item-title"><a href="/2017/07/30/日志分析平台/Elasticsearch/研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？/" class="title">研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？</a></p>
-              <p class="item-category"><a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a></p>
-              <p class="item-date"><time datetime="2017-07-30T09:56:03.000Z" itemprop="datePublished">2017-07-30</time></p>
-            </div>
-          </li>
-        
-          <li>
-            
-            <div class="item-thumbnail">
-              <a href="/2017/07/04/Bigdata-hadoop/Kafka/kafka性能优化–JVM参数配置优化/" class="thumbnail">
-  
-    <span style="background-image:url(//i.imgur.com/w2aNvOlm.jpg)" alt="Kafka性能优化–JVM参数配置优化" class="thumbnail-image"></span>
-  
-</a>
-            </div>
-            
-            <div class="item-inner">
-              
-              <p class="item-title"><a href="/2017/07/04/Bigdata-hadoop/Kafka/kafka性能优化–JVM参数配置优化/" class="title">Kafka性能优化–JVM参数配置优化</a></p>
-              <p class="item-category"><a class="article-category-link" href="/categories/Big-data-Hadoop/">Big data Hadoop</a></p>
-              <p class="item-date"><time datetime="2017-07-04T03:22:00.000Z" itemprop="datePublished">2017-07-04</time></p>
-            </div>
-          </li>
-        
-          <li>
-            
-            <div class="item-thumbnail">
-              <a href="/2017/06/30/Bigdata-hadoop/Kafka/Kafka日志存储解析与实践数据存储优化/" class="thumbnail">
-  
-    <span style="background-image:url(//i.imgur.com/w2aNvOlm.jpg)" alt="Kafka日志存储解析与实践数据存储优化" class="thumbnail-image"></span>
-  
-</a>
-            </div>
-            
-            <div class="item-inner">
-              
-              <p class="item-title"><a href="/2017/06/30/Bigdata-hadoop/Kafka/Kafka日志存储解析与实践数据存储优化/" class="title">Kafka日志存储解析与实践数据存储优化</a></p>
-              <p class="item-category"><a class="article-category-link" href="/categories/Big-data-Hadoop/">Big data Hadoop</a></p>
-              <p class="item-date"><time datetime="2017-06-30T06:46:00.000Z" itemprop="datePublished">2017-06-30</time></p>
-            </div>
-          </li>
-        
-          <li>
-            
-            <div class="item-thumbnail">
-              <a href="/2017/06/29/Bigdata-hadoop/Kafka/如何手动更新Kafka中某个Topic的偏移量/" class="thumbnail">
-  
-    <span style="background-image:url(//i.imgur.com/w2aNvOlm.jpg)" alt="Bigdata-如何手动更新Kafka中某个Topic的偏移量" class="thumbnail-image"></span>
-  
-</a>
-            </div>
-            
-            <div class="item-inner">
-              
-              <p class="item-title"><a href="/2017/06/29/Bigdata-hadoop/Kafka/如何手动更新Kafka中某个Topic的偏移量/" class="title">Bigdata-如何手动更新Kafka中某个Topic的偏移量</a></p>
-              <p class="item-category"><a class="article-category-link" href="/categories/大数据/">大数据</a></p>
-              <p class="item-date"><time datetime="2017-06-29T06:46:00.000Z" itemprop="datePublished">2017-06-29</time></p>
-            </div>
-          </li>
-        
-      </ul>
-    </div>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Bigdata-Kafka集群快速搭建与命令讲解"><span class="toc-number">1.</span> <span class="toc-text">Bigdata-Kafka集群快速搭建与命令讲解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#kafka集群和zookeeper集群规范"><span class="toc-number">1.0.1.</span> <span class="toc-text">kafka集群和zookeeper集群规范</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Step1-配置-etc-hosts-（3台一致）"><span class="toc-number">1.0.2.</span> <span class="toc-text">Step1: 配置/etc/hosts （3台一致）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Step2-KafKa集群搭建"><span class="toc-number">1.0.3.</span> <span class="toc-text">Step2: KafKa集群搭建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置data目录，最好不要用默认的-tmp-kafka-logs"><span class="toc-number">1.0.4.</span> <span class="toc-text">设置data目录，最好不要用默认的/tmp/kafka-logs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Step3-集群机器快速拷贝配置"><span class="toc-number">1.0.5.</span> <span class="toc-text">Step3: 集群机器快速拷贝配置:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Step4-启动-kafka集群"><span class="toc-number">1.0.6.</span> <span class="toc-text">Step4:启动 kafka集群</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Step5-测试集群"><span class="toc-number">1.0.6.1.</span> <span class="toc-text">Step5:测试集群</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kafka常用命令"><span class="toc-number">1.0.7.</span> <span class="toc-text">Kafka常用命令</span></a></li></ol></li></ol></li></ol>
   </div>
 
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
   
-    
-  <div class="widget-wrap widget-list">
-    <h3 class="widget-title">links</h3>
-    <div class="widget">
-      <ul>
-        
-      </ul>
-    </div>
-  </div>
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Big-data-Hadoop/" title="Big data Hadoop">Big data Hadoop<sup>3</sup></a></li>
+		
+			<li><a href="/categories/Kafka/" title="Kafka">Kafka<sup>2</sup></a></li>
+		
+			<li><a href="/categories/大数据/" title="大数据">大数据<sup>10</sup></a></li>
+		
+			<li><a href="/categories/日志分析平台/" title="日志分析平台">日志分析平台<sup>8</sup></a></li>
+		
+			<li><a href="/categories/生活/" title="生活">生活<sup>6</sup></a></li>
+		
+		</ul>
+</div>
 
 
   
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Ambari/" title="Ambari">Ambari<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Big-data-Hadoop/" title="Big data Hadoop">Big data Hadoop<sup>8</sup></a></li>
+		
+			<li><a href="/tags/Countly/" title="Countly">Countly<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Elasticsearch/" title="Elasticsearch">Elasticsearch<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Kafka/" title="Kafka">Kafka<sup>10</sup></a></li>
+		
+			<li><a href="/tags/Kibana/" title="Kibana">Kibana<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Log-analysis-platform/" title="Log analysis platform">Log analysis platform<sup>8</sup></a></li>
+		
+			<li><a href="/tags/Personal-life-record/" title="Personal life record">Personal life record<sup>6</sup></a></li>
+		
+			<li><a href="/tags/Zabbix/" title="Zabbix">Zabbix<sup>2</sup></a></li>
+		
+			<li><a href="/tags/ZooKeeper/" title="ZooKeeper">ZooKeeper<sup>1</sup></a></li>
+		
+			<li><a href="/tags/旅行日记/" title="旅行日记">旅行日记<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
 </aside>
-
-      
+</div>
     </div>
-    <footer id="footer" class="print-invisible">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2017 Yancy<br />
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="https://github.com/ppoffice/hexo-theme-icarus">icarus</a>.<br />
-      Deploy with docker image <a href="https://microbadger.com/#/images/jamespan/blog">jamespan/blog</a>.
-    </div>
-  </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m Larry Page in Google. <br/>
+			This is my blog,believe it or not. </p>
+	</section>
+	 
+	<div class="social-font clearfix">
+		
+		<a href="http://weibo.com/yangcvo" target="_blank" title="weibo"></a>
+		
+		
+		<a href="https://twitter.com/yangaov" target="_blank" title="twitter"></a>
+		
+		
+		<a href="https://github.com/yangcvo" target="_blank" title="github"></a>
+		
+		
+		<a href="https://www.facebook.com/yangcvo" target="_blank" title="facebook"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2017 
+		
+		<a href="http://blog.yancy.cc" target="_blank" title="Yancy">Yancy</a>
+		
+		</p>
+</div>
 </footer>
-    
-
-<script async="async" src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-  
-  <script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
-  <link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css">
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
 
 <script type="text/javascript">
-(function($) {
-  // Caption
-  $('.article-entry').each(function(i) {
-    $(this).find('img').each(function() {
-      if ($(this).parent().hasClass('fancybox')) return;
-      if ($(this).hasClass('nofancy')) return;
-      var alt = this.alt;
-      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
-      $(this).wrap('<a href="' + ($(this).attr('data-src') == null ? this.src : $(this).attr('data-src')) + '" title="' + alt + '" class="fancybox"></a>');
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
     });
-  });
-  if ($.fancybox) {
-    $('.fancybox').fancybox({
-      helpers: {
-        overlay: {
-          locked: false
-        }
-      }
+    o.click(function(){
+      ta.css('display', 'none');
     });
-  }
-
-  // Profile card
-  $(document).on('click', function () {
-    $('#profile').removeClass('card');
-  }).on('click', '#profile-anchor', function (e) {
-    e.stopPropagation();
-    $('#profile').toggleClass('card');
-  }).on('click', '.profile-inner', function (e) {
-    e.stopPropagation();
-  });
-
-  // Toc optimize
-  if ($('#toc').children().length == 0) {
-    $('#toc').remove();
-  }
-})(jQuery);
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
 </script>
 
 
-  </div>
-</body>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+  </body>
 </html>
