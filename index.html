@@ -50,7 +50,7 @@
 		
 		
 			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Elasticsearch/">Elasticsearch</a> <a class="article__tag-link" href="/tags/Kibana/">Kibana</a> <a class="article__tag-link" href="/tags/Log-analysis-platform/">Log analysis platform</a>
+			  	<a class="article__tag-link" href="/tags/Elasticsearch/">Elasticsearch</a> <a class="article__tag-link" href="/tags/Kibana/">Kibana</a>
 			</span>
 		
 	</div>
@@ -196,7 +196,7 @@
 		
 		
 			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Elasticsearch/">Elasticsearch</a> <a class="article__tag-link" href="/tags/Log-analysis-platform/">Log analysis platform</a>
+			  	<a class="article__tag-link" href="/tags/Elasticsearch/">Elasticsearch</a>
 			</span>
 		
 	</div>
@@ -395,6 +395,76 @@
 
 	<article>
 	
+		<h1><a href="/2017/06/29/Bigdata-hadoop/Kafka/Bigdata-Kafka三款监控工具比较/">Bigdata-Kafka三款监控工具比较</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-06-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a> <a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>在之前的博客中，介绍了<code>Kafka Web Console</code>这个监控工具，在生产环境中使用，运行一段时间后，发现该工具会和Kafka生产者、消费者、ZooKeeper建立大量连接，从而导致网络阻塞。并且这个Bug也在其他使用者中出现过，看来使用开源工具要慎重！该Bug暂未得到修复，不得已，只能研究下其他同类的Kafka监控软件。</p>
+<p>通过研究，发现主流的三种kafka监控程序分别为：</p>
+<ul>
+<li>1、Kafka Web Conslole</li>
+<li>2、Kafka Manager</li>
+<li>3、KafkaOffsetMonitor</li>
+</ul>
+<p>现在依次介绍以上三种工具：</p>
+<h2 id="1、Kafka-Web-Conslole"><a href="#1、Kafka-Web-Conslole" class="headerlink" title="1、Kafka Web Conslole"></a>1、Kafka Web Conslole</h2><p>使用Kafka Web Console，可以监控：</p>
+<ul>
+<li>Brokers列表</li>
+<li>Kafka 集群中 Topic列表，及对应的Partition、LogSiz e等信息</li>
+<li>点击Topic，可以浏览对应的Consumer Groups、Offset、Lag等信息</li>
+<li>生产和消费流量图、消息预览…</li>
+</ul>
+<p>程序运行后，会定时去读取kafka集群分区的日志长度，读取完毕后，连接没有正常释放，一段时间后产生大量的socket连接，导致网络堵塞。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Kafka_web_console.png" alt=""></figure></p>
+<h2 id="2、Kafka-Manager"><a href="#2、Kafka-Manager" class="headerlink" title="2、Kafka Manager"></a>2、Kafka Manager</h2><p>雅虎开源的Kafka集群管理工具:</p>
+<ul>
+<li>管理几个不同的集群</li>
+<li>监控集群的状态(topics, brokers, 副本分布, 分区分布)</li>
+<li>产生分区分配(Generate partition assignments)基于集群的当前状态</li>
+<li>重新分配分区</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka_manager.png" alt=""></figure></p>
+<h2 id="3、KafkaOffsetMonitor"><a href="#3、KafkaOffsetMonitor" class="headerlink" title="3、KafkaOffsetMonitor"></a>3、KafkaOffsetMonitor</h2><ul>
+<li>KafkaOffsetMonitor可以实时监控：</li>
+<li>Kafka集群状态</li>
+<li>Topic、Consumer Group列表</li>
+<li>图形化展示topic和consumer之间的关系</li>
+<li>图形化展示consumer的Offset、Lag等信息</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafkaoffsetmonitor.png" alt=""></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过使用，个人总结以上三种监控程序的优缺点：</p>
+<p><a href="https://github.com/claudemamo/kafka-web-console" target="_blank" rel="external">Kafka Web Console</a>：监控功能较为全面，可以预览消息，监控Offset、Lag等信息，但存在bug，不建议在生产环境中使用。</p>
+<p><a href="https://github.com/yahoo/kafka-manager" target="_blank" rel="external">Kafka Manager</a>：偏向Kafka集群管理，若操作不当，容易导致集群出现故障。对Kafka实时生产和消费消息是通过JMX实现的。没有记录Offset、Lag等信息。</p>
+<p><a href="https://github.com/quantifind/KafkaOffsetMonitor" target="_blank" rel="external">KafkaOffsetMonitor</a>：程序一个jar包的形式运行，部署较为方便。只有监控功能，使用起来也较为安全。</p>
+<p>若只需要监控功能，推荐使用KafkaOffsetMonito，若偏重Kafka集群管理，推荐使用Kafka Manager。</p>
+<p>因为都是开源程序，稳定性欠缺。故需先了解清楚目前已存在哪些Bug，多测试一下，避免出现类似于Kafka Web Console的问题。</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
 		<h1><a href="/2017/06/29/Bigdata-hadoop/Kafka/Kafka-node模块实现调用js发送数据/">Bigdata-Kafka-node模块实现调用js发送数据</a></h1>
 	
 	<div class="article__infos">
@@ -472,136 +542,6 @@
 
 	<article>
 	
-		<h1><a href="/2017/06/29/Bigdata-hadoop/Kafka/Bigdata-Kafka三款监控工具比较/">Bigdata-Kafka三款监控工具比较</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-06-29</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/大数据/">大数据</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a> <a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<p>在之前的博客中，介绍了<code>Kafka Web Console</code>这个监控工具，在生产环境中使用，运行一段时间后，发现该工具会和Kafka生产者、消费者、ZooKeeper建立大量连接，从而导致网络阻塞。并且这个Bug也在其他使用者中出现过，看来使用开源工具要慎重！该Bug暂未得到修复，不得已，只能研究下其他同类的Kafka监控软件。</p>
-<p>通过研究，发现主流的三种kafka监控程序分别为：</p>
-<ul>
-<li>1、Kafka Web Conslole</li>
-<li>2、Kafka Manager</li>
-<li>3、KafkaOffsetMonitor</li>
-</ul>
-<p>现在依次介绍以上三种工具：</p>
-<h2 id="1、Kafka-Web-Conslole"><a href="#1、Kafka-Web-Conslole" class="headerlink" title="1、Kafka Web Conslole"></a>1、Kafka Web Conslole</h2><p>使用Kafka Web Console，可以监控：</p>
-<ul>
-<li>Brokers列表</li>
-<li>Kafka 集群中 Topic列表，及对应的Partition、LogSiz e等信息</li>
-<li>点击Topic，可以浏览对应的Consumer Groups、Offset、Lag等信息</li>
-<li>生产和消费流量图、消息预览…</li>
-</ul>
-<p>程序运行后，会定时去读取kafka集群分区的日志长度，读取完毕后，连接没有正常释放，一段时间后产生大量的socket连接，导致网络堵塞。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Kafka_web_console.png" alt=""></figure></p>
-<h2 id="2、Kafka-Manager"><a href="#2、Kafka-Manager" class="headerlink" title="2、Kafka Manager"></a>2、Kafka Manager</h2><p>雅虎开源的Kafka集群管理工具:</p>
-<ul>
-<li>管理几个不同的集群</li>
-<li>监控集群的状态(topics, brokers, 副本分布, 分区分布)</li>
-<li>产生分区分配(Generate partition assignments)基于集群的当前状态</li>
-<li>重新分配分区</li>
-</ul>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka_manager.png" alt=""></figure></p>
-<h2 id="3、KafkaOffsetMonitor"><a href="#3、KafkaOffsetMonitor" class="headerlink" title="3、KafkaOffsetMonitor"></a>3、KafkaOffsetMonitor</h2><ul>
-<li>KafkaOffsetMonitor可以实时监控：</li>
-<li>Kafka集群状态</li>
-<li>Topic、Consumer Group列表</li>
-<li>图形化展示topic和consumer之间的关系</li>
-<li>图形化展示consumer的Offset、Lag等信息</li>
-</ul>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafkaoffsetmonitor.png" alt=""></figure></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过使用，个人总结以上三种监控程序的优缺点：</p>
-<p><a href="https://github.com/claudemamo/kafka-web-console" target="_blank" rel="external">Kafka Web Console</a>：监控功能较为全面，可以预览消息，监控Offset、Lag等信息，但存在bug，不建议在生产环境中使用。</p>
-<p><a href="https://github.com/yahoo/kafka-manager" target="_blank" rel="external">Kafka Manager</a>：偏向Kafka集群管理，若操作不当，容易导致集群出现故障。对Kafka实时生产和消费消息是通过JMX实现的。没有记录Offset、Lag等信息。</p>
-<p><a href="https://github.com/quantifind/KafkaOffsetMonitor" target="_blank" rel="external">KafkaOffsetMonitor</a>：程序一个jar包的形式运行，部署较为方便。只有监控功能，使用起来也较为安全。</p>
-<p>若只需要监控功能，推荐使用KafkaOffsetMonito，若偏重Kafka集群管理，推荐使用Kafka Manager。</p>
-<p>因为都是开源程序，稳定性欠缺。故需先了解清楚目前已存在哪些Bug，多测试一下，避免出现类似于Kafka Web Console的问题。</p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/06/28/Bigdata-hadoop/Kafka/Bigdata-开源的Kafka集群管理器(kafka-web-console)/">Bigdata-开源的Kafka集群管理器(kafka-web-console)</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-06-28</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/大数据/">大数据</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>源码的地址在:<a href="https://github.com/claudemamo/kafka-web-console" target="_blank" rel="external">kafka-web-console</a></p>
-<p><code>Kafka Web Console</code>也是用Scala语言编写的<code>Java web</code>程序用于监控<code>Apache Kafka</code>。这个系统的功能和<code>KafkaOffsetMonitor</code>很类似，但是我们从源码角度来看，这款系统实现比<code>KafkaOffsetMonitor</code>要复杂很多，而且编译配置比<code>KafkaOffsetMonitor</code>较麻烦。</p>
-<p>　要想运行这套系统我们需要的先行条件为：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Play Framework 2.2.x</div><div class="line">Apache Kafka 0.8.x</div><div class="line">Zookeeper 3.3.3 or 3.3.4</div></pre></td></tr></table></figure>
-<h3 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h3><p>同样，我们从<code>https://github.com/claudemamo/kafka-web-console</code>上面将源码下载下来，然后用<code>sbt</code>进行编译，在编译前我们需要做如下的修改：</p>
-<p>Kafka Web控制台需要一个关系数据库。默认情况下，服务器连接到嵌入式H2数据库，不需要数据库安装或配置。请咨询Play！的文档以指定控制台的数据库。支持以下数据库：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git <span class="built_in">clone</span> https://github.com/claudemamo/kafka-web-console.git</div></pre></td></tr></table></figure>
-<ul>
-<li>H2（默认）</li>
-<li>PostgreSql</li>
-<li>Oracle</li>
-<li>DB2</li>
-<li>MySQL</li>
-<li>Apache Derby</li>
-<li>Microsoft SQL Server</li>
-</ul>
-<p>为了方便，我们可以使用Mysql数据库，只要做如下修改即可，找到 <code>conf/application.conf</code>文件，并修改如下</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">将这个</div><div class="line">db.default.driver=org.h2.Driver</div><div class="line">db.default.url=<span class="string">"jdbc:h2:file:play"</span></div><div class="line"><span class="comment"># db.default.user=sa</span></div><div class="line"><span class="comment"># db.default.password=""</span></div><div class="line"> </div><div class="line"> </div><div class="line">修改成</div><div class="line">db.default.driver=com.mysql.jdbc.Driver</div><div class="line">db.default.url=<span class="string">"jdbc:mysql://localhost:3306/kafkamonitor"</span></div><div class="line">db.default.user=iteblog</div><div class="line">db.default.pass=wyp</div></pre></td></tr></table></figure>
-<p>我们还需要修改build.sbt，加入对Mysql的依赖:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="string">"mysql"</span> % <span class="string">"mysql-connector-java"</span> % <span class="string">"5.1.31"</span></div></pre></td></tr></table></figure>
-<p>　2、执行<code>conf/evolutions/default/bak</code>目录下面的<code>1.sql、2.sql和3.sql</code>三个文件。需要注意的是，这三个sql文件不能直接运行，有语法错误，需要做一些修改。<br>上面的注意事项弄完之后，我们就可以编译下载过来的源码：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> sbt package</span></div></pre></td></tr></table></figure>
-<p>编译的过程比较慢，有些依赖包下载速度非常地慢，请耐心等待。<br>　在编译的过程中，可能会出现有些依赖包无法下载，如下错误：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">[warn] module not found: com.typesafe.play<span class="comment">#sbt-plugin;2.2.1</span></div><div class="line">[warn] ==== typesafe-ivy-releases: tried</div><div class="line">[warn] http://repo.typesafe.com/typesafe/ivy-releases/</div><div class="line">com.typesafe.play/sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== sbt-plugin-releases: tried</div><div class="line">[warn] http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/</div><div class="line">com.typesafe.play/sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== <span class="built_in">local</span>: tried</div><div class="line">[warn] /home/iteblog/.ivy2/<span class="built_in">local</span>/com.typesafe.play/</div><div class="line">sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== Typesafe repository: tried</div><div class="line">[warn] http://repo.typesafe.com/typesafe/releases/com/</div><div class="line">typesafe/play/sbt-plugin_2.9.2_0.12/2.2.1/sbt-plugin-2.2.1.pom</div><div class="line">[warn] ==== public: tried</div><div class="line">[warn] http://repo1.maven.org/maven2/com/typesafe/play/</div><div class="line">sbt-plugin_2.9.2_0.12/2.2.1/sbt-plugin-2.2.1.pom</div><div class="line">[warn] ::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">==== <span class="built_in">local</span>: tried</div><div class="line"> </div><div class="line">/home/iteblog/.ivy2/<span class="built_in">local</span>/org.scala-sbt/collections/0.13.0/jars/collections.jar</div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">:: FAILED DOWNLOADS ::</div><div class="line"> </div><div class="line">:: ^ see resolution messages <span class="keyword">for</span> details ^ ::</div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">:: org.scala-sbt<span class="comment">#collections;0.13.0!collections.jar</span></div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div></pre></td></tr></table></figure>
-<p>我们可以手动地下载相关依赖，并放到类似<code>/home/iteblog/.ivy2/local/org.scala-sbt/collections/0.13.0/jars/</code>目录下面。然后再编译就可以了。</p>
-<p>　　最后，我们可以通过下面命令启动<code>Kafka Web Console</code>监控系统：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> sbt run</span></div></pre></td></tr></table></figure>
-<p>并可以在<a href="http://localhost:9000" target="_blank" rel="external">http://localhost:9000</a> 查看下面是一张效果图</p>
-<p><figure class="figure"><img src="https://www.iteblog.com/pic/topics.png" alt=""></figure></p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
 		<h1><a href="/2017/06/28/Bigdata-hadoop/Kafka/开源的Kafka集群管理器(Kafka Manager)/">Bigdata-开源的Kafka集群管理器(Kafka Manager)</a></h1>
 	
 	<div class="article__infos">
@@ -663,6 +603,66 @@
 <p><figure class="figure"><img src="media/15014726361909.jpg" alt=""></figure></p>
 <p><figure class="figure"><img src="media/15014727525618.jpg" alt=""></figure></p>
 <p><figure class="figure"><img src="media/15014727932029.jpg" alt=""></figure></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/06/28/Bigdata-hadoop/Kafka/Bigdata-开源的Kafka集群管理器(kafka-web-console)/">Bigdata-开源的Kafka集群管理器(kafka-web-console)</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-06-28</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>源码的地址在:<a href="https://github.com/claudemamo/kafka-web-console" target="_blank" rel="external">kafka-web-console</a></p>
+<p><code>Kafka Web Console</code>也是用Scala语言编写的<code>Java web</code>程序用于监控<code>Apache Kafka</code>。这个系统的功能和<code>KafkaOffsetMonitor</code>很类似，但是我们从源码角度来看，这款系统实现比<code>KafkaOffsetMonitor</code>要复杂很多，而且编译配置比<code>KafkaOffsetMonitor</code>较麻烦。</p>
+<p>　要想运行这套系统我们需要的先行条件为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Play Framework 2.2.x</div><div class="line">Apache Kafka 0.8.x</div><div class="line">Zookeeper 3.3.3 or 3.3.4</div></pre></td></tr></table></figure>
+<h3 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h3><p>同样，我们从<code>https://github.com/claudemamo/kafka-web-console</code>上面将源码下载下来，然后用<code>sbt</code>进行编译，在编译前我们需要做如下的修改：</p>
+<p>Kafka Web控制台需要一个关系数据库。默认情况下，服务器连接到嵌入式H2数据库，不需要数据库安装或配置。请咨询Play！的文档以指定控制台的数据库。支持以下数据库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git <span class="built_in">clone</span> https://github.com/claudemamo/kafka-web-console.git</div></pre></td></tr></table></figure>
+<ul>
+<li>H2（默认）</li>
+<li>PostgreSql</li>
+<li>Oracle</li>
+<li>DB2</li>
+<li>MySQL</li>
+<li>Apache Derby</li>
+<li>Microsoft SQL Server</li>
+</ul>
+<p>为了方便，我们可以使用Mysql数据库，只要做如下修改即可，找到 <code>conf/application.conf</code>文件，并修改如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">将这个</div><div class="line">db.default.driver=org.h2.Driver</div><div class="line">db.default.url=<span class="string">"jdbc:h2:file:play"</span></div><div class="line"><span class="comment"># db.default.user=sa</span></div><div class="line"><span class="comment"># db.default.password=""</span></div><div class="line"> </div><div class="line"> </div><div class="line">修改成</div><div class="line">db.default.driver=com.mysql.jdbc.Driver</div><div class="line">db.default.url=<span class="string">"jdbc:mysql://localhost:3306/kafkamonitor"</span></div><div class="line">db.default.user=iteblog</div><div class="line">db.default.pass=wyp</div></pre></td></tr></table></figure>
+<p>我们还需要修改build.sbt，加入对Mysql的依赖:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="string">"mysql"</span> % <span class="string">"mysql-connector-java"</span> % <span class="string">"5.1.31"</span></div></pre></td></tr></table></figure>
+<p>　2、执行<code>conf/evolutions/default/bak</code>目录下面的<code>1.sql、2.sql和3.sql</code>三个文件。需要注意的是，这三个sql文件不能直接运行，有语法错误，需要做一些修改。<br>上面的注意事项弄完之后，我们就可以编译下载过来的源码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> sbt package</span></div></pre></td></tr></table></figure>
+<p>编译的过程比较慢，有些依赖包下载速度非常地慢，请耐心等待。<br>　在编译的过程中，可能会出现有些依赖包无法下载，如下错误：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">[warn] module not found: com.typesafe.play<span class="comment">#sbt-plugin;2.2.1</span></div><div class="line">[warn] ==== typesafe-ivy-releases: tried</div><div class="line">[warn] http://repo.typesafe.com/typesafe/ivy-releases/</div><div class="line">com.typesafe.play/sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== sbt-plugin-releases: tried</div><div class="line">[warn] http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/</div><div class="line">com.typesafe.play/sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== <span class="built_in">local</span>: tried</div><div class="line">[warn] /home/iteblog/.ivy2/<span class="built_in">local</span>/com.typesafe.play/</div><div class="line">sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== Typesafe repository: tried</div><div class="line">[warn] http://repo.typesafe.com/typesafe/releases/com/</div><div class="line">typesafe/play/sbt-plugin_2.9.2_0.12/2.2.1/sbt-plugin-2.2.1.pom</div><div class="line">[warn] ==== public: tried</div><div class="line">[warn] http://repo1.maven.org/maven2/com/typesafe/play/</div><div class="line">sbt-plugin_2.9.2_0.12/2.2.1/sbt-plugin-2.2.1.pom</div><div class="line">[warn] ::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">==== <span class="built_in">local</span>: tried</div><div class="line"> </div><div class="line">/home/iteblog/.ivy2/<span class="built_in">local</span>/org.scala-sbt/collections/0.13.0/jars/collections.jar</div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">:: FAILED DOWNLOADS ::</div><div class="line"> </div><div class="line">:: ^ see resolution messages <span class="keyword">for</span> details ^ ::</div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">:: org.scala-sbt<span class="comment">#collections;0.13.0!collections.jar</span></div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div></pre></td></tr></table></figure>
+<p>我们可以手动地下载相关依赖，并放到类似<code>/home/iteblog/.ivy2/local/org.scala-sbt/collections/0.13.0/jars/</code>目录下面。然后再编译就可以了。</p>
+<p>　　最后，我们可以通过下面命令启动<code>Kafka Web Console</code>监控系统：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> sbt run</span></div></pre></td></tr></table></figure>
+<p>并可以在<a href="http://localhost:9000" target="_blank" rel="external">http://localhost:9000</a> 查看下面是一张效果图</p>
+<p><figure class="figure"><img src="https://www.iteblog.com/pic/topics.png" alt=""></figure></p>
 
 	
 
