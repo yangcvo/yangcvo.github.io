@@ -1,101 +1,112 @@
 
- <!DOCTYPE HTML>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
-  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
-<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  <meta charset="utf-8">
   
-    <title>ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述 | Yancy&#39;s blog</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
-    
-    <meta name="author" content="Yancy">
-    
-    <meta name="description" content="ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述前言ELK=ElasticSearch + Logstash + Kibana
-Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一款开源分布式日志系统，一般说来包括了Elasticse">
-    
-    
-    
-    
-    <link rel="alternate" href="atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
-    
-    
-    <link rel="icon" href="/img/favicon.ico">
-    
-    
-    <link rel="stylesheet" href="/css/style.css">
-    
-    <script>
-        var _hmt = _hmt || [];
-        (function() {
-            var hm = document.createElement("script");
-            var _bdId ='391982416296a0d54221f59fe35250d4';
-             hm.src = "//hm.baidu.com/hm.js?" + _bdId;
-             var s = document.getElementsByTagName("script")[0]; 
-             s.parentNode.insertBefore(hm, s);
-        })();
-    </script>
-     
+  <title>ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述 | Yancy&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述前言ELK=ElasticSearch + Logstash + Kibana Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一款开源分布式日志系统，一般说来包括了Elasticsearch、Logstash和Kibana，涵盖了后端日志采集、日志搜索服务和前端数据展示等功能。本文">
+<meta name="keywords" content="Log analysis platform,Elasticsearch,Kibana">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述">
+<meta property="og:url" content="http://blog.yancy.cc/2017/08/11/日志分析平台/Elasticsearch/ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述/index.html">
+<meta property="og:site_name" content="Yancy&#39;s blog">
+<meta property="og:description" content="ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述前言ELK=ElasticSearch + Logstash + Kibana Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一款开源分布式日志系统，一般说来包括了Elasticsearch、Logstash和Kibana，涵盖了后端日志采集、日志搜索服务和前端数据展示等功能。本文">
+<meta property="og:image" content="http://7xrthw.com1.z0.glb.clouddn.com/elasticstack_011.png">
+<meta property="og:image" content="http://blog.yancy.cc/2017/08/11/日志分析平台/Elasticsearch/ElasticStack%205.x+Kibana-5.5.x+Logstash版本部署概述/media/15033045476000.jpg">
+<meta property="og:image" content="http://7xrthw.com1.z0.glb.clouddn.com/elasticstack_022.png">
+<meta property="og:image" content="http://7xrthw.com1.z0.glb.clouddn.com/elasticstack_033.png">
+<meta property="og:image" content="http://7xrthw.com1.z0.glb.clouddn.com/elasticstack_044.png">
+<meta property="og:image" content="https://www.elastic.co/guide/en/logstash/current/static/images/basic_logstash_pipeline.png">
+<meta property="og:updated_time" content="2017-09-19T14:53:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述">
+<meta name="twitter:description" content="ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述前言ELK=ElasticSearch + Logstash + Kibana Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一款开源分布式日志系统，一般说来包括了Elasticsearch、Logstash和Kibana，涵盖了后端日志采集、日志搜索服务和前端数据展示等功能。本文">
+<meta name="twitter:image" content="http://7xrthw.com1.z0.glb.clouddn.com/elasticstack_011.png">
+  
+    <link rel="alternative" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="//fonts.useso.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
 </head>
-
-  <body>
-    <header>
-      <div>
-		
-			<div id="textlogo">
-				<h1 class="site-name"><a href="/" title="Yancy&#39;s blog">Yancy&#39;s blog</a></h1>
-				<a class="blog-motto">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</a>
-			</div>
-			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
-			</a></div>
-			<nav class="animated">
-				<ul>
-					<ul>
-					 
-						<li><a href="/">首页</a></li>
-					
-						<li><a href="/archives">归档</a></li>
-					
-					<li>
-					
-                                            <form class="search" action=http://zhannei.baidu.com/cse/search target="_blank">
-                                            <label>Search</label>
-                                        <input name="s" type="hidden" value= null ><input type="text" name="q" size="30" placeholder="搜索"><br>
-					
-					</li>
-				</ul>
-                            </nav>			
-</div>
-
-    </header>
-    <div id="container">
-      <div id="main" class="post" itemscope itemprop="blogPost">
-	<article itemprop="articleBody"> 
-		<header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2017/08/11/日志分析平台/Elasticsearch/ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述/" title="ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述" itemprop="url">ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述</a>
-  </h1>
-  <p class="article-author">By
-    
-      <a href="http://blog.yancy.cc" title="Yancy">Yancy</a>
-    </p>
-  <p class="article-time">
-    <time datetime="2017-08-11T09:56:03.000Z" itemprop="datePublished">2017-08-11</time>
-    更新日期:<time datetime="2017-09-19T14:53:00.000Z" itemprop="dateModified">2017-09-19</time>
-    
-  </p>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Yancy&#39;s blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="blog.yancy.cc">
+        </form>
+      </div>
+    </div>
+  </div>
 </header>
-	<div class="article-content">
-		
-		
-		<div id="toc" class="toc-article">
-			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ElasticStack-5-x-Kibana-5-5-x-Logstash版本部署概述"><span class="toc-number">1.</span> <span class="toc-text">ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#前言"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">前言</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#监控系统的用户："><span class="toc-number">1.0.1.</span> <span class="toc-text">监控系统的用户：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#可选方案："><span class="toc-number">1.0.2.</span> <span class="toc-text">可选方案：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ELK优势和劣势："><span class="toc-number">1.0.3.</span> <span class="toc-text">ELK优势和劣势：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#一、Elasticsearch的部署"><span class="toc-number">1.0.4.</span> <span class="toc-text">一、Elasticsearch的部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-Elasticsearch的配置"><span class="toc-number">1.0.5.</span> <span class="toc-text">1.1 Elasticsearch的配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#集群健康检查-Cluster-Health"><span class="toc-number">1.0.6.</span> <span class="toc-text">集群健康检查 Cluster Health</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-Elasticsearch-5-x的Bootstrap-Checks"><span class="toc-number">1.0.7.</span> <span class="toc-text">1.2 Elasticsearch 5.x的Bootstrap Checks</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-Elasticsearch的X-pack插件"><span class="toc-number">1.0.8.</span> <span class="toc-text">1.3 Elasticsearch的X-pack插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-Elasticsearch的Head插件"><span class="toc-number">1.0.9.</span> <span class="toc-text">1.4 Elasticsearch的Head插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-Elasticsearch-Kibana"><span class="toc-number">1.0.10.</span> <span class="toc-text">1.5 Elasticsearch-Kibana</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#通过配置文件编辑配置Kibana"><span class="toc-number">1.0.11.</span> <span class="toc-text">通过配置文件编辑配置Kibana</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-6访问Kibana"><span class="toc-number">1.0.12.</span> <span class="toc-text">1.6访问Kibana</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、Logstash的部署"><span class="toc-number">1.1.</span> <span class="toc-text">二、Logstash的部署</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Installing-Logstash"><span class="toc-number">1.1.1.</span> <span class="toc-text">Installing Logstash</span></a></li></ol></li></ol></li></ol>
-		</div>
-		
-		<h1 id="ElasticStack-5-x-Kibana-5-5-x-Logstash版本部署概述"><a href="#ElasticStack-5-x-Kibana-5-5-x-Logstash版本部署概述" class="headerlink" title="ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述"></a>ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述</h1><h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p><code>ELK=ElasticSearch + Logstash + Kibana</code></p>
+    <div class="outer">
+      <section id="main"><article id="post-日志分析平台/Elasticsearch/ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/11/日志分析平台/Elasticsearch/ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述/" class="article-date">
+  <time datetime="2017-08-11T09:56:03.000Z" itemprop="datePublished">2017-08-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="ElasticStack-5-x-Kibana-5-5-x-Logstash版本部署概述"><a href="#ElasticStack-5-x-Kibana-5-5-x-Logstash版本部署概述" class="headerlink" title="ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述"></a>ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述</h1><h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p><code>ELK=ElasticSearch + Logstash + Kibana</code></p>
 <p>Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一款开源分布式日志系统，一般说来包括了Elasticsearch、Logstash和Kibana，涵盖了后端日志采集、日志搜索服务和前端数据展示等功能。<br>本文将会对Elastic Stack的安装部署流程进行一系列简单的介绍，并记录下了一些部署过程中遇到的坑及解决方法。</p>
 <p>对于一个软件或互联网公司来说，对计算资源和应用进行监控和告警是非常基础的需求。对于大公司或成熟公司，一个高度定制化的监控系统应该已经存在了很长时间并且非常成熟了。而对于一个初创公司或小公司来说，如何利用现有开源工具快速搭建一套日志监控及分析平台是需要探索的事情。</p>
 <h3 id="监控系统的用户："><a href="#监控系统的用户：" class="headerlink" title="监控系统的用户："></a>监控系统的用户：</h3><ul>
@@ -210,351 +221,191 @@ Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一�
 <p>logstash的配置片段：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">#character at the beginning of a line indicates a comment. Use</span></div><div class="line"><span class="comment"># comments to describe your configuration.</span></div><div class="line">input &#123;</div><div class="line">    udp &#123;</div><div class="line">        port =&gt; 25826</div><div class="line">        buffer_size =&gt; 1452</div><div class="line">        workers =&gt; 3          <span class="comment"># Default is 2</span></div><div class="line">        queue_size =&gt; 30000   <span class="comment"># Default is 2000</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">output &#123;</div><div class="line">  elasticsearch &#123;</div><div class="line">    hosts =&gt; [ <span class="string">"10.11.10.26:9200"</span> ]</div><div class="line">    user =&gt; logstash</div><div class="line">    password =&gt; logstash</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p><strong>☺待整理续写~~</strong></p>
-  
-	</div>
-		<footer class="article-footer clearfix">
 
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Log-analysis-platform/">Log analysis platform</a><a href="/tags/Elasticsearch/">Elasticsearch</a><a href="/tags/Kibana/">Kibana</a>
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://blog.yancy.cc/2017/08/11/日志分析平台/Elasticsearch/ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述/" data-id="cj7t8hn9x002zqpwrwvvsacju" class="article-share-link" data-share="baidu" data-title="ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述">Share</a>
+      
+
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Kibana/">Kibana</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Log-analysis-platform/">Log analysis platform</a></li></ul>
+
+    </footer>
   </div>
-
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a>
-</div>
-
-
-
-<div class="article-share" id="share">
-
-  <div data-url="http://blog.yancy.cc/2017/08/11/日志分析平台/Elasticsearch/ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述/" data-title="ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述 | Yancy&#39;s blog" data-tsina="null" class="share clearfix">
-  </div>
-
-</div>
-</footer>   	       
-	</article>
-	
-<nav class="article-nav clearfix">
- 
-
-<div class="next">
-<a href="/2017/07/30/日志分析平台/Elasticsearch/研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？/"  title="研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？">
- <strong>NEXT:</strong><br/> 
- <span>研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？
-</span>
-</a>
-</div>
-
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/07/30/日志分析平台/Elasticsearch/研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？</div>
+    </a>
+  
 </nav>
 
-	
-<section class="comment">
-	
-	<div class="ds-thread" data-title="ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述" data-thread-key="日志分析平台/Elasticsearch/ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述" data-author-key="Yancy" data-url="http://blog.yancy.cc/post/日志分析平台/Elasticsearch/ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述"></div>
-	
+  
+</article>
+
 </section>
-
-
-</div>  
-      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
-
-  <div id="toc" class="toc-aside">
-  <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ElasticStack-5-x-Kibana-5-5-x-Logstash版本部署概述"><span class="toc-number">1.</span> <span class="toc-text">ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#前言"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">前言</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#监控系统的用户："><span class="toc-number">1.0.1.</span> <span class="toc-text">监控系统的用户：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#可选方案："><span class="toc-number">1.0.2.</span> <span class="toc-text">可选方案：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ELK优势和劣势："><span class="toc-number">1.0.3.</span> <span class="toc-text">ELK优势和劣势：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#一、Elasticsearch的部署"><span class="toc-number">1.0.4.</span> <span class="toc-text">一、Elasticsearch的部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-Elasticsearch的配置"><span class="toc-number">1.0.5.</span> <span class="toc-text">1.1 Elasticsearch的配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#集群健康检查-Cluster-Health"><span class="toc-number">1.0.6.</span> <span class="toc-text">集群健康检查 Cluster Health</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-Elasticsearch-5-x的Bootstrap-Checks"><span class="toc-number">1.0.7.</span> <span class="toc-text">1.2 Elasticsearch 5.x的Bootstrap Checks</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-Elasticsearch的X-pack插件"><span class="toc-number">1.0.8.</span> <span class="toc-text">1.3 Elasticsearch的X-pack插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-Elasticsearch的Head插件"><span class="toc-number">1.0.9.</span> <span class="toc-text">1.4 Elasticsearch的Head插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-Elasticsearch-Kibana"><span class="toc-number">1.0.10.</span> <span class="toc-text">1.5 Elasticsearch-Kibana</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#通过配置文件编辑配置Kibana"><span class="toc-number">1.0.11.</span> <span class="toc-text">通过配置文件编辑配置Kibana</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-6访问Kibana"><span class="toc-number">1.0.12.</span> <span class="toc-text">1.6访问Kibana</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、Logstash的部署"><span class="toc-number">1.1.</span> <span class="toc-text">二、Logstash的部署</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Installing-Logstash"><span class="toc-number">1.1.1.</span> <span class="toc-text">Installing Logstash</span></a></li></ol></li></ol></li></ol>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Big-data-Hadoop/">Big data Hadoop</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kafka/">Kafka</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/日志分析平台/">日志分析平台</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a><span class="category-list-count">6</span></li></ul>
+    </div>
   </div>
 
-<div id="asidepart">
-<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
-<aside class="clearfix">
-<div id="authorInfo">
-	
-		<div class="author-logo"></div>		
-	
-	<div class="social-list" class="clearfix">
-		
-		
-		
-		
-		
-	</div>
-</div>
-
   
-<div class="categorieslist">
-	<p class="asidetitle">分类</p>
-		<ul>
-		
-			<li><a href="/categories/Big-data-Hadoop/" title="Big data Hadoop">Big data Hadoop<sup>3</sup></a></li>
-		
-			<li><a href="/categories/Kafka/" title="Kafka">Kafka<sup>2</sup></a></li>
-		
-			<li><a href="/categories/大数据/" title="大数据">大数据<sup>10</sup></a></li>
-		
-			<li><a href="/categories/日志分析平台/" title="日志分析平台">日志分析平台<sup>8</sup></a></li>
-		
-			<li><a href="/categories/生活/" title="生活">生活<sup>6</sup></a></li>
-		
-		</ul>
-</div>
-
-
-  
-<div class="tagslist">
-	<p class="asidetitle">标签</p>
-		<ul class="clearfix">
-		
-			<li><a href="/tags/Ambari/" title="Ambari">Ambari<sup>1</sup></a></li>
-		
-			<li><a href="/tags/Big-data-Hadoop/" title="Big data Hadoop">Big data Hadoop<sup>8</sup></a></li>
-		
-			<li><a href="/tags/Countly/" title="Countly">Countly<sup>1</sup></a></li>
-		
-			<li><a href="/tags/Elasticsearch/" title="Elasticsearch">Elasticsearch<sup>4</sup></a></li>
-		
-			<li><a href="/tags/Kafka/" title="Kafka">Kafka<sup>10</sup></a></li>
-		
-			<li><a href="/tags/Kibana/" title="Kibana">Kibana<sup>1</sup></a></li>
-		
-			<li><a href="/tags/Log-analysis-platform/" title="Log analysis platform">Log analysis platform<sup>8</sup></a></li>
-		
-			<li><a href="/tags/Personal-life-record/" title="Personal life record">Personal life record<sup>6</sup></a></li>
-		
-			<li><a href="/tags/Zabbix/" title="Zabbix">Zabbix<sup>2</sup></a></li>
-		
-			<li><a href="/tags/ZooKeeper/" title="ZooKeeper">ZooKeeper<sup>1</sup></a></li>
-		
-			<li><a href="/tags/旅行日记/" title="旅行日记">旅行日记<sup>1</sup></a></li>
-		
-		</ul>
-</div>
-
-
-  <div class="rsspart">
-	<a href="atom.xml" target="_blank" title="rss">RSS 订阅</a>
-</div>
-
-</aside>
-</div>
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ambari/">Ambari</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Countly/">Countly</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Elasticsearch/">Elasticsearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/">Kafka</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/">Kibana</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Log-analysis-platform/">Log analysis platform</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Personal-life-record/">Personal life record</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Zabbix/">Zabbix</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/旅行日记/">旅行日记</a><span class="tag-list-count">1</span></li></ul>
     </div>
-    <footer><div id="footer" >
+  </div>
+
+  
     
-            <p class="copyright"> © 2017 
-		
-		<a href="http://blog.yancy.cc" target="_blank" title="Yancy">Yancy</a>
-		
-            && Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> && Theme by <a href="http://gengbiao.me" target="_blank" title="coney">coney</a>
-            </div>
-</footer>
-    <script src="/js/jquery-2.1.0.min.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){ 
-  $('.navbar').click(function(){
-    $('header nav').toggleClass('shownav');
-  });
-  var myWidth = 0;
-  function getSize(){
-    if( typeof( window.innerWidth ) == 'number' ) {
-      myWidth = window.innerWidth;
-    } else if( document.documentElement && document.documentElement.clientWidth) {
-      myWidth = document.documentElement.clientWidth;
-    };
-  };
-  var m = $('#main'),
-      a = $('#asidepart'),
-      c = $('.closeaside'),
-      o = $('.openaside');
-  $(window).resize(function(){
-    getSize(); 
-    if (myWidth >= 1024) {
-      $('header nav').removeClass('shownav');
-    }else
-    {
-      m.removeClass('moveMain');
-      a.css('display', 'block').removeClass('fadeOut');
-      o.css('display', 'none');
-      
-      $('#toc.toc-aside').css('display', 'none');
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Ambari/" style="font-size: 10px;">Ambari</a> <a href="/tags/Big-data-Hadoop/" style="font-size: 18px;">Big data Hadoop</a> <a href="/tags/Countly/" style="font-size: 10px;">Countly</a> <a href="/tags/Elasticsearch/" style="font-size: 14px;">Elasticsearch</a> <a href="/tags/Kafka/" style="font-size: 20px;">Kafka</a> <a href="/tags/Kibana/" style="font-size: 10px;">Kibana</a> <a href="/tags/Log-analysis-platform/" style="font-size: 18px;">Log analysis platform</a> <a href="/tags/Personal-life-record/" style="font-size: 16px;">Personal life record</a> <a href="/tags/Zabbix/" style="font-size: 12px;">Zabbix</a> <a href="/tags/ZooKeeper/" style="font-size: 10px;">ZooKeeper</a> <a href="/tags/旅行日记/" style="font-size: 10px;">旅行日记</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
         
-    }
-  });
-  c.click(function(){
-    a.addClass('fadeOut').css('display', 'none');
-    o.css('display', 'block').addClass('fadeIn');
-    m.addClass('moveMain');
-  });
-  o.click(function(){
-    o.css('display', 'none').removeClass('beforeFadeIn');
-    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
-    m.removeClass('moveMain');
-  });
-  $(window).scroll(function(){
-    o.css("top",Math.max(80,260-$(this).scrollTop()));
-  });
-});
-</script>
+          <li>
+            <a href="/2017/08/11/日志分析平台/Elasticsearch/ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述/">ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述</a>
+          </li>
+        
+          <li>
+            <a href="/2017/07/30/日志分析平台/Elasticsearch/研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？/">研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？</a>
+          </li>
+        
+          <li>
+            <a href="/2017/07/04/Bigdata-hadoop/Kafka/kafka性能优化–JVM参数配置优化/">Kafka性能优化–JVM参数配置优化</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/30/Bigdata-hadoop/Kafka/Kafka日志存储解析与实践数据存储优化/">Kafka日志存储解析与实践数据存储优化</a>
+          </li>
+        
+          <li>
+            <a href="/2017/06/29/Bigdata-hadoop/countly/Bigdata-countly需要迁移/">Bigdata-countly需要迁移</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
 
-<script type="text/javascript">
-$(document).ready(function(){ 
-  var ai = $('.article-content>iframe'),
-      ae = $('.article-content>embed'),
-      t  = $('#toc'),
-      h  = $('article h2')
-      ah = $('article h2'),
-      ta = $('#toc.toc-aside'),
-      o  = $('.openaside'),
-      c  = $('.closeaside');
-  if(ai.length>0){
-    ai.wrap('<div class="video-container" />');
-  };
-  if(ae.length>0){
-   ae.wrap('<div class="video-container" />');
-  };
-  if(ah.length==0){
-    t.css('display','none');
-  }else{
-    c.click(function(){
-      ta.css('display', 'block').addClass('fadeIn');
-    });
-    o.click(function(){
-      ta.css('display', 'none');
-    });
-    $(window).scroll(function(){
-      ta.css("top",Math.max(140,320-$(this).scrollTop()));
-    });
-  };
-});
-</script>
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Links</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://xiguabaobao.com" target="_blank">主题作者</a>
+          </li>
+        
+          <li>
+            <a href="http://reqianduan.com" target="_blank">热前端</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
 
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 Yancy<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="totop"><img src="/img/scrollup.png"/></a>
+</div>
 
-<script type="text/javascript">
-$(document).ready(function(){ 
-  var $this = $('.share'),
-      url = $this.attr('data-url'),
-      encodedUrl = encodeURIComponent(url),
-      title = $this.attr('data-title'),
-      tsina = $this.attr('data-tsina');
-  var html = [
-  '<a href="#" class="overlay" id="qrcode"></a>',
-  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
-  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
-  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
-  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
-  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
-  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
-  '<span title="Share to"></span>'
-  ].join('');
-  $this.append(html);
-  $('.article-share-qrcode').click(function(){
-    var imgSrc = $('#qrcode-pic').attr('data-src');
-    $('#qrcode-pic').attr('src', imgSrc);
-    $('#qrcode-pic').load(function(){
-        $('.qrcode strong').text(' ');
-    });
-  });
-});     
-</script>
+<!-- totop end -->
 
 
-<script type="text/javascript">
-  var duoshuoQuery = {short_name:"null"};
-  (function() {
-    var ds = document.createElement('script');
-    ds.type = 'text/javascript';ds.async = true;
-    ds.src = '//static.duoshuo.com/embed.js';
-    ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0] 
-    || document.getElementsByTagName('body')[0]).appendChild(ds);
-  })();
-</script> 
+<!-- 百度分享 start -->
 
-
-
-
-
-
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
 <script>
-    
-        var _bdImg = '4';
-    
-    window._bd_share_config={
-        "common":{
-            "bdSnsKey":{
-
-            },
-            "bdText":"",
-            "bdMini":"2",
-            "bdMiniList":[
-                "qzone",
-                "tsina",
-                "weixin",
-                "renren",
-                "tqq",
-                "tieba",
-                "douban",
-                "sqq",
-                "diandian",
-                "huaban",
-                "youdao",
-                "mail",
-                "ty",
-                "fbook",
-                "twi",
-                "linkedin",
-                "copy",
-                "print"
-            ],
-            "bdPic":"",
-            "bdStyle":"0",
-            "bdSize":"16"
-        },
-        "slide":{
-            "type":"slide",
-            "bdImg":_bdImg,
-            "bdPos":"right",
-            "bdTop":"350"
-        },
-        "image":{
-            "viewList":[
-                "weixin",
-                "qzone",
-                "tsina",
-                "renren",
-                "douban",
-                "tqq"
-            ],
-            "viewText":"分享：",
-            "viewSize":"16"
-        },
-        "selectShare":{
-            "bdContainerClass":null,
-            "bdSelectMiniList":[
-                "weixin",
-                "qzone",
-                "tsina",
-                "renren",
-                "douban",
-                "tqq"
-            ]
-        }
-    };
-    with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+  function SetShareData(cmd, config) {
+    if (shareDataTitle && shareDataUrl) {
+      config.bdText = shareDataTitle;
+      config.bdUrl = shareDataUrl;
+    }
+    return config;
+  }
+  window._bd_share_config={
+    "common":{onBeforeClick: SetShareData},
+    "share":{"bdCustomStyle":"/css/bdshare.css"}
+  };
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
 </script>
 
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
 
 
-<script type="text/javascript">
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-ga('create', 'null', 'null');  
-ga('send', 'pageview');
-</script>
 
+<script src="/js/script.js"></script>
 
-  </body>
+</div>
+</body>
 </html>
-
