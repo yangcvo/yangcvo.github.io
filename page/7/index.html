@@ -1,869 +1,241 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
-<!-- Head tag -->
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
-    <meta name="keyword"  content="undefined">
-    <link rel="shortcut icon" href="/img/favicon.ico">
-
-    <title>
-        
-          Yancy&#39;s blog
-        
-    </title>
-
-    <link rel="canonical" href="http://blog.yancy.cc/page/7/">
-
-    <!-- Bootstrap Core CSS -->
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/hux-blog.min.css">
-
-    <!-- Pygments Highlight CSS -->
-    <link rel="stylesheet" href="/css/highlight.css">
-
-    <!-- Custom Fonts -->
-    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
-    <!-- Hux change font-awesome CDN to qiniu -->
-    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
-
-    <!-- Hux Delete, sad but pending in China
-    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
-    css'>
-    -->
-
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-    <!-- ga & ba script hoook -->
-    <script></script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
 </head>
 
+<body>
 
-<!-- hack iOS CSS :active style -->
-<body ontouchstart="">
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
 
-    <!-- Navigation -->
-<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header page-scroll">
-            <button type="button" class="navbar-toggle">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
-        </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <!-- Known Issue, found by Hux:
-            <nav>'s height woule be hold on by its content.
-            so, when navbar scale out, the <nav> will cover tags.
-            also mask any touch event of tags, unfortunately.
-        -->
-        <div id="huxblog_navbar">
-            <div class="navbar-collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="/">Home</a>
-                    </li>
-
-                    
-
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/archives/archives.html">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/about/About-me.html">About</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/tags/">Tags</a>
-                        </li>
-                        
-                    
-                    
-                </ul>
-            </div>
-        </div>
-        <!-- /.navbar-collapse -->
-    </div>
-    <!-- /.container -->
-</nav>
-<script>
-    // Drop Bootstarp low-performance Navbar
-    // Use customize navbar with high-quality material design animation
-    // in high-perf jank-free CSS3 implementation
-    var $body   = document.body;
-    var $toggle = document.querySelector('.navbar-toggle');
-    var $navbar = document.querySelector('#huxblog_navbar');
-    var $collapse = document.querySelector('.navbar-collapse');
-
-    $toggle.addEventListener('click', handleMagic)
-    function handleMagic(e){
-        if ($navbar.className.indexOf('in') > 0) {
-        // CLOSE
-            $navbar.className = " ";
-            // wait until animation end.
-            setTimeout(function(){
-                // prevent frequently toggle
-                if($navbar.className.indexOf('in') < 0) {
-                    $collapse.style.height = "0px"
-                }
-            },400)
-        }else{
-        // OPEN
-            $collapse.style.height = "auto"
-            $navbar.className += " in";
-        }
-    }
-</script>
-
-
-    <!-- Main Content -->
-    <!-- Page Header -->
-<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>Yancy&#39;s blog</h1>
-                    <!--<hr class="small">-->
-                    <span class="subheading">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+	<main>
+		
+	<span class="different-posts different-posts_earlier">📖 <a href="/page/6">earlier posts</a> 📖</span>
 
 
 
-<!-- Main Content -->
-<div class="container">
-    <div class="row">
-        
 
-<!-- USE SIDEBAR -->
-    <!-- Post Container -->
-            <div class="
-                col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                post-container
-            ">
-            
-                <!-- Main Content -->
+	<article>
+	
+		<h1><a href="/2016/05/05/个人生活记录/黄山之旅/">黄山之旅</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-05-05</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/生活/">生活</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Personal-life-record/">Personal life record</a> <a class="article__tag-link" href="/tags/旅行日记/">旅行日记</a>
+			</span>
+		
+	</div>
 
+	
 
-<div class="post-preview">
-
-    <a href="/2016/07/31/个人生活记录/推荐一个保护眼睛👀的软件－f-lux/">
-        <h2 class="post-title">
-            推荐一个保护眼睛👀的软件－f-lux
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            最近天天加班然后晚上盯着电脑，眼睛一直很干涩，非常难受。正巧昨天在GitHub上闲逛，无意间发现了别人推荐的这个软件f.lux，Mac上下载试用了一下。觉得很不错，推荐一下！也许是我孤陋寡闻了，可能大家都已经在用了……
-安装f.lux的功能很简单，就是可以根据时间的变化调节电脑的显示。但是这里的调节不是简单的亮度调节，而是调节显示屏的色温（简单的说就是白天冷色调，晚上暖色调）。可以从f.lu......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-07-31
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/07/29/个人生活记录/坚持一个月3公里跑步🏃下来/">
-        <h2 class="post-title">
-            坚持一个月3公里跑步🏃下来
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            坚持跑步🏃写这篇日记是因为受到之前看到一篇特别好的文章，是运维的赵班长写的，分享他的技术博客论坛：https://www.unixhot.com/
-因为之前很早认识他了，看过他录的ELK全部视频，受益匪浅，这个是去年的事情了。
-跑步需要一个圈子因为也有一部分的原因是：朋友圈一直在刷跑步的记录，让我也很感兴趣，因为一个人的确是不想跑的，而且这时候：2016年7月20日时杭州今年最热的天气：高......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-07-29
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/07/24/Linux笔记/centos7.1/centos6和centos7细节变化和配置/">
-        <h2 class="post-title">
-            centos6和centos7细节变化和配置
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            (1)桌面系统12[CentOS6] GNOME 2.x[CentOS7] GNOME 3.x（GNOME Shell）
-(2)文件系统12[CentOS6] ext4[CentOS7] xfs
-(3)内核版本12[CentOS6] 2.6.x-x[CentOS7] 3.10.x-x
-(4)默认数据库12[CentOS6] MySQL[CentOS7] MariaDB
-(5)文件结构12[C......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-07-24
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/07/21/性能监控/Zabbix/Zabbix 监控 KVM集群/">
-        <h2 class="post-title">
-            KVM monitoring through Zabbix
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            KVM monitoring through ZabbixMonitor your KVM resources through Zabbix
-Zabbix 监控 KVM
-安装依赖python2, libvirt-python (tested with 0.9.12.3, 0.10.2 and 1.1.3.x)
-pip install libvirt-python 
-KVM Server 设定......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-07-21
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/07/19/容器-虚拟化/Docker/Docker容器部署tomcat出现中文乱码/">
-        <h2 class="post-title">
-            Docker容器部署tomcat出现中文乱码
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            这里我先查看下实例：
-123456789101112131415[root@docker1 ~]# docker exec -it 41de9a0b6045 localeLANG=LC_CTYPE="POSIX"LC_NUMERIC="POSIX"LC_TIME="POSIX"LC_COLLATE="POSIX"LC_MONETARY="POSIX"LC_MESSAGES="POSIX"LC......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-07-19
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/07/19/运维笔记/使用shell脚本实现ssh登录报警/">
-        <h2 class="post-title">
-            使用shell脚本实现ssh登录报警
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            如果你服务器被入侵了，该怎么做才能让自己第一时间知晓？对大部分的人来说，这个的确很不好定位，其实也可以简单些个变量环境，这样下次登录以后可以看到登录的记录，可是这样的话会被黑客发现，所以我们这里按脚本自动发送。
-在逛一些博客上面看到一篇这文章，所以觉得不错，这里整理了下，发给大家。其实这种脚本可以放到对应的堡垒机或者跳板机机器上面因为对一台做管理，下面做了设置，就很方便了。
-1、首先来配置发......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-07-19
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/07/19/容器-虚拟化/Docker/Docker容器时间同步修改docker时区/">
-        <h2 class="post-title">
-            Docker容器时间同步修改docker时区
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            前几天遇到这样一个业务场景，数据库运行在Docker 中，docker 的市区是utc 所以就跟北京时间相差8个小时。但是又不能重新运行一个容器，只能保证数据库运行状态，并把宿主机的时区复制给docker 容器。很苦恼.首先我先把宿主机的时区改成啦CST 北京时间。然后把宿主机的时区复制给docker 容器。命令如下:
-docker cp /etc/localtime:【容器ID或者NAME......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-07-19
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/07/18/容器-虚拟化/Docker/Docker学习(十二) SSH远程登陆docker容器/">
-        <h2 class="post-title">
-            Docker学习(十二) SSH远程登陆docker容器
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            Docker学习(十二) SSH远程登陆docker容器环境：1CentOS release 6.8 (Final)
-任务：1实现宿主机使用ssh登陆docker容器。方便后期使用Jenkins访问docker.
-1、用户密码认证方式登陆//第一步：运行容器，指定IP，这里的示例容器开启的SSH服务，后面拿它测试
-//d第二步：进入容器。编辑ssh_config配置文件。
-1234[root......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-07-18
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/07/18/容器-虚拟化/Docker/ Docker虚拟容器ssh登录问题解决方法/">
-        <h2 class="post-title">
-            Docker学习(十三) SSH远程登陆docker容器
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            Docker虚拟容器ssh登录问题解决方法虽然CentOS 6/7 的容器启动以后都没有安装sshd，我单独通过yum安装了服务并且启动，非常奇怪的是，其他客户端尝试连接都被reset连接:
-ssh root@192.168.1.3
-Read from socket failed: Connection reset by peer
-使用debug方式连接容器:
-ssh -vvv 192.16......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-07-18
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/07/17/容器-虚拟化/Docker/Docker学习（十一）故障处理docker: Error response from daemon: failed to create endpoint db01 on network bridge/">
-        <h2 class="post-title">
-            Docker学习（十一）docker不能访问外网和报错docker/ Error response from daemon/ failed to create endpoint db01 on network bridge
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            问题来源：
-Docker不能访问外网开始是因为所有容器出现不能访问外网。只能访问宿主机的IP。可以ping通。这边我监控到服务全部挂了，还好是在测试环境。
-早上还是好好的、后面一个同事把宿主机防火墙刷新了。之前生产这些容器映射好的端口都是临时的。没有直接写到iptables.导致重启iptables 丢失了所有的容器的规则。访问外网都失败了。
-这个原因后面写好了规则重启防火墙就可以了。
-■ ......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-07-17
-    </p>
-
-</div>
-<hr>
-
-
-
-<!-- Pager -->
-
-<ul class="pager">
-    
-        <li class="previous">
-            <a href="/page/6/">&larr; Newer Posts</a>
-        </li>
-    
-    
-        <li class="next">
-            <a href="/page/8/">Older Posts &rarr;</a>
-        </li>
-    
+	
+		<h4 id="俗话说：“五岳归来不看山-黄山归来不看岳-”黄山以奇松、怪石、云海、温泉、冬雪“五绝”闻名中外"><a href="#俗话说：“五岳归来不看山-黄山归来不看岳-”黄山以奇松、怪石、云海、温泉、冬雪“五绝”闻名中外" class="headerlink" title="俗话说：“五岳归来不看山,黄山归来不看岳.”黄山以奇松、怪石、云海、温泉、冬雪“五绝”闻名中外."></a>俗话说：“五岳归来不看山,黄山归来不看岳.”黄山以奇松、怪石、云海、温泉、冬雪“五绝”闻名中外.</h4><p>2016年5月1号 我和女票一起去黄山看日出。</p>
+<p>出发前来一张： </p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ghost9.pic.jpg" alt=""></figure></p>
+<ul>
+<li>4月29号我匆匆忙忙的买好了前往黄山风景区的大巴汽车票，第一次去也不懂很多，前提安排都没做好准备就出发了因为当天看5月1号是天气预报说雷阵雨转中雨，就害怕看日出的泡汤。</li>
+<li>4月30号我和女票一起坐长途大巴到黄山风景区差不多4个多小时，挺方便的，直达风景区脚下，到那边是中午4点多，那时候天气很好，根本感觉不到明天会有雷阵雨的袭击。</li>
 </ul>
+<h3 id="到那边先要做好几点："><a href="#到那边先要做好几点：" class="headerlink" title="到那边先要做好几点："></a>到那边先要做好几点：</h3><ul>
+<li>定好住宿酒店：因为那边酒店是挺多的，如果赶上节日去的话，估计也没了，所以要去的话，提前一个周，价格便宜几百。如果是想看日出的最好早点定，因为山上的酒店，几乎稍微一般般都要1.5K以上<br>带好雨具： 因为那边黄山常年梅雨天气比较多，因为我那边玩，没带雨具，很多推销的卖一次性的雨衣，就千万不要买。最好自己带着，我是因为定酒店，酒店有送雨具，还有黄山旅游讲解景点和一幅地图。 （那是不是想问我是什么酒店：黄山大红门酒店 地理位置：寨西兆成天地B4幢）</li>
+<li>那边的旅游门票：到那边以后只有一个南门是旅游的登上入口，旅游节假日人特别多，就需要排队，售票处是5点半开门。</li>
+<li>选择走路上山还是乘坐索道：如果当天上去当天下来，我还是建议早上云古寺乘坐索道上去，到索道那边需要统一坐大巴车上去，大巴车需要购买门票，每个人20元，因为私家车是不能上去的。为什么建议早上乘坐索道上去好，因为早上风景太阳刚刚出来，上面风景最好，主要一些景点都是在山顶上面。 下来可以步行慢慢从后山下来，可以看到迎客松和天都峰。如果走路上去走路下来，就往慈光阁上去，因为那边上山的话比较轻松。下山可以往云海大峡谷那边。</li>
+</ul>
+<p>印象最深的是：从云古寺坐索道上去 走不远就可以看到一颗连理松身体分开的，很独特。<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ghost5.pic.jpg" alt=""></figure></p>
+<p>谈谈吃的： 到那边记得吃的当地的徽菜特产点臭鳜鱼，和毛豆腐特别不错。还有笋肉，都挺好吃的。 那边最多的就是梅干菜烧饼，是那边的特产。 </p>
+<p>赶上了看日出的那一瞬间： </p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ghost6.pic.jpg" alt=""></figure></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ghost7.pic.jpg" alt=""></figure></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ghost3.pic.jpg" alt=""></figure></p>
+<p>非常愉快的一次登山旅程。</p>
+
+	
+
+	
+
+</article>
 
 
 
-                <!-- 如果开启评论功能 -->
-                
 
-            </div>
-    <!-- Sidebar Container -->
-            <div class="
-                col-lg-3 col-lg-offset-0
-                col-md-3 col-md-offset-0
-                col-sm-12
-                col-xs-12
-                sidebar-container
-            ">
-                <!-- Featured Tags -->
-                
-                <section>
-                    <!-- no hr -->
-                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
-                    <div class="tags">
-                        
-                            
-                            <a href="/tags/#Blog" title="Blog" rel="7">Blog</a>
-                            
-                        
-                            
-                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="13">Big data Hadoop</a>
-                            
-                        
-                            
-                            <a href="/tags/#Kafka" title="Kafka" rel="10">Kafka</a>
-                            
-                        
-                            
-                            <a href="/tags/#DNS" title="DNS" rel="3">DNS</a>
-                            
-                        
-                            
-                            <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="7">Java+Tomcat notes</a>
-                            
-                        
-                            
-                            <a href="/tags/#Dubbo" title="Dubbo" rel="2">Dubbo</a>
-                            
-                        
-                            
-                            <a href="/tags/#performance tuning" title="performance tuning" rel="2">performance tuning</a>
-                            
-                        
-                            
-                            <a href="/tags/#Java" title="Java" rel="2">Java</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Vsftpd" title="Vsftpd" rel="2">Vsftpd</a>
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Personal life record" title="Personal life record" rel="7">Personal life record</a>
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Performance and framework" title="Performance and framework" rel="2">Performance and framework</a>
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Operation safety" title="Operation safety" rel="7">Operation safety</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="13">Performance monitoring</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Web Service" title="Web Service" rel="17">Web Service</a>
-                            
-                        
-                            
-                            <a href="/tags/#Nginx" title="Nginx" rel="17">Nginx</a>
-                            
-                        
-                            
-                            <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="18">Virtualization-Docker</a>
-                            
-                        
-                            
-                            <a href="/tags/#KVM" title="KVM" rel="8">KVM</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Database" title="Database" rel="6">Database</a>
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#zabbix" title="zabbix" rel="19">zabbix</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="8">Log analysis platform</a>
-                            
-                        
-                            
-                            <a href="/tags/#MySQL.Database" title="MySQL.Database" rel="26">MySQL.Database</a>
-                            
-                        
-                            
-                            <a href="/tags/#Ansible" title="Ansible" rel="9">Ansible</a>
-                            
-                        
-                            
-                            <a href="/tags/#Automation" title="Automation" rel="15">Automation</a>
-                            
-                        
-                            
-                            <a href="/tags/#Jenkins" title="Jenkins" rel="2">Jenkins</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
-                            
-                        
-                    </div>
-                </section>
-                
+	<article>
+	
+		<h1><a href="/2016/02/14/个人生活记录/在一起的第588天💕/">在一起的第588天💕</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-02-14</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/生活/">生活</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Personal-life-record/">Personal life record</a>
+			</span>
+		
+	</div>
 
-                <!-- Short About -->
-                <section class="visible-md visible-lg">
-                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
-                    <div class="short-about">
+	
 
-                        
-                            <img src="/img/avatar.jpg" />
-                        
+	
+		<h3 id="今天2016年2月14日我们的第二个情人节："><a href="#今天2016年2月14日我们的第二个情人节：" class="headerlink" title="今天2016年2月14日我们的第二个情人节："></a>今天2016年2月14日我们的第二个情人节：</h3><p> 夜已经很深了，我还坐在电脑前写信给你,慢慢把我们在一起点点滴滴记录下来,这些天总是有很多话想对你说,但对你的思念扰乱了我所有的思绪。我不知道该说些什么或怎么说？说心里话，和你的每一天我很快乐很幸福，是我一生中从未有过的！真的XXL。<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/IMG_0200.JPG" alt=""></figure></p>
+<p>   在这个13亿茫茫人海当中，你已我相距<code>1325公里</code>因缘分而相识，因相趣而相知，你是一个文文静静，高高大大，很懂事，很孝顺的女孩子，懂的体贴别人，关爱自己身边的人，你一米72，我一米八，走在一起别人总说我们很般配,其实我听了心里还是廷美滋滋的，因为很幸福.<br>   知道么，和你在一起，已经过了不知不觉的1年228天了，和你在一起的日子，总是太快太短促了，还记得我们的相识么？-_-，那已经是在一年前的事情了。2014年9月23日，很清楚的记得当时的情景，我是老板，你是买家，因为一件衣服的聊起来了，但是保留在我计算机中的聊天记录却让你我回忆起曾经美好的种种经历，和你一起上网看我们的记录，我们那些日子一起说好的旅行，我们那些彼此约定，都一一兑现了。看着你甜蜜的微笑便要为这个人努力奋斗，因为，我爱你！<br>   虽然我们在异地，可是我们爱对彼此是那么信任感情的坚定，现在……却沉浸在和你在一起的美好的日子里，受到了一群好朋友的关心满满的祝福，我很满足……满足！</p>
 
-                        
-                            <p>我要成为魔法师!</p>
-                        
+	
 
-                        <!-- SNS Link -->
-                        <ul class="list-inline">
-                            
-                            
-                                <li>
-                                    <a target="_blank" href="https://twitter.com/yancyoo">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                            
-                            
-                                <li>
-                                    <a target="_blank" href="https://www.zhihu.com/people/benet1006">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa  fa-stack-1x fa-inverse">知</i>
-                                        </span>
-                                    </a>
-                                </li>
-                            
+	
 
-                            
-                                <li>
-                                    <a target="_blank" href="http://weibo.com/yangcvo">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                            
+</article>
 
-                            
 
-                            
-                                <li>
-                                    <a target="_blank"  href="https://github.com/yangcvo">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                            
-                            
-                            
-                            
-                        </ul>
-                    </div>
-                </section>
-                
-                <!-- Friends Blog -->
-                
-                <hr>
-                <h5>FRIENDS</h5>
-                <ul class="list-inline">
 
-                    
-                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
-                    
-                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
-                    
-                </ul>
-                
-            </div>
-        
-    </div>
+
+	<article>
+	
+		<h1><a href="/2016/01/30/日志分析平台/Elasticsearch/Elasticsearch1.7版本的索引定时自动清理/">Elasticsearch1.7版本的索引定时自动清理</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-01-30</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Elasticsearch/">Elasticsearch</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h1 id="elasticsearch的索引定时自动清理"><a href="#elasticsearch的索引定时自动清理" class="headerlink" title="elasticsearch的索引定时自动清理"></a>elasticsearch的索引定时自动清理</h1><p>之前用 logstash来做日志收集 并用 elasticsearch来搜索，因为日志没有进行过滤，没几天就发现elasticsearch的索引文件大的吓人，之前还真没清理过。其实要说清理也简单，直接到 elasticsearch data文件夹里删掉就行了，写个脚本定期清理集群es的日志数据。</p>
+<p>这里我清理1月7号的。</p>
+<p>这里后面是索引名称。<br>app_error-2017.01.07</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@es_01 sh]<span class="comment"># curl -XDELETE 'http://10.47.88.206:9200/app_error-2017.01.07'</span></div><div class="line">&#123;<span class="string">"acknowledged"</span>:<span class="literal">true</span>&#125;[root@es_01 sh]<span class="comment">#</span></div></pre></td></tr></table></figure>
+<p>shell 7天清理一次数据写在计划任务里面：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"></div><div class="line">now=`date +%Y%m%d`</div><div class="line"><span class="built_in">echo</span> <span class="variable">$now</span></div><div class="line">days_07_before=`date <span class="_">-d</span> <span class="string">"<span class="variable">$now</span> 7 days ago"</span> +%Y.%m.%d`</div><div class="line"><span class="built_in">echo</span> <span class="variable">$days_30_before</span></div><div class="line">curl -XDELETE <span class="string">"http://10.47.88.206:9200/app_error-<span class="variable">$days_07_before</span>"</span> &gt; /dev/null 2&gt;&amp;1</div><div class="line">curl -XDELETE <span class="string">"http://10.47.88.206:9200/app_info-<span class="variable">$days_07_before</span>"</span> &gt; /dev/null 2&gt;&amp;1</div><div class="line">curl -XDELETE <span class="string">"http://10.47.88.206:9200/logback_app_error-<span class="variable">$days_07_before</span>"</span> &gt; /dev/null 2&gt;&amp;1</div><div class="line">curl -XDELETE <span class="string">"http://10.47.88.206:9200/logback_app_info-<span class="variable">$days_07_before</span>"</span> &gt; /dev/null 2&gt;&amp;1</div></pre></td></tr></table></figure>
+<p>计划任务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">10 0 * * * /opt/sh/logstash-null.sh</div></pre></td></tr></table></figure>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2016/01/29/日志分析平台/Elasticsearch/logstash如何收集tomcat日志分析/">logstash如何写tomcat,redis,nginx日志收集规则</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-01-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Log-analysis-platform/">Log analysis platform</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h5 id="logstash如何收集tomcat日志分析（可以参考我下面写的模板）"><a href="#logstash如何收集tomcat日志分析（可以参考我下面写的模板）" class="headerlink" title="logstash如何收集tomcat日志分析（可以参考我下面写的模板）"></a>logstash如何收集tomcat日志分析（可以参考我下面写的模板）</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line">我想实现对tomcat的日志采集，正常应该创建一个file的input，这个input指定了监听的文件或者目录....然后过滤器（如果没有特殊要求，先可以不进行解析，原始的日志直接存就行）....最后使用一个elastcisearch插件，发送到es中去.</div><div class="line"></div><div class="line">input &#123;</div><div class="line">        stdin&#123;&#125;</div><div class="line"></div><div class="line">        file &#123;</div><div class="line">                <span class="built_in">type</span> =&gt; <span class="string">"tomcat_card"</span></div><div class="line">                path =&gt; <span class="string">"/srv/tomcat/logs/card/*.log"</span></div><div class="line">                start_position =&gt; <span class="string">"beginning"</span></div><div class="line">        &#125;</div><div class="line">        file &#123;</div><div class="line">                <span class="built_in">type</span> =&gt; <span class="string">"tomcat_family"</span></div><div class="line">                path =&gt; <span class="string">"/srv/tomcat/logs/family/*.log"</span></div><div class="line">                start_position =&gt; <span class="string">"beginning"</span></div><div class="line"></div><div class="line">        &#125;</div><div class="line">        file &#123;</div><div class="line">                <span class="built_in">type</span> =&gt; <span class="string">"tomcat_mission"</span></div><div class="line">                path =&gt; <span class="string">"/srv/tomcat/logs/mission/*.log"</span></div><div class="line">                start_position =&gt; <span class="string">"beginning"</span></div><div class="line"></div><div class="line">        &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">filter &#123;</div><div class="line"></div><div class="line">        grok &#123;</div><div class="line">                match =&gt; [</div><div class="line">                                <span class="string">"message"</span>, <span class="string">"%&#123;TIMESTAMP_ISO8601:logdate&#125; %&#123;WORD:loglevel&#125;%&#123;SPACE&#125;%&#123;NOTSPACE:loggername&#125; - %&#123;GREEDYDATA:msg&#125;"</span>,</div><div class="line">                                <span class="string">"message"</span>, <span class="string">"%&#123;GREEDYDATA:msg&#125;"</span></div><div class="line">                         ]</div><div class="line"></div><div class="line">        &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">output&#123;</div><div class="line">        <span class="keyword">if</span> [<span class="built_in">type</span>] == <span class="string">"tomcat_card"</span> &#123;</div><div class="line">        elasticsearch &#123;</div><div class="line">                host =&gt; <span class="string">"192.168.1.234"</span></div><div class="line">                protocol =&gt; <span class="string">"http"</span></div><div class="line">                index   =&gt; <span class="string">"tomcat_card-%&#123;+YYYYY.MM.dd&#125;"</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line">        <span class="keyword">if</span> [<span class="built_in">type</span>] == <span class="string">"tomcat_family"</span> &#123;</div><div class="line">        elasticsearch &#123;</div><div class="line">                host =&gt; <span class="string">"192.168.1.234"</span></div><div class="line">                protocol =&gt; <span class="string">"http"</span></div><div class="line">                index   =&gt; <span class="string">"tomcat_card-%&#123;+YYYYY.MM.dd&#125;"</span></div><div class="line">        &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> [<span class="built_in">type</span>] == <span class="string">"tomcat_mission"</span> &#123;</div><div class="line">        elasticsearch &#123;</div><div class="line">                host =&gt; <span class="string">"192.168.1.234"</span></div><div class="line">                protocol =&gt; <span class="string">"http"</span></div><div class="line">                index   =&gt; <span class="string">"tomcat_mission-%&#123;+YYYYY.MM.dd&#125;"</span></div><div class="line">                &#125;</div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="logstash日志采集nginx配置"><a href="#logstash日志采集nginx配置" class="headerlink" title="logstash日志采集nginx配置"></a>logstash日志采集nginx配置</h5><p>/etc/logstash/conf.d/nginx.conf</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">input &#123;</div><div class="line">file &#123;</div><div class="line">path =&gt; <span class="string">"/data/wwwlogs/nginx_json.log"</span></div><div class="line">codec =&gt; <span class="string">"json"</span></div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">filter &#123;</div><div class="line">mutate &#123;</div><div class="line">split =&gt; [ <span class="string">"upstreamtime"</span>, <span class="string">","</span> ]</div><div class="line">&#125;</div><div class="line">mutate &#123;</div><div class="line">convert =&gt; [ <span class="string">"upstreamtime"</span>, <span class="string">"float"</span> ]</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">output &#123;</div><div class="line">kafka &#123;</div><div class="line">bootstrap_servers =&gt; <span class="string">"10.0.0.11:9092"</span></div><div class="line">topic_id =&gt; <span class="string">"logstash"</span></div><div class="line">compression_type =&gt; <span class="string">"gzip"</span></div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="创建一个从日志文件读取，并写入redis的配置文件-本文件采用默认方式进行输入，输出"><a href="#创建一个从日志文件读取，并写入redis的配置文件-本文件采用默认方式进行输入，输出" class="headerlink" title="创建一个从日志文件读取，并写入redis的配置文件(本文件采用默认方式进行输入，输出)"></a>创建一个从日志文件读取，并写入redis的配置文件(本文件采用默认方式进行输入，输出)</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#cat agent.conf</span></div><div class="line">input &#123;</div><div class="line">    file &#123;</div><div class="line">        path =&gt; <span class="string">"/var/log/httpd/access_log"</span>    //设置读取的日志路径</div><div class="line">        sincedb_path =&gt; <span class="string">"../.sincedb"</span></div><div class="line">        <span class="built_in">type</span> =&gt; <span class="string">"httpd"</span></div><div class="line">        start_position =&gt; <span class="string">"beginning"</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">output &#123;</div><div class="line">    redis &#123;</div><div class="line">        host =&gt; [<span class="string">"127.0.0.1"</span>]</div><div class="line">        port =&gt; 6379</div><div class="line">        batch =&gt; <span class="literal">true</span></div><div class="line">            batch_events =&gt; 5</div><div class="line">            data_type =&gt; <span class="string">"list"</span></div><div class="line">            key =&gt; <span class="string">"logstash:redis"</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">配置一个从redis读取日志并输出到es的配置文件</div><div class="line"></div><div class="line"><span class="comment">#cat index.conf</span></div><div class="line">input &#123;</div><div class="line">  redis &#123;</div><div class="line">    host =&gt; [<span class="string">"127.0.0.1"</span>]</div><div class="line">    port =&gt; 6379</div><div class="line">    data_type =&gt; <span class="string">"list"</span></div><div class="line">    key =&gt; “<span class="built_in">log</span> stash:redis<span class="string">"</span></div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">output &#123;</div><div class="line">        elasticsearch &#123;</div><div class="line">        host =&gt; "127.0.0.1<span class="string">"</span></div><div class="line">        protocol =&gt; "http<span class="string">"</span></div><div class="line">        index =&gt; "logstash-%&#123;<span class="built_in">type</span>&#125;-%&#123;+YYYY.MM.dd&#125;<span class="string">"</span></div><div class="line">        index_type =&gt; "%&#123;<span class="built_in">type</span>&#125;<span class="string">"</span></div><div class="line">        &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">启动logstash</div></pre></td></tr></table></figure>
+
+	
+
+	
+
+</article>
+
+
+
+
+
+	<span class="different-posts">📖 <a href="/page/8">more posts</a> 📖</span>
+
+
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<p>Hi there, <br />welcome to my Blog glad you found it. Have a look around, will you?</p>
 </div>
 
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
 
-    <!-- Footer -->
-    <!-- Footer -->
-<footer>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <ul class="list-inline text-center">
-                
-                
-                    <li>
-                        <a target="_blank" href="https://twitter.com/yancyoo">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                
-                
-                    <li>
-                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa  fa-stack-1x fa-inverse">知</i>
-                            </span>
-                        </a>
-                    </li>
-                
+	    
 
-                
-                    <li>
-                        <a target="_blank" href="http://weibo.com/yangcvo">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
 
-                
+	</div>
 
-                
-                    <li>
-                        <a target="_blank"  href="https://github.com/yangcvo">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                
 
-                
-
-                </ul>
-                <p class="copyright text-muted">
-                    Copyright &copy; Yancy&#39;s blog 2017 
-                    <br>
-                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
-                    <span style="display: inline-block; margin: 0 5px;">
-                        <i class="fa fa-heart"></i>
-                    </span>
-                    Ported by <a href="http://github.com/yangcvo">Github</a>
-
-                    <!--<iframe
-                        style="margin-left: 2px; margin-bottom:-5px;"
-                        frameborder="0" scrolling="0" width="91px" height="20px"
-                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
-                    </iframe>--> 
-		</p>
-            </div>
-        </div>
-    </div>
 </footer>
 
-<!-- jQuery -->
-<script src="/js/jquery.min.js"></script>
 
-<!-- Bootstrap Core JavaScript -->
-<script src="/js/bootstrap.min.js"></script>
-
-<!-- Custom Theme JavaScript -->
-<script src="/js/hux-blog.min.js"></script>
-
-
-<!-- async load function -->
-<script>
-    function async(u, c) {
-      var d = document, t = 'script',
-          o = d.createElement(t),
-          s = d.getElementsByTagName(t)[0];
-      o.src = u;
-      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
-      s.parentNode.insertBefore(o, s);
-    }
-</script>
-
-<!-- 
-     Because of the native support for backtick-style fenced code blocks 
-     right within the Markdown is landed in Github Pages, 
-     From V1.6, There is no need for Highlight.js, 
-     so Huxblog drops it officially.
-
-     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
-     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
--->
-<!--
-    <script>
-        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
-            hljs.initHighlightingOnLoad();
-        })
-    </script>
-    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
--->
-
-
-<!-- jquery.tagcloud.js -->
-<script>
-    // only load tagcloud.js in tag.html
-    if($('#tag_cloud').length !== 0){
-        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
-            $.fn.tagcloud.defaults = {
-                //size: {start: 1, end: 1, unit: 'em'},
-                color: {start: '#bbbbee', end: '#0085a1'},
-            };
-            $('#tag_cloud a').tagcloud();
-        })
-    }
-</script>
-
-<!--fastClick.js -->
-<script>
-    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
-        var $nav = document.querySelector("nav");
-        if($nav) FastClick.attach($nav);
-    })
-</script>
-
-
-<!-- Google Analytics -->
-
-
-
-
-<!-- Baidu Tongji -->
-
-
-<!-- Side Catalog -->
-
-
-
-
-
-<!-- Image to hack wechat -->
-<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
-<!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
 

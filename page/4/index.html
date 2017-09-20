@@ -1,874 +1,407 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
-<!-- Head tag -->
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
-    <meta name="keyword"  content="undefined">
-    <link rel="shortcut icon" href="/img/favicon.ico">
-
-    <title>
-        
-          Yancy&#39;s blog
-        
-    </title>
-
-    <link rel="canonical" href="http://blog.yancy.cc/page/4/">
-
-    <!-- Bootstrap Core CSS -->
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/hux-blog.min.css">
-
-    <!-- Pygments Highlight CSS -->
-    <link rel="stylesheet" href="/css/highlight.css">
-
-    <!-- Custom Fonts -->
-    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
-    <!-- Hux change font-awesome CDN to qiniu -->
-    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
-
-    <!-- Hux Delete, sad but pending in China
-    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
-    css'>
-    -->
-
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-    <!-- ga & ba script hoook -->
-    <script></script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
 </head>
 
+<body>
 
-<!-- hack iOS CSS :active style -->
-<body ontouchstart="">
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
 
-    <!-- Navigation -->
-<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header page-scroll">
-            <button type="button" class="navbar-toggle">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
-        </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <!-- Known Issue, found by Hux:
-            <nav>'s height woule be hold on by its content.
-            so, when navbar scale out, the <nav> will cover tags.
-            also mask any touch event of tags, unfortunately.
-        -->
-        <div id="huxblog_navbar">
-            <div class="navbar-collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="/">Home</a>
-                    </li>
-
-                    
-
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/archives/archives.html">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/about/About-me.html">About</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/tags/">Tags</a>
-                        </li>
-                        
-                    
-                    
-                </ul>
-            </div>
-        </div>
-        <!-- /.navbar-collapse -->
-    </div>
-    <!-- /.container -->
-</nav>
-<script>
-    // Drop Bootstarp low-performance Navbar
-    // Use customize navbar with high-quality material design animation
-    // in high-perf jank-free CSS3 implementation
-    var $body   = document.body;
-    var $toggle = document.querySelector('.navbar-toggle');
-    var $navbar = document.querySelector('#huxblog_navbar');
-    var $collapse = document.querySelector('.navbar-collapse');
-
-    $toggle.addEventListener('click', handleMagic)
-    function handleMagic(e){
-        if ($navbar.className.indexOf('in') > 0) {
-        // CLOSE
-            $navbar.className = " ";
-            // wait until animation end.
-            setTimeout(function(){
-                // prevent frequently toggle
-                if($navbar.className.indexOf('in') < 0) {
-                    $collapse.style.height = "0px"
-                }
-            },400)
-        }else{
-        // OPEN
-            $collapse.style.height = "auto"
-            $navbar.className += " in";
-        }
-    }
-</script>
-
-
-    <!-- Main Content -->
-    <!-- Page Header -->
-<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>Yancy&#39;s blog</h1>
-                    <!--<hr class="small">-->
-                    <span class="subheading">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+	<main>
+		
+	<span class="different-posts different-posts_earlier">📖 <a href="/page/3">earlier posts</a> 📖</span>
 
 
 
-<!-- Main Content -->
-<div class="container">
-    <div class="row">
-        
 
-<!-- USE SIDEBAR -->
-    <!-- Post Container -->
-            <div class="
-                col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                post-container
-            ">
-            
-                <!-- Main Content -->
+	<article>
+	
+		<h1><a href="/2017/05/28/Bigdata-hadoop/Kafka/Bigdata-Kafka集群快速搭建与增删改查命令讲解/">Bigdata-Kafka集群快速搭建与命令讲解</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-05-28</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a> <a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h1 id="Bigdata-Kafka集群快速搭建与命令讲解"><a href="#Bigdata-Kafka集群快速搭建与命令讲解" class="headerlink" title="Bigdata-Kafka集群快速搭建与命令讲解"></a>Bigdata-Kafka集群快速搭建与命令讲解</h1><h3 id="kafka集群和zookeeper集群规范"><a href="#kafka集群和zookeeper集群规范" class="headerlink" title="kafka集群和zookeeper集群规范"></a>kafka集群和zookeeper集群规范</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">kafka集群和zookeeper集群规范</div><div class="line">kafka版本：kafka_2.10-0.8.2.1</div><div class="line">zookeeper版本：zookeeper-3.4.5</div><div class="line"></div><div class="line">启动用户：jollybi</div><div class="line">kafka安装目录：/data/tools/</div><div class="line">kafka新建消息目录：/data/tools/kafka_2.10-0.8.2.1/kafka-logs</div><div class="line"></div><div class="line">启动用户：jollybi</div><div class="line">zookeeper安装目录：/data/tools/</div><div class="line">zookeeper新建日志目录：/data/tools/zookeeper-3.4.5/tmp/logs</div><div class="line"></div><div class="line">统一配置hosts</div><div class="line"></div><div class="line"></div><div class="line">10.155.90.153 kafka1.jollychic.com kafka1</div><div class="line">10.155.90.155 kafka2.jollychic.com kafka2</div><div class="line">10.155.90.138 kafka3.jollychic.com kafka3</div></pre></td></tr></table></figure>
+<p>本文使用了3台机器部署Kafka集群，IP和主机名对应关系如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">10.155.90.153 kafka1.jollychic.com kafka1</div><div class="line">10.155.90.155 kafka2.jollychic.com kafka2</div><div class="line">10.155.90.138 kafka3.jollychic.com kafka3</div></pre></td></tr></table></figure>
+<h3 id="Step1-配置-etc-hosts-（3台一致）"><a href="#Step1-配置-etc-hosts-（3台一致）" class="headerlink" title="Step1: 配置/etc/hosts （3台一致）"></a>Step1: 配置/etc/hosts （3台一致）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">127.0.0.1 localhost.localdomain localhost</div><div class="line">10.155.90.153 kafka1.jollychic.com kafka1</div><div class="line">10.155.90.155 kafka2.jollychic.com kafka2</div><div class="line">10.155.90.138 kafka3.jollychic.com kafka3</div></pre></td></tr></table></figure>
+<h3 id="Step2-KafKa集群搭建"><a href="#Step2-KafKa集群搭建" class="headerlink" title="Step2: KafKa集群搭建"></a>Step2: KafKa集群搭建</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">下载地址：http://mirrors.hust.edu.cn/apache/kafka/0.9.0.0/kafka_2.10-0.8.2.1.tgz</div><div class="line">[jollybi@kafka1 ]<span class="comment"># tar -xvf kafka_2.10-0.8.2.1.tgz -C /data/tools/</span></div><div class="line"><span class="built_in">cd</span> /data/tools/kafka_2.10-0.8.2.1/config</div></pre></td></tr></table></figure>
+<h3 id="设置data目录，最好不要用默认的-tmp-kafka-logs"><a href="#设置data目录，最好不要用默认的-tmp-kafka-logs" class="headerlink" title="设置data目录，最好不要用默认的/tmp/kafka-logs"></a>设置data目录，最好不要用默认的/tmp/kafka-logs</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mkdir -p /data/tools/kafka_2.10-0.8.2.1/kafka-logs/</div></pre></td></tr></table></figure>
+<p><em>修改kafka配置文件</em></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">[root@kafka_01 config]<span class="comment"># vim server.properties</span></div><div class="line"></div><div class="line"></div><div class="line"> 设置brokerid（从0开始，3个节点分别设为1,2,3，不能重复）在这里id=0跟zookeeper id设置一样就行。 集群机器：按顺序写1</div><div class="line">broker.id=1  </div><div class="line"></div><div class="line">auto.leader.rebalance.enable=<span class="literal">true</span> </div><div class="line"></div><div class="line"><span class="comment">#修改本地IP地址：</span></div><div class="line">listeners=PLAINTEXT://10.46.72.172:9092</div><div class="line">port=9292 //设置访问端口</div><div class="line">host.name=10.155.90.153   kafka本机IP</div><div class="line">log.dirs=/data/tools/kafka_2.10-0.8.2.1/kafka-logs</div><div class="line"></div><div class="line"><span class="comment">#设置注册地址（重要，默认会把本机的hostanme注册到zk中，客户端连接时需要解析该hostanme，所以这里直接注册本机的IP地址，避免hostname解析失败，报错java.nio.channels.UnresolvedAddressException或java.io.IOException: Can not resolve address）</span></div><div class="line"><span class="comment">#设置zookeeper地址</span></div><div class="line"><span class="comment">#zookeeper.connect=10.46.72.172:2181,10.47.88.103:2181,10.47.102.137:2181</span></div><div class="line">zookeeper.connect=kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281</div><div class="line"></div><div class="line">//这里我设置hosts代替IP</div></pre></td></tr></table></figure>
+<p><em>配置zookeeper地址</em></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">vim zookeeper.properties </div><div class="line">dataDir=/data/tools/zookeeper-3.4.5/tmp</div><div class="line"><span class="comment"># the port at which the clients will connect</span></div><div class="line">clientPort=2281</div><div class="line"><span class="comment"># disable the per-ip limit on the number of connections since this is a non-production config</span></div><div class="line">maxClientCnxns=0</div><div class="line">~</div></pre></td></tr></table></figure>
+<p><em>配置kafka访问地址</em></p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">vim</span> producer.properties </div><div class="line">metadata.broker.list=<span class="number">169.44.62.139:9292</span>,<span class="number">169.44.59.138:9292</span>,<span class="number">169.44.62.137:9292</span>   </div><div class="line"><span class="comment"># name of the partitioner class for partitioning events; default partition spreads data randomly</span></div><div class="line"><span class="comment">#partitioner.class=</span></div><div class="line"></div><div class="line"><span class="comment"># specifies whether the messages are sent asynchronously (async) or synchronously (sync)</span></div><div class="line">producer.type=sync</div><div class="line"></div><div class="line"><span class="comment"># specify the compression codec for all data generated: none, gzip, snappy, lz4.</span></div><div class="line"><span class="comment"># the old config values work as well: 0, 1, 2, 3 for none, gzip, snappy, lz4, respectively</span></div><div class="line">compression.codec=<span class="literal">none</span></div><div class="line"></div><div class="line"><span class="comment"># message encoder</span></div><div class="line">serializer.class=kafka.serializer.DefaultEncoder</div></pre></td></tr></table></figure>
+<h3 id="Step3-集群机器快速拷贝配置"><a href="#Step3-集群机器快速拷贝配置" class="headerlink" title="Step3: 集群机器快速拷贝配置:"></a>Step3: 集群机器快速拷贝配置:</h3><p>远程复制分发安装文件<br>最好是把文件打包scp过去<br>接下来将上面的安装文件拷贝到集群中的其他机器上对应的目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">scp -P58958 -r kafka_2.10-0.8.2.1 jollybi@169.44.62.137:/home/jollybi/tools/. </div><div class="line">scp -P58958 -r kafka_2.10-0.8.2.1 jollybi@169.44.62.138:/home/jollybi/tools/.</div></pre></td></tr></table></figure>
+<p>统一修改分别其他两台kafka <code>server.properties</code></p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">broker.id=<span class="number">2</span>  </div><div class="line">host.name=<span class="number">169.44</span><span class="number">.62</span><span class="number">.137</span>   kafka2本机IP</div><div class="line"></div><div class="line">broker.id=<span class="number">3</span> </div><div class="line">host.name=<span class="number">169.44</span><span class="number">.62</span><span class="number">.138</span>   kafka3本机IP</div></pre></td></tr></table></figure>
+<h3 id="Step4-启动-kafka集群"><a href="#Step4-启动-kafka集群" class="headerlink" title="Step4:启动 kafka集群"></a>Step4:启动 kafka集群</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">./kafka-server-start.sh -daemon ../config/server.properties</div><div class="line"></div><div class="line">[jollybi@kafka1 config]$ jps</div><div class="line">3443 QuorumPeerMain</div><div class="line">16280 Jps</div><div class="line">3628 Kafka</div><div class="line">Step5: Kafka常用命令(普及)</div></pre></td></tr></table></figure>
+<h4 id="Step5-测试集群"><a href="#Step5-测试集群" class="headerlink" title="Step5:测试集群"></a>Step5:测试集群</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div></pre></td><td class="code"><pre><div class="line"><span class="comment">### 默认创建kafka Topic:  1个副本备份 1个分区消费</span></div><div class="line"></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 1 --partitions 1 --topic mongotail_lz4</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 1 --partitions 1 --topic mongotail_lz4_imp</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 大数据这边需要12个分区这里我删除Topic重新创建Topic：</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 删除kafka Topic:</span></div><div class="line"></div><div class="line"></div><div class="line">第一步：删除kafka topic</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --delete --topic  mongotail_lz4 </div><div class="line"></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --delete --topic  mongotail_lz4_imp</div><div class="line"></div><div class="line"><span class="comment">### 这是由于删除topic没删干净会报错：</span></div><div class="line"></div><div class="line">org.apache.kafka.common.errors.UnknownTopicOrPartitionException: This server does not host this topic-partition.</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 删除线程执行删除操作的真正逻辑是：</span></div><div class="line">1. 它首先会给当前所有broker发送更新元数据信息的请求，告诉这些broker说这个topic要删除了，你们可以把它的信息从缓存中删掉了</div><div class="line">2. 开始删除这个topic的所有分区</div><div class="line">2.1 给所有broker发请求，告诉它们这些分区要被删除。broker收到后就不再接受任何在这些分区上的客户端请求了</div><div class="line">2.2 把每个分区下的所有副本都置于OfflineReplica状态，这样ISR就不断缩小，当leader副本最后也被置于OfflineReplica状态时leader信息将被更新为-1</div><div class="line">2.3 将所有副本置于ReplicaDeletionStarted状态</div><div class="line">2.4 副本状态机捕获状态变更，然后发起StopReplicaRequest给broker，broker接到请求后停止所有fetcher线程、移除缓存，然后删除底层<span class="built_in">log</span>文件</div><div class="line">2.5 关闭所有空闲的Fetcher线程</div><div class="line">    </div><div class="line"><span class="comment">### 第二步：删除zookeeper相关的路径：</span></div><div class="line">[jollybi@kafka1 zookeeper-3.4.5]$ ./bin/zkCli.sh -server 127.0.0.1:2281 </div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 1] rmr /brokers/topics/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 0] rmr /consumers/group_ml_general/offsets/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 1] rmr /consumers/group_ml_general/owners/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 3] rmr  /config/topics/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 4] rmr /admin/delete_topics/mongotail_lz4</div><div class="line"></div><div class="line"><span class="comment">### 删除topic上面消费组 </span></div><div class="line"></div><div class="line">删除 ZooKeeper 下面的 /consumers/[group_id] 路径就可以了。ZooKeeper 原生API只支持删除空的路径，所以建议你使用 curator framework 进行这个删除操作，ZkPaths.deleteChildren 会递归式地删除整个路径（包括子路径）。</div><div class="line"></div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 0] rmr /consumers/kafka-node1-imp-group</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 1] rmr /consumers/kafka-node1-group</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 2] rmr /consumers/console-consumer-59053</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 3] rmr /consumers/</div><div class="line"></div><div class="line"></div><div class="line">1、设置配置文件允许删除</div><div class="line">delete.topic.enable=<span class="literal">true</span> 配置添加到 config/server.properties</div><div class="line">2、执行删除命令</div><div class="line">./bin/kafka-topics.sh --zookeeper localhost:2181 --delete --topic <span class="built_in">test</span>-topic</div><div class="line"></div><div class="line">在zookeeper中确认：</div><div class="line"></div><div class="line"> 删除zookeeper下/brokers/topics/<span class="built_in">test</span>-topic节点</div><div class="line"> 删除zookeeper下/config/topics/<span class="built_in">test</span>-topic节点</div><div class="line"> 删除zookeeper下/admin/delete_topics/<span class="built_in">test</span>-topic节点</div><div class="line"> </div><div class="line">consumer 的话 删除groupid</div><div class="line"> </div><div class="line"></div><div class="line"><span class="comment">### 重启kafka集群</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 大数据kafka建topic，不能建一个分区，那样吞吐量上不去，不够用，我们以前建了12个分区的</span></div><div class="line"><span class="comment">### 创建新 kafka Topic: 3个副本，12个分区</span></div><div class="line"></div><div class="line"> ./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 3 --partitions 12  --topic mongotail_lz4</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 3 --partitions 12  --topic mongotail_lz4_imp</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 查看创建的Topic:</span></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh  --describe --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281  --topic mongotail_lz4</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh  --describe --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281  --topic mongotail_lz4_imp</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 查看集群情况：</span></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh  --describe --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281  --topic mongotail_lz4</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### kafka生产客户端生产数据命令：</span></div><div class="line"></div><div class="line">./bin/kafka-console-producer.sh --broker-list 75.126.39.124:9292,75.126.5.162:9292,75.126.5.178:9292 --topic mongotail_lz4_imp                      </div><div class="line">......</div><div class="line">my <span class="built_in">test</span> message 1</div><div class="line">my <span class="built_in">test</span> message 2</div><div class="line">^C</div><div class="line"><span class="comment">### kafka消费客户端数据命令 现在我们来看看消息：</span></div><div class="line"></div><div class="line"> ./bin/kafka-console-consumer.sh --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  --fm-beginning --topic mongotail_lz4_imp</div><div class="line">......</div><div class="line">my <span class="built_in">test</span> message 1</div><div class="line">my <span class="built_in">test</span> message 2</div><div class="line"></div><div class="line">^C</div></pre></td></tr></table></figure>
+<h3 id="Kafka常用命令"><a href="#Kafka常用命令" class="headerlink" title="Kafka常用命令"></a>Kafka常用命令</h3><p>以下是kafka常用命令行总结：  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">1、 list topic 显示所有topic</div><div class="line">./bin/kafka-topics.sh --list --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281</div><div class="line"></div><div class="line">2、 查看topic的详细信息  </div><div class="line"> ./bin/kafka-topics.sh --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  -describe -topic mongotail_lz4_imp</div><div class="line"></div><div class="line">3、为topic增加partition分区 参数：--alter --partitions</div><div class="line">./bin/kafka-topics.sh  --alter --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  --partitions 20 --topic mongotail_lz4_imp</div><div class="line"></div><div class="line">4、kafka生产者客户端命令  </div><div class="line">./bin/kafka-console-producer.sh --broker-list 75.126.39.124:9292,75.126.5.162:9292,75.126.5.178:9292 --topic mongotail_lz4_imp                        </div><div class="line"></div><div class="line">5、kafka消费者客户端命令  </div><div class="line">./bin/kafka-console-consumer.sh --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  --fm-beginning --topic </div><div class="line"></div><div class="line">6、kafka服务启动  </div><div class="line">./kafka-server-start.sh -daemon ../config/server.properties   </div><div class="line"></div><div class="line">7、下线broker  </div><div class="line">./kafka-run-class.sh kafka.admin.ShutdownBroker --zookeeper 127.0.0.1:2181 --broker <span class="comment">#brokerId# --num.retries 3 --retry.interval.ms 60  </span></div><div class="line">shutdown broker  </div><div class="line"></div><div class="line">8、删除topic  </div><div class="line">./kafka-run-class.sh kafka.admin.DeleteTopicCommand --topic <span class="built_in">test</span>KJ1 --zookeeper 127.0.0.1:2181  </div><div class="line">./kafka-topics.sh --zookeeper localhost:2181 --delete --topic <span class="built_in">test</span>KJ1  </div><div class="line"></div><div class="line">9、查看consumer组内消费的offset  </div><div class="line">./kafka-run-class.sh kafka.tools.ConsumerOffsetChecker --zookeeper localhost:2181 --group <span class="built_in">test</span> --topic <span class="built_in">test</span>KJ1</div></pre></td></tr></table></figure>
+
+	
+
+	
+
+</article>
 
 
-<div class="post-preview">
 
-    <a href="/2016/12/29/日志分析平台/Elasticsearch/搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台/">
-        <h2 class="post-title">
-            搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台介绍ELK是业界标准的日志采集,存储索引,展示分析系统解决方案
-logstash提供了灵活多样的插件支持不同的input/output
-主流使用redis/kafka作为日志/消息的中间环节
-如果已有kafka的环境了,使用kafk......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-12-29
-    </p>
 
-</div>
+	<article>
+	
+		<h1><a href="/2017/05/27/Bigdata-hadoop/zookeeper/Bigdata-ZooKeeper的配置详解优化/">Bigdata-ZooKeeper的配置详解优化</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-05-27</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/ZooKeeper/">ZooKeeper</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p><code>ZooKeeper</code>的功能特性通过 <code>ZooKeeper</code> 配置文件来进行控制管理（ <code>zoo.cfg</code> 配置文件）。 ZooKeeper 这样的设计其实是有它自身的原因的。通过前面对 <code>ZooKeeper</code> 的配置可以看出，对 <code>ZooKeeper</code>集群进行配置的时候，它的配置文档是完全相同的（对于集群伪分布模式来说，只有很少的部分是不同的）。这样的配置方使得在部署 <code>ZooKeeper</code> 服务的时候非常地方便。另外，如果服务器使用不同的配置文件，必须要确保不同配置文件中的服务器列表相匹配。</p>
+<p>在设置 <code>ZooKeeper</code> 配置文档的时候，某些参数是可选的，但是某些参数是必须的。这些必须的参数就构成了<code>ZooKeeper</code> 配置文档的最低配置要求。</p>
+<h5 id="最近发现在用zookeeper出现经常出现连接超时，出现连接中断，数据丢失等原因。后面看了官网配置自己整理优化几点："><a href="#最近发现在用zookeeper出现经常出现连接超时，出现连接中断，数据丢失等原因。后面看了官网配置自己整理优化几点：" class="headerlink" title="最近发现在用zookeeper出现经常出现连接超时，出现连接中断，数据丢失等原因。后面看了官网配置自己整理优化几点："></a>最近发现在用zookeeper出现经常出现连接超时，出现连接中断，数据丢失等原因。后面看了官网配置自己整理优化几点：</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">2.1错误日志：</div><div class="line"></div><div class="line">2016-04-11 15:00:58,981 [myid:] - WARN  [SyncThread:0:FileTxnLog@334] - fsync-ing the write ahead <span class="built_in">log</span> <span class="keyword">in</span> SyncThread:0 took 13973ms <span class="built_in">which</span> will adversely effect operation latency. See the ZooKeeper troubleshooting guide</div><div class="line"></div><div class="line"></div><div class="line">&gt;2.2，错误原因分析</div><div class="line"></div><div class="line">“FOLLOWER”在跟“LEADER”同步时，fsync操作时间过长，导致超时。</div><div class="line"></div><div class="line"></div><div class="line">第一步：分析服务器问题：</div><div class="line"></div><div class="line">我查看了服务器io和负载都不高。内存空间实际使用率不高。可是编辑文件出现了卡顿.</div><div class="line"></div><div class="line">可以发现：</div><div class="line"></div><div class="line">服务器并没有占用很多内存的进程；</div><div class="line">服务器也没有存在很多的进程；</div><div class="line">cat /var/<span class="built_in">log</span>/message查看系统日志并没有发现什么异常；</div><div class="line">另外ping服务器只有0.1ms多的延迟，因此不是网络问题。</div><div class="line"></div><div class="line">后面发现硬盘有故障重新更换了一块硬盘。或者更换服务器。</div><div class="line"></div><div class="line"></div><div class="line">&gt;2.3，错误解决</div><div class="line"></div><div class="line">增加“tickTime”或者“initLimit和syncLimit”的值，或者两者都增大。</div><div class="line"></div><div class="line"></div><div class="line">&gt;2.4，其他</div><div class="line"></div><div class="line">这个错误在上线“使用ZooKeeper获取地址方案”之前也存在，只不过过没有这么高频率，而上线了“ZooKeeper获取地址方案”之后，ZooKeeper Server之间的同步数据量增大，ZooKeeper Server的负载加重，因而最终导致高频率出现上述错误。</div></pre></td></tr></table></figure>
+<h2 id="下面是在最低配置要求中必须配置的参数："><a href="#下面是在最低配置要求中必须配置的参数：" class="headerlink" title="下面是在最低配置要求中必须配置的参数："></a>下面是在最低配置要求中必须配置的参数：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">### 最小配置</span></div><div class="line"></div><div class="line">最小配置意味着所有的配置文件中必须要包含这些配置选项。</div><div class="line"></div><div class="line"><span class="comment">#### clientPort</span></div><div class="line"></div><div class="line">服务器监听客户端连接的端口, 亦即客户端尝试连接到服务器上的指定端口。</div><div class="line"></div><div class="line"><span class="comment">##### dataDir</span></div><div class="line"></div><div class="line">ZooKeeper 存储内存数据库快照文件的路径, 并且如果没有指定其它路径的话, 数据库更新的事务日志也将存储到该路径下。</div><div class="line"></div><div class="line">注意: 事务日志会影响 ZooKeeper 服务器的整体性能, 所以建议将事务日志放置到由 dataLogDir 参数指定的路径下。</div><div class="line"></div><div class="line"><span class="comment">##### tickTime</span></div><div class="line"></div><div class="line">单个 tick 的时间长度, 它是 ZooKeeper 中使用的基本时间单元, 以毫秒为单位。它用来调节心跳和超时时间。例如, 最小会话超时时间是 2 个 tick。</div></pre></td></tr></table></figure>
+<p>生产环境例子：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line">1.tickTime：CS通信心跳数</div><div class="line"></div><div class="line">Zookeeper 服务器之间或客户端与服务器之间维持心跳的时间间隔，也就是每个 tickTime 时间就会发送一个心跳。tickTime以毫秒为单位。</div><div class="line"></div><div class="line">tickTime=2000  </div><div class="line"></div><div class="line">2.initLimit：LF初始通信时限</div><div class="line">集群中的follower服务器(F)与leader服务器(L)之间初始连接时能容忍的最多心跳数（tickTime的数量）。</div><div class="line"></div><div class="line">initLimit=5  </div><div class="line"></div><div class="line">3.syncLimit：LF同步通信时限</div><div class="line">集群中的follower服务器与leader服务器之间请求和应答之间能容忍的最多心跳数（tickTime的数量）。</div><div class="line"></div><div class="line">syncLimit=2  </div><div class="line"> </div><div class="line">4.dataDir：数据文件目录</div><div class="line">Zookeeper保存数据的目录，默认情况下，Zookeeper将写数据的日志文件也保存在这个目录里。</div><div class="line"></div><div class="line">dataDir=/home/michael/opt/zookeeper/data  </div><div class="line"></div><div class="line">5.dataLogDir：日志文件目录</div><div class="line">Zookeeper保存日志文件的目录。</div><div class="line"></div><div class="line">dataLogDir=/home/michael/opt/zookeeper/<span class="built_in">log</span>  </div><div class="line"></div><div class="line">6.clientPort：客户端连接端口</div><div class="line">客户端连接 Zookeeper 服务器的端口，Zookeeper 会监听这个端口，接受客户端的访问请求。</div><div class="line"></div><div class="line">clientPort=2333  </div><div class="line"></div><div class="line">7.服务器名称与地址：集群信息（服务器编号，服务器地址，LF通信端口，选举端口）</div><div class="line">这个配置项的书写格式比较特殊，规则如下：</div><div class="line"></div><div class="line">server.N=YYY:A:B  </div><div class="line"></div><div class="line">其中N表示服务器编号，YYY表示服务器的IP地址，A为LF通信端口，表示该服务器与集群中的leader交换的信息的端口。B为选举端口，表示选举新leader时服务器间相互通信的端口（当leader挂掉时，其余服务器会相互通信，选择出新的leader）。一般来说，集群中每个服务器的A端口都是一样，每个服务器的B端口也是一样。但是当所采用的为伪集群时，IP地址都一样，只能时A端口和B端口不一样。</div><div class="line">下面是一个非伪集群的例子：</div><div class="line"></div><div class="line">server.0=233.34.9.144:2008:6008  </div><div class="line">server.1=233.34.9.145:2008:6008  </div><div class="line">server.2=233.34.9.146:2008:6008  </div><div class="line">server.3=233.34.9.147:2008:6008  </div><div class="line"></div><div class="line">下面是一个伪集群的例子：</div><div class="line"></div><div class="line">server.0=127.0.0.1:2008:6008  </div><div class="line">server.1=127.0.0.1:2007:6007  </div><div class="line">server.2=127.0.0.1:2006:6006  </div><div class="line">server.3=127.0.0.1:2005:6005</div></pre></td></tr></table></figure>
+<h2 id="高级配置"><a href="#高级配置" class="headerlink" title="高级配置"></a>高级配置</h2><p>本节的配置选项是可选的。你可以使用它们进一步的优化 ZooKeeper 服务器的行为。有些可以使用 Java 系统属性来设置, 一般的格式是 “zookeeper.keyword”。如果有具体的系统属性, 会在配置选项下面标注出来。</p>
+<h5 id="dataLogDir"><a href="#dataLogDir" class="headerlink" title="dataLogDir"></a>dataLogDir</h5><p>没有对应的 Java 系统属性。</p>
+<p>该参数用于配置 ZooKeeper 服务器存储事务日志文件的路径, ZooKeeper 默认将事务日志文件和数据快照存储在同一个目录下, 应尽量将它们分开存储。</p>
+<p>注意: 将事务日志文件存储到一个专门的日志设备上对于服务器的吞吐量和稳定的延迟有很大的影响。事务日志对磁盘性能要求比较高, 为了保证数据一致性, ZooKeeper 在响应客户端事务请求之前, 需要将请求的事务日志写到磁盘上, 所以事务日志的写入性能直接影响 ZooKeeper 服务器处理请求的吞吐。所以建议给事务日志的输出配置一个单独的磁盘或者挂载点。</p>
+<h5 id="globalOutstandingLimit"><a href="#globalOutstandingLimit" class="headerlink" title="globalOutstandingLimit"></a>globalOutstandingLimit</h5><p>对应的 Java 系统属性: zookeeper.globalOutstandingLimit。</p>
+<p>客户端提交请求的速度可能比 ZooKeeper 处理的速度快得多, 特别是当客户端的数量非常多的时候。为了防止 ZooKeeper 因为排队的请求而耗尽内存, ZooKeeper 将会对客户端进行限流, 即限制系统中未处理的请求数量不超过 globalOutstandingLimit 设置的值。默认的限制是 1,000。</p>
+<h5 id="preAllocSize"><a href="#preAllocSize" class="headerlink" title="preAllocSize"></a>preAllocSize</h5><p>对应的 Java 系统属性: zookeeper.preAllocSize。</p>
+<p>用于配置 ZooKeeper 事务日志文件预分配的磁盘空间大小。默认的块大小是 64M。改变块大小的其中一个原因是当数据快照文件生成比较频繁时可以适当减少块大小。比如 1000 次事务会新产生一个快照(参数为snapCount), 新产生快照后会用新的事务日志文件, 假设一个事务信息大小100b, 那么事务日志预分配的磁盘空间大小为100kb会比较好。</p>
+<h5 id="snapCount"><a href="#snapCount" class="headerlink" title="snapCount"></a>snapCount</h5><p>对应的 Java 系统属性: zookeeper.snapCount。</p>
+<p>ZooKeeper 将事务记录到事务日志中。当 snapCount 个事务被写到一个日志文件后, 启动一个快照并创建一个新的事务日志文件。snapCount 的默认值是 100,000。</p>
+<h5 id="traceFile"><a href="#traceFile" class="headerlink" title="traceFile"></a>traceFile</h5><p>对应的 Java 系统属性: requestTraceFile。</p>
+<p>如果定义了该选项, 那么请求将会记录到一个名为 traceFile.year.month.day 的跟踪文件中。使用该选项可以提供很有用的调试信息, 但是会影响性能。</p>
+<p>注意: requestTraceFile 这个系统属性没有 zookeeper 前缀, 并且配置的变量名称和系统属性不一样。</p>
+<h5 id="maxClientCnxns"><a href="#maxClientCnxns" class="headerlink" title="maxClientCnxns"></a>maxClientCnxns</h5><p>没有对应的 Java 系统属性</p>
+<p>在 socket 级别限制单个客户端到 ZooKeeper 集群中单台服务器的并发连接数量, 可以通过 IP 地址来区分不同的客户端。它用来阻止某种类型的 DoS 攻击, 包括文件描述符资源耗尽。默认值是 60。将值设置为 0 将完全移除并发连接的限制。</p>
+<h5 id="clientPortAddress"><a href="#clientPortAddress" class="headerlink" title="clientPortAddress"></a>clientPortAddress</h5><p>服务器监听客户端连接的地址 (ipv4, ipv6 或 主机名) , 亦即客户端尝试连接到服务器上的地址。该参数是可选的, 默认我们以这样一种方式绑定, 即对于服务器上任意 address/interface/nic, 任何连接到 clientPort 的请求将会被接受。</p>
+<h5 id="minSessionTimeout"><a href="#minSessionTimeout" class="headerlink" title="minSessionTimeout"></a>minSessionTimeout</h5><p>没有对应的 Java 系统属性</p>
+<p>服务器允许客户端会话的最小超时时间, 以毫秒为单位。默认值是 2 倍的 tickTime。</p>
+<h5 id="maxSessionTimeout"><a href="#maxSessionTimeout" class="headerlink" title="maxSessionTimeout"></a>maxSessionTimeout</h5><p>没有对应的 Java 系统属性</p>
+<p>服务器允许客户端会话的最大超时时间, 以毫秒为单位。默认值是 20 倍的 tickTime。</p>
+<h5 id="fsync-warningthresholdms"><a href="#fsync-warningthresholdms" class="headerlink" title="fsync.warningthresholdms"></a>fsync.warningthresholdms</h5><p>对应的 Java 系统属性: fsync.warningthresholdms。</p>
+<p>用于配置 ZooKeeper 进行事务日志 (WAL) fsync 操作消耗时间的报警阈值, 一旦超过这个阈值将会打印输出报警日志。该参数的默认值是 1000, 以毫秒为单位。参数值只能作为系统属性来设置。</p>
+<h5 id="autopurge-snapRetainCount"><a href="#autopurge-snapRetainCount" class="headerlink" title="autopurge.snapRetainCount"></a>autopurge.snapRetainCount</h5><p>没有对应的 Java 系统属性。</p>
+<p>当启用自动清理功能后, ZooKeeper 将只保留 autopurge.snapRetainCount 个最近的数据快照(dataDir)和对应的事务日志文件(dataLogDir), 其余的将会删除掉。默认值是 3。最小值也是 3。</p>
+<h5 id="autopurge-purgeInterval"><a href="#autopurge-purgeInterval" class="headerlink" title="autopurge.purgeInterval"></a>autopurge.purgeInterval</h5><p>没有对应的 Java 系统属性。</p>
+<p>用于配置触发清理任务的时间间隔, 以小时为单位。要启用自动清理, 可以将其值设置为一个正整数 (大于 1) 。默认值是 0。</p>
+<h5 id="syncEnabled"><a href="#syncEnabled" class="headerlink" title="syncEnabled"></a>syncEnabled</h5><p>对应的 Java 系统属性: zookeeper.observer.syncEnabled。</p>
+<p>和参与者一样, 观察者现在默认将事务日志以及数据快照写到磁盘上, 这将减少观察者在服务器重启时的恢复时间。将其值设置为 “false” 可以禁用该特性。默认值是 “true”。</p>
+<p>集群配置选项</p>
+<p>本节中的选项主要用于ZooKeeper集群。</p>
+<h5 id="electionAlg"><a href="#electionAlg" class="headerlink" title="electionAlg"></a>electionAlg</h5><p>没有对应的 Java 系统属性。</p>
+<p>用于选择使用的 leader 选举算法。”0” 对应于原始的基于 UDP 的版本, “1” 对应于快速 leader 选举基于UDP的无身份验证的版本, “2” 对应于快速 leader 选举有基于UDP的身份验证的版本, 而 “3” 对应于快速 leader 选举基于TCP的版本。目前默认值是算法 3。</p>
+<p>注意: leader 选举 0, 1, 2 这三种实现已经废弃, 在接下来的版本中将会移除它们, 这样就只剩下 FastLeaderElection 算法。</p>
+<h5 id="initLimit"><a href="#initLimit" class="headerlink" title="initLimit"></a>initLimit</h5><p>没有对应的 Java 系统属性。</p>
+<p>默认值是 10, 即 tickTime 属性值的 10 倍。它用于配置允许 followers 连接并同步到 leader 的最大时间。如果 ZooKeeper 管理的数据量很大的话可以增加这个值。</p>
+<h5 id="leaderServes"><a href="#leaderServes" class="headerlink" title="leaderServes"></a>leaderServes</h5><p>对应的 Java 系统属性: zookeeper.leaderServes。</p>
+<p>用于配置 Leader 是否接受客户端连接, 默认值是 “yes”, 即 leader 将会接受客户端连接。在 ZooKeeper 中, leader 服务器主要协调事务更新请求。对于事务更新请求吞吐很高而读取请求吞吐很低的情况可以配置 leader 不接受客户端连接, 这样就可以专注于协调工作。</p>
+<p>注意: 当 ZooKeeper 集群中服务器的数量超过 3 个时, 建议开启 leader 选举。</p>
+<h5 id="server-x-hostname-nnnnn-nnnnn"><a href="#server-x-hostname-nnnnn-nnnnn" class="headerlink" title="server.x=[hostname]:nnnnn:nnnnn"></a>server.x=[hostname]:nnnnn:nnnnn</h5><p>没有对应的 Java 系统属性。</p>
+<p>组成 ZooKeeper 集群的服务器。当服务器启动时, 可以通过查找数据目录中的 myid 文件来决定它是哪一台服务器。myid 文件包含服务器编号, 并且它要匹配 “server.x” 中的 x。</p>
+<p>客户端用来组成 ZooKeeper 集群的服务器列表必须和每个 ZooKeeper 服务器中配置的 ZooKeeper 服务器列表相匹配。</p>
+<p>有两个端口号 nnnnn, 第一个是 followers 用来连接到 leader, 第二个是用于 leader 选举。如果想在单台机器上测试多个服务, 则可以为每个服务配置不同的端口。</p>
+<h5 id="syncLimit"><a href="#syncLimit" class="headerlink" title="syncLimit"></a>syncLimit</h5><p>没有对应的 Java 系统属性。</p>
+<p>默认值是 5, 即 tickTime 属性值的 5 倍。它用于配置leader 和 followers 间进行心跳检测的最大延迟时间。如果在设置的时间内 followers 无法与 leader 进行通信, 那么 followers 将会被丢弃。</p>
+<h5 id="group-x-nnnnn-nnnnn"><a href="#group-x-nnnnn-nnnnn" class="headerlink" title="group.x=nnnnn[:nnnnn]"></a>group.x=nnnnn[:nnnnn]</h5><p>没有对应的 Java 系统属性。</p>
+<p>Enables a hierarchical quorum construction.”x” 是一个组的标识, 等号右边的数字对应于服务器的标识. 赋值操作右边是冒号分隔的服务器标识。注意: 组必须是不相交的, 并且所有组联合后必须是 ZooKeeper 集群。</p>
+<h5 id="weight-x-nnnnn"><a href="#weight-x-nnnnn" class="headerlink" title="weight.x=nnnnn"></a>weight.x=nnnnn</h5><p>没有对应的 Java 系统属性。</p>
+<p>和 “group” 一起使用, 当形成集群时它给每个服务器赋权重值。这个值对应于投票时服务器的权重。ZooKeeper 中只有少数部分需要投票, 比如 leader 选举以及原子的广播协议。服务器权重的默认值是 1。如果配置文件中定义了组, 但是没有权重, 那么所有服务器的权重将会赋值为 1。</p>
+<h5 id="cnxTimeout"><a href="#cnxTimeout" class="headerlink" title="cnxTimeout"></a>cnxTimeout</h5><p>对应的 Java 系统属性: zookeeper.cnxTimeout。</p>
+<p>用于配置 leader选举过程中，打开一次连接（选举的 server 互相通信建立连接）的超时时间。默认值是 5s。</p>
+<h2 id="身份认证和授权选项"><a href="#身份认证和授权选项" class="headerlink" title="身份认证和授权选项"></a>身份认证和授权选项</h2><p>本节的选项允许通过身份认证和授权来控制服务执行。</p>
+<p>zookeeper.DigestAuthenticationProvider.superDigest</p>
+<p>对应的 Java 系统属性: zookeeper.DigestAuthenticationProvider.superDigest。</p>
+<p>该功能默认是禁用的。</p>
+<p>能够使 ZooKeeper 集群管理员可以作为一个 “super” 用户来访问 znode 层级结构。特别是对于一个已经认证为超级管理员的用户不需要 ACL 检查。</p>
+<p>org.apache.zookeeper.server.auth.DigestAuthenticationProvider 可以用来生成 superDigest, 调用它带有 “super:<password>“ 参数的方法。当启动集群中的每台服务器时, 将生成的 “super:<data>“ 作为系统属性提供。</data></password></p>
+<p>当 ZooKeeper 客户端向 ZooKeeper 服务器进行身份认证时, 会传递一个 “digest” 和 “super:<password>“ 的认证数据. 注意摘要式身份验证将认证数据以普通文本的形式传递给服务器, 在网络中需要谨慎使用该认证方法, 要么只在本机上或通过一个加密的连接。</password></p>
+<h5 id="实验性选项-特性"><a href="#实验性选项-特性" class="headerlink" title="实验性选项/特性"></a>实验性选项/特性</h5><p>本节列举了一些目前还处于实验阶段的新特性。</p>
+<h5 id="服务器只读模式"><a href="#服务器只读模式" class="headerlink" title="服务器只读模式"></a>服务器只读模式</h5><p>对应的 Java 系统属性: readonlymode.enabled。</p>
+<p>将其设置为 true 将会启用服务器只读模式支持, 默认是禁用的。ROM 允许请求了 ROM 支持的客户端会话连接到服务器, 即使当服务器可能已经从集群中分隔出去。在该模式中, ROM 客户端仍然可以从 ZK 服务中读取值, 但是不能进行写操作以及看见其它客户端所做的一些变更。更多详细信息可以参见 ZOOKEEPER-784 获取更多详细信息。</p>
+<h5 id="不安全的选项"><a href="#不安全的选项" class="headerlink" title="不安全的选项"></a>不安全的选项</h5><p>下面的选项会很有用, 但是使用的时候需要特别小心。</p>
+<h5 id="forceSync"><a href="#forceSync" class="headerlink" title="forceSync"></a>forceSync</h5><p>对应的 Java 系统属性: zookeeper.forceSync。</p>
+<p>用于配置是否需要在事务日志提交的时候调用 FileChannel.force 来保证数据完全同步到磁盘。默认值是 “yes”。如果该选项设置为 “no”, ZooKeeper 将不会强制同步事务更新日志到磁盘。</p>
+<h5 id="jute-maxbuffer"><a href="#jute-maxbuffer" class="headerlink" title="jute.maxbuffer:"></a>jute.maxbuffer:</h5><p>对应的 Java 系统属性: jute.maxbuffer。没有 zookeeper 前缀。</p>
+<p>用于指定一个 znode 中可以存储数据量的最大值, 默认值是 0xfffff, 或 1M 内。如果这个选项改变了, 那么该系统属性必须在所有的服务端和客户端进行设置, 否则会出现问题。ZooKeeper旨在存储大小为千字节数量的数据。</p>
+<h5 id="skipACL"><a href="#skipACL" class="headerlink" title="skipACL"></a>skipACL</h5><p>对应的 Java 系统属性: zookeeper.skipACL。</p>
+<p>用于配置 ZooKeeper 服务器跳过 ACL 权限检查。这将一定程度的提高服务器吞吐量, 但是也向所有客户端完全开放数据访问。</p>
+<h5 id="quorumListenOnAllIPs"><a href="#quorumListenOnAllIPs" class="headerlink" title="quorumListenOnAllIPs"></a>quorumListenOnAllIPs</h5><p>当设置为 true 时, ZooKeeper 服务器将会在所有可用的 IP 地址上监听来自其对等点的连接请求, 而不仅是配置文件的服务器列表中配置的地址。它会影响处理 ZAB 协议和 Fast Leader Election 协议的连接。默认值是 false。</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/05/26/Bigdata-hadoop/zookeeper/Bigdata-ZooKeeper集群快速搭建与优化/">Bigdata-ZooKeeper集群快速搭建与优化</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-05-26</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="ZooKeeper集群快速搭建与优化"><a href="#ZooKeeper集群快速搭建与优化" class="headerlink" title="ZooKeeper集群快速搭建与优化"></a>ZooKeeper集群快速搭建与优化</h3><p>之前搞过了hadoop和spark，hue，现在在弄下zookeeper集群，文档就整理下。<br>本文是<code>ZooKeeper</code>的快速搭建,旨在帮助大家以最快的速度完成一个<code>ZK</code>集群的搭建,以便开展其它工作。</p>
+<h2 id="集群："><a href="#集群：" class="headerlink" title="集群："></a>集群：</h2><p>本文使用了3台机器部署ZooKeeper集群，IP和主机名对应关系如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">IP            主机名</div><div class="line">10.46.72.172  namenode</div><div class="line">10.47.88.103  datenode1</div><div class="line">10.47.88.206  datenode2</div></pre></td></tr></table></figure>
+<h3 id="安装说明"><a href="#安装说明" class="headerlink" title="安装说明"></a>安装说明</h3><p><code>Zookeeper</code>机器间不需要设置免密码登录，其它hadoop也可以不设置，只要不使用hadoop-daemons.sh来启动、停止进程，注意不是hadoop-daemon.sh，而是带“s”的那个，带“s”的会读取hadoop的salves文件，远程ssh启动DataNode和备NameNode等。</p>
+<h3 id="配置-etc-hosts"><a href="#配置-etc-hosts" class="headerlink" title="配置/etc/hosts"></a>配置/etc/hosts</h3><p>将3台机器的IP和主机名映射关系，在3台机器上都配置一下，亦即在3台机器的/etc/hosts文件中，均增加以下内容（可以先配置好一台，然后通过scp等命令复制到其它机器上，注意主机名不能包含任何下划线）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">127.0.0.1 localhost  namenode</div><div class="line">::1        localhost localhost.localdomain localhost6 localhost6.localdomain6</div><div class="line">10.47.100.90 salt</div><div class="line">10.46.72.172  namenode</div><div class="line">10.47.88.103 datenode1</div><div class="line">10.47.88.206 datenode2</div><div class="line">10.47.102.137 datenode3</div></pre></td></tr></table></figure>
+<h3 id="Step1"><a href="#Step1" class="headerlink" title="Step1:"></a>Step1:</h3><p>配置 JAVA 环境。检验方法:执行 <code>java –version</code> 和 <code>javac –version</code> 命令。</p>
+<p>下载并解压 <code>zookeeper</code>。<a href="http://mirror.bjtu.edu.cn/apache/zookeeper/zookeeper-3.4.3/" target="_blank" rel="external">链接一</a> ，<a href="http://www-eu.apache.org/dist/zookeeper/" target="_blank" rel="external">链接二</a> (更多版本:<a href="http://dwz.cn/37HGI" target="_blank" rel="external">http://dwz.cn/37HGI</a>)</p>
+<h3 id="Step2"><a href="#Step2" class="headerlink" title="Step2:"></a>Step2:</h3><p>2.zookeeper的环境变量的配置：<br>为了今后操作方便，我们需要对Zookeeper的环境变量进行配置，方法如下：<br>在/etc/profile文件中加入如下的内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#set zookeeper environment</span></div><div class="line"></div><div class="line"><span class="built_in">export</span> ZOOKEEPER_HOME=/srv/hadoop/zookeeper-3.3.6</div><div class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$ZOOKEEPER_HOME</span>/bin:<span class="variable">$ZOOKEEPER_HOME</span>/conf</div></pre></td></tr></table></figure>
+<h3 id="Step3"><a href="#Step3" class="headerlink" title="Step3:"></a>Step3:</h3><p>下载以后解压到我自己新建的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[hadoop@namenode ~]$ tar -zxvf zookeeper-3.3.6.tar.gz -C /srv/hadoop/</div><div class="line">[hadoop@namenode ]$ <span class="built_in">cd</span> /srv/hadoop/zookeeper-3.3.6/conf/</div></pre></td></tr></table></figure>
+<p>将<code>zoo_sample.cfg</code>拷贝一份命名为<code>zoo.cfg</code>,这里我拷贝一份命名为：<code>zoo.cfg</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@namenode conf]$ cp -r zoo_sample.cfg zoo.cfg</div></pre></td></tr></table></figure>
+<p>这里先创建/data和/logs 这两个目录。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mkdir -p /srv/hadoop/zookeeper-3.3.6/zookeeper/data</div><div class="line">mkdir -p /srv/hadoop/zookeeper-3.3.6/zookeeper/logs</div></pre></td></tr></table></figure>
+<p>注意上图的配置中master，slave1分别为主机名。</p>
+<p>在上面的配置文件中<code>&quot;server.id=host:port:port&quot;</code>中的第一个port是从机器<code>（follower）</code>连接到主机器<code>（leader）</code>的端口号，第二个port是进行leadership选举的端口号。</p>
+<p>修改配置：</p>
+<p><code>vi zoo.cfg</code>，修改有的默认存在，添加红色的内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">tickTime=2000</div><div class="line"></div><div class="line">clientPort=2181</div><div class="line"></div><div class="line">initLimit=10</div><div class="line"></div><div class="line">syncLimit=5</div><div class="line">maxClientCnxns=0 这个是设置连接数0没有做限制</div><div class="line">dataDir=/haozhuo/hadoop/zookeeper-3.3.6/zookeeper/data</div><div class="line">dataLogDir=/haozhuo/hadoop/zookeeper-3.3.6/zookeeper/logs</div><div class="line"></div><div class="line">server.0=namenode:2888:3888</div><div class="line">server.1=datanode1:2888:3888</div><div class="line">server.2=datanode2:2888:3888</div></pre></td></tr></table></figure>
+<h3 id="创建maid"><a href="#创建maid" class="headerlink" title="创建maid:"></a>创建maid:</h3><p>这里所有节点都需要创建。<br>接下来在<code>dataDir</code>所指定的目录下创建一个文件名为<code>myid</code>的文件，文件中的内容只有一行，为本主机对应的id值，也就是上图中server.id中的id。例如：在服务器1中的myid的内容应该写入1。<br>创建myid：在<code>zoo.cfg</code>配置文件中的dataDir的目录下面创建<code>myid</code>，每个节点myid要求不一样：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /srv/hadoop/zookeeper-3.3.6/zookeeper/data</div><div class="line">touch myid</div></pre></td></tr></table></figure>
+<h3 id="Step4"><a href="#Step4" class="headerlink" title="Step4:"></a>Step4:</h3><p>远程复制分发安装文件<br>最好是把文件打包scp过去<br>接下来将上面的安装文件拷贝到集群中的其他机器上对应的目录下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">haduser@master:~/zookeeper$ scp -r zookeeper-3.4.5/ slave1:/srv/hadoop/</div><div class="line"></div><div class="line">haduser@master:~/zookeeper$ scp -r zookeeper-3.4.5/ slave2:/srv/hadoop/</div></pre></td></tr></table></figure>
+<p>拷贝完成后修改对应的机器上的myid。例如修改slave1中的myid如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">haduser@slave1:~/zookeeper/zookeeper-3.4.5$ <span class="built_in">echo</span> <span class="string">"2"</span> &gt; data/myid</div><div class="line">haduser@slave1:~/zookeeper/zookeeper-3.4.5$ cat data/myid</div><div class="line">[hadoop@namenode hadoop]$ <span class="built_in">echo</span> 0 &gt; /haozhuo/hadoop/zookeeper-3.3.6/zookeeper/data/myid</div><div class="line">[hadoop@datanode1 hadoop]$ <span class="built_in">echo</span> 1 &gt; /haozhuo/hadoop/zookeeper-3.3.6/zookeeper/data/myid</div><div class="line">[hadoop@datanode2 hadoop]$ <span class="built_in">echo</span> 2 &gt; /haozhuo/hadoop/zookeeper-3.3.6/zookeeper/data/myid</div></pre></td></tr></table></figure>
+<h3 id="Step5"><a href="#Step5" class="headerlink" title="Step5:"></a>Step5:</h3><p>启动 ZooKeeper集群<br>在ZooKeeper集群的每个结点上，执行启动ZooKeeper服务的脚本，如下所示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">hadoop@namenode:~ /srv/hadoop/zookeeper-3.3.6/bin/zkServer.sh start</div><div class="line">hadoop@datanode1:~ /srv/hadoop/zookeeper-3.3.6/bin/zkServer.sh start</div><div class="line">haduser@datanode2:~ /srv/hadoop/zookeeper-3.3.6/bin/zkServer.sh start</div></pre></td></tr></table></figure>
+<p>执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/haozhuo/hadoop/zookeeper-3.3.6/bin/zkServer.sh start</div></pre></td></tr></table></figure>
+<h3 id="Step6"><a href="#Step6" class="headerlink" title="Step6:"></a>Step6:</h3><p>检测是否成功启动:执行 <code>jps</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">24933 QuorumPeerMain</div></pre></td></tr></table></figure>
+<p>其中，QuorumPeerMain是zookeeper进程，启动正常。</p>
+<p><code>./zkServer.sh status</code> 查看当前运行状态。</p>
+<p>namenode1</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[hadoop@namenode zookeeper-3.3.6]<span class="comment"># ./zkServer.sh status</span></div><div class="line">JMX enabled by default</div><div class="line">Using config: /srv/zookeeper-3.3.6/bin/../conf/zoo.cfg</div><div class="line">Mode: follower</div><div class="line"></div><div class="line">[hadoop@datanode1 zookeeper-3.3.6]<span class="comment"># ./bin/zkServer.sh status</span></div><div class="line">JMX enabled by default</div><div class="line">Using config: /srv/zookeeper-3.3.6/bin/../conf/zoo.cfg</div><div class="line">Mode: leader</div><div class="line"></div><div class="line">[hadoop@datanode2 zookeeper-3.3.6]<span class="comment"># ./bin/zkServer.sh status</span></div><div class="line">JMX enabled by default</div><div class="line">Using config: /srv/zookeeper-3.3.6/bin/../conf/zoo.cfg</div><div class="line">Mode: leader</div></pre></td></tr></table></figure>
+<h3 id="链接测试"><a href="#链接测试" class="headerlink" title="链接测试"></a>链接测试</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">bin/zkCli.sh -server 127.0.0.1:2181</div><div class="line">bin/zkCli.sh -server 127.0.0.1:2181</div><div class="line">bin/zkCli.sh -server 127.0.0.1:2181</div></pre></td></tr></table></figure>
+<h3 id="Step7"><a href="#Step7" class="headerlink" title="Step7:"></a>Step7:</h3><p>如果单台可以其他几台不行，看配置，如果没有问题。启动查看状态出现异常。</p>
+<p>异常解决:<code>Error contacting service. It is probably not running.</code></p>
+<p>而其他一个节点却是现实正常;</p>
+<p>先<code>stop</code> 掉原<code>zk</code></p>
+<p><code>./bin/zkServer.sh stop</code></p>
+<p>然后以start-foreground方式启动，会看到启动日志</p>
+<p><code>./bin/zkServer.sh start</code></p>
+<p>当出现问题的时候，记得查看日志zookeeper.out，在你配置的dataDir（在conf/zoo.cfg中查看）目录下。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">2015-12-29 11:09:38,034 [myid:1] - WARN  [WorkerSender[myid=1]:QuorumCnxManager@400] - Cannot open channel to 3 at election address Node2/10.0.0.102:38888</div><div class="line">java.net.ConnectException: 拒绝连接</div><div class="line">        at java.net.PlainSocketImpl.socketConnect(Native Method)</div><div class="line">        at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)</div><div class="line">        at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)</div><div class="line">        at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)</div><div class="line">        at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)</div><div class="line">        at java.net.Socket.connect(Socket.java:579)</div><div class="line">        at org.apache.zookeeper.server.quorum.QuorumCnxManager.connectOne(QuorumCnxManager.java:381)</div><div class="line">        at org.apache.zookeeper.server.quorum.QuorumCnxManager.toSend(QuorumCnxManager.java:354)</div><div class="line">        at org.apache.zookeeper.server.quorum.FastLeaderElection<span class="variable">$Messenger</span><span class="variable">$WorkerSender</span>.process(FastLeaderElection.java:452)</div><div class="line">        at org.apache.zookeeper.server.quorum.FastLeaderElection<span class="variable">$Messenger</span><span class="variable">$WorkerSender</span>.run(FastLeaderElection.java:433)</div><div class="line">        at java.lang.Thread.run(Thread.java:745)</div></pre></td></tr></table></figure>
+<p>可以看到是连接到Node2的3888端口不通（我配置文件设置的节点端口，server.3=Node2:2888:3888），这样就找到问题了，所以当遇到问题的时候记得查看日志文件，这才是最有帮助的，而不是修改什么nc参数。</p>
+<p>这里主要看下是否加入hosts</p>
+<p>查看Node2节点发现，38888端口绑带到127.0.0.1上了，这让Master节点怎么连接呀，只需修改/etc/hosts文件即可，同理，修改Node1，然后重启zookeeper，发现问题解决。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">127.0.0.1 localhost  namenode</div><div class="line">::1        localhost localhost.localdomain localhost6 localhost6.localdomain6</div><div class="line">10.47.100.90 salt</div><div class="line">10.46.72.172  namenode</div><div class="line">10.47.88.103 datenode1</div><div class="line">10.47.88.206 datenode2</div><div class="line">10.47.102.137 datenode3</div></pre></td></tr></table></figure>
+<p>这里我<code>127.0.0.1 localhost namenode</code> 就可以了。</p>
+<h3 id="Step8-如何扩容zookeeper？"><a href="#Step8-如何扩容zookeeper？" class="headerlink" title="Step8: 如何扩容zookeeper？"></a>Step8: 如何扩容zookeeper？</h3><p>只需要将已有的zookeeper打包复制到新的机器上，然后修改myid文件并设置好，然后启动zookeeper即可。</p>
 <hr>
+<h3 id="设置开机自动启动"><a href="#设置开机自动启动" class="headerlink" title="设置开机自动启动"></a>设置开机自动启动</h3><p>1.写个启动脚本放到/etc/rc.d/init.d/zookeeper</p>
+<p>这里touch zookeeper &amp;&amp; chmod +x zookeeper &amp;&amp; vim zookeeper</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">!/bin/bash</div><div class="line"><span class="comment">#chkconfig:2345 20 90</span></div><div class="line"><span class="comment">#description:zookeeper</span></div><div class="line"><span class="comment">#processname:zookeeper</span></div><div class="line"><span class="built_in">export</span> JAVA_HOME=/srv/jdk1.8.0_66</div><div class="line"><span class="built_in">export</span> PATH=<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$PATH</span></div><div class="line"><span class="keyword">case</span> <span class="variable">$1</span> <span class="keyword">in</span></div><div class="line">    start) su root /srv/zookeeper-3.3.6/bin/zkServer.sh start;;</div><div class="line">    stop) su root /srv/zookeeper-3.3.6/bin/zkServer.sh stop;;</div><div class="line">    status) su root /srv/zookeeper-3.3.6/bin/zkServer.sh status;;</div><div class="line">    restart) su root /srv/zookeeper-3.3.6/bin/zkServer.shrestart;;</div><div class="line">    *)  <span class="built_in">echo</span> <span class="string">"requirestart|stop|status|restart"</span>;;</div><div class="line"><span class="keyword">esac</span></div></pre></td></tr></table></figure>
+<p>2.设置开机启动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chkconfig zookeeper on</div></pre></td></tr></table></figure>
+<p>3.验证</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">chkconfig --add zookeeper</div><div class="line">chkconfig --list zookeeper</div></pre></td></tr></table></figure>
+<p>这个时候我们就可以用service zookeeper start/stop来启动停止zookeeper服务了.<br>使用<code>chkconfig--add zookeeper</code>命令把<code>zookeeper</code>添加到开机启动里面<br>添加完成之后接这个使用<code>chkconfig--list</code>来看看我们添加的<code>zookeeper</code>是否在里面<br>如果上面的操作都正常的话；重启服务器测试就行。</p>
+<div class="tip"><br><br>注意：zookeeper重启出现几种报错：<br><br>1. 启动服务报错找不到指定好的pid文件。<br>2. 关闭服务报错没有在/tmp/路径下面没有/srv/zookeeper-3.3.6/zookeeper/data/zookeeper_server.pid<br></div>
 
-<div class="post-preview">
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[root@zookeeper zookeeper-3.3.6]<span class="comment"># ./bin/zkServer.sh start</span></div><div class="line">JMX enabled by default</div><div class="line">Using config: /srv/zookeeper-3.3.6/bin/../conf/zoo.cfg</div><div class="line">Starting zookeeper ... ./bin/zkServer.sh: line 93: [: /tmp/zookeeper: binary operator expected</div><div class="line">./bin/zkServer.sh: line 103: /tmp/zookeeper</div><div class="line">/srv/zookeeper-3.3.6/zookeeper/data/zookeeper_server.pid: 没有那个文件或目录</div><div class="line">FAILED TO WRITE PID</div><div class="line">[root@zookeeper zookeeper-3.3.6]<span class="comment"># ./bin/zkServer.sh stop</span></div><div class="line">JMX enabled by default</div><div class="line">Using config: /srv/zookeeper-3.3.6/bin/../conf/zoo.cfg</div><div class="line">Stopping zookeeper ... no zookeeper to stop (could not find file /tmp/zookeeper</div><div class="line">/srv/zookeeper-3.3.6/zookeeper/data/zookeeper_server.pid)</div></pre></td></tr></table></figure>
+<p>解决方法：网上很少有人讲这么详细，这里我就说下，就是你在修改zoo.cfg配置文件里面：</p>
+<p>dataDir指定的路径是自定义的话等于的时候不要空格写。</p>
+<p>如果重新另外写dataDir ,不要注释掉之前的，最好直接删除，重新指定这样就不会报错了，如果注释掉默认的<code>#dataDir = /tmp</code>这里需要空格。</p>
+<h3 id="报错-占用端口："><a href="#报错-占用端口：" class="headerlink" title="报错 占用端口："></a>报错 占用端口：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">JMX enabled by default</div><div class="line">Using config: /opt/app/zookeeper/bin/../conf/zoo3.cfg</div><div class="line">Starting zookeeper ... STARTED</div></pre></td></tr></table></figure>
+<p>查看状态：<br>用jps命令查看进程：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># jps</span></div><div class="line">24617 QuorumPeerMain （这个就是zookeeper进程）</div><div class="line"></div><div class="line">/opt/app/zookeeper/bin/zkServer.sh status zoo1.cfg</div><div class="line">JMX enabled by default</div><div class="line">Using config: /opt/app/zookeeper/bin/../conf/zoo1.cfg</div><div class="line">Error contacting service. It is probably not running.</div></pre></td></tr></table></figure>
+<p>Ihaozhuo_b3314<br>说明有错误，查看日志文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># cd &lt;zookeeper_home&gt;</span></div><div class="line"><span class="comment"># less zookeeper.out</span></div><div class="line">java.net.BindException: 地址已在使用</div><div class="line">杀掉当前进程：</div><div class="line"><span class="comment"># kill -9 24617</span></div></pre></td></tr></table></figure>
+<h3 id="报错-启动服务正常。"><a href="#报错-启动服务正常。" class="headerlink" title="报错: 启动服务正常。"></a>报错: 启动服务正常。</h3><figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@api1 zookeeper<span class="number">-3.3</span><span class="number">.6</span>]<span class="comment"># ./bin/zkServer.sh start</span></div><div class="line">JMX enabled <span class="keyword">by</span> <span class="keyword">default</span></div><div class="line">Using config: <span class="regexp">/srv/zookeeper-3.3.6/bin/</span>../conf/zoo.cfg</div><div class="line">Starting zookeeper ... STARTED</div></pre></td></tr></table></figure>
+<p>可是查询进程不存在，可是看pid是有的，然后关闭服务就说没有这个进程。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">JMX enabled by <span class="keyword">default</span></div><div class="line">Using <span class="string">config:</span> <span class="regexp">/srv/</span>zookeeper<span class="number">-3.3</span><span class="number">.6</span><span class="regexp">/bin/</span>..<span class="regexp">/conf/</span>zoo.cfg</div><div class="line">Stopping zookeeper ... ./zkServer.<span class="string">sh:</span> line <span class="number">133</span>: <span class="string">kill:</span> (<span class="number">31415</span>) - 没有那个进程</div></pre></td></tr></table></figure>
+<h3 id="走kafka查看是否所有节点都启动："><a href="#走kafka查看是否所有节点都启动：" class="headerlink" title="走kafka查看是否所有节点都启动："></a>走kafka查看是否所有节点都启动：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[root@kafka_03 bin]<span class="comment"># sh zkCli.sh</span></div><div class="line">Connecting to localhost:2181</div><div class="line">2017-01-04 19:20:24,849 [myid:] - INFO  [main:Environment@100] - Client environment:zookeeper.version=3.4.6-1569965, built on 02/20/2014 09:09 GMT</div><div class="line">2017-01-04 19:20:24,853 [myid:] - INFO  [main:Environment@100] - Client environment:host.name=kafka_03</div><div class="line">2017-01-04 19:20:24,853 [myid:] - INFO  [main:Environment@100] - Client environment:java.version=1.8.0_66</div><div class="line">2017-01-04 19:20:24,856 [myid:] - INFO  [main:Environment@100] - Client environment:java.vendor=Oracle Corporation</div><div class="line">2017-01-04 19:20:24,856 [myid:] - INFO  [main:Environment@100] - Client environment:java.home=/srv/jdk1.8.0_66/jre</div><div class="line">2017-01-04 19:20:24,856 [myid:] - INFO  [main:Environment@100] - Client environment:java.class.path=/srv/zookeeper-3.4.6/bin/../build/classes:/srv/zookeeper-3.4.6/bin/../build/lib/*.jar:/srv/zookeeper-3.4.6/bin/../lib/slf4j-log4j12-1.6.1.jar:/srv/zookeeper-3.4.6/bin/../lib/slf4j-api-1.6.1.jar:/srv/zookeeper-3.4.6/bin/../lib/netty-3.7.0.Final.jar:/srv/zookeeper-3.4.6/bin/../lib/<span class="built_in">log</span>4j-1.2.16.jar:/srv/zookeeper-3.4.6/bin/../lib/jline-0.9.94.jar:/srv/zookeeper-3.4.6/bin/../zookeeper-3.4.6.jar:/srv/zookeeper-3.4.6/bin/../src/java/lib/*.jar:/srv/zookeeper-3.4.6/bin/../conf:</div><div class="line">2017-01-04 19:20:24,856 [myid:] - INFO  [main:Environment@100] - Client environment:java.library.path=/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib</div><div class="line"></div><div class="line">[zk: localhost:2181(CONNECTED) 0] ls /</div><div class="line">[controller_epoch, brokers, zookeeper, kafka, dubbo, admin, isr_change_notification, consumers, config, sthp]</div><div class="line">[zk: localhost:2181(CONNECTED) 5] ls /kafka/brokers/ids</div><div class="line">[0, 1, 2]</div><div class="line"></div><div class="line">显示0 1 2 三台集群机器。</div></pre></td></tr></table></figure>
+<p>kafka 三台集群这里可以看到获取到ids。</p>
+<h3 id="Step9-相关文档"><a href="#Step9-相关文档" class="headerlink" title="Step9: 相关文档"></a>Step9: 相关文档</h3><p>《HBase-0.98.0分布式安装指南》</p>
+<p>《Hive 0.12.0安装指南》</p>
+<p>《ZooKeeper-3.4.6分布式安装指南》</p>
+<p>《Hadoop 2.3.0源码反向工程》</p>
+<p>《在Linux上编译Hadoop-2.4.0》</p>
+<p>《Accumulo-1.5.1安装指南》</p>
+<p>《Drill 1.0.0安装指南》</p>
+<p>《Shark 0.9.1安装指南》</p>
+<p>更多，敬请关注技术博客：<a href="http://blog.yancy.cc">http://blog.yancy.cc</a></p>
+<h3 id="Step10-结束语"><a href="#Step10-结束语" class="headerlink" title="Step10:  结束语"></a>Step10:  结束语</h3><p>至此，ZooKeeper分布式安装大告成功！更多细节，请浏览<a href="http://zookeeper.apache.org/doc/trunk/zookeeperStarted.html" target="_blank" rel="external">官方文档</a></p>
 
-    <a href="/2016/12/21/Java-Dubbo/Dubbo监控Dubbo-Monitor的安装配置使用/">
-        <h2 class="post-title">
-            Dubbo监控Dubbo-Monitor的安装配置使用
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            前面我安装了Dubbo监控管控台dubbo-admin的安装配置可以到我dubbo书签🔖查看。
-Dubbo Monitor 详细介绍Dubbo Monitor是针对Dubbo开发的监控系统，参考dubbo-monitor-simple改进而成，可以理解为其演化版本。该系统MySQL或者Mongodb记录日志的方式替代了dubbo-monitor-simple写文件的方式。
-PS: 项目目前......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-12-21
-    </p>
+	
 
-</div>
-<hr>
+	
 
-<div class="post-preview">
-
-    <a href="/2016/12/07/Java-Dubbo/Sonarqube和jacoco搭建代码检查/">
-        <h2 class="post-title">
-            Sonarqube和jacoco搭建代码检查
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-准备工作：sonarqube，jacoco，git，maven，ant，sonar-runnersonarqube 去官网下载，文件太大，不能上传git，mavne，ant自己安装sonarqube和sonar-runnrt安装：查看链接
-
-监控机子配置：启动sonarqube，git下载源代码，进入源码路径，添加一下文件；
-
-
-1234561）sonar-project.properti......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-12-07
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/12/02/Web服务技术/tomcat/记录tomcat进程CPU使用率高排查故障经验/">
-        <h2 class="post-title">
-            记录tomcat进程CPU使用率高排查故障经验
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            1、故障现象运营同事反馈APP其中体检商城购买订单系统运行缓慢，访问出现超时，多次重启系统后问题依然存在，使用top命令查看服务器情况，发现CPU占用率过高。
-2、CPU占用过高问题定位2.1、定位问题进程使用top命令查看资源占用情况，发现pid为14063的进程占用了大量的CPU资源，CPU占用率高达229.1%，内存占用率也达到了29.8%
-123456789[root@account......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-12-02
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/12/02/运维安全/gitlab网站被黑redis被劫持6379端口需要提交认证，如何挽救？/">
-        <h2 class="post-title">
-            gitlab网站被黑redis被劫持6379端口需要提交认证，如何挽救？
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            今天早上5点多收到阿里云的告警：服务器CPU百分百，gitlab服务器访问出现500，第一时间排查问题。毕竟这个关乎着开发今天可能无法提交代码。
-
-第一时间我查看什么原因导致我gitlab 500。根据以往经验gitlab出现500 第一：版本出现bug，第二：服务器网络不正常，请求不到。
-然后查看日志：
-1234567891011121314[root@GitLab ~]# tailf -......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-12-02
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/11/24/Node.js/Node.js-Grunt工具搭建后台管理实践/">
-        <h2 class="post-title">
-            Node.js+Grunt工具搭建后台管理实践
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            最近弄灰度发布系统，由于最近体检项目需要对css文件和js文件进行压缩，各种比较之后，选择了grunt进行构建。google一下，几乎都是grunt最新版的使用说明 查看gruntjs的入门 Getting started，又是云里雾里的，好吧，只能耐心看文档和不断的实践吧。
-Grunt入门入门教程:
-系统环境centos 6.6 x64
-Grunt安装过程：1、前提安装了nodejs，进入......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-11-24
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/11/24/Web服务技术/申请证书Https/免费 Https 证书（Let'S Encrypt）申请与配置 /">
-        <h2 class="post-title">
-            免费 Https证书（Let'S Encrypt）申请与配置
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            免费 Https 证书（Let’S Encrypt）申请与配置之前要申请免费的 https 证书操作步骤相当麻烦，今天看到有人在讨论，就搜索了一下。发现现在申请步骤简单多了。
-1. 下载 certbot123git clone https://github.com/certbot/certbotcd certbot./certbot-auto --help
-解压打开执行就会有相关提示
-2. ......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-11-24
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/11/23/Web服务技术/申请证书Https/解决Https请求跨域CDN资源http网站出现访问失败-证书显示不安全/">
-        <h2 class="post-title">
-            解决Https请求跨域CDN资源http网站出现访问失败-证书显示不安全
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            解决Https请求跨域CDN资源http网站出现访问失败-证书显示不安全这里讲如何解决跨域http资源请求证书出现问题， 上一篇我解决网站如何申请免费证书，实现申请免费证书在Nginx上面实现https访问。
-可是我一开始没有这么顺利实现我想要的效果，因为的确证书是有了访问可以https可是请求跨域http服务就出现问题了。这里我是在又拍云做CDN加速的，所以这里说明下如果你的公司网站比如说......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-11-23
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/11/23/Web服务技术/申请证书Https/如何在Nginx申请安装配置免费HTTPS证书+阿里云SLB如何配置HTTPS/">
-        <h2 class="post-title">
-            如何在Nginx申请安装配置免费HTTPS证书+阿里云SLB如何配置HTTPS
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            如何在Nginx申请安装配置免费HTTPS证书HTTPS在各大互联网站已经成为标配，就连某度也在前不久全面启用HTTPS，很多小网站也配置了HTTPS，这是未来的一种趋势.HTTPS的好处多多，可以防止各种攻击劫持，运营商广告植入，客户传输信息泄露等问题。为了让HTTPS能够全面普及，让我们加密项目应运而生，它由互联网安全研究小组ISRG（互联网安全研究小组）提供服务，很早之前我就在关注 L......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-11-23
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/11/14/日志分析平台/Graylog/graylog 升级2.1 集中日志解决方案/">
-        <h2 class="post-title">
-            graylog 升级2.1 集中日志解决方案
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            graylog 升级2.1 集中日志解决方案参考官网：升级到Graylog的2.1.x
-一：为什么需要集中日志解决方案？在公司服务机子部署越来越多的情况下，让我们来想想会遇到的问题：
-
-开发人员不能登录线上服务器查看详细日志，经过运维周转费时费力
-日志数据分散在多个系统，难以查找
-日志数据量大，查询速度慢
-一个调用会涉及多个系统，难以在这些系统的日志中快速定位数据
-数据不够实时
-很难对数据进......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-11-14
-    </p>
-
-</div>
-<hr>
+</article>
 
 
 
-<!-- Pager -->
 
-<ul class="pager">
-    
-        <li class="previous">
-            <a href="/page/3/">&larr; Newer Posts</a>
-        </li>
-    
-    
-        <li class="next">
-            <a href="/page/5/">Older Posts &rarr;</a>
-        </li>
-    
-</ul>
+	<article>
+	
+		<h1><a href="/2017/05/08/Bigdata-hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/">Bigdata-hadoop新增节点集群启动请求异常：Last contact：200</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-05-08</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="前言闲谈："><a href="#前言闲谈：" class="headerlink" title="前言闲谈："></a>前言闲谈：</h3><p>之前做CDN云计算公司来到美年大健康现在在一家医疗大数据公司负责运维部门大大小小的活，既然是医疗大数据当然离不开大数据存储的维护，现在也同时维护大数据运维相关工作 <code>hadoop,spark,sqoop,hue,hive,Hbase,zookeeper</code>等等 测试开发生产使用起来,从集群环境维护 提升数据稳定性 高可用维护。</p>
+<p>前面说了一堆自己闲聊，真正解决这次问题是hadoop新增节点需要注意哪几点：</p>
+<p><code>新增节点如何新增我会在另外一篇详细说的这里我讲一些需要注意掉的问题。</code></p>
+<h3 id="需要修改几个配置："><a href="#需要修改几个配置：" class="headerlink" title="需要修改几个配置："></a>需要修改几个配置：</h3><p>（1）hadoop data 数据目录 VERSION 里面的搭建集群时，直接克隆会出现这个问题。解决方法同上两种，最好修改${/hadoop/tmp/dir}/dfs/data/current/VERSION中的storageID，使其不同。第一种会导致hdfs数据丢失。</p>
+<p>解决方法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">（1） datanode启动是会加载DataStorage，如果不存在则会format</div><div class="line">（2）初次启动DataStorage的storageID是空的，所以会生成一个storageID</div></pre></td></tr></table></figure>
+<p>参考我解决的：<code>这里我拷贝过来 直接删除。等集群namenode启动 会自动生成。</code></p>
+<p>这个解决以后 新增的机器必须关闭防火墙。因为这个原因会导致我 hadoop新增节点集群启动请求异常：Last contact：200</p>
+<p>（2） 集群重启时防火墙自动开启导致：</p>
+<p>这里贴张图片给大家看看：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop1.png" alt=""></figure></p>
+<p>问题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">2017-07-04 18:43:30,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 8 time(s).</div><div class="line">2017-07-04 18:43:31,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 9 time(s).</div><div class="line">2017-07-04 18:43:31,479 ERROR org.apache.hadoop.hdfs.server.datanode.DataNode: java.io.IOException: Call to /192.168.18.218:9000 failed on <span class="built_in">local</span> exception: java.net.NoRouteToHostException: 没有到主机的路由</div><div class="line">        at org.apache.hadoop.ipc.Client.wrapException(Client.java:775)</div><div class="line">        at org.apache.hadoop.ipc.Client.call(Client.java:743)</div><div class="line">解决方法：在root权限下关闭防火墙：service iptables stop</div></pre></td></tr></table></figure>
+<p>最好配置成机器重启默认防火墙关闭：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables off   #开机不启动防火墙服务</span></div><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables on   #开机启动防火墙服务</span></div></pre></td></tr></table></figure>
+<p>解决以后服务重新跑一遍已经搞定。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop2.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop3.png" alt=""></figure></p>
+
+	
+
+	
+
+</article>
 
 
 
-                <!-- 如果开启评论功能 -->
-                
 
-            </div>
-    <!-- Sidebar Container -->
-            <div class="
-                col-lg-3 col-lg-offset-0
-                col-md-3 col-md-offset-0
-                col-sm-12
-                col-xs-12
-                sidebar-container
-            ">
-                <!-- Featured Tags -->
-                
-                <section>
-                    <!-- no hr -->
-                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
-                    <div class="tags">
-                        
-                            
-                            <a href="/tags/#Blog" title="Blog" rel="7">Blog</a>
-                            
-                        
-                            
-                            <a href="/tags/#Big data Hadoop" title="Big data Hadoop" rel="13">Big data Hadoop</a>
-                            
-                        
-                            
-                            <a href="/tags/#Kafka" title="Kafka" rel="10">Kafka</a>
-                            
-                        
-                            
-                            <a href="/tags/#DNS" title="DNS" rel="3">DNS</a>
-                            
-                        
-                            
-                            <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="7">Java+Tomcat notes</a>
-                            
-                        
-                            
-                            <a href="/tags/#Dubbo" title="Dubbo" rel="2">Dubbo</a>
-                            
-                        
-                            
-                            <a href="/tags/#performance tuning" title="performance tuning" rel="2">performance tuning</a>
-                            
-                        
-                            
-                            <a href="/tags/#Java" title="Java" rel="2">Java</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#node.js" title="node.js" rel="3">node.js</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Linux note" title="Linux note" rel="14">Linux note</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Vsftpd" title="Vsftpd" rel="2">Vsftpd</a>
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Personal life record" title="Personal life record" rel="7">Personal life record</a>
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Performance and framework" title="Performance and framework" rel="2">Performance and framework</a>
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Operation safety" title="Operation safety" rel="7">Operation safety</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="13">Performance monitoring</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Web Service" title="Web Service" rel="17">Web Service</a>
-                            
-                        
-                            
-                            <a href="/tags/#Nginx" title="Nginx" rel="17">Nginx</a>
-                            
-                        
-                            
-                            <a href="/tags/#Virtualization-Docker" title="Virtualization-Docker" rel="18">Virtualization-Docker</a>
-                            
-                        
-                            
-                            <a href="/tags/#KVM" title="KVM" rel="8">KVM</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Database" title="Database" rel="6">Database</a>
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#zabbix" title="zabbix" rel="19">zabbix</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Log analysis platform" title="Log analysis platform" rel="8">Log analysis platform</a>
-                            
-                        
-                            
-                            <a href="/tags/#MySQL.Database" title="MySQL.Database" rel="26">MySQL.Database</a>
-                            
-                        
-                            
-                            <a href="/tags/#Ansible" title="Ansible" rel="9">Ansible</a>
-                            
-                        
-                            
-                            <a href="/tags/#Automation" title="Automation" rel="15">Automation</a>
-                            
-                        
-                            
-                            <a href="/tags/#Jenkins" title="Jenkins" rel="2">Jenkins</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
-                            
-                        
-                    </div>
-                </section>
-                
 
-                <!-- Short About -->
-                <section class="visible-md visible-lg">
-                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
-                    <div class="short-about">
+	<span class="different-posts">📖 <a href="/page/5">more posts</a> 📖</span>
 
-                        
-                            <img src="/img/avatar.jpg" />
-                        
 
-                        
-                            <p>我要成为魔法师!</p>
-                        
 
-                        <!-- SNS Link -->
-                        <ul class="list-inline">
-                            
-                            
-                                <li>
-                                    <a target="_blank" href="https://twitter.com/yancyoo">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                            
-                            
-                                <li>
-                                    <a target="_blank" href="https://www.zhihu.com/people/benet1006">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa  fa-stack-1x fa-inverse">知</i>
-                                        </span>
-                                    </a>
-                                </li>
-                            
+	</main>
 
-                            
-                                <li>
-                                    <a target="_blank" href="http://weibo.com/yangcvo">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                            
-
-                            
-
-                            
-                                <li>
-                                    <a target="_blank"  href="https://github.com/yangcvo">
-                                        <span class="fa-stack fa-lg">
-                                            <i class="fa fa-circle fa-stack-2x"></i>
-                                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                            
-                            
-                            
-                            
-                        </ul>
-                    </div>
-                </section>
-                
-                <!-- Friends Blog -->
-                
-                <hr>
-                <h5>FRIENDS</h5>
-                <ul class="list-inline">
-
-                    
-                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
-                    
-                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
-                    
-                </ul>
-                
-            </div>
-        
-    </div>
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<p>Hi there, <br />welcome to my Blog glad you found it. Have a look around, will you?</p>
 </div>
 
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
 
-    <!-- Footer -->
-    <!-- Footer -->
-<footer>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <ul class="list-inline text-center">
-                
-                
-                    <li>
-                        <a target="_blank" href="https://twitter.com/yancyoo">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                
-                
-                    <li>
-                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa  fa-stack-1x fa-inverse">知</i>
-                            </span>
-                        </a>
-                    </li>
-                
+	    
 
-                
-                    <li>
-                        <a target="_blank" href="http://weibo.com/yangcvo">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
 
-                
+	</div>
 
-                
-                    <li>
-                        <a target="_blank"  href="https://github.com/yangcvo">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                
 
-                
-
-                </ul>
-                <p class="copyright text-muted">
-                    Copyright &copy; Yancy&#39;s blog 2017 
-                    <br>
-                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
-                    <span style="display: inline-block; margin: 0 5px;">
-                        <i class="fa fa-heart"></i>
-                    </span>
-                    Ported by <a href="http://github.com/yangcvo">Github</a>
-
-                    <!--<iframe
-                        style="margin-left: 2px; margin-bottom:-5px;"
-                        frameborder="0" scrolling="0" width="91px" height="20px"
-                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
-                    </iframe>--> 
-		</p>
-            </div>
-        </div>
-    </div>
 </footer>
 
-<!-- jQuery -->
-<script src="/js/jquery.min.js"></script>
 
-<!-- Bootstrap Core JavaScript -->
-<script src="/js/bootstrap.min.js"></script>
-
-<!-- Custom Theme JavaScript -->
-<script src="/js/hux-blog.min.js"></script>
-
-
-<!-- async load function -->
-<script>
-    function async(u, c) {
-      var d = document, t = 'script',
-          o = d.createElement(t),
-          s = d.getElementsByTagName(t)[0];
-      o.src = u;
-      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
-      s.parentNode.insertBefore(o, s);
-    }
-</script>
-
-<!-- 
-     Because of the native support for backtick-style fenced code blocks 
-     right within the Markdown is landed in Github Pages, 
-     From V1.6, There is no need for Highlight.js, 
-     so Huxblog drops it officially.
-
-     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
-     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
--->
-<!--
-    <script>
-        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
-            hljs.initHighlightingOnLoad();
-        })
-    </script>
-    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
--->
-
-
-<!-- jquery.tagcloud.js -->
-<script>
-    // only load tagcloud.js in tag.html
-    if($('#tag_cloud').length !== 0){
-        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
-            $.fn.tagcloud.defaults = {
-                //size: {start: 1, end: 1, unit: 'em'},
-                color: {start: '#bbbbee', end: '#0085a1'},
-            };
-            $('#tag_cloud a').tagcloud();
-        })
-    }
-</script>
-
-<!--fastClick.js -->
-<script>
-    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
-        var $nav = document.querySelector("nav");
-        if($nav) FastClick.attach($nav);
-    })
-</script>
-
-
-<!-- Google Analytics -->
-
-
-
-
-<!-- Baidu Tongji -->
-
-
-<!-- Side Catalog -->
-
-
-
-
-
-<!-- Image to hack wechat -->
-<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
-<!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
 
