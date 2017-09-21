@@ -357,6 +357,48 @@
 
 	<article>
 	
+		<h1><a href="/2017/06/29/Bigdata-hadoop/countly/Bigdata-countly需要迁移/">Bigdata-countly需要迁移</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-06-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Big-data-Hadoop/">Big data Hadoop</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Countly/">Countly</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h4 id="官方安装文档：http-resources-count-ly-docs-installing-countly-server"><a href="#官方安装文档：http-resources-count-ly-docs-installing-countly-server" class="headerlink" title="官方安装文档：http://resources.count.ly/docs/installing-countly-server"></a>官方安装文档：<a href="http://resources.count.ly/docs/installing-countly-server" target="_blank" rel="external">http://resources.count.ly/docs/installing-countly-server</a></h4><p>目前<code>countly</code>需要迁移，所需<code>countly</code>版本于官方提供的安装方案有冲突，所以如下安装：</p>
+<p>安装官方<code>countly</code>让其设置所需环境变量及其启动脚本，手动指定安装nojs版本，拷贝原countly文件，具体如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">1、<span class="built_in">cd</span> /data <span class="comment">#countly安装在data目录 我看了安装脚本，是当前在哪个目录，安装文件就在哪个目录</span></div><div class="line">wget -qO- http://c.ly/install | bash</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">2、rpm -qa | grep -i nodejs | xargs -I&#123;&#125;  yum remove &#123;&#125; -y</div><div class="line">卸载掉官网安装的最新nodejs 然后新建如下yum源，用于安装旧版所需nodejs，也可以到nodejs官网下载所需nodejs</div><div class="line">cat /etc/yum.repos.d/nodesource-el.repo </div><div class="line">[nodesource]</div><div class="line">name=Node.js Packages <span class="keyword">for</span> Enterprise Linux 7 - <span class="variable">$basearch</span></div><div class="line">baseurl=https://rpm.nodesource.com/pub_5.x/el/7/<span class="variable">$basearch</span></div><div class="line">failovermethod=priority</div><div class="line">enabled=1</div><div class="line">gpgcheck=1</div><div class="line">gpgkey=file:///etc/pki/rpm-gpg/NODESOURCE-GPG-SIGNING-KEY-EL</div><div class="line">[nodesource-source]</div><div class="line">name=Node.js <span class="keyword">for</span> Enterprise Linux 7 - <span class="variable">$basearch</span> - Source</div><div class="line">baseurl=https://rpm.nodesource.com/pub_5.x/el/7/SRPMS</div><div class="line">failovermethod=priority</div><div class="line">enabled=0</div><div class="line">gpgkey=file:///etc/pki/rpm-gpg/NODESOURCE-GPG-SIGNING-KEY-EL</div><div class="line">gpgcheck=1</div></pre></td></tr></table></figure>
+<h3 id="安装老版本所需nodejs"><a href="#安装老版本所需nodejs" class="headerlink" title="安装老版本所需nodejs"></a>安装老版本所需nodejs</h3><figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum <span class="keyword">install</span> nodejs</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">3、拷贝源countly文件到/data/countly目录</div><div class="line">修改 /data/countly/api/config.js 和 /data/countly/frontend/express/config.js      </div><div class="line">3001端口和 6001端口监听地址换成 本地私有地址   <span class="comment">#源文件是监听的原来机器的内网地址，不修改的话，服务启动不了。</span></div></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="number">4</span><span class="string">、拷贝mongo数据目录到/data/mongo目录，修改mongo配置文件.</span></div><div class="line"></div><div class="line"><span class="string">cat</span> <span class="string">/etc/mongod.conf</span></div><div class="line"><span class="attr">systemLog:</span></div><div class="line"><span class="attr">       destination:</span> <span class="string">file</span></div><div class="line"><span class="attr">       logAppend:</span> <span class="literal">true</span></div><div class="line"><span class="attr">       path:</span> <span class="string">/data/mongodb/mongod.log</span></div><div class="line"><span class="attr">storage:</span></div><div class="line"><span class="attr">       dbPath:</span> <span class="string">/data/mongo</span></div><div class="line"><span class="attr">       journal:</span></div><div class="line"><span class="attr">             enabled:</span> <span class="literal">true</span></div><div class="line"><span class="attr">       engine:</span> <span class="string">mmapv1</span></div><div class="line"><span class="attr">processManagement:</span></div><div class="line"><span class="attr">       fork:</span> <span class="literal">true</span></div><div class="line"><span class="attr">       pidFilePath:</span> <span class="string">/data/mongodb/mongod.pid</span></div><div class="line"><span class="attr">net:</span></div><div class="line"><span class="attr">       port:</span> <span class="number">27017</span></div><div class="line"><span class="attr">       bindIp:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></div><div class="line"><span class="attr">security:</span></div><div class="line"><span class="attr">       authorization:</span> <span class="string">enabled</span></div><div class="line"><span class="attr">operationProfiling:</span></div><div class="line"><span class="attr">       slowOpThresholdMs:</span> <span class="number">40960</span></div></pre></td></tr></table></figure>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Bigdatacountly01.jpeg" alt=""></figure></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">5、修改硬盘block：</div><div class="line">     blockdev --setra 256 /dev/mapper/xvdc--vg-xvdc–lv    <span class="comment">##按照mongo提示操作</span></div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">6、修改nginx配置文件  conf.d/default.conf</div><div class="line">      将127.0.0.1修改为本地私有地址</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">7、重启countly   mongodb  nginx</div><div class="line"></div><div class="line">countly restart</div><div class="line"></div><div class="line">/etc/init.d/mongod restart</div><div class="line"></div><div class="line">service nginx restart</div><div class="line">迁移完毕</div></pre></td></tr></table></figure>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
 		<h1><a href="/2017/06/29/Bigdata-hadoop/Kafka/如何手动更新Kafka中某个Topic的偏移量/">Bigdata-如何手动更新Kafka中某个Topic的偏移量</a></h1>
 	
 	<div class="article__infos">
@@ -488,48 +530,6 @@
 <p><a href="https://github.com/quantifind/KafkaOffsetMonitor" target="_blank" rel="external">KafkaOffsetMonitor</a>：程序一个jar包的形式运行，部署较为方便。只有监控功能，使用起来也较为安全。</p>
 <p>若只需要监控功能，推荐使用KafkaOffsetMonito，若偏重Kafka集群管理，推荐使用Kafka Manager。</p>
 <p>因为都是开源程序，稳定性欠缺。故需先了解清楚目前已存在哪些Bug，多测试一下，避免出现类似于Kafka Web Console的问题。</p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/06/29/Bigdata-hadoop/countly/Bigdata-countly需要迁移/">Bigdata-countly需要迁移</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-06-29</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Big-data-Hadoop/">Big data Hadoop</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Countly/">Countly</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h4 id="官方安装文档：http-resources-count-ly-docs-installing-countly-server"><a href="#官方安装文档：http-resources-count-ly-docs-installing-countly-server" class="headerlink" title="官方安装文档：http://resources.count.ly/docs/installing-countly-server"></a>官方安装文档：<a href="http://resources.count.ly/docs/installing-countly-server" target="_blank" rel="external">http://resources.count.ly/docs/installing-countly-server</a></h4><p>目前<code>countly</code>需要迁移，所需<code>countly</code>版本于官方提供的安装方案有冲突，所以如下安装：</p>
-<p>安装官方<code>countly</code>让其设置所需环境变量及其启动脚本，手动指定安装nojs版本，拷贝原countly文件，具体如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">1、<span class="built_in">cd</span> /data <span class="comment">#countly安装在data目录 我看了安装脚本，是当前在哪个目录，安装文件就在哪个目录</span></div><div class="line">wget -qO- http://c.ly/install | bash</div></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">2、rpm -qa | grep -i nodejs | xargs -I&#123;&#125;  yum remove &#123;&#125; -y</div><div class="line">卸载掉官网安装的最新nodejs 然后新建如下yum源，用于安装旧版所需nodejs，也可以到nodejs官网下载所需nodejs</div><div class="line">cat /etc/yum.repos.d/nodesource-el.repo </div><div class="line">[nodesource]</div><div class="line">name=Node.js Packages <span class="keyword">for</span> Enterprise Linux 7 - <span class="variable">$basearch</span></div><div class="line">baseurl=https://rpm.nodesource.com/pub_5.x/el/7/<span class="variable">$basearch</span></div><div class="line">failovermethod=priority</div><div class="line">enabled=1</div><div class="line">gpgcheck=1</div><div class="line">gpgkey=file:///etc/pki/rpm-gpg/NODESOURCE-GPG-SIGNING-KEY-EL</div><div class="line">[nodesource-source]</div><div class="line">name=Node.js <span class="keyword">for</span> Enterprise Linux 7 - <span class="variable">$basearch</span> - Source</div><div class="line">baseurl=https://rpm.nodesource.com/pub_5.x/el/7/SRPMS</div><div class="line">failovermethod=priority</div><div class="line">enabled=0</div><div class="line">gpgkey=file:///etc/pki/rpm-gpg/NODESOURCE-GPG-SIGNING-KEY-EL</div><div class="line">gpgcheck=1</div></pre></td></tr></table></figure>
-<h3 id="安装老版本所需nodejs"><a href="#安装老版本所需nodejs" class="headerlink" title="安装老版本所需nodejs"></a>安装老版本所需nodejs</h3><figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum <span class="keyword">install</span> nodejs</div></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">3、拷贝源countly文件到/data/countly目录</div><div class="line">修改 /data/countly/api/config.js 和 /data/countly/frontend/express/config.js      </div><div class="line">3001端口和 6001端口监听地址换成 本地私有地址   <span class="comment">#源文件是监听的原来机器的内网地址，不修改的话，服务启动不了。</span></div></pre></td></tr></table></figure>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="number">4</span><span class="string">、拷贝mongo数据目录到/data/mongo目录，修改mongo配置文件.</span></div><div class="line"></div><div class="line"><span class="string">cat</span> <span class="string">/etc/mongod.conf</span></div><div class="line"><span class="attr">systemLog:</span></div><div class="line"><span class="attr">       destination:</span> <span class="string">file</span></div><div class="line"><span class="attr">       logAppend:</span> <span class="literal">true</span></div><div class="line"><span class="attr">       path:</span> <span class="string">/data/mongodb/mongod.log</span></div><div class="line"><span class="attr">storage:</span></div><div class="line"><span class="attr">       dbPath:</span> <span class="string">/data/mongo</span></div><div class="line"><span class="attr">       journal:</span></div><div class="line"><span class="attr">             enabled:</span> <span class="literal">true</span></div><div class="line"><span class="attr">       engine:</span> <span class="string">mmapv1</span></div><div class="line"><span class="attr">processManagement:</span></div><div class="line"><span class="attr">       fork:</span> <span class="literal">true</span></div><div class="line"><span class="attr">       pidFilePath:</span> <span class="string">/data/mongodb/mongod.pid</span></div><div class="line"><span class="attr">net:</span></div><div class="line"><span class="attr">       port:</span> <span class="number">27017</span></div><div class="line"><span class="attr">       bindIp:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></div><div class="line"><span class="attr">security:</span></div><div class="line"><span class="attr">       authorization:</span> <span class="string">enabled</span></div><div class="line"><span class="attr">operationProfiling:</span></div><div class="line"><span class="attr">       slowOpThresholdMs:</span> <span class="number">40960</span></div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Bigdatacountly01.jpeg" alt=""></figure></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">5、修改硬盘block：</div><div class="line">     blockdev --setra 256 /dev/mapper/xvdc--vg-xvdc–lv    <span class="comment">##按照mongo提示操作</span></div></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">6、修改nginx配置文件  conf.d/default.conf</div><div class="line">      将127.0.0.1修改为本地私有地址</div></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">7、重启countly   mongodb  nginx</div><div class="line"></div><div class="line">countly restart</div><div class="line"></div><div class="line">/etc/init.d/mongod restart</div><div class="line"></div><div class="line">service nginx restart</div><div class="line">迁移完毕</div></pre></td></tr></table></figure>
 
 	
 
@@ -684,8 +684,10 @@
 	<div class="footer-content">
 		
 	      <div class="footer__element">
-	<p>Hi there, <br />welcome to my Blog glad you found it. Have a look around, will you?</p>
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
 </div>
+
 
 	    
 	      <div class="footer__element">
