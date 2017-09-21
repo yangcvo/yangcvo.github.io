@@ -45,7 +45,7 @@
 		<span class="article__date">2017-08-11</span><br />
 		
 			<span class="article__category">
-				<a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a>
+				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
 			</span><br />
 		
 		
@@ -58,74 +58,11 @@
 	
 
 	
-		<h2 id="ElasticStack-5-x介绍"><a href="#ElasticStack-5-x介绍" class="headerlink" title="ElasticStack 5.x介绍"></a>ElasticStack 5.x介绍</h2><h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p><img src="https://static-www.elastic.co/cn/assets/blt635d8def9c11a400/hero.svg?q=566" alt="ELK=ElasticSearch + Logstash + Kibana"></p>
+		<h2 id="ElasticStack-5-x介绍"><a href="#ElasticStack-5-x介绍" class="headerlink" title="ElasticStack 5.x介绍"></a>ElasticStack 5.x介绍</h2><h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p><code>ELK=ElasticSearch 官方博客:分布式以及 Elastic</code></p>
+<p><img src="http://jolestar.com/images/elasticsearch/scaling-stories.svg" alt=""></p>
 <p>Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一款开源分布式日志系统，一般说来包括了Elasticsearch、Logstash和Kibana，涵盖了后端日志采集、日志搜索服务和前端数据展示等功能。<br>本文将会对Elastic Stack的安装部署流程进行一系列简单的介绍，并记录下了一些部署过程中遇到的坑及解决方法。</p>
 <p>对于一个软件或互联网公司来说，对计算资源和应用进行监控和告警是非常基础的需求。对于大公司或成熟公司，一个高度定制化的监控系统应该已经存在了很长时间并且非常成熟了。而对于一个初创公司或小公司来说，如何利用现有开源工具快速搭建一套日志监控及分析平台是需要探索的事情。</p>
 		<p><a class="article__read-more-link" href="/2017/08/11/日志分析平台/Elasticsearch/ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述/">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/07/30/日志分析平台/Elasticsearch/研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？/">研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-07-30</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/日志分析平台/">日志分析平台</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Elasticsearch/">Elasticsearch</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<p>ES 现在普遍大公司都已经在使用，有的用来做数据存储，也有做性能监控，也有做日志收集，跟大数据结合做日志分析。<br>今天在家无聊研究官网学习了下Elasticsearch5.0.0 功能新增哪些，个人觉得ES也是现在开源日志分析平台比较火的，从14年开始陆续使用频率不断提升。<br>之前也有了解过Graylog  现在比ES 做数据存储分析 不错的是Graylog 比ES性能好。</p>
-<p>废话不多说了哈哈</p>
-<h3 id="Elasticsearch-5-0-0发布"><a href="#Elasticsearch-5-0-0发布" class="headerlink" title="Elasticsearch 5.0.0发布"></a>Elasticsearch 5.0.0发布</h3><p>2016年10月26日发布 Elasticsearch 5.0.0 今天去下载吧！你知道你想。</p>
-<p><a href="https://www.elastic.co/downloads/elasticsearch" target="_blank" rel="external">下载Elasticsearch 5.0.0</a><br><a href="https://www.elastic.co/guide/en/elasticsearch/reference/5.0/release-notes-5.0.0.html" target="_blank" rel="external">Elasticsearch 5.0.0发行说明</a><br><a href="https://www.elastic.co/guide/en/elasticsearch/reference/5.0/release-notes-5.0.0.html" target="_blank" rel="external">弹性搜索5.0突破变化</a></p>
-<p>Elasticsearch 5.0.0对大家有所帮助 这是有史以来最快，最安全，最具弹性，最简单易用的Elasticsearch版本，它具有一系列增强功能和新功能。</p>
-<ul>
-<li>索引性能</li>
-<li>取食节点</li>
-<li>无痛脚本</li>
-<li>新的数据结构</li>
-<li>搜索和聚合</li>
-<li>用户友好</li>
-<li>弹性</li>
-<li>Java REST客户端</li>
-<li>迁移助手</li>
-</ul>
-<blockquote>
-<p>下面从官网上面翻译得来的：</p>
-</blockquote>
-<h3 id="索引性能"><a href="#索引性能" class="headerlink" title="索引性能"></a>索引性能</h3><p>由于包括更好的数字数据结构（参见新数据结构）的一些更改，索引吞吐量在5.0.0中有了显着改善，锁中的争用减少，阻止对同一文档的并发更新，以及减少事务日志时的锁定需求。异步translog fsyncing将特别有利于旋转磁盘的用户，而依赖Elasticsearch自动生成文档ID时，仅追加用例（基于思考时间的事件）具有很大的吞吐量提高。对实时文档GET的支持的内部变化意味着索引缓冲区可用的内存更多，垃圾收集时间少得多。</p>
-<p>根据您的用例，您可能会看到在提高吞吐量的25％至80％之间。</p>
-<h3 id="Ingest节点"><a href="#Ingest节点" class="headerlink" title="Ingest节点"></a>Ingest节点</h3><p>　　向Elasticsearch添加数据更简单了。Logstash是一个强大的工具，而一些较小的用户只需要过滤器，不需要它所提供的众多路由选项。因此，Elastic将一些最流行的Logstash过滤器（如grok、split）直接在Elasticsearch中实现为处理器。多个处理器可以组合成一个管道，在索引时应用到文档上。</p>
-<h3 id="Painless脚本"><a href="#Painless脚本" class="headerlink" title="Painless脚本"></a>Painless脚本</h3><p>　　Elasticsearch中很多地方用到了脚本，而出于安全考虑，脚本在默认情况下是禁用的，这令人相当失望。为此，Elastic开发了一种新的脚本语言Painless。该语言更快、更安全，而且默认是启用的。不仅如此，它的执行速度是Groovy的4倍，而且正在变得更快。Painless已经成为默认脚本语言，而Groovy、Javascript和Python都遭到弃用。要了解有关这门新语言的更多信息，请点击这里。</p>
-<h3 id="新数据结构"><a href="#新数据结构" class="headerlink" title="新数据结构"></a>新数据结构</h3><p>　　Lucene 6带来了一个新的Points 数据结构K-D树，用于存储数值型和地理位置字段，彻底改变了数值型值的索引和搜索方式。基准测试表明，Points将查询速度提升了36%，将索引速度提升了71%，而占用的磁盘和内存空间分别减少了66%和85%（参见“在5.0中搜索数值”）。</p>
-<h4 id="搜索和聚合"><a href="#搜索和聚合" class="headerlink" title="搜索和聚合"></a>搜索和聚合</h4><p>　　借助即时聚合，Kibana图表生成速度显著提升。Elastic用一年的时间对搜索API进行了重构，Elasticsearch现在可以更巧妙地执行范围查询，只针对已经发生变化的索引重新计算聚合，而不是针对每个查询从头开始重新计算。在搜索方面，默认的相关性计算已经由TF/IDF换成了更先进的BM25。补全建议程序经过了完全重写，将已删除的文档也考虑了进来。</p>
-<h3 id="更友好"><a href="#更友好" class="headerlink" title="更友好"></a>更友好</h3><p>　　Elasticsearch 5.0更安全、更易用。他们采用了“尽早提示”的方法。如果出现了问题，则新版本会及早给出提示。例如，Elasticsearch 5.0会严格验证设置。如果它不能识别某项设置的值，就会给出提示和建议。不仅如此，集群和索引设置现在可以通过null进行解除。此外，还有其他的一些改进，例如，rollover和shrink API启用了一种新的模式来管理基于时间的索引，引入新的cluster-allocation-explain API，简化索引创建。</p>
-<h3 id="弹性"><a href="#弹性" class="headerlink" title="弹性"></a>弹性</h3><p>　　Elasticsearch分布式模型的每一部分都被分解、重构和简化，提升了可靠性。集群状态更新现在会等待集群中的所有节点确认。如果一个“复制片（replica shard）”被“主片（primary）”标记为失败，则主片会等待“主节点（master）”的响应。索引现在使用数据路径中的UUID，而不是索引名，避免了命名冲突。另外，Elasticsearch现在进行启动检查，确保系统配置没有问题。配置比较麻烦，但如果只是试用，开发人员也可以选择localhost-only模式，避免繁琐的配置。另外，新版本还增加了断路器及其他一些软限制，限制请求使用的内存大小，保护集群免受恶意用户攻击。<br>　　此外，该版本还提供了一个底层的Java REST/HTTP客户端，可以用于监听、日志记录、请求轮询、故障节点重试等。它使用Java 7，将依赖降到了最低，比Transport客户端的依赖冲突少。而在基准测试中，它的性能并不输于Transport客户端。不过，这是一个底层客户端，目前还没有提供任何查询构建器或辅助器。它的输入参数和输出结果都是JSON。<br>　　需要注意的是，该版本引入了许多破坏性更改，好在他们提供了一个迁移辅助插件，可以帮助开发人员从Elasticsearch 2.3.x/2.4.x迁移到Elasticsearch 5.0。如果是从更早的Elasticsearch版本向最新的5.0版本迁移，则请查阅升级文档。</p>
-<h3 id="Java-REST客户端"><a href="#Java-REST客户端" class="headerlink" title="Java REST客户端"></a>Java REST客户端</h3><p>经过多年的等待，我们终于发布了一个低级的Java HTTP / REST客户端。它提供了一个简单的HTTP客户端，具有最少的依赖关系，可以处理嗅探，记录，循环请求，并重试节点故障。它使用的REST层历史上比Java API更稳定，这意味着它可以跨越升级使用，甚至可能在主要版本之间进行升级。它与Java 7一起工作，并且具有最小的依赖性，导致比传输客户端更少的依赖冲突。它只是HTTP，因此可以像所有其他HTTP客户端一样进行防火墙/代理。在我们的基准测试中，Java REST客户端 与Transport客户端的功能类似。</p>
-<p>请注意，这是一个低级客户端。在这个阶段，我们不提供任何可以在IDE中自动完成的查询构建器或帮助器。它是JSON-in，JSON-out，由你来构建JSON。开发不会停止在这里 - 我们将添加一个API，它将帮助您构建查询并解析响应。您可以按照问题＃19055中的更改进行操作。</p>
-<h3 id="迁移助手"><a href="#迁移助手" class="headerlink" title="迁移助手"></a>迁移助手</h3><p>Elasticsearch Migration Helper是一个网站插件，可以帮助从<code>Elasticsearch 2.3.x / 2.4.x</code>迁移到Elasticsearch 5.0。它有三个工具：</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">集群检查</div><div class="line">对集群，节点和索引执行一系列检查，并提醒您升级之前需要解决的任何已知问题。</div><div class="line"><span class="selector-tag">Reindex</span>助手</div><div class="line">在<span class="selector-tag">v2</span><span class="selector-class">.0</span><span class="selector-class">.0</span>之前创建的索引需要重新编号，才能在<span class="selector-tag">Elasticsearch</span> 5<span class="selector-class">.x</span>中使用。<span class="selector-tag">reindex</span>帮助器点击一个按钮升级旧索引。</div><div class="line">弃用日志</div><div class="line"><span class="selector-tag">Elasticsearch</span>附带了一个弃用记录器，每当使用不推荐使用的功能时，它将记录消息。此工具可启用或禁用群集上的弃用日志记录。</div></pre></td></tr></table></figure>
-<p>官网推荐迁移文档：Instruction for <a href="(https://github.com/elastic/elasticsearch-migration/blob/2.x/README.asciidoc">install the Elasticsearch migration helper. </a>)</p>
-<h3 id="Elasticsearch-5-0-0-安装需要哪些要求。"><a href="#Elasticsearch-5-0-0-安装需要哪些要求。" class="headerlink" title="Elasticsearch 5.0.0 安装需要哪些要求。"></a>Elasticsearch 5.0.0 安装需要哪些要求。</h3><p>Elasticsearch需要依赖Java JDK1.8</p>
-
 	
 
 	
@@ -156,7 +93,8 @@
 	
 
 	
-		<h3 id="Kafka-Broker个数决定因素"><a href="#Kafka-Broker个数决定因素" class="headerlink" title="Kafka Broker个数决定因素"></a>Kafka Broker个数决定因素</h3><p>　　磁盘容量：首先考虑的是所需保存的消息所占用的总磁盘容量和每个broker所能提供的磁盘空间。如果Kafka集群需要保留 10 TB数据，单个broker能存储 2 TB，那么我们需要的最小Kafka集群大小5个broker。此外，如果启用副本参数，则对应的存储空间需至少增加一倍（取决于副本参数）。这意味着对应的Kafka集群至少需要 10 个broker。</p>
+		<p><figure class="figure"><img src="https://cdn-images-1.medium.com/max/640/1*kV768OHeCILNIYVCNPUyuQ.jpeg" alt=""></figure></p>
+<h3 id="Kafka-Broker个数决定因素"><a href="#Kafka-Broker个数决定因素" class="headerlink" title="Kafka Broker个数决定因素"></a>Kafka Broker个数决定因素</h3><p>　　磁盘容量：首先考虑的是所需保存的消息所占用的总磁盘容量和每个broker所能提供的磁盘空间。如果Kafka集群需要保留 10 TB数据，单个broker能存储 2 TB，那么我们需要的最小Kafka集群大小5个broker。此外，如果启用副本参数，则对应的存储空间需至少增加一倍（取决于副本参数）。这意味着对应的Kafka集群至少需要 10 个broker。</p>
 <p>　　请求量：另外一个要考虑的是Kafka集群处理请求的能力。这主要取决于对Kafka client请求的网络处理能力，特别是，有多个consumer或者网路流量不稳定。如果，高峰时刻，单个broker的网络流量达到80%，这时是撑不住两个consumer的，除非有两个broker。再者，如果启用了副本参数，则需要考虑副本这个额外的consumer。也可以扩展多个broker来减少磁盘的吞吐量和系统内存。</p>
 <h3 id="Kafka集群稳定"><a href="#Kafka集群稳定" class="headerlink" title="Kafka集群稳定"></a>Kafka集群稳定</h3><p>GC调优<br>　　调GC是门手艺活，幸亏Java 7引进了G1 垃圾回收，使得GC调优变的没那么难。G1主要有两个配置选项来调优：MaxGCPauseMillis 和 InitiatingHeapOccupancyPercent，具体参数设置可以参考Google，这里不赘述。</p>
 <p>　　Kafka broker能够有效的利用堆内存和对象回收，所以这些值可以调小点。对于 64Gb内存，Kafka运行堆内存5Gb，MaxGCPauseMillis 和 InitiatingHeapOccupancyPercent 分别设置为 20毫秒和 35。Kafka的启动脚本使用的不是 G1回收，需要在环境变量中加入。</p>
@@ -245,41 +183,6 @@
 
 	<article>
 	
-		<h1><a href="/2017/06/29/Bigdata-hadoop/Kafka/Kafka-node模块实现调用js发送数据/">Bigdata-Kafka-node模块实现调用js发送数据</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-06-29</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/大数据/">大数据</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a> <a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<p>mongodb写到kafka 指定topic消费。为了保证数据稳定可靠性。<br>配合大数据在countly 使用开源<code>Kafka-node</code>是一个Node.js客户端 写js程序让countly三台集群分别数据到kafka 做新的topic主题备份。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install kafka-node</div></pre></td></tr></table></figure>
-<p>进入kafka-node目录: vim kafka_test.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">var kafka = require(<span class="string">'kafka-node'</span>),</div><div class="line">HighLevelProducer = kafka.HighLevelProducer,</div><div class="line">    //Producer = kafka.Producer,</div><div class="line">    client = new kafka.Client(<span class="string">'169.44.62.139:2281,169.44.59.138:2281,169.44.62.137:2281'</span>),</div><div class="line">    //producer = new Producer(client);</div><div class="line">producer = new HighLevelProducer(client);</div><div class="line"></div><div class="line">console.log(<span class="string">'连接kafka中'</span>);</div><div class="line"></div><div class="line">var argv = &#123;</div><div class="line">    topic: <span class="string">"test1"</span></div><div class="line">&#125;;</div><div class="line">var topic = argv.topic || <span class="string">'test1'</span>;</div><div class="line">var p = argv.p || 0;</div><div class="line">var a = argv.a || 0;</div><div class="line">var producer = new HighLevelProducer(client, &#123;</div><div class="line">    requireAcks: 1,</div><div class="line">    partitionerType: 3</div><div class="line">&#125;);</div><div class="line"></div><div class="line">console.log(producer);</div><div class="line"></div><div class="line">producer.on(<span class="string">'ready'</span>, <span class="function"><span class="title">function</span></span>() &#123;</div><div class="line">    var args = &#123;</div><div class="line">        appid: <span class="string">'222-wx238c28839a133d0e'</span>,</div><div class="line">        createTime: <span class="string">'222-ddd'</span>,</div><div class="line">        toUserName: <span class="string">'222-wx238c28839a133d0e'</span>,</div><div class="line">        fromUserName: <span class="string">'222-wx238c28839a133d0e'</span></div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    producer.send([&#123;</div><div class="line">        topic: topic,</div><div class="line">        partition: p,</div><div class="line">        messages: [JSON.stringify(args)],</div><div class="line">        attributes: a</div><div class="line">    &#125;], <span class="keyword">function</span>(err, result) &#123;</div><div class="line">        console.log(err || result);</div><div class="line">        process.exit();</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    console.log(args);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<h4 id="官网地址：https-www-npmjs-com-package-kafka-node-install-kafka"><a href="#官网地址：https-www-npmjs-com-package-kafka-node-install-kafka" class="headerlink" title="官网地址：https://www.npmjs.com/package/kafka-node#install-kafka"></a>官网地址：<a href="https://www.npmjs.com/package/kafka-node#install-kafka" target="_blank" rel="external">https://www.npmjs.com/package/kafka-node#install-kafka</a></h4>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
 		<h1><a href="/2017/06/29/Bigdata-hadoop/Kafka/Bigdata-Kafka三款监控工具比较/">Bigdata-Kafka三款监控工具比较</a></h1>
 	
 	<div class="article__infos">
@@ -350,6 +253,44 @@
 
 	<article>
 	
+		<h1><a href="/2017/06/29/Bigdata-hadoop/Kafka/如何手动更新Kafka中某个Topic的偏移量/">Bigdata-如何手动更新Kafka中某个Topic的偏移量</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-06-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a> <a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h1 id="如何手动更新Kafka中某个Topic的偏移量"><a href="#如何手动更新Kafka中某个Topic的偏移量" class="headerlink" title="如何手动更新Kafka中某个Topic的偏移量"></a>如何手动更新Kafka中某个Topic的偏移量</h1><p>　　我们都知道，Kafka topic的偏移量一般都是存储在Zookeeper中，具体的路径为<code>/consumers/[groupId]/offsets/[topic]/[partitionId]</code>，比如iteblog主题分区10的偏移量获取如下：<br>　　<br>　　在有些场景下，这个工具不满足我们的需求，我们需要的是能够手动设置分区的偏移量为任何有意义的值，而不仅仅是earliest或者latest。那咋办？</p>
+<p>　　我们都知道，Kafka topic的偏移量一般都是存储在Zookeeper中，具体的路径为<code>/consumers/[groupId]/offsets/[topic]/[partitionId]</code>，比如<code>mongotail_lz4</code>主题分区10的偏移量获取如下：
+　　</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 2]  get /consumers/ibm_event/offsets/mongotail_lz4/10</div><div class="line">293894</div><div class="line">cZxid = 0x6000011f3</div><div class="line">ctime = Wed Jul 26 17:57:27 CST 2017</div><div class="line">mZxid = 0x6000018c9</div><div class="line">mtime = Wed Jul 26 18:18:27 CST 2017</div><div class="line">pZxid = 0x6000011f3</div><div class="line">cversion = 0</div><div class="line">dataVersion = 20</div><div class="line">aclVersion = 0</div><div class="line">ephemeralOwner = 0x0</div><div class="line">dataLength = 6</div><div class="line">numChildren = 0</div></pre></td></tr></table></figure>
+<p>所以，我们可以通过set命令来设置某个分区的偏移量，如下；</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[zk: 127.0.0.1:2281(CONNECT get /consumers/ibm_event/offsets/mongotail_lz4/10 0 </div><div class="line">0</div><div class="line">cZxid = 0x6000011f3</div><div class="line">ctime = Wed Jul 26 17:57:27 CST 2017</div><div class="line">mZxid = 0x60000204c</div><div class="line">mtime = Wed Jul 26 18:37:21 CST 2017</div><div class="line">pZxid = 0x6000011f3</div><div class="line">cversion = 0</div><div class="line">dataVersion = 21</div><div class="line">aclVersion = 0</div><div class="line">ephemeralOwner = 0x0</div><div class="line">dataLength = 1</div><div class="line">numChildren = 0</div></pre></td></tr></table></figure>
+<p>12个分区分别更新过去。</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
 		<h1><a href="/2017/06/29/Bigdata-hadoop/countly/Bigdata-countly需要迁移/">Bigdata-countly需要迁移</a></h1>
 	
 	<div class="article__infos">
@@ -392,7 +333,7 @@
 
 	<article>
 	
-		<h1><a href="/2017/06/29/Bigdata-hadoop/Kafka/如何手动更新Kafka中某个Topic的偏移量/">Bigdata-如何手动更新Kafka中某个Topic的偏移量</a></h1>
+		<h1><a href="/2017/06/29/Bigdata-hadoop/Kafka/Kafka-node模块实现调用js发送数据/">Bigdata-Kafka-node模块实现调用js发送数据</a></h1>
 	
 	<div class="article__infos">
 		<span class="article__date">2017-06-29</span><br />
@@ -411,74 +352,11 @@
 	
 
 	
-		<h1 id="如何手动更新Kafka中某个Topic的偏移量"><a href="#如何手动更新Kafka中某个Topic的偏移量" class="headerlink" title="如何手动更新Kafka中某个Topic的偏移量"></a>如何手动更新Kafka中某个Topic的偏移量</h1><p>　　我们都知道，Kafka topic的偏移量一般都是存储在Zookeeper中，具体的路径为<code>/consumers/[groupId]/offsets/[topic]/[partitionId]</code>，比如iteblog主题分区10的偏移量获取如下：<br>　　<br>　　在有些场景下，这个工具不满足我们的需求，我们需要的是能够手动设置分区的偏移量为任何有意义的值，而不仅仅是earliest或者latest。那咋办？</p>
-<p>　　我们都知道，Kafka topic的偏移量一般都是存储在Zookeeper中，具体的路径为<code>/consumers/[groupId]/offsets/[topic]/[partitionId]</code>，比如<code>mongotail_lz4</code>主题分区10的偏移量获取如下：
-　　</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 2]  get /consumers/ibm_event/offsets/mongotail_lz4/10</div><div class="line">293894</div><div class="line">cZxid = 0x6000011f3</div><div class="line">ctime = Wed Jul 26 17:57:27 CST 2017</div><div class="line">mZxid = 0x6000018c9</div><div class="line">mtime = Wed Jul 26 18:18:27 CST 2017</div><div class="line">pZxid = 0x6000011f3</div><div class="line">cversion = 0</div><div class="line">dataVersion = 20</div><div class="line">aclVersion = 0</div><div class="line">ephemeralOwner = 0x0</div><div class="line">dataLength = 6</div><div class="line">numChildren = 0</div></pre></td></tr></table></figure>
-<p>所以，我们可以通过set命令来设置某个分区的偏移量，如下；</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[zk: 127.0.0.1:2281(CONNECT get /consumers/ibm_event/offsets/mongotail_lz4/10 0 </div><div class="line">0</div><div class="line">cZxid = 0x6000011f3</div><div class="line">ctime = Wed Jul 26 17:57:27 CST 2017</div><div class="line">mZxid = 0x60000204c</div><div class="line">mtime = Wed Jul 26 18:37:21 CST 2017</div><div class="line">pZxid = 0x6000011f3</div><div class="line">cversion = 0</div><div class="line">dataVersion = 21</div><div class="line">aclVersion = 0</div><div class="line">ephemeralOwner = 0x0</div><div class="line">dataLength = 1</div><div class="line">numChildren = 0</div></pre></td></tr></table></figure>
-<p>12个分区分别更新过去。</p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/06/28/Bigdata-hadoop/Kafka/Bigdata-开源的Kafka集群管理器(kafka-web-console)/">Bigdata-开源的Kafka集群管理器(kafka-web-console)</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-06-28</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/大数据/">大数据</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>源码的地址在:<a href="https://github.com/claudemamo/kafka-web-console" target="_blank" rel="external">kafka-web-console</a></p>
-<p><code>Kafka Web Console</code>也是用Scala语言编写的<code>Java web</code>程序用于监控<code>Apache Kafka</code>。这个系统的功能和<code>KafkaOffsetMonitor</code>很类似，但是我们从源码角度来看，这款系统实现比<code>KafkaOffsetMonitor</code>要复杂很多，而且编译配置比<code>KafkaOffsetMonitor</code>较麻烦。</p>
-<p>　要想运行这套系统我们需要的先行条件为：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Play Framework 2.2.x</div><div class="line">Apache Kafka 0.8.x</div><div class="line">Zookeeper 3.3.3 or 3.3.4</div></pre></td></tr></table></figure>
-<h3 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h3><p>同样，我们从<code>https://github.com/claudemamo/kafka-web-console</code>上面将源码下载下来，然后用<code>sbt</code>进行编译，在编译前我们需要做如下的修改：</p>
-<p>Kafka Web控制台需要一个关系数据库。默认情况下，服务器连接到嵌入式H2数据库，不需要数据库安装或配置。请咨询Play！的文档以指定控制台的数据库。支持以下数据库：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git <span class="built_in">clone</span> https://github.com/claudemamo/kafka-web-console.git</div></pre></td></tr></table></figure>
-<ul>
-<li>H2（默认）</li>
-<li>PostgreSql</li>
-<li>Oracle</li>
-<li>DB2</li>
-<li>MySQL</li>
-<li>Apache Derby</li>
-<li>Microsoft SQL Server</li>
-</ul>
-<p>为了方便，我们可以使用Mysql数据库，只要做如下修改即可，找到 <code>conf/application.conf</code>文件，并修改如下</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">将这个</div><div class="line">db.default.driver=org.h2.Driver</div><div class="line">db.default.url=<span class="string">"jdbc:h2:file:play"</span></div><div class="line"><span class="comment"># db.default.user=sa</span></div><div class="line"><span class="comment"># db.default.password=""</span></div><div class="line"> </div><div class="line"> </div><div class="line">修改成</div><div class="line">db.default.driver=com.mysql.jdbc.Driver</div><div class="line">db.default.url=<span class="string">"jdbc:mysql://localhost:3306/kafkamonitor"</span></div><div class="line">db.default.user=iteblog</div><div class="line">db.default.pass=wyp</div></pre></td></tr></table></figure>
-<p>我们还需要修改build.sbt，加入对Mysql的依赖:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="string">"mysql"</span> % <span class="string">"mysql-connector-java"</span> % <span class="string">"5.1.31"</span></div></pre></td></tr></table></figure>
-<p>　2、执行<code>conf/evolutions/default/bak</code>目录下面的<code>1.sql、2.sql和3.sql</code>三个文件。需要注意的是，这三个sql文件不能直接运行，有语法错误，需要做一些修改。<br>上面的注意事项弄完之后，我们就可以编译下载过来的源码：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> sbt package</span></div></pre></td></tr></table></figure>
-<p>编译的过程比较慢，有些依赖包下载速度非常地慢，请耐心等待。<br>　在编译的过程中，可能会出现有些依赖包无法下载，如下错误：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">[warn] module not found: com.typesafe.play<span class="comment">#sbt-plugin;2.2.1</span></div><div class="line">[warn] ==== typesafe-ivy-releases: tried</div><div class="line">[warn] http://repo.typesafe.com/typesafe/ivy-releases/</div><div class="line">com.typesafe.play/sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== sbt-plugin-releases: tried</div><div class="line">[warn] http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/</div><div class="line">com.typesafe.play/sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== <span class="built_in">local</span>: tried</div><div class="line">[warn] /home/iteblog/.ivy2/<span class="built_in">local</span>/com.typesafe.play/</div><div class="line">sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== Typesafe repository: tried</div><div class="line">[warn] http://repo.typesafe.com/typesafe/releases/com/</div><div class="line">typesafe/play/sbt-plugin_2.9.2_0.12/2.2.1/sbt-plugin-2.2.1.pom</div><div class="line">[warn] ==== public: tried</div><div class="line">[warn] http://repo1.maven.org/maven2/com/typesafe/play/</div><div class="line">sbt-plugin_2.9.2_0.12/2.2.1/sbt-plugin-2.2.1.pom</div><div class="line">[warn] ::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">==== <span class="built_in">local</span>: tried</div><div class="line"> </div><div class="line">/home/iteblog/.ivy2/<span class="built_in">local</span>/org.scala-sbt/collections/0.13.0/jars/collections.jar</div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">:: FAILED DOWNLOADS ::</div><div class="line"> </div><div class="line">:: ^ see resolution messages <span class="keyword">for</span> details ^ ::</div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">:: org.scala-sbt<span class="comment">#collections;0.13.0!collections.jar</span></div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div></pre></td></tr></table></figure>
-<p>我们可以手动地下载相关依赖，并放到类似<code>/home/iteblog/.ivy2/local/org.scala-sbt/collections/0.13.0/jars/</code>目录下面。然后再编译就可以了。</p>
-<p>　　最后，我们可以通过下面命令启动<code>Kafka Web Console</code>监控系统：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> sbt run</span></div></pre></td></tr></table></figure>
-<p>并可以在<a href="http://localhost:9000" target="_blank" rel="external">http://localhost:9000</a> 查看下面是一张效果图</p>
-<p><figure class="figure"><img src="https://www.iteblog.com/pic/topics.png" alt=""></figure></p>
-
+		<p>mongodb写到kafka 指定topic消费。为了保证数据稳定可靠性。<br>配合大数据在countly 使用开源<code>Kafka-node</code>是一个Node.js客户端 写js程序让countly三台集群分别数据到kafka 做新的topic主题备份。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install kafka-node</div></pre></td></tr></table></figure>
+<p>进入kafka-node目录: vim kafka_test.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">var kafka = require(<span class="string">'kafka-node'</span>),</div><div class="line">HighLevelProducer = kafka.HighLevelProducer,</div><div class="line">    //Producer = kafka.Producer,</div><div class="line">    client = new kafka.Client(<span class="string">'169.44.62.139:2281,169.44.59.138:2281,169.44.62.137:2281'</span>),</div><div class="line">    //producer = new Producer(client);</div><div class="line">producer = new HighLevelProducer(client);</div><div class="line"></div><div class="line">console.log(<span class="string">'连接kafka中'</span>);</div><div class="line"></div><div class="line">var argv = &#123;</div><div class="line">    topic: <span class="string">"test1"</span></div><div class="line">&#125;;</div><div class="line">var topic = argv.topic || <span class="string">'test1'</span>;</div><div class="line">var p = argv.p || 0;</div><div class="line">var a = argv.a || 0;</div><div class="line">var producer = new HighLevelProducer(client, &#123;</div><div class="line">    requireAcks: 1,</div><div class="line">    partitionerType: 3</div><div class="line">&#125;);</div><div class="line"></div><div class="line">console.log(producer);</div><div class="line"></div><div class="line">producer.on(<span class="string">'ready'</span>, <span class="function"><span class="title">function</span></span>() &#123;</div><div class="line">    var args = &#123;</div><div class="line">        appid: <span class="string">'222-wx238c28839a133d0e'</span>,</div><div class="line">        createTime: <span class="string">'222-ddd'</span>,</div><div class="line">        toUserName: <span class="string">'222-wx238c28839a133d0e'</span>,</div><div class="line">        fromUserName: <span class="string">'222-wx238c28839a133d0e'</span></div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    producer.send([&#123;</div><div class="line">        topic: topic,</div><div class="line">        partition: p,</div><div class="line">        messages: [JSON.stringify(args)],</div><div class="line">        attributes: a</div><div class="line">    &#125;], <span class="keyword">function</span>(err, result) &#123;</div><div class="line">        console.log(err || result);</div><div class="line">        process.exit();</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    console.log(args);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h4 id="官网地址：https-www-npmjs-com-package-kafka-node-install-kafka"><a href="#官网地址：https-www-npmjs-com-package-kafka-node-install-kafka" class="headerlink" title="官网地址：https://www.npmjs.com/package/kafka-node#install-kafka"></a>官网地址：<a href="https://www.npmjs.com/package/kafka-node#install-kafka" target="_blank" rel="external">https://www.npmjs.com/package/kafka-node#install-kafka</a></h4>
 	
 
 	
@@ -551,6 +429,141 @@
 <p><figure class="figure"><img src="media/15014726361909.jpg" alt=""></figure></p>
 <p><figure class="figure"><img src="media/15014727525618.jpg" alt=""></figure></p>
 <p><figure class="figure"><img src="media/15014727932029.jpg" alt=""></figure></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/06/28/Bigdata-hadoop/Kafka/Bigdata-开源的Kafka集群管理器(kafka-web-console)/">Bigdata-开源的Kafka集群管理器(kafka-web-console)</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-06-28</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>源码的地址在:<a href="https://github.com/claudemamo/kafka-web-console" target="_blank" rel="external">kafka-web-console</a></p>
+<p><code>Kafka Web Console</code>也是用Scala语言编写的<code>Java web</code>程序用于监控<code>Apache Kafka</code>。这个系统的功能和<code>KafkaOffsetMonitor</code>很类似，但是我们从源码角度来看，这款系统实现比<code>KafkaOffsetMonitor</code>要复杂很多，而且编译配置比<code>KafkaOffsetMonitor</code>较麻烦。</p>
+<p>　要想运行这套系统我们需要的先行条件为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Play Framework 2.2.x</div><div class="line">Apache Kafka 0.8.x</div><div class="line">Zookeeper 3.3.3 or 3.3.4</div></pre></td></tr></table></figure>
+<h3 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h3><p>同样，我们从<code>https://github.com/claudemamo/kafka-web-console</code>上面将源码下载下来，然后用<code>sbt</code>进行编译，在编译前我们需要做如下的修改：</p>
+<p>Kafka Web控制台需要一个关系数据库。默认情况下，服务器连接到嵌入式H2数据库，不需要数据库安装或配置。请咨询Play！的文档以指定控制台的数据库。支持以下数据库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git <span class="built_in">clone</span> https://github.com/claudemamo/kafka-web-console.git</div></pre></td></tr></table></figure>
+<ul>
+<li>H2（默认）</li>
+<li>PostgreSql</li>
+<li>Oracle</li>
+<li>DB2</li>
+<li>MySQL</li>
+<li>Apache Derby</li>
+<li>Microsoft SQL Server</li>
+</ul>
+<p>为了方便，我们可以使用Mysql数据库，只要做如下修改即可，找到 <code>conf/application.conf</code>文件，并修改如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">将这个</div><div class="line">db.default.driver=org.h2.Driver</div><div class="line">db.default.url=<span class="string">"jdbc:h2:file:play"</span></div><div class="line"><span class="comment"># db.default.user=sa</span></div><div class="line"><span class="comment"># db.default.password=""</span></div><div class="line"> </div><div class="line"> </div><div class="line">修改成</div><div class="line">db.default.driver=com.mysql.jdbc.Driver</div><div class="line">db.default.url=<span class="string">"jdbc:mysql://localhost:3306/kafkamonitor"</span></div><div class="line">db.default.user=iteblog</div><div class="line">db.default.pass=wyp</div></pre></td></tr></table></figure>
+<p>我们还需要修改build.sbt，加入对Mysql的依赖:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="string">"mysql"</span> % <span class="string">"mysql-connector-java"</span> % <span class="string">"5.1.31"</span></div></pre></td></tr></table></figure>
+<p>　2、执行<code>conf/evolutions/default/bak</code>目录下面的<code>1.sql、2.sql和3.sql</code>三个文件。需要注意的是，这三个sql文件不能直接运行，有语法错误，需要做一些修改。<br>上面的注意事项弄完之后，我们就可以编译下载过来的源码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> sbt package</span></div></pre></td></tr></table></figure>
+<p>编译的过程比较慢，有些依赖包下载速度非常地慢，请耐心等待。<br>　在编译的过程中，可能会出现有些依赖包无法下载，如下错误：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">[warn] module not found: com.typesafe.play<span class="comment">#sbt-plugin;2.2.1</span></div><div class="line">[warn] ==== typesafe-ivy-releases: tried</div><div class="line">[warn] http://repo.typesafe.com/typesafe/ivy-releases/</div><div class="line">com.typesafe.play/sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== sbt-plugin-releases: tried</div><div class="line">[warn] http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/</div><div class="line">com.typesafe.play/sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== <span class="built_in">local</span>: tried</div><div class="line">[warn] /home/iteblog/.ivy2/<span class="built_in">local</span>/com.typesafe.play/</div><div class="line">sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== Typesafe repository: tried</div><div class="line">[warn] http://repo.typesafe.com/typesafe/releases/com/</div><div class="line">typesafe/play/sbt-plugin_2.9.2_0.12/2.2.1/sbt-plugin-2.2.1.pom</div><div class="line">[warn] ==== public: tried</div><div class="line">[warn] http://repo1.maven.org/maven2/com/typesafe/play/</div><div class="line">sbt-plugin_2.9.2_0.12/2.2.1/sbt-plugin-2.2.1.pom</div><div class="line">[warn] ::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">==== <span class="built_in">local</span>: tried</div><div class="line"> </div><div class="line">/home/iteblog/.ivy2/<span class="built_in">local</span>/org.scala-sbt/collections/0.13.0/jars/collections.jar</div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">:: FAILED DOWNLOADS ::</div><div class="line"> </div><div class="line">:: ^ see resolution messages <span class="keyword">for</span> details ^ ::</div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">:: org.scala-sbt<span class="comment">#collections;0.13.0!collections.jar</span></div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div></pre></td></tr></table></figure>
+<p>我们可以手动地下载相关依赖，并放到类似<code>/home/iteblog/.ivy2/local/org.scala-sbt/collections/0.13.0/jars/</code>目录下面。然后再编译就可以了。</p>
+<p>　　最后，我们可以通过下面命令启动<code>Kafka Web Console</code>监控系统：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> sbt run</span></div></pre></td></tr></table></figure>
+<p>并可以在<a href="http://localhost:9000" target="_blank" rel="external">http://localhost:9000</a> 查看下面是一张效果图</p>
+<p><figure class="figure"><img src="https://www.iteblog.com/pic/topics.png" alt=""></figure></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/06/01/Bigdata-hadoop/Zabbix监控Kafka集群 Brokers服务/">Zabbix监控Kafka集群 Brokers服务</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-06-01</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Kafka/">Kafka</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a> <a class="article__tag-link" href="/tags/Zabbix/">Zabbix</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="Zabbix监控Kafka集群-Brokers服务"><a href="#Zabbix监控Kafka集群-Brokers服务" class="headerlink" title="Zabbix监控Kafka集群 Brokers服务"></a>Zabbix监控Kafka集群 Brokers服务</h2><h4 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h4><p>公司让我处理Hadoop及相关服务监控、报警这里主要讲kafka集群服务。这里我也看了几篇kafka相关文章，好文贴出来：</p>
+<ul>
+<li><a href="http://www.infoq.com/cn/articles/kafka-analysis-part-1" target="_blank" rel="external">infoq kafka 入门了解</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-kafka/index.html" target="_blank" rel="external">kafka 工作原理介绍</a></li>
+</ul>
+<p>在我们公司主要Kafka 的几个特性非常满足我们的需求：可扩展性、数据分区、低延迟、处理大量不同消费者的能力。</p>
+<p>而这里我想帮忙BI团队实现Kafka全面监控。分两点：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">1. 监控Kafka Brokers服务</div><div class="line">2. 监控Kafka Lag堆积数</div></pre></td></tr></table></figure>
+<p>对于Kafka的监控，已经有现成的开源软件了，在我们公司内部也使用了一段时间，有两种方案。我们公司用第三种方案。<br>一般都会选择两个开源的工具：KafkaOffsetMonitor和kafka-web-console，这两款我都有用过.</p>
+<ul>
+<li>Kafka三款监控工具比较</li>
+</ul>
+<p>目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1、Kafka Web Conslole</div><div class="line">2、Kafka Manager</div><div class="line">3、KafkaOffsetMonitor</div></pre></td></tr></table></figure>
+<p><a href="https://github.com/quantifind/KafkaOffsetMonitor" target="_blank" rel="external">KafkaOffsetMonitor</a>：最大的好处就是配置简单，只需要配个zookeeper的地址就能用了，坑爹的地方就是不能自动刷新，手动刷新时耗时较长，而且有时候都刷不出来，另外就是图像用了一段时间就完全显示不了了，不知道大家是不是这样。</p>
+<p><a href="https://github.com/claudemamo/kafka-web-console" target="_blank" rel="external">kafka-web-console</a>：相比与前者，数据是落地的，因此刷新较快，而且支持在前端自定义zookeeper的地址，还能列出实时的topic里的具体内容。但是搭建比较复杂，而且github上的默认数据库是H2的，像我们一般用mysql的，还得自己转化。另外在用的过程中，我遇到一个问题，在连接kafka的leader失败的时候，会一直重试，其结果就是导致我kafka的那台机子连接数过高，都到2w了，不知道是不是它的一个bug。</p>
+<p>具体介绍以及安装在我另外篇博文。这里不详细讲解开源软件，这里用zabbix监控Kafka Brokers服务。</p>
+<h4 id="kafka-monitoring-Brokers服务"><a href="#kafka-monitoring-Brokers服务" class="headerlink" title="kafka-monitoring Brokers服务"></a>kafka-monitoring Brokers服务</h4><p>操作系统环境：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Centos 7.1 </div><div class="line">64G内存</div><div class="line">2T磁盘空间，指定kafka写入数据目录。</div></pre></td></tr></table></figure>
+<p>说明下:</p>
+<p>监控Brokers是利用Zabbix JMX监控获取数据。</p>
+<p>☝️第一步：不用解释前提你在zabbix-server端已经安装过abbix-java-gataway 如果没有安装可以看下面，安装过可以略过第一步。</p>
+<p>1.0 安装配置zabbix-java-gataway</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">yum install -y zabbix-java-gataway</div><div class="line">vi /etc/zabbix/zabbix_java_gateway.conf</div><div class="line">START_POLLERS=10 </div><div class="line">Uncoment并设置为StartJavaPollers = 5 更改JavaGateway的 IP = IP_address_java_gateway</div><div class="line">``` </div><div class="line">1.1 重新启动zabbix-server</div><div class="line"></div><div class="line">```bash</div><div class="line">/etc/init.d/zabbix-java-gataway restart</div><div class="line">chkconfig --level 345 zabbix-java-gataway on</div><div class="line">/etc/init.d/zabbix-java-gataway start</div></pre></td></tr></table></figure>
+<p>☝️第二步：Kafka配置</p>
+<p>这里我们服务器给大数据那边安装在指定用户目录下面：/home/jollybi/tools/kafka_2.10-0.8.2.1</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">su - jollybi 进入相应用户</div><div class="line">vim /home/jollybi/tools/kafka_2.10-0.8.2.1/kafka-run-class.sh</div><div class="line"></div><div class="line">从</div><div class="line"></div><div class="line"><span class="comment"># JMX settings</span></div><div class="line"><span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$KAFKA_JMX_OPTS</span>"</span> ]; <span class="keyword">then</span></div><div class="line">KAFKA_JMX_OPTS=<span class="string">"-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -   Dcom.sun.management.jmxremote.ssl=false "</span></div><div class="line"><span class="keyword">fi</span></div><div class="line">至</div><div class="line"></div><div class="line"><span class="comment"># JMX settings</span></div><div class="line"><span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$KAFKA_JMX_OPTS</span>"</span> ]; <span class="keyword">then</span></div><div class="line">KAFKA_JMX_OPTS=<span class="string">"-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=12345 -    Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false "</span></div><div class="line"><span class="keyword">fi</span></div></pre></td></tr></table></figure>
+<p>重启服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">/home/jollybi/tools/kafka_2.10-0.8.2.1/bin/kafka-server-stop.sh</div><div class="line">/home/jollybi/tools/kafka_2.10-0.8.2.1/bin/kafka-server-start.sh</div></pre></td></tr></table></figure>
+<p>☝️第三步：导入模板登录到您的zabbix网页.</p>
+<p>导入模板登录到您的zabbix网页</p>
+<p>单击配置 - &gt;模板 - &gt;导入</p>
+<p>下载模板 <a href="https://github.com/yangcvo/Zabbix-Monitoring-Kafka" target="_blank" rel="external">zbx_kafka_templates.xml</a> 并上传到zabbix然后将此模板添加到Kafka并在zabbix上配置JMX接口</p>
+<p>输入Kafka IP地址和JMX端口如果看到jmx图标，您配置了JMX监控好！</p>
+<ul>
+<li>查看数据：</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Brokers_01.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Brokers_02.png" alt=""></figure></p>
+<ul>
+<li>查看效果图：</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Brokers_03.png" alt=""></figure></p>
+<p>参考官网监控指标的含义;</p>
+<p><a href="http://docs.confluent.io/current/kafka/monitoring.html" target="_blank" rel="external">Servilo Metrics broker Metrics</a><br><a href="http://docs.confluent.io/current/kafka/monitoring.html" target="_blank" rel="external">Producer Metrics Global Request Metrics</a><br><a href="http://docs.confluent.io/current/kafka/monitoring.html" target="_blank" rel="external">Global Connection Metrics</a></p>
 
 	
 
