@@ -55,6 +55,7 @@
 
 	
 		<h3 id="ZooKeeper集群快速搭建与优化"><a href="#ZooKeeper集群快速搭建与优化" class="headerlink" title="ZooKeeper集群快速搭建与优化"></a>ZooKeeper集群快速搭建与优化</h3><p>之前搞过了hadoop和spark，hue，现在在弄下zookeeper集群，文档就整理下。<br>本文是<code>ZooKeeper</code>的快速搭建,旨在帮助大家以最快的速度完成一个<code>ZK</code>集群的搭建,以便开展其它工作。</p>
+<a id="more"></a>
 <h2 id="集群："><a href="#集群：" class="headerlink" title="集群："></a>集群：</h2><p>本文使用了3台机器部署ZooKeeper集群，IP和主机名对应关系如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">IP            主机名</div><div class="line">10.46.72.172  namenode</div><div class="line">10.47.88.103  datenode1</div><div class="line">10.47.88.206  datenode2</div></pre></td></tr></table></figure>
 <h3 id="安装说明"><a href="#安装说明" class="headerlink" title="安装说明"></a>安装说明</h3><p><code>Zookeeper</code>机器间不需要设置免密码登录，其它hadoop也可以不设置，只要不使用hadoop-daemons.sh来启动、停止进程，注意不是hadoop-daemon.sh，而是带“s”的那个，带“s”的会读取hadoop的salves文件，远程ssh启动DataNode和备NameNode等。</p>
