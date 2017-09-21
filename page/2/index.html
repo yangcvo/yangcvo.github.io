@@ -378,6 +378,54 @@
 
 	<article>
 	
+		<h1><a href="/2017/05/08/Bigdata-hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/">Bigdata-hadoop新增节点集群启动请求异常：Last contact：200</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-05-08</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="前言闲谈："><a href="#前言闲谈：" class="headerlink" title="前言闲谈："></a>前言闲谈：</h3><p>之前做CDN云计算公司来到美年大健康现在在一家医疗大数据公司负责运维部门大大小小的活，既然是医疗大数据当然离不开大数据存储的维护，现在也同时维护大数据运维相关工作 <code>hadoop,spark,sqoop,hue,hive,Hbase,zookeeper</code>等等 测试开发生产使用起来,从集群环境维护 提升数据稳定性 高可用维护。</p>
+<p>前面说了一堆自己闲聊，真正解决这次问题是hadoop新增节点需要注意哪几点：</p>
+<p><code>新增节点如何新增我会在另外一篇详细说的这里我讲一些需要注意掉的问题。</code></p>
+<h3 id="需要修改几个配置："><a href="#需要修改几个配置：" class="headerlink" title="需要修改几个配置："></a>需要修改几个配置：</h3><p>（1）hadoop data 数据目录 VERSION 里面的搭建集群时，直接克隆会出现这个问题。解决方法同上两种，最好修改${/hadoop/tmp/dir}/dfs/data/current/VERSION中的storageID，使其不同。第一种会导致hdfs数据丢失。</p>
+<p>解决方法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">（1） datanode启动是会加载DataStorage，如果不存在则会format</div><div class="line">（2）初次启动DataStorage的storageID是空的，所以会生成一个storageID</div></pre></td></tr></table></figure>
+<p>参考我解决的：<code>这里我拷贝过来 直接删除。等集群namenode启动 会自动生成。</code></p>
+<p>这个解决以后 新增的机器必须关闭防火墙。因为这个原因会导致我 hadoop新增节点集群启动请求异常：Last contact：200</p>
+<p>（2） 集群重启时防火墙自动开启导致：</p>
+<p>这里贴张图片给大家看看：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop1.png" alt=""></figure></p>
+<p>问题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">2017-07-04 18:43:30,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 8 time(s).</div><div class="line">2017-07-04 18:43:31,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 9 time(s).</div><div class="line">2017-07-04 18:43:31,479 ERROR org.apache.hadoop.hdfs.server.datanode.DataNode: java.io.IOException: Call to /192.168.18.218:9000 failed on <span class="built_in">local</span> exception: java.net.NoRouteToHostException: 没有到主机的路由</div><div class="line">        at org.apache.hadoop.ipc.Client.wrapException(Client.java:775)</div><div class="line">        at org.apache.hadoop.ipc.Client.call(Client.java:743)</div><div class="line">解决方法：在root权限下关闭防火墙：service iptables stop</div></pre></td></tr></table></figure>
+<p>最好配置成机器重启默认防火墙关闭：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables off   #开机不启动防火墙服务</span></div><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables on   #开机启动防火墙服务</span></div></pre></td></tr></table></figure>
+<p>解决以后服务重新跑一遍已经搞定。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop2.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop3.png" alt=""></figure></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
 		<h1><a href="/2017/05/08/Bigdata-hadoop/HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群 /">HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群</a></h1>
 	
 	<div class="article__infos">
@@ -421,7 +469,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">安装：postgresql-libs-8.4.20-3.el6_6.x86_64 1/4</div><div class="line">安装：postgresql-8.4.20-3.el6_6.x86_64 2/4</div><div class="line">安装：postgresql-server-8.4.20-3.el6_6.x86_64 3/4</div><div class="line">安装：ambari-server-2.4.2.0-1470.x86_64 4/4</div><div class="line">验证：ambari-server-2.4.2.0-1470.x86_64 1/4</div><div class="line">验证：postgresql-8.4.20-3.el6_6.x86_64 2/4</div><div class="line">验证：postgresql-server-8.4.20-3.el6_6.x86_64 3/4</div><div class="line">验证：postgresql-libs-8.4.20-3.el6_6.x86_64 4/4</div><div class="line"></div><div class="line">安装：</div><div class="line">  ambari-server.x86_64 0：2.4.2.0-1470  安装这里的时候会有点慢，因为是访问国外网站下载资源。</div><div class="line"></div><div class="line">已安装依赖关系：</div><div class="line"> postgresql.x86_64 0：8.4.20-3.el6_6           </div><div class="line"> postgresql-libs.x86_64 0：8.4.20-3.el6_6        </div><div class="line"> postgresql-server.x86_64 0：8.4.20-3.el6_6</div></pre></td></tr></table></figure>
 <p>❗️❗️【注意】</p>
 <p>接受有关信任<code>Hortonworks GPG</code>密钥的警告。该键将自动下载并用于验证Hortonworks的软​​件包。您将看到以下消息：</p>
-<p>Importing GPG key 0x07513CAD: Userid: “Jenkins (HDP Builds) <a href="&#109;&#97;&#x69;&#x6c;&#x74;&#x6f;&#58;&#106;&#101;&#110;&#107;&#105;&#110;&#64;&#x68;&#x6f;&#114;&#116;&#x6f;&#110;&#x77;&#x6f;&#114;&#x6b;&#x73;&#46;&#x63;&#111;&#109;">&#106;&#101;&#110;&#107;&#105;&#110;&#64;&#x68;&#x6f;&#114;&#116;&#x6f;&#110;&#x77;&#x6f;&#114;&#x6b;&#x73;&#46;&#x63;&#111;&#109;</a>“ From :<code>http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins</code></p>
+<p>Importing GPG key 0x07513CAD: Userid: “Jenkins (HDP Builds) <a href="&#109;&#x61;&#105;&#108;&#116;&#x6f;&#x3a;&#106;&#x65;&#110;&#107;&#x69;&#x6e;&#x40;&#x68;&#111;&#x72;&#x74;&#x6f;&#x6e;&#x77;&#111;&#x72;&#107;&#x73;&#x2e;&#99;&#111;&#x6d;">&#106;&#x65;&#110;&#107;&#x69;&#x6e;&#x40;&#x68;&#111;&#x72;&#x74;&#x6f;&#x6e;&#x77;&#111;&#x72;&#107;&#x73;&#x2e;&#99;&#111;&#x6d;</a>“ From :<code>http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins</code></p>
 <p>❗️❗️【注意】</p>
 <p>在具有有限Internet访问或没有Internet访问的群集上部署HDP时，应使用其他方法提供对位的访问。<br>有关设置本地存储库的详细信息，请参阅使用本地存储库。</p>
 <p><code>Ambari</code>服务器默认使用嵌入式<code>PostgreSQL</code>数据库。当您安装<code>Ambari</code>服务器时，PostgreSQL软件包和依赖关系必须可用于安装。这些包通常作为操作系统存储库的一部分提供。请确认您具有适用于<code>postgresql-server</code>软件包的相应存储库。</p>
@@ -581,54 +629,6 @@
 </blockquote>
 <p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari008.png" alt=""></figure></p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>安装Ambari官网地址<a href="https://docs.hortonworks.com/HDPDocuments/Ambari-2.4.2.0/bk_ambari-installation/content/download_the_ambari_repo_lnx6.html" target="_blank" rel="external">install Ambari</a><br><a href="https://cwiki.apache.org/confluence/display/AMBARI/Installation+Guide+for+Ambari+2.4.2" target="_blank" rel="external">编译安装Ambari 2.4.2安装指南</a></p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/05/08/Bigdata-hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/">Bigdata-hadoop新增节点集群启动请求异常：Last contact：200</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-05-08</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/大数据/">大数据</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h3 id="前言闲谈："><a href="#前言闲谈：" class="headerlink" title="前言闲谈："></a>前言闲谈：</h3><p>之前做CDN云计算公司来到美年大健康现在在一家医疗大数据公司负责运维部门大大小小的活，既然是医疗大数据当然离不开大数据存储的维护，现在也同时维护大数据运维相关工作 <code>hadoop,spark,sqoop,hue,hive,Hbase,zookeeper</code>等等 测试开发生产使用起来,从集群环境维护 提升数据稳定性 高可用维护。</p>
-<p>前面说了一堆自己闲聊，真正解决这次问题是hadoop新增节点需要注意哪几点：</p>
-<p><code>新增节点如何新增我会在另外一篇详细说的这里我讲一些需要注意掉的问题。</code></p>
-<h3 id="需要修改几个配置："><a href="#需要修改几个配置：" class="headerlink" title="需要修改几个配置："></a>需要修改几个配置：</h3><p>（1）hadoop data 数据目录 VERSION 里面的搭建集群时，直接克隆会出现这个问题。解决方法同上两种，最好修改${/hadoop/tmp/dir}/dfs/data/current/VERSION中的storageID，使其不同。第一种会导致hdfs数据丢失。</p>
-<p>解决方法：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">（1） datanode启动是会加载DataStorage，如果不存在则会format</div><div class="line">（2）初次启动DataStorage的storageID是空的，所以会生成一个storageID</div></pre></td></tr></table></figure>
-<p>参考我解决的：<code>这里我拷贝过来 直接删除。等集群namenode启动 会自动生成。</code></p>
-<p>这个解决以后 新增的机器必须关闭防火墙。因为这个原因会导致我 hadoop新增节点集群启动请求异常：Last contact：200</p>
-<p>（2） 集群重启时防火墙自动开启导致：</p>
-<p>这里贴张图片给大家看看：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop1.png" alt=""></figure></p>
-<p>问题：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">2017-07-04 18:43:30,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 8 time(s).</div><div class="line">2017-07-04 18:43:31,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 9 time(s).</div><div class="line">2017-07-04 18:43:31,479 ERROR org.apache.hadoop.hdfs.server.datanode.DataNode: java.io.IOException: Call to /192.168.18.218:9000 failed on <span class="built_in">local</span> exception: java.net.NoRouteToHostException: 没有到主机的路由</div><div class="line">        at org.apache.hadoop.ipc.Client.wrapException(Client.java:775)</div><div class="line">        at org.apache.hadoop.ipc.Client.call(Client.java:743)</div><div class="line">解决方法：在root权限下关闭防火墙：service iptables stop</div></pre></td></tr></table></figure>
-<p>最好配置成机器重启默认防火墙关闭：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables off   #开机不启动防火墙服务</span></div><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables on   #开机启动防火墙服务</span></div></pre></td></tr></table></figure>
-<p>解决以后服务重新跑一遍已经搞定。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop2.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop3.png" alt=""></figure></p>
 
 	
 

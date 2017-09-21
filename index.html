@@ -93,7 +93,7 @@
 	
 
 	
-		<p><img src="https://cdn-images-1.medium.com/max/640/1*kV768OHeCILNIYVCNPUyuQ.jpeg" alt=""></p>
+		<p><img src="https://cdn2.hubspot.net/hubfs/540072/Kafka_Connect_graphic.png" alt=""></p>
 <h3 id="Kafka集群稳定"><a href="#Kafka集群稳定" class="headerlink" title="Kafka集群稳定"></a>Kafka集群稳定</h3><p>GC调优<br>　　调GC是门手艺活，幸亏Java 7引进了G1 垃圾回收，使得GC调优变的没那么难。G1主要有两个配置选项来调优：MaxGCPauseMillis 和 InitiatingHeapOccupancyPercent，具体参数设置可以参考Google，这里不赘述。</p>
 <p>　　Kafka broker能够有效的利用堆内存和对象回收，所以这些值可以调小点。对于 64Gb内存，Kafka运行堆内存5Gb，MaxGCPauseMillis 和 InitiatingHeapOccupancyPercent 分别设置为 20毫秒和 35。Kafka的启动脚本使用的不是 G1回收，需要在环境变量中加入。</p>
 		<p><a class="article__read-more-link" href="/2017/07/04/Bigdata-hadoop/Kafka/kafka性能优化–JVM参数配置优化/">...read more</a></p>
@@ -127,8 +127,9 @@
 	
 
 	
-		<h1 id="Kafka日志存储解析与实践数据存储优化"><a href="#Kafka日志存储解析与实践数据存储优化" class="headerlink" title="Kafka日志存储解析与实践数据存储优化"></a>Kafka日志存储解析与实践数据存储优化</h1><p>kafka是一款分布式消息发布和订阅的系统，具有高性能和高吞吐率。 </p>
-<h4 id="Kafka的名词解释"><a href="#Kafka的名词解释" class="headerlink" title="Kafka的名词解释"></a>Kafka的名词解释</h4><ul>
+		<p><img src="https://cdn-images-1.medium.com/max/640/1*kV768OHeCILNIYVCNPUyuQ.jpeg" alt=""></p>
+<h4 id="Kafka的名词解释"><a href="#Kafka的名词解释" class="headerlink" title="Kafka的名词解释"></a>Kafka的名词解释</h4><p>kafka是一款分布式消息发布和订阅的系统，具有高性能和高吞吐率。 </p>
+<ul>
 <li>1，<code>Broker</code>： 一个单独的kafka机器节点就称为一个broker，多个broker组成的集群，称为kafka集群</li>
 <li>2，<code>Topic</code>：类似数据库中的一个表，我们将数据存储在Topic里面，当然这只是逻辑上的，在物理上，一个Topic 可能被多个Broker分区存储，这对用户是透明的，用户只需关注消息的产生于消费即可.</li>
 <li>3，<code>Partition</code>：类似分区表，每个Topic可根据设置将数据存储在多个整体有序的Partition中，每个顺序化partition会生成2个文件，一个是index文件一个是log文件，index文件存储索引和偏移量，log文件存储具体的数据.</li>
@@ -136,25 +137,7 @@
 <li>5，<code>Consumer</code>：消费者，从Topic里面读取消息的角色 </li>
 <li>6，<code>Consumer Group</code>：每个Consumer属于一个特定的消费者组，可为Consumer指定group name，如果不指定默认属于group </li>
 </ul>
-<p><strong>集群安装略过~</strong></p>
-<h4 id="日志存储"><a href="#日志存储" class="headerlink" title="日志存储"></a>日志存储</h4><p>Kafka的data是保存在文件系统中的。Kafka中的Message是以topic为基本单位组织的，不同的topic之间是相互独立的。</p>
-<p>每个topic又可以分成几个不同的partition，每个topic有几个partition是在创建topic时指定的，每个partition存储一部分Message。</p>
-<p><code>partition</code>是以文件的形式存储在文件系统中，比如，创建了一个名为<code>kakfa-node1</code>的topic，其有12个partition，那么在Kafka的数据目录中(由配置文件中的log.dirs指定的)中就有这样5个目录: </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[jollybi@kafka1 kafka-logs]$ ll</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-0</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-1</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-10</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-11</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-2</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-3</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-4</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-5</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-6</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-7</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-8</div><div class="line">drwxrwxr-x 2 jollybi jollybi  4096 Aug 23 15:56 kakfa-node1-9</div></pre></td></tr></table></figure>
-<p>其命名规则为<code>&lt;topic_name&gt;-&lt;partition_id&gt;</code>，里面存储的分别就是这12个<code>partition</code>的数据。<br><code>zookeeper</code>会将分区平均分配创建到不同的<code>broker</code>上，例如</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[jollybi@kafka1 tools]$ ./kafka_2.10-0.8.2.1/bin/kafka-topics.sh  --describe --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281  --topic kakfa-node1</div><div class="line">Topic:kakfa-node1	PartitionCount:12	ReplicationFactor:3	Configs:</div><div class="line">	Topic: kakfa-node1	Partition: 0	Leader: 1	Replicas: 1,2,3	Isr: 1,2,3</div><div class="line">	Topic: kakfa-node1	Partition: 1	Leader: 2	Replicas: 2,3,1	Isr: 2,3,1</div><div class="line">	Topic: kakfa-node1	Partition: 2	Leader: 3	Replicas: 3,1,2	Isr: 3,1,2</div><div class="line">	Topic: kakfa-node1	Partition: 3	Leader: 1	Replicas: 1,3,2	Isr: 1,3,2</div><div class="line">	Topic: kakfa-node1	Partition: 4	Leader: 2	Replicas: 2,1,3	Isr: 2,1,3</div><div class="line">	Topic: kakfa-node1	Partition: 5	Leader: 3	Replicas: 3,2,1	Isr: 3,2,1</div><div class="line">	Topic: kakfa-node1	Partition: 6	Leader: 1	Replicas: 1,2,3	Isr: 1,2,3</div><div class="line">	Topic: kakfa-node1	Partition: 7	Leader: 2	Replicas: 2,3,1	Isr: 2,3,1</div><div class="line">	Topic: kakfa-node1	Partition: 8	Leader: 3	Replicas: 3,1,2	Isr: 3,1,2</div><div class="line">	Topic: kakfa-node1	Partition: 9	Leader: 1	Replicas: 1,3,2	Isr: 1,3,2</div><div class="line">	Topic: kakfa-node1	Partition: 10	Leader: 2	Replicas: 2,1,3	Isr: 2,1,3</div><div class="line">	Topic: kakfa-node1	Partition: 11	Leader: 3	Replicas: 3,2,1	Isr: 3,2,1</div></pre></td></tr></table></figure>
-<p>Isr表示分区创建在哪个broker上。<br>Partition中的每条Message由offset来表示它在这个partition中的偏移量，这个offset不是该Message在partition数据文件中的实际存储位置，而是逻辑上一个值，它唯一确定了partition中的一条Message。因此，可以认为offset是partition中Message的id。partition中的每条Message包含了以下三个属性：</p>
-<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="title">offset</span></div><div class="line"><span class="type">MessageSize</span></div><div class="line"><span class="class"><span class="keyword">data</span></span></div></pre></td></tr></table></figure>
-<p>其中offset为long型，MessageSize为int32，表示data有多大，data为message的具体内容。</p>
-<h4 id="Kafka通过分段和索引的方式来提高查询效率"><a href="#Kafka通过分段和索引的方式来提高查询效率" class="headerlink" title="Kafka通过分段和索引的方式来提高查询效率"></a>Kafka通过分段和索引的方式来提高查询效率</h4><ul>
-<li>1）分段</li>
-</ul>
-<p>Kafka解决查询效率的手段之一是将数据文件分段，比如有100条Message，它们的offset是从0到99。假设将数据文件分成5段，第一段为0-19，第二段为20-39，以此类推，每段放在一个单独的数据文件里面，数据文件以该段中最小的offset命名。这样在查找指定offset的Message的时候，用二分查找就可以定位到该Message在哪个段中。</p>
-<figure class="highlight tap"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[jollybi@kafka1 kafka-logs]$ ll /data/tools/kafka_2.10-0.8.2.1/kafka-logs/</div><div class="line">total 548</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-0</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-1</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-10</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-11</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-2</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-3</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-4</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-5</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-6</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-7</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-8</div><div class="line">drwxrwxr-x<span class="number"> 2 </span>jollybi jollybi <span class="number"> 4096 </span>Aug<span class="number"> 25 </span>11:03 kafkanode-9</div></pre></td></tr></table></figure>
-<h5 id="2）为数据文件建索引"><a href="#2）为数据文件建索引" class="headerlink" title="2）为数据文件建索引"></a>2）为数据文件建索引</h5><p>数据文件分段使得可以在一个较小的数据文件中查找对应offset的Message了，但是这依然需要顺序扫描才能找到对应<code>offset的Message</code>。为了进一步提高查找的效率，Kafka为每个分段后的数据文件建立了索引文件，文件名与数据文件的名字是一样的，只是文件扩展名为.index。<br>索引文件中包含若干个索引条目，每个条目表示数据文件中一条Message的索引。索引包含两个部分（均为4个字节的数字），分别为相对<code>offset和position</code>。</p>
-<p>相对<code>offset</code>：因为数据文件分段以后，每个数据文件的起始offset不为0，相对offset表示这条Message相对于其所属数据文件中最小的offset的大小。举例，分段后的一个数据文件的offset是从20开始，那么offset为25的Message在index文件中的相对offset就是25-20 = 5。存储相对offset可以减小索引文件占用的空间。</p>
-<p><code>position</code>，表示该条<code>Message</code>在数据文件中的绝对位置。只要打开文件并移动文件指针到这个position就可以读取对应的<code>Message</code>了。<br>index文件中并没有为数据文件中的每条Message建立索引，而是采用了稀疏存储的方式，每隔一定字节的数据建立一条索引。这样避免了索引文件占用过多的空间，从而可以将索引文件保留在内存中。但缺点是没有建立索引的Message也不能一次定位到其在数据文件的位置，从而需要做一次顺序扫描，但是这次顺序扫描的范围就很小了。</p>
-
+		<p><a class="article__read-more-link" href="/2017/06/30/Bigdata-hadoop/Kafka/Kafka日志存储解析与实践数据存储优化/">...read more</a></p>
 	
 
 	
@@ -227,49 +210,9 @@
 	
 
 	
-		<p>mongodb写到kafka 指定topic消费。为了保证数据稳定可靠性。<br>配合大数据在countly 使用开源<code>Kafka-node</code>是一个Node.js客户端 写js程序让countly三台集群分别数据到kafka 做新的topic主题备份。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install kafka-node</div></pre></td></tr></table></figure>
-<p>进入kafka-node目录: vim kafka_test.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">var kafka = require(<span class="string">'kafka-node'</span>),</div><div class="line">HighLevelProducer = kafka.HighLevelProducer,</div><div class="line">    //Producer = kafka.Producer,</div><div class="line">    client = new kafka.Client(<span class="string">'169.44.62.139:2281,169.44.59.138:2281,169.44.62.137:2281'</span>),</div><div class="line">    //producer = new Producer(client);</div><div class="line">producer = new HighLevelProducer(client);</div><div class="line"></div><div class="line">console.log(<span class="string">'连接kafka中'</span>);</div><div class="line"></div><div class="line">var argv = &#123;</div><div class="line">    topic: <span class="string">"test1"</span></div><div class="line">&#125;;</div><div class="line">var topic = argv.topic || <span class="string">'test1'</span>;</div><div class="line">var p = argv.p || 0;</div><div class="line">var a = argv.a || 0;</div><div class="line">var producer = new HighLevelProducer(client, &#123;</div><div class="line">    requireAcks: 1,</div><div class="line">    partitionerType: 3</div><div class="line">&#125;);</div><div class="line"></div><div class="line">console.log(producer);</div><div class="line"></div><div class="line">producer.on(<span class="string">'ready'</span>, <span class="function"><span class="title">function</span></span>() &#123;</div><div class="line">    var args = &#123;</div><div class="line">        appid: <span class="string">'222-wx238c28839a133d0e'</span>,</div><div class="line">        createTime: <span class="string">'222-ddd'</span>,</div><div class="line">        toUserName: <span class="string">'222-wx238c28839a133d0e'</span>,</div><div class="line">        fromUserName: <span class="string">'222-wx238c28839a133d0e'</span></div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    producer.send([&#123;</div><div class="line">        topic: topic,</div><div class="line">        partition: p,</div><div class="line">        messages: [JSON.stringify(args)],</div><div class="line">        attributes: a</div><div class="line">    &#125;], <span class="keyword">function</span>(err, result) &#123;</div><div class="line">        console.log(err || result);</div><div class="line">        process.exit();</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    console.log(args);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<h4 id="官网地址：https-www-npmjs-com-package-kafka-node-install-kafka"><a href="#官网地址：https-www-npmjs-com-package-kafka-node-install-kafka" class="headerlink" title="官网地址：https://www.npmjs.com/package/kafka-node#install-kafka"></a>官网地址：<a href="https://www.npmjs.com/package/kafka-node#install-kafka" target="_blank" rel="external">https://www.npmjs.com/package/kafka-node#install-kafka</a></h4>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/06/29/Bigdata-hadoop/Kafka/如何手动更新Kafka中某个Topic的偏移量/">Bigdata-如何手动更新Kafka中某个Topic的偏移量</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-06-29</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/大数据/">大数据</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a> <a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h1 id="如何手动更新Kafka中某个Topic的偏移量"><a href="#如何手动更新Kafka中某个Topic的偏移量" class="headerlink" title="如何手动更新Kafka中某个Topic的偏移量"></a>如何手动更新Kafka中某个Topic的偏移量</h1><p>　　我们都知道，Kafka topic的偏移量一般都是存储在Zookeeper中，具体的路径为<code>/consumers/[groupId]/offsets/[topic]/[partitionId]</code>，比如iteblog主题分区10的偏移量获取如下：<br>　　<br>　　在有些场景下，这个工具不满足我们的需求，我们需要的是能够手动设置分区的偏移量为任何有意义的值，而不仅仅是earliest或者latest。那咋办？</p>
-<p>　　我们都知道，Kafka topic的偏移量一般都是存储在Zookeeper中，具体的路径为<code>/consumers/[groupId]/offsets/[topic]/[partitionId]</code>，比如<code>mongotail_lz4</code>主题分区10的偏移量获取如下：
-　　</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 2]  get /consumers/ibm_event/offsets/mongotail_lz4/10</div><div class="line">293894</div><div class="line">cZxid = 0x6000011f3</div><div class="line">ctime = Wed Jul 26 17:57:27 CST 2017</div><div class="line">mZxid = 0x6000018c9</div><div class="line">mtime = Wed Jul 26 18:18:27 CST 2017</div><div class="line">pZxid = 0x6000011f3</div><div class="line">cversion = 0</div><div class="line">dataVersion = 20</div><div class="line">aclVersion = 0</div><div class="line">ephemeralOwner = 0x0</div><div class="line">dataLength = 6</div><div class="line">numChildren = 0</div></pre></td></tr></table></figure>
-<p>所以，我们可以通过set命令来设置某个分区的偏移量，如下；</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[zk: 127.0.0.1:2281(CONNECT get /consumers/ibm_event/offsets/mongotail_lz4/10 0 </div><div class="line">0</div><div class="line">cZxid = 0x6000011f3</div><div class="line">ctime = Wed Jul 26 17:57:27 CST 2017</div><div class="line">mZxid = 0x60000204c</div><div class="line">mtime = Wed Jul 26 18:37:21 CST 2017</div><div class="line">pZxid = 0x6000011f3</div><div class="line">cversion = 0</div><div class="line">dataVersion = 21</div><div class="line">aclVersion = 0</div><div class="line">ephemeralOwner = 0x0</div><div class="line">dataLength = 1</div><div class="line">numChildren = 0</div></pre></td></tr></table></figure>
-<p>12个分区分别更新过去。</p>
-
+		<p><img src="https://kafka.apache.org/0110/images/streams-interactive-queries-02.png" alt=""></p>
+<p>mongodb写到kafka 指定topic消费。为了保证数据稳定可靠性。<br>配合大数据在countly 使用开源<code>Kafka-node</code>是一个Node.js客户端 写js程序让countly三台集群分别数据到kafka 做新的topic主题备份。</p>
+		<p><a class="article__read-more-link" href="/2017/06/29/Bigdata-hadoop/Kafka/Kafka-node模块实现调用js发送数据/">...read more</a></p>
 	
 
 	
@@ -339,6 +282,44 @@
 <p><a href="https://github.com/quantifind/KafkaOffsetMonitor" target="_blank" rel="external">KafkaOffsetMonitor</a>：程序一个jar包的形式运行，部署较为方便。只有监控功能，使用起来也较为安全。</p>
 <p>若只需要监控功能，推荐使用KafkaOffsetMonito，若偏重Kafka集群管理，推荐使用Kafka Manager。</p>
 <p>因为都是开源程序，稳定性欠缺。故需先了解清楚目前已存在哪些Bug，多测试一下，避免出现类似于Kafka Web Console的问题。</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/06/29/Bigdata-hadoop/Kafka/如何手动更新Kafka中某个Topic的偏移量/">Bigdata-如何手动更新Kafka中某个Topic的偏移量</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-06-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a> <a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h1 id="如何手动更新Kafka中某个Topic的偏移量"><a href="#如何手动更新Kafka中某个Topic的偏移量" class="headerlink" title="如何手动更新Kafka中某个Topic的偏移量"></a>如何手动更新Kafka中某个Topic的偏移量</h1><p>　　我们都知道，Kafka topic的偏移量一般都是存储在Zookeeper中，具体的路径为<code>/consumers/[groupId]/offsets/[topic]/[partitionId]</code>，比如iteblog主题分区10的偏移量获取如下：<br>　　<br>　　在有些场景下，这个工具不满足我们的需求，我们需要的是能够手动设置分区的偏移量为任何有意义的值，而不仅仅是earliest或者latest。那咋办？</p>
+<p>　　我们都知道，Kafka topic的偏移量一般都是存储在Zookeeper中，具体的路径为<code>/consumers/[groupId]/offsets/[topic]/[partitionId]</code>，比如<code>mongotail_lz4</code>主题分区10的偏移量获取如下：
+　　</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 2]  get /consumers/ibm_event/offsets/mongotail_lz4/10</div><div class="line">293894</div><div class="line">cZxid = 0x6000011f3</div><div class="line">ctime = Wed Jul 26 17:57:27 CST 2017</div><div class="line">mZxid = 0x6000018c9</div><div class="line">mtime = Wed Jul 26 18:18:27 CST 2017</div><div class="line">pZxid = 0x6000011f3</div><div class="line">cversion = 0</div><div class="line">dataVersion = 20</div><div class="line">aclVersion = 0</div><div class="line">ephemeralOwner = 0x0</div><div class="line">dataLength = 6</div><div class="line">numChildren = 0</div></pre></td></tr></table></figure>
+<p>所以，我们可以通过set命令来设置某个分区的偏移量，如下；</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[zk: 127.0.0.1:2281(CONNECT get /consumers/ibm_event/offsets/mongotail_lz4/10 0 </div><div class="line">0</div><div class="line">cZxid = 0x6000011f3</div><div class="line">ctime = Wed Jul 26 17:57:27 CST 2017</div><div class="line">mZxid = 0x60000204c</div><div class="line">mtime = Wed Jul 26 18:37:21 CST 2017</div><div class="line">pZxid = 0x6000011f3</div><div class="line">cversion = 0</div><div class="line">dataVersion = 21</div><div class="line">aclVersion = 0</div><div class="line">ephemeralOwner = 0x0</div><div class="line">dataLength = 1</div><div class="line">numChildren = 0</div></pre></td></tr></table></figure>
+<p>12个分区分别更新过去。</p>
 
 	
 

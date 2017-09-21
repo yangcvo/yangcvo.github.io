@@ -54,8 +54,9 @@
 	
 
 	
-		<h1 id="Kafka日志存储解析与实践数据存储优化"><a href="#Kafka日志存储解析与实践数据存储优化" class="headerlink" title="Kafka日志存储解析与实践数据存储优化"></a>Kafka日志存储解析与实践数据存储优化</h1><p>kafka是一款分布式消息发布和订阅的系统，具有高性能和高吞吐率。 </p>
-<h4 id="Kafka的名词解释"><a href="#Kafka的名词解释" class="headerlink" title="Kafka的名词解释"></a>Kafka的名词解释</h4><ul>
+		<p><figure class="figure"><img src="https://cdn-images-1.medium.com/max/640/1*kV768OHeCILNIYVCNPUyuQ.jpeg" alt=""></figure></p>
+<h4 id="Kafka的名词解释"><a href="#Kafka的名词解释" class="headerlink" title="Kafka的名词解释"></a>Kafka的名词解释</h4><p>kafka是一款分布式消息发布和订阅的系统，具有高性能和高吞吐率。 </p>
+<ul>
 <li>1，<code>Broker</code>： 一个单独的kafka机器节点就称为一个broker，多个broker组成的集群，称为kafka集群</li>
 <li>2，<code>Topic</code>：类似数据库中的一个表，我们将数据存储在Topic里面，当然这只是逻辑上的，在物理上，一个Topic 可能被多个Broker分区存储，这对用户是透明的，用户只需关注消息的产生于消费即可.</li>
 <li>3，<code>Partition</code>：类似分区表，每个Topic可根据设置将数据存储在多个整体有序的Partition中，每个顺序化partition会生成2个文件，一个是index文件一个是log文件，index文件存储索引和偏移量，log文件存储具体的数据.</li>
@@ -63,6 +64,7 @@
 <li>5，<code>Consumer</code>：消费者，从Topic里面读取消息的角色 </li>
 <li>6，<code>Consumer Group</code>：每个Consumer属于一个特定的消费者组，可为Consumer指定group name，如果不指定默认属于group </li>
 </ul>
+<a id="more"></a>
 <p><strong>集群安装略过~</strong></p>
 <h4 id="日志存储"><a href="#日志存储" class="headerlink" title="日志存储"></a>日志存储</h4><p>Kafka的data是保存在文件系统中的。Kafka中的Message是以topic为基本单位组织的，不同的topic之间是相互独立的。</p>
 <p>每个topic又可以分成几个不同的partition，每个topic有几个partition是在创建topic时指定的，每个partition存储一部分Message。</p>
