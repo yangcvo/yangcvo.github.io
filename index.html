@@ -357,44 +357,6 @@
 
 	<article>
 	
-		<h1><a href="/2017/06/29/Bigdata-hadoop/Kafka/如何手动更新Kafka中某个Topic的偏移量/">Bigdata-如何手动更新Kafka中某个Topic的偏移量</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-06-29</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/大数据/">大数据</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a> <a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h1 id="如何手动更新Kafka中某个Topic的偏移量"><a href="#如何手动更新Kafka中某个Topic的偏移量" class="headerlink" title="如何手动更新Kafka中某个Topic的偏移量"></a>如何手动更新Kafka中某个Topic的偏移量</h1><p>　　我们都知道，Kafka topic的偏移量一般都是存储在Zookeeper中，具体的路径为<code>/consumers/[groupId]/offsets/[topic]/[partitionId]</code>，比如iteblog主题分区10的偏移量获取如下：<br>　　<br>　　在有些场景下，这个工具不满足我们的需求，我们需要的是能够手动设置分区的偏移量为任何有意义的值，而不仅仅是earliest或者latest。那咋办？</p>
-<p>　　我们都知道，Kafka topic的偏移量一般都是存储在Zookeeper中，具体的路径为<code>/consumers/[groupId]/offsets/[topic]/[partitionId]</code>，比如<code>mongotail_lz4</code>主题分区10的偏移量获取如下：
-　　</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 2]  get /consumers/ibm_event/offsets/mongotail_lz4/10</div><div class="line">293894</div><div class="line">cZxid = 0x6000011f3</div><div class="line">ctime = Wed Jul 26 17:57:27 CST 2017</div><div class="line">mZxid = 0x6000018c9</div><div class="line">mtime = Wed Jul 26 18:18:27 CST 2017</div><div class="line">pZxid = 0x6000011f3</div><div class="line">cversion = 0</div><div class="line">dataVersion = 20</div><div class="line">aclVersion = 0</div><div class="line">ephemeralOwner = 0x0</div><div class="line">dataLength = 6</div><div class="line">numChildren = 0</div></pre></td></tr></table></figure>
-<p>所以，我们可以通过set命令来设置某个分区的偏移量，如下；</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[zk: 127.0.0.1:2281(CONNECT get /consumers/ibm_event/offsets/mongotail_lz4/10 0 </div><div class="line">0</div><div class="line">cZxid = 0x6000011f3</div><div class="line">ctime = Wed Jul 26 17:57:27 CST 2017</div><div class="line">mZxid = 0x60000204c</div><div class="line">mtime = Wed Jul 26 18:37:21 CST 2017</div><div class="line">pZxid = 0x6000011f3</div><div class="line">cversion = 0</div><div class="line">dataVersion = 21</div><div class="line">aclVersion = 0</div><div class="line">ephemeralOwner = 0x0</div><div class="line">dataLength = 1</div><div class="line">numChildren = 0</div></pre></td></tr></table></figure>
-<p>12个分区分别更新过去。</p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
 		<h1><a href="/2017/06/29/Bigdata-hadoop/Kafka/Kafka-node模块实现调用js发送数据/">Bigdata-Kafka-node模块实现调用js发送数据</a></h1>
 	
 	<div class="article__infos">
@@ -419,48 +381,6 @@
 <p>进入kafka-node目录: vim kafka_test.js</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">var kafka = require(<span class="string">'kafka-node'</span>),</div><div class="line">HighLevelProducer = kafka.HighLevelProducer,</div><div class="line">    //Producer = kafka.Producer,</div><div class="line">    client = new kafka.Client(<span class="string">'169.44.62.139:2281,169.44.59.138:2281,169.44.62.137:2281'</span>),</div><div class="line">    //producer = new Producer(client);</div><div class="line">producer = new HighLevelProducer(client);</div><div class="line"></div><div class="line">console.log(<span class="string">'连接kafka中'</span>);</div><div class="line"></div><div class="line">var argv = &#123;</div><div class="line">    topic: <span class="string">"test1"</span></div><div class="line">&#125;;</div><div class="line">var topic = argv.topic || <span class="string">'test1'</span>;</div><div class="line">var p = argv.p || 0;</div><div class="line">var a = argv.a || 0;</div><div class="line">var producer = new HighLevelProducer(client, &#123;</div><div class="line">    requireAcks: 1,</div><div class="line">    partitionerType: 3</div><div class="line">&#125;);</div><div class="line"></div><div class="line">console.log(producer);</div><div class="line"></div><div class="line">producer.on(<span class="string">'ready'</span>, <span class="function"><span class="title">function</span></span>() &#123;</div><div class="line">    var args = &#123;</div><div class="line">        appid: <span class="string">'222-wx238c28839a133d0e'</span>,</div><div class="line">        createTime: <span class="string">'222-ddd'</span>,</div><div class="line">        toUserName: <span class="string">'222-wx238c28839a133d0e'</span>,</div><div class="line">        fromUserName: <span class="string">'222-wx238c28839a133d0e'</span></div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    producer.send([&#123;</div><div class="line">        topic: topic,</div><div class="line">        partition: p,</div><div class="line">        messages: [JSON.stringify(args)],</div><div class="line">        attributes: a</div><div class="line">    &#125;], <span class="keyword">function</span>(err, result) &#123;</div><div class="line">        console.log(err || result);</div><div class="line">        process.exit();</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    console.log(args);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
 <h4 id="官网地址：https-www-npmjs-com-package-kafka-node-install-kafka"><a href="#官网地址：https-www-npmjs-com-package-kafka-node-install-kafka" class="headerlink" title="官网地址：https://www.npmjs.com/package/kafka-node#install-kafka"></a>官网地址：<a href="https://www.npmjs.com/package/kafka-node#install-kafka" target="_blank" rel="external">https://www.npmjs.com/package/kafka-node#install-kafka</a></h4>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/06/29/Bigdata-hadoop/countly/Bigdata-countly需要迁移/">Bigdata-countly需要迁移</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-06-29</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Big-data-Hadoop/">Big data Hadoop</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Countly/">Countly</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h4 id="官方安装文档：http-resources-count-ly-docs-installing-countly-server"><a href="#官方安装文档：http-resources-count-ly-docs-installing-countly-server" class="headerlink" title="官方安装文档：http://resources.count.ly/docs/installing-countly-server"></a>官方安装文档：<a href="http://resources.count.ly/docs/installing-countly-server" target="_blank" rel="external">http://resources.count.ly/docs/installing-countly-server</a></h4><p>目前<code>countly</code>需要迁移，所需<code>countly</code>版本于官方提供的安装方案有冲突，所以如下安装：</p>
-<p>安装官方<code>countly</code>让其设置所需环境变量及其启动脚本，手动指定安装nojs版本，拷贝原countly文件，具体如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">1、<span class="built_in">cd</span> /data <span class="comment">#countly安装在data目录 我看了安装脚本，是当前在哪个目录，安装文件就在哪个目录</span></div><div class="line">wget -qO- http://c.ly/install | bash</div></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">2、rpm -qa | grep -i nodejs | xargs -I&#123;&#125;  yum remove &#123;&#125; -y</div><div class="line">卸载掉官网安装的最新nodejs 然后新建如下yum源，用于安装旧版所需nodejs，也可以到nodejs官网下载所需nodejs</div><div class="line">cat /etc/yum.repos.d/nodesource-el.repo </div><div class="line">[nodesource]</div><div class="line">name=Node.js Packages <span class="keyword">for</span> Enterprise Linux 7 - <span class="variable">$basearch</span></div><div class="line">baseurl=https://rpm.nodesource.com/pub_5.x/el/7/<span class="variable">$basearch</span></div><div class="line">failovermethod=priority</div><div class="line">enabled=1</div><div class="line">gpgcheck=1</div><div class="line">gpgkey=file:///etc/pki/rpm-gpg/NODESOURCE-GPG-SIGNING-KEY-EL</div><div class="line">[nodesource-source]</div><div class="line">name=Node.js <span class="keyword">for</span> Enterprise Linux 7 - <span class="variable">$basearch</span> - Source</div><div class="line">baseurl=https://rpm.nodesource.com/pub_5.x/el/7/SRPMS</div><div class="line">failovermethod=priority</div><div class="line">enabled=0</div><div class="line">gpgkey=file:///etc/pki/rpm-gpg/NODESOURCE-GPG-SIGNING-KEY-EL</div><div class="line">gpgcheck=1</div></pre></td></tr></table></figure>
-<h3 id="安装老版本所需nodejs"><a href="#安装老版本所需nodejs" class="headerlink" title="安装老版本所需nodejs"></a>安装老版本所需nodejs</h3><figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum <span class="keyword">install</span> nodejs</div></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">3、拷贝源countly文件到/data/countly目录</div><div class="line">修改 /data/countly/api/config.js 和 /data/countly/frontend/express/config.js      </div><div class="line">3001端口和 6001端口监听地址换成 本地私有地址   <span class="comment">#源文件是监听的原来机器的内网地址，不修改的话，服务启动不了。</span></div></pre></td></tr></table></figure>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="number">4</span><span class="string">、拷贝mongo数据目录到/data/mongo目录，修改mongo配置文件.</span></div><div class="line"></div><div class="line"><span class="string">cat</span> <span class="string">/etc/mongod.conf</span></div><div class="line"><span class="attr">systemLog:</span></div><div class="line"><span class="attr">       destination:</span> <span class="string">file</span></div><div class="line"><span class="attr">       logAppend:</span> <span class="literal">true</span></div><div class="line"><span class="attr">       path:</span> <span class="string">/data/mongodb/mongod.log</span></div><div class="line"><span class="attr">storage:</span></div><div class="line"><span class="attr">       dbPath:</span> <span class="string">/data/mongo</span></div><div class="line"><span class="attr">       journal:</span></div><div class="line"><span class="attr">             enabled:</span> <span class="literal">true</span></div><div class="line"><span class="attr">       engine:</span> <span class="string">mmapv1</span></div><div class="line"><span class="attr">processManagement:</span></div><div class="line"><span class="attr">       fork:</span> <span class="literal">true</span></div><div class="line"><span class="attr">       pidFilePath:</span> <span class="string">/data/mongodb/mongod.pid</span></div><div class="line"><span class="attr">net:</span></div><div class="line"><span class="attr">       port:</span> <span class="number">27017</span></div><div class="line"><span class="attr">       bindIp:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></div><div class="line"><span class="attr">security:</span></div><div class="line"><span class="attr">       authorization:</span> <span class="string">enabled</span></div><div class="line"><span class="attr">operationProfiling:</span></div><div class="line"><span class="attr">       slowOpThresholdMs:</span> <span class="number">40960</span></div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Bigdatacountly01.jpeg" alt=""></figure></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">5、修改硬盘block：</div><div class="line">     blockdev --setra 256 /dev/mapper/xvdc--vg-xvdc–lv    <span class="comment">##按照mongo提示操作</span></div></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">6、修改nginx配置文件  conf.d/default.conf</div><div class="line">      将127.0.0.1修改为本地私有地址</div></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">7、重启countly   mongodb  nginx</div><div class="line"></div><div class="line">countly restart</div><div class="line"></div><div class="line">/etc/init.d/mongod restart</div><div class="line"></div><div class="line">service nginx restart</div><div class="line">迁移完毕</div></pre></td></tr></table></figure>
-
 	
 
 	
@@ -530,6 +450,86 @@
 <p><a href="https://github.com/quantifind/KafkaOffsetMonitor" target="_blank" rel="external">KafkaOffsetMonitor</a>：程序一个jar包的形式运行，部署较为方便。只有监控功能，使用起来也较为安全。</p>
 <p>若只需要监控功能，推荐使用KafkaOffsetMonito，若偏重Kafka集群管理，推荐使用Kafka Manager。</p>
 <p>因为都是开源程序，稳定性欠缺。故需先了解清楚目前已存在哪些Bug，多测试一下，避免出现类似于Kafka Web Console的问题。</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/06/29/Bigdata-hadoop/Kafka/如何手动更新Kafka中某个Topic的偏移量/">Bigdata-如何手动更新Kafka中某个Topic的偏移量</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-06-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a> <a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h1 id="如何手动更新Kafka中某个Topic的偏移量"><a href="#如何手动更新Kafka中某个Topic的偏移量" class="headerlink" title="如何手动更新Kafka中某个Topic的偏移量"></a>如何手动更新Kafka中某个Topic的偏移量</h1><p>　　我们都知道，Kafka topic的偏移量一般都是存储在Zookeeper中，具体的路径为<code>/consumers/[groupId]/offsets/[topic]/[partitionId]</code>，比如iteblog主题分区10的偏移量获取如下：<br>　　<br>　　在有些场景下，这个工具不满足我们的需求，我们需要的是能够手动设置分区的偏移量为任何有意义的值，而不仅仅是earliest或者latest。那咋办？</p>
+<p>　　我们都知道，Kafka topic的偏移量一般都是存储在Zookeeper中，具体的路径为<code>/consumers/[groupId]/offsets/[topic]/[partitionId]</code>，比如<code>mongotail_lz4</code>主题分区10的偏移量获取如下：
+　　</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 2]  get /consumers/ibm_event/offsets/mongotail_lz4/10</div><div class="line">293894</div><div class="line">cZxid = 0x6000011f3</div><div class="line">ctime = Wed Jul 26 17:57:27 CST 2017</div><div class="line">mZxid = 0x6000018c9</div><div class="line">mtime = Wed Jul 26 18:18:27 CST 2017</div><div class="line">pZxid = 0x6000011f3</div><div class="line">cversion = 0</div><div class="line">dataVersion = 20</div><div class="line">aclVersion = 0</div><div class="line">ephemeralOwner = 0x0</div><div class="line">dataLength = 6</div><div class="line">numChildren = 0</div></pre></td></tr></table></figure>
+<p>所以，我们可以通过set命令来设置某个分区的偏移量，如下；</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[zk: 127.0.0.1:2281(CONNECT get /consumers/ibm_event/offsets/mongotail_lz4/10 0 </div><div class="line">0</div><div class="line">cZxid = 0x6000011f3</div><div class="line">ctime = Wed Jul 26 17:57:27 CST 2017</div><div class="line">mZxid = 0x60000204c</div><div class="line">mtime = Wed Jul 26 18:37:21 CST 2017</div><div class="line">pZxid = 0x6000011f3</div><div class="line">cversion = 0</div><div class="line">dataVersion = 21</div><div class="line">aclVersion = 0</div><div class="line">ephemeralOwner = 0x0</div><div class="line">dataLength = 1</div><div class="line">numChildren = 0</div></pre></td></tr></table></figure>
+<p>12个分区分别更新过去。</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/06/29/Bigdata-hadoop/countly/Bigdata-countly需要迁移/">Bigdata-countly需要迁移</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-06-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Big-data-Hadoop/">Big data Hadoop</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Countly/">Countly</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h4 id="官方安装文档：http-resources-count-ly-docs-installing-countly-server"><a href="#官方安装文档：http-resources-count-ly-docs-installing-countly-server" class="headerlink" title="官方安装文档：http://resources.count.ly/docs/installing-countly-server"></a>官方安装文档：<a href="http://resources.count.ly/docs/installing-countly-server" target="_blank" rel="external">http://resources.count.ly/docs/installing-countly-server</a></h4><p>目前<code>countly</code>需要迁移，所需<code>countly</code>版本于官方提供的安装方案有冲突，所以如下安装：</p>
+<p>安装官方<code>countly</code>让其设置所需环境变量及其启动脚本，手动指定安装nojs版本，拷贝原countly文件，具体如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">1、<span class="built_in">cd</span> /data <span class="comment">#countly安装在data目录 我看了安装脚本，是当前在哪个目录，安装文件就在哪个目录</span></div><div class="line">wget -qO- http://c.ly/install | bash</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">2、rpm -qa | grep -i nodejs | xargs -I&#123;&#125;  yum remove &#123;&#125; -y</div><div class="line">卸载掉官网安装的最新nodejs 然后新建如下yum源，用于安装旧版所需nodejs，也可以到nodejs官网下载所需nodejs</div><div class="line">cat /etc/yum.repos.d/nodesource-el.repo </div><div class="line">[nodesource]</div><div class="line">name=Node.js Packages <span class="keyword">for</span> Enterprise Linux 7 - <span class="variable">$basearch</span></div><div class="line">baseurl=https://rpm.nodesource.com/pub_5.x/el/7/<span class="variable">$basearch</span></div><div class="line">failovermethod=priority</div><div class="line">enabled=1</div><div class="line">gpgcheck=1</div><div class="line">gpgkey=file:///etc/pki/rpm-gpg/NODESOURCE-GPG-SIGNING-KEY-EL</div><div class="line">[nodesource-source]</div><div class="line">name=Node.js <span class="keyword">for</span> Enterprise Linux 7 - <span class="variable">$basearch</span> - Source</div><div class="line">baseurl=https://rpm.nodesource.com/pub_5.x/el/7/SRPMS</div><div class="line">failovermethod=priority</div><div class="line">enabled=0</div><div class="line">gpgkey=file:///etc/pki/rpm-gpg/NODESOURCE-GPG-SIGNING-KEY-EL</div><div class="line">gpgcheck=1</div></pre></td></tr></table></figure>
+<h3 id="安装老版本所需nodejs"><a href="#安装老版本所需nodejs" class="headerlink" title="安装老版本所需nodejs"></a>安装老版本所需nodejs</h3><figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum <span class="keyword">install</span> nodejs</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">3、拷贝源countly文件到/data/countly目录</div><div class="line">修改 /data/countly/api/config.js 和 /data/countly/frontend/express/config.js      </div><div class="line">3001端口和 6001端口监听地址换成 本地私有地址   <span class="comment">#源文件是监听的原来机器的内网地址，不修改的话，服务启动不了。</span></div></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="number">4</span><span class="string">、拷贝mongo数据目录到/data/mongo目录，修改mongo配置文件.</span></div><div class="line"></div><div class="line"><span class="string">cat</span> <span class="string">/etc/mongod.conf</span></div><div class="line"><span class="attr">systemLog:</span></div><div class="line"><span class="attr">       destination:</span> <span class="string">file</span></div><div class="line"><span class="attr">       logAppend:</span> <span class="literal">true</span></div><div class="line"><span class="attr">       path:</span> <span class="string">/data/mongodb/mongod.log</span></div><div class="line"><span class="attr">storage:</span></div><div class="line"><span class="attr">       dbPath:</span> <span class="string">/data/mongo</span></div><div class="line"><span class="attr">       journal:</span></div><div class="line"><span class="attr">             enabled:</span> <span class="literal">true</span></div><div class="line"><span class="attr">       engine:</span> <span class="string">mmapv1</span></div><div class="line"><span class="attr">processManagement:</span></div><div class="line"><span class="attr">       fork:</span> <span class="literal">true</span></div><div class="line"><span class="attr">       pidFilePath:</span> <span class="string">/data/mongodb/mongod.pid</span></div><div class="line"><span class="attr">net:</span></div><div class="line"><span class="attr">       port:</span> <span class="number">27017</span></div><div class="line"><span class="attr">       bindIp:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></div><div class="line"><span class="attr">security:</span></div><div class="line"><span class="attr">       authorization:</span> <span class="string">enabled</span></div><div class="line"><span class="attr">operationProfiling:</span></div><div class="line"><span class="attr">       slowOpThresholdMs:</span> <span class="number">40960</span></div></pre></td></tr></table></figure>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Bigdatacountly01.jpeg" alt=""></figure></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">5、修改硬盘block：</div><div class="line">     blockdev --setra 256 /dev/mapper/xvdc--vg-xvdc–lv    <span class="comment">##按照mongo提示操作</span></div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">6、修改nginx配置文件  conf.d/default.conf</div><div class="line">      将127.0.0.1修改为本地私有地址</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">7、重启countly   mongodb  nginx</div><div class="line"></div><div class="line">countly restart</div><div class="line"></div><div class="line">/etc/init.d/mongod restart</div><div class="line"></div><div class="line">service nginx restart</div><div class="line">迁移完毕</div></pre></td></tr></table></figure>
 
 	
 
