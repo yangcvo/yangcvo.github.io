@@ -41,6 +41,225 @@
 
 	<article>
 	
+		<h1><a href="/2016/11/13/日志分析平台/Graylog/Graylog—日志分析平台完美代替Elasticsearch/">Graylog——日志分析平台完美代替Elasticsearch</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-11-13</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Log-analysis-platform/">Log analysis platform</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>摘要: 提起日志聚合工具，有开源界的ELK，商业界的Splunk，但我要介绍开源的后起之秀Graylog，可以说是龙头老大Splunk的开源版。</p>
+<h1 id="Graylog——日志分析平台完美代替Elasticsearch"><a href="#Graylog——日志分析平台完美代替Elasticsearch" class="headerlink" title="Graylog——日志分析平台完美代替Elasticsearch"></a>Graylog——日志分析平台完美代替Elasticsearch</h1><p>先看看 推荐！<a href="https://my.oschina.net/HeAlvin/blog/378262" target="_blank" rel="external">国外程序员整理的系统管理员资源大全</a> 中，国外程序员整理的日志聚合工具的列表：</p>
+<p><strong>日志管理工具：收集，解析，可视化</strong></p>
+<ul>
+<li>Elasticsearch - 一个基于Lucene的文档存储，主要用于日志索引、存储和分析。</li>
+<li>Fluentd - 日志收集和发出</li>
+<li>Flume -分布式日志收集和聚合系统</li>
+<li>Graylog2 -具有报警选项的可插入日志和事件分析服务器</li>
+<li>Heka -流处理系统，可用于日志聚合</li>
+<li>Kibana - 可视化日志和时间戳数据</li>
+<li>Logstash -管理事件和日志的工具</li>
+<li>Octopussy -日志管理解决方案（可视化/报警/报告）</li>
+</ul>
+<p>Graylog与ELK方案的对比</p>
+<ul>
+<li>ELK： Logstash -&gt; Elasticsearch -&gt; Kibana （使用了一些插件head ，marvel）</li>
+<li>Graylog： Graylog Collector -&gt; Graylog Server(封装Elasticsearch) -&gt; Graylog Web</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Graylog.png" alt=""></figure></p>
+<p>做为运维，公司内部使用elk处理日志发现很多问题。</p>
+<p>顺便截图了几张：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog-elk.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog-elk1.png" alt=""></figure></p>
+<p>之前试过Logstash + Elasticsearch + Kibana的方案，发现有几个缺点：</p>
+<ol>
+<li>不能处理多行日志，比如Mysql慢查询，Tomcat/Jetty应用的Java异常打印</li>
+<li>不能保留原始日志，只能把原始日志分字段保存，这样搜索日志结果是一堆Json格式文本，无法阅读。</li>
+<li>不复合正则表达式匹配的日志行，被全部丢弃。</li>
+<li>kibana结合使用经常会出现卡死。资源消耗非常大。</li>
+</ol>
+<p>本着解决以上3个缺点的原则，再次寻找替代方案。 首先找到了商业日志工具Splunk，号称日志界的Google，意思是全文搜索日志的能力，不光能解决以上3个缺点，还提供搜索单词高亮显示，不同错误级别日志标色等吸引人的特性，但是免费版有500M限制，付费版据说要3万美刀，只能放弃，继续寻找。 最后找到了Graylog，第一眼看到Graylog，只是系统日志syslog的采集工具，一点也没吸引到我。但后来深入了解后，才发现Graylog简直就是开源版的Splunk。 我自己总结的Graylog吸引人的地方：</p>
+<ol>
+<li>一体化方案，安装方便，不像ELK有3个独立系统间的集成问题。</li>
+<li>采集原始日志，并可以事后再添加字段，比如http_status_code，response_time等等。</li>
+<li>自己开发采集日志的脚本，并用curl/nc发送到Graylog Server，发送格式是自定义的GELF，Flunted和Logstash都有相应的输出GELF消息的插件。自己开发带来很大的自由度。实际上只需要用inotifywait监控日志的modify事件，并把日志的新增行用curl/netcat发送到Graylog Server就可。</li>
+<li>搜索结果高亮显示，就像google一样。</li>
+<li>搜索语法简单，比如： source:mongo AND reponse_time_ms:&gt;5000，避免直接输入elasticsearch搜索json语法</li>
+<li>搜索条件可以导出为elasticsearch的搜索json文本，方便直接开发调用elasticsearch rest api的搜索脚本。</li>
+</ol>
+<p>Graylog图解</p>
+<p>Graylog开源版官网： <a href="https://www.graylog.org/" target="_blank" rel="external">https://www.graylog.org/</a></p>
+<p>来几张官网的截图：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog2.png" alt=""></figure></p>
+<p><figure class="figure"><img src="https://www.graylog.org/assets/itops_full-87fe2811ab676116142c145affa95b902635b1d6da99718057e8ae9d45c15007.png" alt=""></figure></p>
+<p><figure class="figure"><img src="https://www.graylog.org/assets/overview_dashboard-3817012f923d4a00e9bde1c0547796319cf0396149464f434cfc2ae83a9da826.png" alt=""></figure></p>
+<p>Graylog是强大的日志管理、分析工具。它基于 Elasticsearch, Java和MongoDB。</p>
+<p>Graylog可以收集监控多种不同应用的日志。但是为了示范说明，我只收集syslog。并且，我将会把用到的组件全部安装到一个单独的服务器上。对于大型、生产系统你可以把组件分开安装在不同的服务器上，这样可以提高效率。</p>
+<h3 id="Graylog的组件"><a href="#Graylog的组件" class="headerlink" title="Graylog的组件"></a>Graylog的组件</h3><p>Graylog有4个基本组件：</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Graylog <span class="built_in">Server</span>：这个服务负责接收和处理日志/消息，并且和其他组件沟通。</div><div class="line">Elasticsearch：存储所有的日志，它的性能依赖内存和硬盘IO。</div><div class="line">MongoDB：存储元数据，负载不高。</div><div class="line">graylog-Web接口：用户接口。</div></pre></td></tr></table></figure>
+<p>下面是Graylog组件之间的关系图：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog3.png" alt=""></figure></p>
+<p>下面来自我公司内部分享的PPT拍图：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Graylog4-ppt.png" alt=""></figure></p>
+<p>生产环境 我参考网上一些博客画的图：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog5.png" alt=""></figure></p>
+<h3 id="系统要求："><a href="#系统要求：" class="headerlink" title="系统要求："></a>系统要求：</h3><ul>
+<li>CentOS 6.7</li>
+<li>内存至少2GB</li>
+<li>有root权限</li>
+<li>服务器ip是192.168.1.234，已安装 1.8.0_77-b03</li>
+</ul>
+<p>这里我只是举例单一模式跑服务。</p>
+<h3 id="安装MongoDB"><a href="#安装MongoDB" class="headerlink" title="安装MongoDB"></a>安装MongoDB</h3><p>MongoDB的安装非常简单，执行如下命令导入MongoDB GPG密钥到rpm：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="string">[root@graylog</span> <span class="string">yum.repos.d]#</span> <span class="string">vim</span> <span class="string">/etc/yum.repos.d/mongodb-org-3.0.repo</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="string">[mongodb-org-3.0]</span></div><div class="line"><span class="string">name=MongoDB</span> <span class="string">Repository</span></div><div class="line"><span class="string">baseurl=http://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.0/x86_64/</span></div><div class="line"><span class="string">gpgcheck=0</span></div><div class="line"><span class="string">enabled=1</span></div><div class="line"><span class="meta">---</span></div><div class="line"></div><div class="line"><span class="string">[root@graylog</span> <span class="string">yum.repos.d]#</span> <span class="string">yum</span> <span class="string">install</span> <span class="bullet">-y</span> <span class="string">mongodb-org</span></div><div class="line"></div><div class="line"><span class="string">[root@graylog</span> <span class="string">yum.repos.d]#</span> <span class="string">vi</span> <span class="string">/etc/yum.conf</span></div><div class="line"><span class="string">最后一行添加：</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="string">exclude=mongodb-org,mongodb-org-server,mongodb-org-shell,mongodb-org-mongos,mongodb-org-tools</span></div><div class="line"><span class="meta">---</span></div><div class="line"></div><div class="line"><span class="string">[root@graylog</span> <span class="string">yum.repos.d]#</span> <span class="string">service</span> <span class="string">mongod</span> <span class="string">start</span></div><div class="line"><span class="string">[root@graylog</span> <span class="string">yum.repos.d]#</span> <span class="string">chkconfig</span> <span class="string">mongod</span> <span class="string">on</span></div><div class="line"></div><div class="line"><span class="string">[root@graylog</span> <span class="string">yum.repos.d]#</span> <span class="string">vi</span> <span class="string">/etc/security/limits.conf</span></div><div class="line"><span class="string">最后一行添加：</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="string">*</span>                <span class="string">soft</span>    <span class="string">nproc</span>           <span class="number">65536</span></div><div class="line"><span class="string">*</span>                <span class="string">hard</span>    <span class="string">nproc</span>           <span class="number">65536</span></div><div class="line"><span class="string">mongod</span>           <span class="string">soft</span>    <span class="string">nproc</span>           <span class="number">65536</span></div><div class="line"></div><div class="line"><span class="string">*</span>                <span class="string">soft</span>    <span class="string">nofile</span>          <span class="number">131072</span></div><div class="line"><span class="string">*</span>                <span class="string">hard</span>    <span class="string">nofile</span>          <span class="number">131072</span></div><div class="line"><span class="meta">---</span></div><div class="line"></div><div class="line"><span class="string">[root@graylog</span> <span class="string">~]#</span> <span class="string">vi</span> <span class="string">/etc/init.d/mongod</span></div><div class="line"><span class="string">ulimit</span> <span class="bullet">-f</span> <span class="string">unlimited</span> <span class="string">行前插入：</span></div><div class="line"><span class="meta">---</span></div><div class="line">  <span class="string">if</span> <span class="string">test</span> <span class="bullet">-f</span> <span class="string">/sys/kernel/mm/transparent_hugepage/enabled;</span> <span class="string">then</span></div><div class="line">    <span class="string">echo</span> <span class="string">never</span> <span class="string">&gt; /sys/kernel/mm/transparent_hugepage/enabled</span></div><div class="line">  fi</div><div class="line">  if test -f /sys/kernel/mm/transparent_hugepage/defrag; then</div><div class="line">    echo never &gt; /sys/kernel/mm/transparent_hugepage/defrag</div><div class="line">  fi</div><div class="line">---</div><div class="line">[root@graylog ~]# /etc/init.d/mongod restart</div></pre></td></tr></table></figure>
+<h3 id="安装Elasticsearch"><a href="#安装Elasticsearch" class="headerlink" title="安装Elasticsearch"></a>安装Elasticsearch</h3><p>Graylog目前为止只能使用Elasticsearch 2.0以前的版本，所以，在这一步中，我将安装Elasticsearch 1.7.x。</p>
+<p>添加Elasticsearch GPG密钥：</p>
+<pre><code>$ sudo rpm --import http://packages.elastic.co/GPG-KEY-elasticsearch
+</code></pre><p>创建Elasticsearch源：</p>
+<pre><code>$ sudo vim /etc/yum.repos.d/elasticsearch.repo
+</code></pre><p>写入如下内容：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="section">[elasticsearch-1.7]</span></div><div class="line"><span class="attr">name</span>=Elasticsearch repository for <span class="number">1.7</span>.x packages</div><div class="line"><span class="attr">baseurl</span>=http://packages.elastic.co/elasticsearch/<span class="number">1.7</span>/centos</div><div class="line"><span class="attr">gpgcheck</span>=<span class="number">1</span></div><div class="line"><span class="attr">gpgkey</span>=http://packages.elastic.co/GPG-KEY-elasticsearch</div><div class="line"><span class="attr">enabled</span>=<span class="number">1</span></div></pre></td></tr></table></figure>
+<p>安装Elasticsearch：</p>
+<pre><code>$ sudo yum -y install elasticsearch
+</code></pre><p>配置前先创建几个目录文件</p>
+<pre><code>mkdir /data/es-data -p
+mkdir /data/es-work -p
+</code></pre><p>Elasticsearch安装完成之后，编辑配置文件：</p>
+<pre><code>sudo vim /etc/elasticsearch/elasticsearch.yml
+
+ node.data: true  # 数据存放true
+</code></pre><p>找到cluster.name一行，取消这一行的注释，并把值改为graylog-development：</p>
+<pre><code>cluster.name: graylog-development
+
+
+ path.data: /data/es-data     es数据存放目录  这里需要自己新建目录
+
+ path.work: /data/es-work   
+</code></pre><p>你也许想要限制外部访问Elasticsearch（端口9200），这样可以提高系统的安全性。找到network.host一行，取消注释，并把值改为localhost：</p>
+<pre><code>network.host: 192.168.1.234
+</code></pre><p>保存退出文件。</p>
+<p>重启Elasticsearch：</p>
+<pre><code>$ service elasticsearch start
+</code></pre><p>设置开机启动：</p>
+<pre><code>$ chkconfig --add elasticsearch
+</code></pre><p>执行如下命令测试Elasticsearch是否正常运行：</p>
+<pre><code>$ curl -XGET &apos;http://localhost:9200/_cluster/health?pretty=true&apos;
+</code></pre><p>输出的信息如下表示Elasticsearch安装成功：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">drwxr-xr-x. <span class="number">2</span> root   root  <span class="number">4096</span> <span class="number">9</span>月  <span class="number">23</span> <span class="number">2011</span> src</div><div class="line">[root<span class="symbol">@ELK</span> <span class="keyword">local</span>]<span class="meta">#  curl -XGET <span class="string">'http://192.168.1.234:9200/_cluster/health?pretty=true'</span></span></div><div class="line">&#123;</div><div class="line">  <span class="string">"cluster_name"</span> : <span class="string">"graylog-development"</span>,</div><div class="line">  <span class="string">"status"</span> : <span class="string">"yellow"</span>,</div><div class="line">  <span class="string">"timed_out"</span> : <span class="literal">false</span>,</div><div class="line">  <span class="string">"number_of_nodes"</span> : <span class="number">1</span>,</div><div class="line">  <span class="string">"number_of_data_nodes"</span> : <span class="number">1</span>,</div><div class="line">  <span class="string">"active_primary_shards"</span> : <span class="number">37</span>,</div><div class="line">  <span class="string">"active_shards"</span> : <span class="number">37</span>,</div><div class="line">  <span class="string">"relocating_shards"</span> : <span class="number">0</span>,</div><div class="line">  <span class="string">"initializing_shards"</span> : <span class="number">0</span>,</div><div class="line">  <span class="string">"unassigned_shards"</span> : <span class="number">37</span>,</div><div class="line">  <span class="string">"delayed_unassigned_shards"</span> : <span class="number">0</span>,</div><div class="line">  <span class="string">"number_of_pending_tasks"</span> : <span class="number">0</span>,</div><div class="line">  <span class="string">"number_of_in_flight_fetch"</span> : <span class="number">0</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>安装Graylag</p>
+<p>Graylog的最新版是1.1.4，下载链接如下：<br><a href="https://packages.graylog2.org/repo/el/6Server/1.1/x86_64/graylog-server-1.1.4-1.noarch.rpm" target="_blank" rel="external">https://packages.graylog2.org/repo/el/6Server/1.1/x86_64/graylog-server-1.1.4-1.noarch.rpm</a><br><a href="https://packages.graylog2.org/repo/el/6Server/1.1/x86_64/graylog-web-1.1.4-1.noarch.rpm" target="_blank" rel="external">https://packages.graylog2.org/repo/el/6Server/1.1/x86_64/graylog-web-1.1.4-1.noarch.rpm</a></p>
+<p>现在Graylog的所有依赖软件安装完成，这一步我们来安装graylog-server。</p>
+<p>首先，下载Graylog RPM软件包：</p>
+<pre><code>$ cd 
+$ sudo rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-1.3-repository-el7_latest.rpm
+</code></pre><p>安装graylog-server：</p>
+<pre><code>yum -y install graylog-server
+</code></pre><p>安装pwgen，我们使用它生成随机密码：</p>
+<pre><code>yum -y install epel-release
+yum -y install pwgen
+</code></pre><p>现在我们来设置Graylog管理员的密钥。配置文件位于/etc/graylog/server/server.conf目录，需要修改password_secret参数：</p>
+<pre><code>$ SECRET=$(pwgen -s 96 1)
+$ sudo -E sed -i -e &apos;s/password_secret =.*/password_secret = &apos;$SECRET&apos;/&apos; /etc/graylog/server/server.conf
+</code></pre><p>执行完上面命令之后，password_secret参数的样子：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog6.png" alt=""></figure></p>
+<p>这一步，设置管理员密码。由于密码使用sha哈希算法，我们需要把明文密码转换为hash，然后赋值给root_password_sha2参数。例如，我要设置的管理员密码是 Ihaozhuo_b313，它对应的hash为：</p>
+<pre><code>$ echo -n Ihaozhuo_b313 | sha256sum | awk &apos;{print $1}&apos;
+</code></pre><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog7.png" alt=""></figure></p>
+<p>编辑/etc/graylog/server/server.conf，设置root_password_sha2参数：</p>
+<pre><code>$ sudo vim /etc/graylog/server/server.conf
+</code></pre><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog8.png" alt=""></figure></p>
+<p>现在Graylog管理员密码为Ihaozhuo_b313。</p>
+<p>配置rest_transport_uri参数，设置Graylog web接口和服务器的沟通方式。由于我们把所有组件都安装到了单独的一个服务器上，需要把值设置为<strong>127.0.0.1</strong> 或 <strong>localhost</strong>。找到rest_transport_uri一行，取消注释，并把值设置为：</p>
+<pre><code>rest_transport_uri = http://192.168.1.234:12900/
+</code></pre><p>由于我们只有一个Elasticsearch shard，需要把elasticsearch_shards参数设置为1：</p>
+<pre><code>elasticsearch_shards = 1
+</code></pre><p>更改elasticsearch_cluster_name参数，应该和前面Elasticsearch的<strong>cluster.name</strong>参数相对应：</p>
+<pre><code>elasticsearch_cluster_name = graylog-development
+</code></pre><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog9.png" alt=""></figure></p>
+<p>取消下面两行的注释，检测Elasticsearch：</p>
+<pre><code>172 elasticsearch_discovery_zen_ping_multicast_enabled = false
+173 elasticsearch_discovery_zen_ping_unicast_hosts = 192.168.1.234:9300
+</code></pre><p>启动graylog-server：</p>
+<pre><code>/etc/init.d/graylog-web restart
+</code></pre><h3 id="安装Graylog-Web"><a href="#安装Graylog-Web" class="headerlink" title="安装Graylog Web"></a>安装Graylog Web</h3><p>安装Graylog Web：</p>
+<pre><code>$ sudo yum -y install graylog-web
+</code></pre><p>安装完成之后配置Graylog Web的密钥，配置文件位于/etc/graylog/web/web.conf，更改application.secret参数：</p>
+<pre><code>$ SECRET=$(pwgen -s 96 1)
+$ sudo -E sed -i -e &apos;s/application\.secret=&quot;&quot;/application\.secret=&quot;&apos;$SECRET&apos;&quot;/&apos; /etc/graylog/web/web.conf
+</code></pre><p>配置graylog2-server.uris参数，它的值应该和Graylog的rest_listen_uri参数相对应：</p>
+<pre><code>$ sudo vim /etc/graylog/web/web.conf
+
+graylog2-server.uris=&quot;http://127.0.0.1:12900/&quot;
+</code></pre><p>重启graylog-web：</p>
+<pre><code>/etc/init.d/graylog-web restart
+</code></pre><h3 id="配置Graylog服务器接收其他服务器的syslog日志"><a href="#配置Graylog服务器接收其他服务器的syslog日志" class="headerlink" title="配置Graylog服务器接收其他服务器的syslog日志"></a>配置Graylog服务器接收其他服务器的syslog日志</h3><h4 id="登录Graylog-Web"><a href="#登录Graylog-Web" class="headerlink" title="登录Graylog Web"></a>登录Graylog Web</h4><p>使用浏览器访问Graylog服务器的域名或IP：<strong><a href="http://graylog_public_IP_domain:9000/" target="_blank" rel="external">http://graylog_public_IP_domain:9000/</a></strong>。</p>
+<p>你应该能看到一个登录界面，使用admin做为用户名和前面设置的密码登录。</p>
+<p>登录之后：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog10.png" alt=""></figure></p>
+<p>上面的红数字1是通知（you have a node without any running inputs），下面设置通过UDP接收syslog。</p>
+<p>创建syslog UDP输入</p>
+<p>添加要接收的其他服务器syslog日志：System-&gt;Inputs-&gt;Syslog UDP-&gt;Launch new input。</p>
+<p>在弹出的窗口上输入如下信息：</p>
+<ul>
+<li>Title: syslog</li>
+<li>Port: 8514</li>
+<li>Bind address: 这里写Graylog-server服务器主机IP</li>
+</ul>
+<p>点击Launch</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog11.png" alt=""></figure></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog12.png" alt=""></figure></p>
+<p>如果你需要收集多个服务器的日志，重复上面步骤。</p>
+<p>现在，我们的Graylog服务器已经做好了接收其他服务器发来日志的准备。下面我们还需要配置其他服务器，让这些服务器给Graylog服务器发送日志。</p>
+<h4 id="配置其他服务器给Graylog服务器发送syslog"><a href="#配置其他服务器给Graylog服务器发送syslog" class="headerlink" title="配置其他服务器给Graylog服务器发送syslog"></a>配置其他服务器给Graylog服务器发送syslog</h4><p>参考官网：<a href="https://marketplace.graylog.org/addons/a47beb3b-0bd9-4792-a56a-33b27b567856" target="_blank" rel="external">从Linux系统日志发送到Graylog</a></p>
+<p>SSH登录“其他服务器”，创建rsyslog配置文件90-graylog.conf：</p>
+<pre><code>sudo vim /etc/rsyslog.d/90-graylog.conf
+</code></pre><p>添加如下代码，把 graylog_server_IP 替换为Graylog服务器ip地址：</p>
+<pre><code>$template GRAYLOGRFC5424,&quot;&lt;%pri%&gt;%protocol-version% %timestamp:::date-rfc3339%    %HOSTNAME% %app-name% %procid% %msg%\n&quot;
+*.* @graylog_server_IP:8514;GRAYLOGRFC5424
+</code></pre><p>重启rsyslog服务使生效：</p>
+<pre><code>/etc/init.d/rsyslog restart
+</code></pre><p>配置完成之后，回到Graylog Web，点击Sources，查看是否有新添加rsyslog。</p>
+<h4 id="Graylog使用http协议发送："><a href="#Graylog使用http协议发送：" class="headerlink" title="Graylog使用http协议发送："></a>Graylog使用http协议发送：</h4><p>添加要接收的其他服务器syslog日志：System-&gt;Inputs-&gt;GELF HTTP-&gt;Launch new input。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog14.png" alt=""></figure></p>
+<p>然后在服务器上面发送下面命令。</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="string">[root@graylog-development ~]</span># curl -XPOST http://<span class="number">192.168.1.234:12201</span>/gelf -p0 -d '&#123;<span class="string">"short_message"</span>:<span class="string">"Hello there"</span>, <span class="string">"host"</span>:<span class="string">"example.org"</span>, <span class="string">"facility"</span>:<span class="string">"test"</span>, <span class="string">"_foo"</span>:<span class="string">"bar"</span>&#125;'</div><div class="line"><span class="string">[root@graylog-development ~]</span># curl -XPOST http://<span class="number">192.168.1.234:12201</span>/gelf -p0 -d '&#123;<span class="string">"short_message"</span>:<span class="string">"测试"</span>, <span class="string">"host"</span>:<span class="string">"example.org"</span>, <span class="string">"facility"</span>:<span class="string">"test"</span>, <span class="string">"_foo"</span>:<span class="string">"bar"</span>&#125;'</div></pre></td></tr></table></figure>
+<p>这里定义192.168.1.234 是graylog-server服务器地址 12201 端口是之前创建好的。</p>
+<h3 id="搜素Graylog"><a href="#搜素Graylog" class="headerlink" title="搜素Graylog"></a>搜素Graylog</h3><p>假如你要搜索hello：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog13.png" alt=""></figure></p>
+<p>上面安装配置了基本的Graylog服务器。</p>
+<h3 id="时区和高亮设置"><a href="#时区和高亮设置" class="headerlink" title="时区和高亮设置"></a>时区和高亮设置</h3><p>admin帐号的时区：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="string">[root@graylog</span> <span class="string">~]#</span> <span class="string">vi</span> <span class="string">/etc/graylog/server/server.conf</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="number">30</span> <span class="string">root_timezone</span> <span class="string">=</span> <span class="string">Asia/Shanghai</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="string">[root@graylog</span> <span class="string">~]#</span> <span class="string">/etc/init.d/graylog-server</span> <span class="string">restart</span></div></pre></td></tr></table></figure>
+<p>其他帐号的默认时区：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="string">[root@graylog</span> <span class="string">~]#</span> <span class="string">vi</span> <span class="string">/etc/graylog/web/web.conf</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="number">18</span> <span class="string">timezone="Asia/Shanghai"</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="string">[root@graylog</span> <span class="string">~]#</span> <span class="string">/etc/init.d/graylog-web</span> <span class="string">restart</span></div></pre></td></tr></table></figure>
+<p>允许查询结果高亮：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="string">[root@graylog</span> <span class="string">~]#</span> <span class="string">vi</span> <span class="string">/etc/graylog/server/server.conf</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="number">147</span> <span class="string">allow_highlighting</span> <span class="string">=</span> <span class="literal">true</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="string">[root@graylog</span> <span class="string">~]#</span> <span class="string">/etc/init.d/graylog-server</span> <span class="string">restart</span></div></pre></td></tr></table></figure>
+<h3 id="移动数据目录"><a href="#移动数据目录" class="headerlink" title="移动数据目录"></a>移动数据目录</h3><figure class="highlight livescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">移动elasticsearch的数据目录</div><div class="line">[root@graylog ~]<span class="comment"># sudo /etc/init.d/elasticsearch stop</span></div><div class="line">[root@graylog ~]<span class="comment"># sudo cp -rp /var/lib/elasticsearch/ /data/</span></div><div class="line">[root@graylog ~]<span class="comment"># sudo vi /etc/sysconfig/elasticsearch</span></div><div class="line">+<span class="number">16</span> DATA_DIR=/data/elasticsearch</div><div class="line">[root@graylog ~]<span class="comment"># sudo /etc/init.d/elasticsearch start</span></div><div class="line"></div><div class="line">移动mongo的数据目录</div><div class="line">[root@graylog ~]<span class="comment"># sudo /etc/init.d/mongod stop</span></div><div class="line">[root@graylog ~]<span class="comment"># sudo cp -rp /var/lib/mongo /data/</span></div><div class="line">[root@graylog ~]<span class="comment"># sudo vi /etc/mongod.conf</span></div><div class="line">---</div><div class="line"><span class="number">13</span> dbpath=/<span class="keyword">var</span>/lib/mongo<span class="function"></span></div><div class="line">-&gt;</div><div class="line"><span class="number">13</span> dbpath=/data/mongo</div><div class="line">---</div><div class="line">[mtagent@access2 ~]$ sudo /etc/init.d/mongod start</div></pre></td></tr></table></figure>
+<h4 id="其余参考文档"><a href="#其余参考文档" class="headerlink" title="其余参考文档"></a>其余参考文档</h4><p><a href="http://docs.graylog.org/en/1.3/" target="_blank" rel="external">参考官网</a></p>
+<p><a href="http://blog.topspeedsnail.com/archives/4066" target="_blank" rel="external">Centos7 搭建graylog</a></p>
+<p><a href="https://my.oschina.net/fitnessefan/blog/464351?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">Graylog——日志聚合工具中的后起之秀</a></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
 		<h1><a href="/2016/09/11/个人生活记录/考驾照的艰辛历程/">考驾照的艰辛历程</a></h1>
 	
 	<div class="article__infos">
@@ -196,56 +415,6 @@
 <p>后面坚持了一个月下来，每天跑完拉拉韧带，做下有氧运动是比较好的方式。</p>
 <p>运动一个月发现睡眠更好了。之前一直失眠，以后继续坚持，跑步🏃又在网上买了专业的运动服最好买两套可以换洗，跑鞋。</p>
 <p>因为爱上了跑步，也认识了很多健身的朋友。希望努力以后可以把身体的体重往60发展。哈哈</p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/05/05/个人生活记录/黄山之旅/">黄山之旅</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-05-05</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/生活/">生活</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Personal-life-record/">Personal life record</a> <a class="article__tag-link" href="/tags/旅行日记/">旅行日记</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h4 id="俗话说：“五岳归来不看山-黄山归来不看岳-”黄山以奇松、怪石、云海、温泉、冬雪“五绝”闻名中外"><a href="#俗话说：“五岳归来不看山-黄山归来不看岳-”黄山以奇松、怪石、云海、温泉、冬雪“五绝”闻名中外" class="headerlink" title="俗话说：“五岳归来不看山,黄山归来不看岳.”黄山以奇松、怪石、云海、温泉、冬雪“五绝”闻名中外."></a>俗话说：“五岳归来不看山,黄山归来不看岳.”黄山以奇松、怪石、云海、温泉、冬雪“五绝”闻名中外.</h4><p>2016年5月1号 我和女票一起去黄山看日出。</p>
-<p>出发前来一张： </p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ghost9.pic.jpg" alt=""></figure></p>
-<ul>
-<li>4月29号我匆匆忙忙的买好了前往黄山风景区的大巴汽车票，第一次去也不懂很多，前提安排都没做好准备就出发了因为当天看5月1号是天气预报说雷阵雨转中雨，就害怕看日出的泡汤。</li>
-<li>4月30号我和女票一起坐长途大巴到黄山风景区差不多4个多小时，挺方便的，直达风景区脚下，到那边是中午4点多，那时候天气很好，根本感觉不到明天会有雷阵雨的袭击。</li>
-</ul>
-<h3 id="到那边先要做好几点："><a href="#到那边先要做好几点：" class="headerlink" title="到那边先要做好几点："></a>到那边先要做好几点：</h3><ul>
-<li>定好住宿酒店：因为那边酒店是挺多的，如果赶上节日去的话，估计也没了，所以要去的话，提前一个周，价格便宜几百。如果是想看日出的最好早点定，因为山上的酒店，几乎稍微一般般都要1.5K以上<br>带好雨具： 因为那边黄山常年梅雨天气比较多，因为我那边玩，没带雨具，很多推销的卖一次性的雨衣，就千万不要买。最好自己带着，我是因为定酒店，酒店有送雨具，还有黄山旅游讲解景点和一幅地图。 （那是不是想问我是什么酒店：黄山大红门酒店 地理位置：寨西兆成天地B4幢）</li>
-<li>那边的旅游门票：到那边以后只有一个南门是旅游的登上入口，旅游节假日人特别多，就需要排队，售票处是5点半开门。</li>
-<li>选择走路上山还是乘坐索道：如果当天上去当天下来，我还是建议早上云古寺乘坐索道上去，到索道那边需要统一坐大巴车上去，大巴车需要购买门票，每个人20元，因为私家车是不能上去的。为什么建议早上乘坐索道上去好，因为早上风景太阳刚刚出来，上面风景最好，主要一些景点都是在山顶上面。 下来可以步行慢慢从后山下来，可以看到迎客松和天都峰。如果走路上去走路下来，就往慈光阁上去，因为那边上山的话比较轻松。下山可以往云海大峡谷那边。</li>
-</ul>
-<p>印象最深的是：从云古寺坐索道上去 走不远就可以看到一颗连理松身体分开的，很独特。<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ghost5.pic.jpg" alt=""></figure></p>
-<p>谈谈吃的： 到那边记得吃的当地的徽菜特产点臭鳜鱼，和毛豆腐特别不错。还有笋肉，都挺好吃的。 那边最多的就是梅干菜烧饼，是那边的特产。 </p>
-<p>赶上了看日出的那一瞬间： </p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ghost6.pic.jpg" alt=""></figure></p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ghost7.pic.jpg" alt=""></figure></p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ghost3.pic.jpg" alt=""></figure></p>
-<p>非常愉快的一次登山旅程。</p>
 
 	
 
