@@ -41,6 +41,81 @@
 
 	<article>
 	
+		<h1><a href="/2017/05/28/Bigdata-hadoop/Kafka/开源的Kafka集群管理器(Kafka Manager)/">Bigdata-开源的Kafka集群管理器(Kafka Manager)</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-05-28</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Bigdata-Hadoop/">Bigdata Hadoop</a> <a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="Kafka-Manager"><a href="#Kafka-Manager" class="headerlink" title="Kafka Manager"></a>Kafka Manager</h2><p>A tool for managing <a href="http://kafka.apache.org/" target="_blank" rel="external">Apache Kafka.</a></p>
+<h4 id="It-supports-the-following"><a href="#It-supports-the-following" class="headerlink" title="It supports the following:"></a>It supports the following:</h4><ul>
+<li>管理多个群集</li>
+<li>容易检查集群状态（主题，消费者，偏移量，经纪人，副本分发，分区分配）</li>
+<li>运行首选副本选举</li>
+<li>使用选项生成分区分配，以选择要使用的代理</li>
+<li>运行分区的重新分配（基于生成的分配）</li>
+<li>创建可选主题配置的主题（0.8.1.1具有不同于0.8.2+的配置）</li>
+<li>删除主题（仅支持0.8.2+，并记住在代理配 置中设置delete.topic.enable = true）</li>
+<li>主题列表现在表示标记为删除的主题（仅支持0.8.2+）</li>
+<li>批量生成多个主题的分区分配，并选择要使用的代理</li>
+<li>批量运行多个主题的分区重新分配</li>
+<li>将分区添加到现有主题</li>
+<li>更新现有主题的配置</li>
+<li>可选地，启用JMX轮询代理级和主题级度量。</li>
+<li>可选地筛选出在zookeeper中没有ids / owner /＆offset /目录的消费者。</li>
+</ul>
+<p>参考开源地址：<a href="https://github.com/yahoo/kafka-manager" target="_blank" rel="external">https://github.com/yahoo/kafka-manager</a></p>
+<h4 id="Requirements"><a href="#Requirements" class="headerlink" title="Requirements"></a>Requirements</h4><p>Kafka 0.8.1.1 or 0.8.2.<em> or 0.9.0.</em> or 0.10.0.*<br>Java 8+</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">sudo wget --header <span class="string">"Cookie: oraclelicense=accept-securebackup-cookie”   http://download.oracle.com/otn-pub/java/jdk/8u144-b01/090f390dda5b47b9b721c7dfaa008135/jdk-8u144-linux-x64.tar.gz</span></div><div class="line"></div><div class="line">sudo vim /etc/profile</div><div class="line">export JAVA_HOME=/home/jollybi/tools/jdk1.8.0_144</div><div class="line">export LASSPATH=.:<span class="variable">$JAVA_HOME</span>/lib/tools.jar:<span class="variable">$JAVA_HOME</span>/lib/dt.jar:<span class="variable">$JAVA_HOME</span>/lib:<span class="variable">$JAVA_HOME</span>/jre/lib:<span class="variable">$JAVA_HOME</span>/bin</div><div class="line">export PATH=<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$JAVA_HOME</span>/jre/bin:<span class="variable">$TOMCAT_HOME</span>/bin:<span class="variable">$PATH</span></div></pre></td></tr></table></figure>
+<h4 id="Deployment"><a href="#Deployment" class="headerlink" title="Deployment"></a>Deployment</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">git <span class="built_in">clone</span> https://github.com/yahoo/kafka-manager.git</div><div class="line">./sbt clean dist</div><div class="line"></div><div class="line">[info]   Compilation completed <span class="keyword">in</span> 13.366 s</div><div class="line">model contains 672 documentable templates</div><div class="line">[info] Main Scala API documentation successful.</div><div class="line">[info] Packaging /home/jollybi/kafka-manager/target/scala-2.11/kafka-manager_2.11-1.3.3.8-javadoc.jar ...</div><div class="line">[info] Done packaging.</div><div class="line">[info] Packaging /home/jollybi/kafka-manager/target/scala-2.11/kafka-manager_2.11-1.3.3.8.jar ...</div><div class="line">[info] Done packaging.</div><div class="line">[info] Packaging /home/jollybi/kafka-manager/target/scala-2.11/kafka-manager_2.11-1.3.3.8-sans-externalized.jar ...</div><div class="line">[info] Done packaging.</div><div class="line">[info]</div><div class="line">[info] Your package is ready <span class="keyword">in</span> /home/jollybi/kafka-manager/target/universal/kafka-manager-1.3.3.8.zip</div><div class="line">[info]</div><div class="line">[success] Total time: 142 s, completed Jul 27, 2017 3:48:35 PM</div><div class="line">完成</div></pre></td></tr></table></figure>
+<h4 id="Starting-the-service"><a href="#Starting-the-service" class="headerlink" title="Starting the service"></a>Starting the service</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">解压缩生成的zip文件后，将工作目录更改为可以运行的服务：</div><div class="line"></div><div class="line">unzip /home/jollybi/kafka-manager/target/universal/kafka-manager-1.3.3.8.zip</div><div class="line"></div><div class="line"></div><div class="line">修改zk地址和管理员账号和密码：</div><div class="line"></div><div class="line">vim kafka-manager-1.3.3.8/conf/application.conf</div><div class="line"></div><div class="line"><span class="comment">#kafka-manager.zkhosts="kafka-manager-zookeeper:2181"</span></div><div class="line"><span class="comment">#zk集群可以这么配置：</span></div><div class="line">kafka-manager.zkhosts=<span class="string">"kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281"</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">#根据个人公司这里可以开启true 设置账号和密码</span></div><div class="line">basicAuthentication.enabled=<span class="literal">true</span></div><div class="line">basicAuthentication.username=<span class="string">"admin"</span></div><div class="line">basicAuthentication.password=<span class="string">"admin"</span></div><div class="line"></div><div class="line"></div><div class="line">默认情况下，它将选择端口9000.这是可以覆盖的，配置文件的位置也是如此。例如：</div><div class="line"></div><div class="line">$ ./bin/kafka-manager -Dconfig.file=conf/application.conf -Dhttp.port=8080</div><div class="line"></div><div class="line">后台生效：</div><div class="line"></div><div class="line">$ ./bin/kafka-manager -Dconfig.file=conf/application.conf -Dhttp.port=8080 &amp;</div><div class="line"></div><div class="line">再次，如果java不在您的路径中，或者您需要针对不同版本的Java运行，请按如下所示添加-java-home选项：</div><div class="line"></div><div class="line">$ bin/kafka-manager -java-home /usr/<span class="built_in">local</span>/oracle-java-8</div></pre></td></tr></table></figure>
+<h4 id="Packaging"><a href="#Packaging" class="headerlink" title="Packaging"></a>Packaging</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">If you<span class="string">'d like to create a Debian or RPM package instead, you can run one of:</span></div><div class="line"></div><div class="line">sbt debian:packageBin</div><div class="line"></div><div class="line">sbt rpm:packageBin</div></pre></td></tr></table></figure>
+<h3 id="查看端口："><a href="#查看端口：" class="headerlink" title="查看端口："></a>查看端口：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[jollybi@kafka1 conf]$ netstat -ntulp | grep 8080</div><div class="line">(Not all processes could be identified, non-owned process info</div><div class="line"> will not be shown, you would have to be root to see it all.)</div><div class="line">tcp6       0      0 :::8080                 :::*                    LISTEN      70517/java</div></pre></td></tr></table></figure>
+<h3 id="网站访问kafka-Manger"><a href="#网站访问kafka-Manger" class="headerlink" title="网站访问kafka Manger"></a>网站访问kafka Manger</h3><p>这里我设置了登录账号和密码： admin admin</p>
+<p><figure class="figure"><img src="media/15014722977191.jpg" alt=""></figure></p>
+<p>创建kafka名字;<br>选择kafka版本号;<br>JMX这个不需要;<br>下面选择默认点击确认即可.</p>
+<p><figure class="figure"><img src="media/15014724051756.jpg" alt=""></figure></p>
+<blockquote>
+<p>(2)kafka 启用 JMX端口</p>
+</blockquote>
+<p><figure class="figure"><img src="media/15020729297106.jpg" alt=""></figure></p>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">以如下命令重新启动kafka</div><div class="line"></div><div class="line">JMX_PORT=<span class="number">9999</span> bin/kafka-<span class="built_in">server</span>-start.sh config/<span class="built_in">server</span>.properties</div><div class="line">或者修改kafka-<span class="built_in">server</span>-start.sh 文件，追加JMX_PORT=<span class="string">"9999"</span></div><div class="line"></div><div class="line"> <span class="keyword">if</span> [ <span class="string">"x$KAFKA_HEAP_OPTS"</span> = <span class="string">"x"</span> ]; <span class="keyword">then</span></div><div class="line">    export KAFKA_HEAP_OPTS=<span class="string">"-Xmx1G -Xms1G"</span></div><div class="line">    export JMX_PORT=<span class="string">"9999"</span></div><div class="line">fi</div><div class="line">然后重新启动kafka</div><div class="line">bin/kafka-<span class="built_in">server</span>-start.sh config/<span class="built_in">server</span>.properties</div><div class="line"></div><div class="line">但是Metrics中数据都是零</div><div class="line">查看 kafka manager 报错，无法连接jxm</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">解决方法 修改每个kafka broker的 kafka_2.11-0.10.1.0/bin/kafka-run-class.sh文件</div><div class="line">​</div><div class="line"><span class="comment"># JMX settings</span></div><div class="line"><span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$KAFKA_JMX_OPTS</span>"</span> ]; <span class="keyword">then</span></div><div class="line">  KAFKA_JMX_OPTS=<span class="string">"-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false  -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=75.126.5.162"</span></div><div class="line"><span class="keyword">fi</span></div><div class="line"></div><div class="line"></div><div class="line">-Djava.rmi.server.hostname 的值为当前kafka服务器ip</div><div class="line"></div><div class="line">这里说明下集群kafka都需要修改</div></pre></td></tr></table></figure>
+<p><figure class="figure"><img src="media/15020745879851.jpg" alt=""></figure></p>
+<p><figure class="figure"><img src="media/15014725443386.jpg" alt=""></figure></p>
+<p><figure class="figure"><img src="media/15014725288425.jpg" alt=""></figure></p>
+<p><figure class="figure"><img src="media/15014725659340.jpg" alt=""></figure></p>
+<p><figure class="figure"><img src="media/15014725864134.jpg" alt=""></figure></p>
+<p><figure class="figure"><img src="media/15014726361909.jpg" alt=""></figure></p>
+<p><figure class="figure"><img src="media/15014727525618.jpg" alt=""></figure></p>
+<p><figure class="figure"><img src="media/15014727932029.jpg" alt=""></figure></p>
+<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
+<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
 		<h1><a href="/2017/05/27/Bigdata-hadoop/zookeeper/Bigdata-ZooKeeper的配置详解优化/">Bigdata-ZooKeeper的配置详解优化</a></h1>
 	
 	<div class="article__infos">
@@ -168,6 +243,54 @@
 
 	<article>
 	
+		<h1><a href="/2017/05/08/Bigdata-hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/">Bigdata-hadoop新增节点集群启动请求异常：Last contact：200</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-05-08</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="前言闲谈："><a href="#前言闲谈：" class="headerlink" title="前言闲谈："></a>前言闲谈：</h3><p>之前做CDN云计算公司来到美年大健康现在在一家医疗大数据公司负责运维部门大大小小的活，既然是医疗大数据当然离不开大数据存储的维护，现在也同时维护大数据运维相关工作 <code>hadoop,spark,sqoop,hue,hive,Hbase,zookeeper</code>等等 测试开发生产使用起来,从集群环境维护 提升数据稳定性 高可用维护。</p>
+<p>前面说了一堆自己闲聊，真正解决这次问题是hadoop新增节点需要注意哪几点：</p>
+<p><code>新增节点如何新增我会在另外一篇详细说的这里我讲一些需要注意掉的问题。</code></p>
+<h3 id="需要修改几个配置："><a href="#需要修改几个配置：" class="headerlink" title="需要修改几个配置："></a>需要修改几个配置：</h3><p>（1）hadoop data 数据目录 VERSION 里面的搭建集群时，直接克隆会出现这个问题。解决方法同上两种，最好修改${/hadoop/tmp/dir}/dfs/data/current/VERSION中的storageID，使其不同。第一种会导致hdfs数据丢失。</p>
+<p>解决方法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">（1） datanode启动是会加载DataStorage，如果不存在则会format</div><div class="line">（2）初次启动DataStorage的storageID是空的，所以会生成一个storageID</div></pre></td></tr></table></figure>
+<p>参考我解决的：<code>这里我拷贝过来 直接删除。等集群namenode启动 会自动生成。</code></p>
+<p>这个解决以后 新增的机器必须关闭防火墙。因为这个原因会导致我 hadoop新增节点集群启动请求异常：Last contact：200</p>
+<p>（2） 集群重启时防火墙自动开启导致：</p>
+<p>这里贴张图片给大家看看：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop1.png" alt=""></figure></p>
+<p>问题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">2017-07-04 18:43:30,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 8 time(s).</div><div class="line">2017-07-04 18:43:31,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 9 time(s).</div><div class="line">2017-07-04 18:43:31,479 ERROR org.apache.hadoop.hdfs.server.datanode.DataNode: java.io.IOException: Call to /192.168.18.218:9000 failed on <span class="built_in">local</span> exception: java.net.NoRouteToHostException: 没有到主机的路由</div><div class="line">        at org.apache.hadoop.ipc.Client.wrapException(Client.java:775)</div><div class="line">        at org.apache.hadoop.ipc.Client.call(Client.java:743)</div><div class="line">解决方法：在root权限下关闭防火墙：service iptables stop</div></pre></td></tr></table></figure>
+<p>最好配置成机器重启默认防火墙关闭：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables off   #开机不启动防火墙服务</span></div><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables on   #开机启动防火墙服务</span></div></pre></td></tr></table></figure>
+<p>解决以后服务重新跑一遍已经搞定。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop2.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop3.png" alt=""></figure></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
 		<h1><a href="/2017/05/08/Bigdata-hadoop/HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群 /">HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群</a></h1>
 	
 	<div class="article__infos">
@@ -211,7 +334,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">安装：postgresql-libs-8.4.20-3.el6_6.x86_64 1/4</div><div class="line">安装：postgresql-8.4.20-3.el6_6.x86_64 2/4</div><div class="line">安装：postgresql-server-8.4.20-3.el6_6.x86_64 3/4</div><div class="line">安装：ambari-server-2.4.2.0-1470.x86_64 4/4</div><div class="line">验证：ambari-server-2.4.2.0-1470.x86_64 1/4</div><div class="line">验证：postgresql-8.4.20-3.el6_6.x86_64 2/4</div><div class="line">验证：postgresql-server-8.4.20-3.el6_6.x86_64 3/4</div><div class="line">验证：postgresql-libs-8.4.20-3.el6_6.x86_64 4/4</div><div class="line"></div><div class="line">安装：</div><div class="line">  ambari-server.x86_64 0：2.4.2.0-1470  安装这里的时候会有点慢，因为是访问国外网站下载资源。</div><div class="line"></div><div class="line">已安装依赖关系：</div><div class="line"> postgresql.x86_64 0：8.4.20-3.el6_6           </div><div class="line"> postgresql-libs.x86_64 0：8.4.20-3.el6_6        </div><div class="line"> postgresql-server.x86_64 0：8.4.20-3.el6_6</div></pre></td></tr></table></figure>
 <p>❗️❗️【注意】</p>
 <p>接受有关信任<code>Hortonworks GPG</code>密钥的警告。该键将自动下载并用于验证Hortonworks的软​​件包。您将看到以下消息：</p>
-<p>Importing GPG key 0x07513CAD: Userid: “Jenkins (HDP Builds) <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#x6f;&#58;&#106;&#x65;&#x6e;&#x6b;&#x69;&#110;&#64;&#104;&#111;&#x72;&#x74;&#111;&#110;&#119;&#x6f;&#114;&#107;&#x73;&#x2e;&#x63;&#x6f;&#109;">&#106;&#x65;&#x6e;&#x6b;&#x69;&#110;&#64;&#104;&#111;&#x72;&#x74;&#111;&#110;&#119;&#x6f;&#114;&#107;&#x73;&#x2e;&#x63;&#x6f;&#109;</a>“ From :<code>http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins</code></p>
+<p>Importing GPG key 0x07513CAD: Userid: “Jenkins (HDP Builds) <a href="&#109;&#97;&#x69;&#108;&#116;&#x6f;&#58;&#x6a;&#x65;&#110;&#107;&#x69;&#110;&#x40;&#104;&#x6f;&#114;&#116;&#x6f;&#110;&#119;&#x6f;&#114;&#107;&#x73;&#46;&#99;&#x6f;&#109;">&#x6a;&#x65;&#110;&#107;&#x69;&#110;&#x40;&#104;&#x6f;&#114;&#116;&#x6f;&#110;&#119;&#x6f;&#114;&#107;&#x73;&#46;&#99;&#x6f;&#109;</a>“ From :<code>http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins</code></p>
 <p>❗️❗️【注意】</p>
 <p>在具有有限Internet访问或没有Internet访问的群集上部署HDP时，应使用其他方法提供对位的访问。<br>有关设置本地存储库的详细信息，请参阅使用本地存储库。</p>
 <p><code>Ambari</code>服务器默认使用嵌入式<code>PostgreSQL</code>数据库。当您安装<code>Ambari</code>服务器时，PostgreSQL软件包和依赖关系必须可用于安装。这些包通常作为操作系统存储库的一部分提供。请确认您具有适用于<code>postgresql-server</code>软件包的相应存储库。</p>
@@ -383,54 +506,6 @@
 
 	<article>
 	
-		<h1><a href="/2017/05/08/Bigdata-hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/">Bigdata-hadoop新增节点集群启动请求异常：Last contact：200</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-05-08</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/大数据/">大数据</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h3 id="前言闲谈："><a href="#前言闲谈：" class="headerlink" title="前言闲谈："></a>前言闲谈：</h3><p>之前做CDN云计算公司来到美年大健康现在在一家医疗大数据公司负责运维部门大大小小的活，既然是医疗大数据当然离不开大数据存储的维护，现在也同时维护大数据运维相关工作 <code>hadoop,spark,sqoop,hue,hive,Hbase,zookeeper</code>等等 测试开发生产使用起来,从集群环境维护 提升数据稳定性 高可用维护。</p>
-<p>前面说了一堆自己闲聊，真正解决这次问题是hadoop新增节点需要注意哪几点：</p>
-<p><code>新增节点如何新增我会在另外一篇详细说的这里我讲一些需要注意掉的问题。</code></p>
-<h3 id="需要修改几个配置："><a href="#需要修改几个配置：" class="headerlink" title="需要修改几个配置："></a>需要修改几个配置：</h3><p>（1）hadoop data 数据目录 VERSION 里面的搭建集群时，直接克隆会出现这个问题。解决方法同上两种，最好修改${/hadoop/tmp/dir}/dfs/data/current/VERSION中的storageID，使其不同。第一种会导致hdfs数据丢失。</p>
-<p>解决方法：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">（1） datanode启动是会加载DataStorage，如果不存在则会format</div><div class="line">（2）初次启动DataStorage的storageID是空的，所以会生成一个storageID</div></pre></td></tr></table></figure>
-<p>参考我解决的：<code>这里我拷贝过来 直接删除。等集群namenode启动 会自动生成。</code></p>
-<p>这个解决以后 新增的机器必须关闭防火墙。因为这个原因会导致我 hadoop新增节点集群启动请求异常：Last contact：200</p>
-<p>（2） 集群重启时防火墙自动开启导致：</p>
-<p>这里贴张图片给大家看看：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop1.png" alt=""></figure></p>
-<p>问题：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">2017-07-04 18:43:30,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 8 time(s).</div><div class="line">2017-07-04 18:43:31,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 9 time(s).</div><div class="line">2017-07-04 18:43:31,479 ERROR org.apache.hadoop.hdfs.server.datanode.DataNode: java.io.IOException: Call to /192.168.18.218:9000 failed on <span class="built_in">local</span> exception: java.net.NoRouteToHostException: 没有到主机的路由</div><div class="line">        at org.apache.hadoop.ipc.Client.wrapException(Client.java:775)</div><div class="line">        at org.apache.hadoop.ipc.Client.call(Client.java:743)</div><div class="line">解决方法：在root权限下关闭防火墙：service iptables stop</div></pre></td></tr></table></figure>
-<p>最好配置成机器重启默认防火墙关闭：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables off   #开机不启动防火墙服务</span></div><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables on   #开机启动防火墙服务</span></div></pre></td></tr></table></figure>
-<p>解决以后服务重新跑一遍已经搞定。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop2.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop3.png" alt=""></figure></p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
 		<h1><a href="/2017/04/29/Bigdata-hadoop/Kafka/Bigdata-Kafka三款监控工具比较/">Bigdata-Kafka三款监控工具比较</a></h1>
 	
 	<div class="article__infos">
@@ -492,80 +567,6 @@
 <h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
 <p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
 
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/03/30/日志分析平台/Elasticsearch/研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？/">研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-03-30</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Elasticsearch/">Elasticsearch</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<p><img src="http://img13.deviantart.net/1fb9/i/2013/051/6/1/ella_vs__elastic_yoko_by_gamepal-d5vmtjm.png" alt=""></p>
-<p>ES 现在普遍大公司都已经在使用，有的用来做数据存储，也有做性能监控，也有做日志收集，跟大数据结合做日志分析。<br>今天在家无聊研究官网学习了下Elasticsearch5.0.0 功能新增哪些，个人觉得ES也是现在开源日志分析平台比较火的，从14年开始陆续使用频率不断提升。<br>之前也有了解过Graylog  现在比ES 做数据存储分析 不错的是Graylog 比ES性能好。<br>废话不多说了哈哈</p>
-		<p><a class="article__read-more-link" href="/2017/03/30/日志分析平台/Elasticsearch/研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？/">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/03/30/Bigdata-hadoop/Kafka/Kafka日志存储解析与实践数据存储优化/">Kafka日志存储解析与实践数据存储优化</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-03-30</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Bigdata-Hadoop/">Bigdata Hadoop</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<p><img src="https://cdn-images-1.medium.com/max/640/1*kV768OHeCILNIYVCNPUyuQ.jpeg" alt=""></p>
-<h4 id="Kafka的名词解释"><a href="#Kafka的名词解释" class="headerlink" title="Kafka的名词解释"></a>Kafka的名词解释</h4><p>kafka是一款分布式消息发布和订阅的系统，具有高性能和高吞吐率。 </p>
-<ul>
-<li>1，<code>Broker</code>： 一个单独的kafka机器节点就称为一个broker，多个broker组成的集群，称为kafka集群</li>
-<li>2，<code>Topic</code>：类似数据库中的一个表，我们将数据存储在Topic里面，当然这只是逻辑上的，在物理上，一个Topic 可能被多个Broker分区存储，这对用户是透明的，用户只需关注消息的产生于消费即可.</li>
-<li>3，<code>Partition</code>：类似分区表，每个Topic可根据设置将数据存储在多个整体有序的Partition中，每个顺序化partition会生成2个文件，一个是index文件一个是log文件，index文件存储索引和偏移量，log文件存储具体的数据.</li>
-<li>4，<code>Producer</code>：生产者，向Topic里面发送消息的角色 </li>
-<li>5，<code>Consumer</code>：消费者，从Topic里面读取消息的角色 </li>
-<li>6，<code>Consumer Group</code>：每个Consumer属于一个特定的消费者组，可为Consumer指定group name，如果不指定默认属于group </li>
-</ul>
-		<p><a class="article__read-more-link" href="/2017/03/30/Bigdata-hadoop/Kafka/Kafka日志存储解析与实践数据存储优化/">...read more</a></p>
 	
 
 	
