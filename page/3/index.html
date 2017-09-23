@@ -41,7 +41,7 @@
 
 	<article>
 	
-		<h1><a href="/2017/05/08/Bigdata-hadoop/HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群 /">HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群</a></h1>
+		<h1><a href="/2017/05/08/Bigdata-hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/">Bigdata-hadoop新增节点集群启动请求异常：Last contact：200</a></h1>
 	
 	<div class="article__infos">
 		<span class="article__date">2017-05-08</span><br />
@@ -52,7 +52,7 @@
 		
 		
 			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Ambari/">Ambari</a> <a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a>
+			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a>
 			</span>
 		
 	</div>
@@ -60,190 +60,23 @@
 	
 
 	
-		<h2 id="HORTONW0RKS数据平台搭建Ambari管理监控Hadoop集群"><a href="#HORTONW0RKS数据平台搭建Ambari管理监控Hadoop集群" class="headerlink" title="HORTONW0RKS数据平台搭建Ambari管理监控Hadoop集群"></a>HORTONW0RKS数据平台搭建Ambari管理监控Hadoop集群</h2><p><strong> 题外话 </strong></p>
-<p>我现在在一家上市公司旗下控股子公司负责运维部门，负责IT网络安全办公：主要做的应用运维和网络运维，兼大数据运维。<br>最近跟新来的架构师聊了下Hadoop监控方面：HORTONW0RKS数据平台搭建Ambari监控Hadoop集群.</p>
-<p><strong>HORTONW0RKS数据平台（HDP ®）</strong><br>HDP是业内唯一真正安全的企业级开源的<code>Apache的Hadoop™ ®</code>分配基于集中式架构。HDP解决了静态数据的完整需求，为实时客户应用提供支持，并提供可加速决策和创新的可靠分析。</p>
-<p>使用Hortonworks Sandbox试用最新的HDP功能，或者为生产环境设置HDP，安装和配置群集。<br>查看官网文档：<a href="https://hortonworks.com/downloads/#data-platform" target="_blank" rel="external">HORTONWORKS CONNECTED DATA PLATFORMS DOWNLOADS</a></p>
-<h3 id="1-将Ambari服务存储库文件下载到安装主机上的目录。"><a href="#1-将Ambari服务存储库文件下载到安装主机上的目录。" class="headerlink" title="1. 将Ambari服务存储库文件下载到安装主机上的目录。"></a>1. 将Ambari服务存储库文件下载到安装主机上的目录。</h3><ul>
-<li>Centos6.5 </li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wget -nv http://public-repo-1.hortonworks.com/ambari/centos6/2.x/updates/2.4.2.0/ambari.repo -O /etc/yum.repos.d/ambari.repo</div></pre></td></tr></table></figure>
-<p>⚠️警告：不要修改<code>ambari.repo</code>文件名。在代理注册期间，此文件应在Ambari服务器主机上可用。</p>
-<ol>
-<li>通过检查repo列表确认存储库已配置。</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum repolist</div></pre></td></tr></table></figure>
-<p>您应该在列表中看到类似于以下Ambari存储库的值。</p>
-<p>版本值因安装而异。</p>
-<ol>
-<li>安装Ambari服务。这也安装了默认的PostgreSQL Ambari数据库。</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install ambari-server</div></pre></td></tr></table></figure>
-<p>输入<code>y</code>提示，以确认交易和依赖性检查时。</p>
-<p>成功安装将显示类似于以下内容的输出：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">安装：postgresql-libs-8.4.20-3.el6_6.x86_64 1/4</div><div class="line">安装：postgresql-8.4.20-3.el6_6.x86_64 2/4</div><div class="line">安装：postgresql-server-8.4.20-3.el6_6.x86_64 3/4</div><div class="line">安装：ambari-server-2.4.2.0-1470.x86_64 4/4</div><div class="line">验证：ambari-server-2.4.2.0-1470.x86_64 1/4</div><div class="line">验证：postgresql-8.4.20-3.el6_6.x86_64 2/4</div><div class="line">验证：postgresql-server-8.4.20-3.el6_6.x86_64 3/4</div><div class="line">验证：postgresql-libs-8.4.20-3.el6_6.x86_64 4/4</div><div class="line"></div><div class="line">安装：</div><div class="line">  ambari-server.x86_64 0：2.4.2.0-1470  安装这里的时候会有点慢，因为是访问国外网站下载资源。</div><div class="line"></div><div class="line">已安装依赖关系：</div><div class="line"> postgresql.x86_64 0：8.4.20-3.el6_6           </div><div class="line"> postgresql-libs.x86_64 0：8.4.20-3.el6_6        </div><div class="line"> postgresql-server.x86_64 0：8.4.20-3.el6_6</div></pre></td></tr></table></figure>
-<p>❗️❗️【注意】</p>
-<p>接受有关信任<code>Hortonworks GPG</code>密钥的警告。该键将自动下载并用于验证Hortonworks的软​​件包。您将看到以下消息：</p>
-<p>Importing GPG key 0x07513CAD: Userid: “Jenkins (HDP Builds) <a href="&#109;&#97;&#x69;&#108;&#x74;&#111;&#58;&#x6a;&#x65;&#110;&#x6b;&#x69;&#x6e;&#x40;&#x68;&#x6f;&#x72;&#116;&#x6f;&#110;&#x77;&#x6f;&#x72;&#107;&#x73;&#x2e;&#99;&#x6f;&#x6d;">&#x6a;&#x65;&#110;&#x6b;&#x69;&#x6e;&#x40;&#x68;&#x6f;&#x72;&#116;&#x6f;&#110;&#x77;&#x6f;&#x72;&#107;&#x73;&#x2e;&#99;&#x6f;&#x6d;</a>“ From :<code>http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins</code></p>
-<p>❗️❗️【注意】</p>
-<p>在具有有限Internet访问或没有Internet访问的群集上部署HDP时，应使用其他方法提供对位的访问。<br>有关设置本地存储库的详细信息，请参阅使用本地存储库。</p>
-<p><code>Ambari</code>服务器默认使用嵌入式<code>PostgreSQL</code>数据库。当您安装<code>Ambari</code>服务器时，PostgreSQL软件包和依赖关系必须可用于安装。这些包通常作为操作系统存储库的一部分提供。请确认您具有适用于<code>postgresql-server</code>软件包的相应存储库。</p>
-<h3 id="2-设置Ambari服务器"><a href="#2-设置Ambari服务器" class="headerlink" title="2.设置Ambari服务器"></a>2.设置Ambari服务器</h3><p>在启动<code>Ambari</code>服务器之前，必须设置Ambari服务器。安装程序将Ambari配置为与Ambari数据库通信，安装JDK并允许您自定义Ambari Server守护程序将作为运行的用户帐户。该 <code>ambari-server setup</code>命令管理设置过程。在Ambari服务器主机上运行以下命令以开始设置过程。您还可以将“ 设置选项”附加到命令。</p>
-<ul>
-<li>启动服务</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line">ambari-server setup</div><div class="line"></div><div class="line"><span class="comment">###这里由于下载jdk1.8太慢速度过慢。我提前把jdk下载下来放到了/srv/jdk1.8.0_66 目录</span></div><div class="line"></div><div class="line">[root@ambari-server_01 ~]<span class="comment"># ambari-server setup</span></div><div class="line">Using python  /usr/bin/python</div><div class="line">Setup ambari-server</div><div class="line">Checking SELinux...</div><div class="line">SELinux status is <span class="string">'enabled'</span></div><div class="line">SELinux mode is <span class="string">'permissive'</span></div><div class="line">WARNING: SELinux is <span class="built_in">set</span> to <span class="string">'permissive'</span> mode and temporarily disabled.</div><div class="line">OK to <span class="built_in">continue</span> [y/n] (y)? y</div><div class="line">Customize user account <span class="keyword">for</span> ambari-server daemon [y/n] (n)? y</div><div class="line">Enter user account <span class="keyword">for</span> ambari-server daemon (root):</div><div class="line">Adjusting ambari-server permissions and ownership...</div><div class="line">Checking firewall status...</div><div class="line">Checking JDK...</div><div class="line">[1] Oracle JDK 1.8 + Java Cryptography Extension (JCE) Policy Files 8</div><div class="line">[2] Oracle JDK 1.7 + Java Cryptography Extension (JCE) Policy Files 7</div><div class="line">[3] Custom JDK</div><div class="line">==============================================================================</div><div class="line">Enter choice (1): 3</div><div class="line">WARNING: JDK must be installed on all hosts and JAVA_HOME must be valid on all hosts.</div><div class="line">WARNING: JCE Policy files are required <span class="keyword">for</span> configuring Kerberos security. If you plan to use Kerberos,please make sure JCE Unlimited Strength Jurisdiction Policy Files are valid on all hosts.</div><div class="line">Path to JAVA_HOME: /srv/jdk1.8.0_66</div><div class="line">Validating JDK on Ambari Server...done.</div><div class="line">Completing setup...</div><div class="line">Configuring database...</div><div class="line">Enter advanced database configuration [y/n] (n)? y</div><div class="line">Configuring database...</div><div class="line">==============================================================================</div><div class="line">Choose one of the following options:</div><div class="line">[1] - PostgreSQL (Embedded)</div><div class="line">[2] - Oracle</div><div class="line">[3] - MySQL / MariaDB</div><div class="line">[4] - PostgreSQL</div><div class="line">[5] - Microsoft SQL Server (Tech Preview)</div><div class="line">[6] - SQL Anywhere</div><div class="line">[7] - BDB</div><div class="line">==============================================================================</div><div class="line">Enter choice (1):3</div><div class="line">Database name (ambari):</div><div class="line">Postgres schema (ambari):</div><div class="line">Username (ambari):</div><div class="line">Enter Database Password (bigdata):</div><div class="line">Default properties detected. Using built-in database.</div><div class="line">Configuring ambari database...</div><div class="line">Checking PostgreSQL...</div><div class="line">Running initdb: This may take up to a minute.</div><div class="line">正在初始化数据库：[确定]</div><div class="line"></div><div class="line">About to start PostgreSQL</div><div class="line">Configuring <span class="built_in">local</span> database...</div><div class="line">Connecting to <span class="built_in">local</span> database...done.</div><div class="line">Configuring PostgreSQL...</div><div class="line">Restarting PostgreSQL</div><div class="line">Extracting system views...</div><div class="line">ambari-admin-2.4.2.0.136.jar</div><div class="line">............</div><div class="line">Adjusting ambari-server permissions and ownership...</div><div class="line">Ambari Server <span class="string">'setup'</span> completed successfully.</div><div class="line">You have mail <span class="keyword">in</span> /var/spool/mail/root</div></pre></td></tr></table></figure>
-<h5 id="2-1-响应安装提示："><a href="#2-1-响应安装提示：" class="headerlink" title="2.1 响应安装提示："></a>2.1 响应安装提示：</h5><p>如果您没有暂时禁用<code>SELinux</code>，您可能会收到警告。接受默认值<code>（y）</code>，然后继续。</p>
-<p>默认情况下，Ambari服务器运行在<code>root</code>。在<code>Customize user account for ambari-server daemon</code>提示符处接受默认<code>（n）</code>，以继续root。</p>
-<p>如果要创建其他用户以运行<code>Ambari</code>服务器或分配以前创建的用户，请<code>y</code>在 <code>Customize user account for ambari-server daemon</code>提示符处选择，然后提供用户名。<br>有关以非root用户身份运行Ambari服务器的更多信息，请参阅Hortonworks数据平台Apache Ambari参考&gt; <a href="http://docs.hortonworks.com/HDPDocuments/Ambari-2.4.2.0/bk_ambari-security/content/configuring_ambari_for_non-root.html" target="_blank" rel="external">为非根用户配置Ambari</a></p>
-<p>如果您没有暂时停用<code>iptables</code>，可能会收到警告。输入<code>y</code>以继续。</p>
-<p>JDK<br>选择要下载的<code>JDK</code>版本。输入<code>1</code>以下载<code>Oracle JDK 1.8</code>。或者，您可以选择输入<code>自定义JDK</code>。如果选择“<code>自定义JDK</code>”，则必须在所有主机上手动安装JDK并指定<code>Java Home</code>路径。</p>
-<p>❗️❗️【注意】</p>
-<p>JDK支持完全取决于您选择的<code>HDP Stack</code>版本。请参阅<a href="http://docs.hortonworks.com/HDPDocuments/Ambari-2.4.2.0/bk_ambari-reference/content/ch_changing_the_jdk_version_on_an_existing_cluster.html" target="_blank" rel="external">Hortonworks数据平台Apache Ambari</a>参考以查看要安装的HDP Stack版本支持的JDK版本。默认情况下，Ambari服务器设置下载并安装Oracle JDK 1.8和随附的Java密码术扩展（JCE）策略文件。如果计划使用其他版本的JDK，请参阅 设置选项以获取更多信息。</p>
-<p>出现提示时接受<code>Oracle JDK</code>许可证。您必须接受此许可证才能从Oracle下载必需的JDK。JDK在部署阶段安装。</p>
-<blockquote>
-<p>数据库选择：</p>
-</blockquote>
-<p>选择<code>n</code>为，<code>Enter advanced database configuration</code>以便为<code>Ambari</code>使用默认的嵌入式<code>PostgreSQL</code>数据库。默认的PostgreSQL数据库名是ambari。默认用户名和密码为ambari/bigdata。否则，要使用现有的PostgreSQL，MySQL / MariaDB或Oracle数据库与Ambari，请选择y。</p>
-<p>如果使用现有的PostgreSQL，MySQL / MariaDB或Oracle数据库实例，请使用以下提示之一：</p>
-<p>❗️❗️[重要]<br>在运行安装程序和输入高级数据库配置之前，必须使用<code>“使用非默认数据库</code>- Ambari”中详述的步骤准备非默认数据库实例。</p>
-<p>❗️❗️[重要]</p>
-<p>不支持使用Microsoft SQL Server或SQL Anywhere数据库选项。</p>
-<p>要使用现有的Oracle实例，并为该数据库选择自己的数据库名称，用户名和密码，请输入<code>2</code>。<br>选择要使用的数据库，并提供在提示中请求的任何信息，包括主机名，端口，服务名或SID，用户名和密码。<br>要使用现有的MySQL / MariaDB数据库，并为该数据库选择自己的数据库名称，用户名和密码，请输入3。<br>选择要使用的数据库，并提供在提示中请求的任何信息，包括主机名，端口，数据库名称，用户名和密码。<br>要使用现有的PostgreSQL数据库，并为该数据库选择自己的数据库名称，用户名和密码，请输入4。<br>选择要使用的数据库，并提供在提示中请求的任何信息，包括主机名，端口，数据库名称，用户名和密码。<br>继续配置远程数据库连接属性[y / n]选择<code>y</code>。</p>
-<blockquote>
-<p>这里数据库用户名和密码都是默认安装：</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Database name (ambari)</div><div class="line">Postgres schema (ambari)</div><div class="line">Username (ambari)</div><div class="line">Enter Database Password (bigdata)</div></pre></td></tr></table></figure>
-<blockquote>
-<p>这里我做了一层Nginx代理：将Ambari服务器配置为使用此代理服务器</p>
-</blockquote>
-<h3 id="3-启动Ambari服务器"><a href="#3-启动Ambari服务器" class="headerlink" title="3.启动Ambari服务器"></a>3.启动Ambari服务器</h3><p>在Ambari服务器主机上运行以下命令：</p>
-<pre><code>ambari-server start
-</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[root@ambari-server ~]<span class="comment"># ambari-server start</span></div><div class="line">Using python  /usr/bin/python</div><div class="line">Starting ambari-server</div><div class="line">Ambari Server running with administrator privileges.</div><div class="line">Organizing resource files at /var/lib/ambari-server/resources...</div><div class="line">Ambari database consistency check started...</div><div class="line">No errors were found.</div><div class="line">Ambari database consistency check finished</div><div class="line">Server PID at: /var/run/ambari-server/ambari-server.pid</div><div class="line">Server out at: /var/<span class="built_in">log</span>/ambari-server/ambari-server.out</div><div class="line">Server <span class="built_in">log</span> at: /var/<span class="built_in">log</span>/ambari-server/ambari-server.log</div><div class="line">Waiting <span class="keyword">for</span> server start....................</div><div class="line">Ambari Server <span class="string">'start'</span> completed successfully.</div><div class="line">You have mail <span class="keyword">in</span> /var/spool/mail/root</div></pre></td></tr></table></figure>
-<p>要检查Ambari服务器进程：</p>
-<pre><code>ambari-server status
-</code></pre><p>停止Ambari服务器：</p>
-<pre><code>ambari-server stop
-</code></pre><p>在Ambari服务器启动时，<code>Ambari</code>运行数据库一致性检查，查找问题。如果发现任何问题，Ambari服务器启动将中止，并且一条消息将打印到控制台“数据库配置一致性检查失败”。更多详细信息将写入以下日志文​​件：</p>
-<pre><code>/var/log/ambari-server/ambari-server-check-database.log
-</code></pre><p>您可以通过使用以下选项跳过此检查来强制Ambari服务器启动：</p>
-<pre><code>ambari-server start --skip-database-check
-</code></pre><p>如果存在数据库问题，请选择跳过此检查，在更正数据库一致性问题之前，不要对集群拓扑进行任何更改或执行集群升级。最好查看官网操作。</p>
-<h2 id="第3章安装，配置和部署HDP集群"><a href="#第3章安装，配置和部署HDP集群" class="headerlink" title="第3章安装，配置和部署HDP集群"></a>第3章安装，配置和部署HDP集群</h2><h3 id="1-登录到Apache-Ambari"><a href="#1-登录到Apache-Ambari" class="headerlink" title="1.登录到Apache Ambari"></a>1.登录到Apache Ambari</h3><ul>
-<li><p>将浏览器指向 <code>http://&lt;your.ambari.server&gt; :8080</code>，其中<code>&lt;your.ambari.server&gt;</code>是您的ambari服务器主机的名称。例如，默认Ambari服务器主机位于<code>http://c6401.ambari.apache.org:8080</code>。</p>
-</li>
-<li><p>使用默认用户名/密码登录Ambari服务器：<code>admin / admin</code>。您可以稍后更改这些凭据。</p>
-</li>
-</ul>
-<h3 id="2-启动Ambari安装向导"><a href="#2-启动Ambari安装向导" class="headerlink" title="2.启动Ambari安装向导"></a>2.启动Ambari安装向导</h3><p>从<code>Ambari Welcome</code>页面，选择启动安装向导。</p>
-<p>提供集群，管理谁可以访问群集，以及自定义视图为Ambari用户。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Ambariwelcome.png" alt=""></figure></p>
-<p><figure class="figure"><img src="http://docs.hortonworks.com/HDPDocuments/Ambari-2.4.2.0/bk_ambari-installation/content/figures/2/figures/170AmbariWelcome.png" alt=""></figure></p>
-<h3 id="3-命名您的群集"><a href="#3-命名您的群集" class="headerlink" title="3.命名您的群集"></a>3.命名您的群集</h3><p>在Name your cluster，键入要创建的集群的名称。名称中不要使用空格或特殊字符。</p>
-<p>选择Next。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_02.png" alt=""></figure></p>
-<h3 id="4-选择版本"><a href="#4-选择版本" class="headerlink" title="4.选择版本"></a>4.选择版本</h3><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_03.png" alt=""></figure></p>
-<p>这里我选择<code>redhat6</code> 其他的都<code>remove</code>掉。</p>
-<p>在此步骤中，您将选择群集的软件版本和交付方式。使用公共存储库需要Internet连接。使用本地存储库需要您在网络中可用的存储库中配置软件。</p>
-<ul>
-<li>选择堆栈</li>
-</ul>
-<p>可用的HDP版本显示在TAB中。当您选择TAB时，Ambari会尝试发现该HDP堆栈的特定版本可用。该列表显示在DROPDOWN中。对于该特定版本，将显示可用的服务，其中的版本显示在TABLE中。</p>
-<ul>
-<li>选择版本</li>
-</ul>
-<p>如果Ambari可以访问Internet，则特定版本将作为选项列在DROPDOWN中。如果您有未列出的版本的版本定义文件，您可以单击添加版本…并上载VDF文件。此外，如果您无法访问Internet或不确定要安装哪个特定版本，则 默认版本定义也包含在列表中。</p>
-<ul>
-<li>选择存储库</li>
-</ul>
-<p>Ambari允许您选择从公共存储库（如果您有Internet访问权限）或本地存储库安装软件。无论您的选择如何，您都可以编辑存储库的基本URL。将显示可用的操作系统，您可以从列表中添加/删除操作系统以适合您的环境</p>
-<p>❗️❗️注意<br>UI显示基于操作系统系列（OS系列）的存储库基本URL。请确保基于正在运行的操作系统设置正确的操作系统系列。下表将OS系列映射到操作系统。</p>
-<ul>
-<li><p><strong>高级选项</strong></p>
-</li>
-<li><p><strong>有高级存储库选项可用。</strong></p>
-</li>
-</ul>
-<p>跳过存储库基本URL验证（高级）： 当您单击下一步时，Ambari将尝试连接到存储库基本URL，并验证您已输入验证存储库。如果没有，将显示一个错误，您必须在继续之前纠正。</p>
-<p>使用<code>RedHat Satellite/Spacewalk：</code>仅当计划使用本地存储库时，才会启用此选项。当您为软件存储库选择此选项时，您负责配置<code>Satellite/Spacewalk</code>中的存储库通道，并确认所选群集版本的存储库在群集中的主机上可用。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_04.png" alt=""></figure></p>
-<h3 id="5-安装选项"><a href="#5-安装选项" class="headerlink" title="5.安装选项"></a>5.安装选项</h3><p>为了构建集群，安装向导将提示您有关如何设置它的一般信息。您需要提供每个主机的FQDN。该向导还需要访问在设置无密码SSH中创建的私钥文件  。使用主机名和密钥文件信息，向导可以定位，访问和与群集中的所有主机安全交互。</p>
-<p>使用Target Hosts文本框输入主机名列表，每行一个。您可以使用括号内的范围来表示较大的主机集。例如，对于host01.domain通过host10.domain使用 host[01-10].domain</p>
-<p>⚠️ <strong>安装服务器集群机器一定要系统版本要一致不然安装会提示版本不兼容。</strong></p>
-<p>❗️❗️    注意<br>如果要在EC2上部署，请使用内部专用<code>DNS主机名</code>。</p>
-<p>在ambari服务器配置hosts</p>
-<pre><code>vim /etc/hosts
-</code></pre><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.151</span>    <span class="selector-tag">datanode151</span></div><div class="line">192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.173</span>    <span class="selector-tag">datanode_173</span> <span class="selector-tag">datanode-173</span><span class="selector-class">.hadoop</span></div></pre></td></tr></table></figure>
-<p>如果要让<code>Ambari</code>使用SSH在所有主机上自动安装Ambari代理，请选择<code>Provide your SSH Private Key</code>并使用部分中的 <code>Choose File</code>按钮<code>Host Registration Information</code>查找与先前在所有主机上安装的公钥相匹配的私钥文件，或者剪切并粘贴键手动插入文本框。</p>
-<p>填写您选择的SSH密钥的用户名。如果不想使用root用户，则必须为可以在不输入密码的情况下执行sudo的帐户提供用户名。如果您的环境中的主机上的SSH配置为22以外的端口，您也可以更改它。</p>
-<p>如果您不希望Ambari自动安装Ambari代理，请选择<code>Perform manual registration</code>。有关更多信息，请参阅手动安装Ambari代理。</p>
-<p>选择<code>Register and Confirm</code>继续。</p>
-<p>这里提示：The following hostnames are not valid FQDNs: datanode_173.hadoop</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_06.png" alt=""></figure></p>
-<p>这里跳转到安装页面：发现报错提示datanode-173.hadoop主机访问Ambari机器不能访问。<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_07.png" alt=""></figure></p>
-<h3 id="6-确认主机"><a href="#6-确认主机" class="headerlink" title="6.确认主机"></a>6.确认主机</h3><p><code>Confirm Hosts</code> 提示您确认<code>Ambari</code>已为您的集群找到正确的主机，并检查这些主机以确保它们具有继续安装所需的正确目录，软件包和进程。</p>
-<p>如果选择了错误的主机，您可以通过选择相应的复选框并单击灰色<code>Remove Selected</code>按钮来删除它们。要删除单个主机，请单击Remove“操作”列中的小白色按钮。</p>
-<p>在屏幕底部，您可能会注意到一个黄色框，表示在检查过程中遇到了一些警告。例如，您的主机可能已有<code>wget</code>或的副本 <code>curl</code>。选择<code>Click here to see the warnings</code> 查看检查内容和导致警告的原因的列表。警告页面还提供对python脚本的访问，可以帮助您清除可能遇到的任何问题，让您运行<code>Rerun Checks</code>。</p>
-<p>在datanode_173服务器配置hosts</p>
-<pre><code>vim /etc/hosts
-</code></pre><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.151</span>    <span class="selector-tag">datanode151</span></div><div class="line">192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.173</span>    <span class="selector-tag">datanode_173</span> <span class="selector-tag">datanode-173</span><span class="selector-class">.hadoop</span></div></pre></td></tr></table></figure>
-<p>每台节点里配置FQDN，如下以主节点为例</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">vi /etc/sysconfig/network</div><div class="line">NETWORKING=yes</div><div class="line">HOSTNAME=SY-001.hadoop</div></pre></td></tr></table></figure>
-<p>配置上就可以了。 把datanode151也是ambari机器配置在hosts就可以了。</p>
-<p><strong>最好设置root的无密码登录，因为我们配置的集群都是内网的，没什么安全性问题，使用root操作可以省去一些麻烦，非root用户可能在安装Hadoop组件时不能成功</strong></p>
-<p>下面是我安装这里提示没有找到文件目录查看安装报错操作：</p>
-<pre><code>mkdir /var/lib/ambari-agent/data
-</code></pre><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Ambari_08.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_09.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_10.png" alt=""></figure></p>
-<h3 id="7-选择服务"><a href="#7-选择服务" class="headerlink" title="7.选择服务"></a>7.选择服务</h3><p>将看到选择要安装到群集中的服务。HDP堆栈包括许多服务。您可以选择立即安装任何其他可用服务，或稍后添加服务。默认情况下，安装向导将选择所有可用的服务进行安装。</p>
-<p>选择<code>none</code>清除所有选择，或选择 <code>all</code>选择所有列出的服务。</p>
-<p>选择或清除单个复选框以定义一组要立即安装的服务。</p>
-<p>选择要立即安装的服务后，选择Next。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_11.png" alt=""></figure></p>
-<h3 id="8-分配主站"><a href="#8-分配主站" class="headerlink" title="8.分配主站"></a>8.分配主站</h3><p>Ambari安装向导会将所选服务的主组件分配给集群中的相应主机，并在Assign Masters中显示分配。左列显示服务和当前主机。右列显示主机的当前主组件分配，指示每个主机上安装的CPU内核数量和RAM数量。</p>
-<p>要更改服务的主机分配，请从该服务的下拉菜单中选择主机名。</p>
-<p>要删除ZooKeeper实例，请单击要删除的主机地址旁边的绿色减号图标。</p>
-<p>当您对作业感到满意时，选择Next。</p>
-<p><figure class="figure"><img src="" alt=""></figure></p>
-<h3 id="9-分配从属和客户端"><a href="#9-分配从属和客户端" class="headerlink" title="9.分配从属和客户端"></a>9.分配从属和客户端</h3><p>Ambari安装向导将从属组件（DataNodes，NodeManager和RegionServers）分配给集群中的相应主机。它还会尝试选择主机以安装适当的客户端集。</p>
-<p>使用<code>all</code>或<code>none</code>可分别选择列中的所有主机或不选择任何主机。</p>
-<p>如果主机旁边有星号，则该主机也运行一个或多个主组件。将鼠标悬停在星号上，以查看该主机上的哪些主组件。</p>
-<p>通过使用特定主机旁边的复选框来微调您的选择。</p>
-<p>当你对你的作业感到满意时，选择<code>Next</code>。</p>
-<h3 id="10-自定义服务"><a href="#10-自定义服务" class="headerlink" title="10.自定义服务"></a>10.自定义服务</h3><p>自定义服务步骤为您提供一组选项卡，您可以查看和修改HDP集群设置。向导会尝试为每个选项设置合理的默认值。你是强烈建议，以检查这些设置为您的要求可能略有不同。</p>
-<p>浏览每个服务标签，然后将光标悬停在每个属性上，您可以看到属性做什么的简要说明。显示的服务选项卡数取决于您决定在群集中安装的服务。任何需要输入的选项卡都会显示一个红色徽章，其中包含需要注意的属性数。选择显示红色徽章编号的每个服务选项卡，然后输入相应的信息。</p>
-<ul>
-<li>目录</li>
-</ul>
-<p>HDP将存储信息的目录的选择是至关重要的。Ambari将尝试根据您环境中可用的安装点选择合理的默认值，但强烈建议您查看Ambari推荐的默认目录设置。特别是，确认目录，例如<code>/tmp和 /var</code>被不被用于下<code>HDFS的NameNode</code>目录和数据管理部目录HDFS标签。</p>
-<ul>
-<li>密码</li>
-</ul>
-<p>您必须为Hive和Oozie服务以及Knox的主密钥提供数据库密码。使用Hive作为示例，选择Hive选项卡并展开高级部分。在以红色标记的数据库密码字段中，提供密码，然后重新键入以确认。</p>
-<p>安装各个服务，并且完成安装后会启动相关服务，安装过程比较长，如中中出现错误，根据具体提供或日志进行操作。 </p>
-<p>这里我就不贴出来了，因为测试环境机器我做测试用机器配置不够所有后面结果经验写出来了。</p>
-<p>安装的还是提示失败：<code>ImportError: No module named rpm</code></p>
-<p>参考这篇文章重新安装解决了这个问题：<a href="http://stackoverflow.com/questions/17490921/no-module-named-rpm-when-i-call-yum-on-shell" target="_blank" rel="external">ImportError: No module named rpm</a></p>
-<h3 id="11-安装，启动和测试"><a href="#11-安装，启动和测试" class="headerlink" title="11.安装，启动和测试"></a>11.安装，启动和测试</h3><p>安装的进度将显示在屏幕上。Ambari安装，启动，并对每个组件运行一个简单的测试。过程的总体状态显示在屏幕顶部的进度栏中，主机的主机状态显示在主要部分。在此过程中不要刷新浏览器。刷新浏览器可能会中断进度指示器。</p>
-<p>要查看每个主机已完成的任务的具体信息，请单击Message相应主机列中的链接。在 Tasks弹出窗口中，单击单个任务以查看相关的日志文件。您可以使用Show下拉列表选择过滤条件。要查看更大版本的日志内容，请单击Open图标或将内容复制到剪贴板，使用Copy图标。</p>
-<p><strong>安装完成效果图:</strong></p>
-<p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari002.png" alt=""></figure></p>
-<blockquote>
-<p>让我们从左侧栏或下拉菜单中选择Yarn进入YARN信息中心。</p>
-</blockquote>
-<p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari004.png" alt=""></figure></p>
-<blockquote>
-<p>我们将开始更新线程容量调度策略的配置。</p>
-</blockquote>
-<p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari005.png" alt=""></figure></p>
-<p>向下滚动到<code>Scheduler</code>页面的部分。默认容量调度策略只有一个队列。</p>
-<p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari006.png" alt=""></figure></p>
-<p>让我们看看调度策略。向上滚动到页面顶部，然后点击快速链接。然后从下拉列表中选择<code>ResourceManager UI</code>。</p>
-<p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari007.png" alt=""></figure></p>
-<blockquote>
-<p>正如你可以看到，我们只有默认策略。</p>
-</blockquote>
-<p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari008.png" alt=""></figure></p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>安装Ambari官网地址<a href="https://docs.hortonworks.com/HDPDocuments/Ambari-2.4.2.0/bk_ambari-installation/content/download_the_ambari_repo_lnx6.html" target="_blank" rel="external">install Ambari</a><br><a href="https://cwiki.apache.org/confluence/display/AMBARI/Installation+Guide+for+Ambari+2.4.2" target="_blank" rel="external">编译安装Ambari 2.4.2安装指南</a></p>
+		<h3 id="前言闲谈："><a href="#前言闲谈：" class="headerlink" title="前言闲谈："></a>前言闲谈：</h3><p>之前做CDN云计算公司来到美年大健康现在在一家医疗大数据公司负责运维部门大大小小的活，既然是医疗大数据当然离不开大数据存储的维护，现在也同时维护大数据运维相关工作 <code>hadoop,spark,sqoop,hue,hive,Hbase,zookeeper</code>等等 测试开发生产使用起来,从集群环境维护 提升数据稳定性 高可用维护。</p>
+<p>前面说了一堆自己闲聊，真正解决这次问题是hadoop新增节点需要注意哪几点：</p>
+<p><code>新增节点如何新增我会在另外一篇详细说的这里我讲一些需要注意掉的问题。</code></p>
+<h3 id="需要修改几个配置："><a href="#需要修改几个配置：" class="headerlink" title="需要修改几个配置："></a>需要修改几个配置：</h3><p>（1）hadoop data 数据目录 VERSION 里面的搭建集群时，直接克隆会出现这个问题。解决方法同上两种，最好修改${/hadoop/tmp/dir}/dfs/data/current/VERSION中的storageID，使其不同。第一种会导致hdfs数据丢失。</p>
+<p>解决方法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">（1） datanode启动是会加载DataStorage，如果不存在则会format</div><div class="line">（2）初次启动DataStorage的storageID是空的，所以会生成一个storageID</div></pre></td></tr></table></figure>
+<p>参考我解决的：<code>这里我拷贝过来 直接删除。等集群namenode启动 会自动生成。</code></p>
+<p>这个解决以后 新增的机器必须关闭防火墙。因为这个原因会导致我 hadoop新增节点集群启动请求异常：Last contact：200</p>
+<p>（2） 集群重启时防火墙自动开启导致：</p>
+<p>这里贴张图片给大家看看：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop1.png" alt=""></figure></p>
+<p>问题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">2017-07-04 18:43:30,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 8 time(s).</div><div class="line">2017-07-04 18:43:31,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 9 time(s).</div><div class="line">2017-07-04 18:43:31,479 ERROR org.apache.hadoop.hdfs.server.datanode.DataNode: java.io.IOException: Call to /192.168.18.218:9000 failed on <span class="built_in">local</span> exception: java.net.NoRouteToHostException: 没有到主机的路由</div><div class="line">        at org.apache.hadoop.ipc.Client.wrapException(Client.java:775)</div><div class="line">        at org.apache.hadoop.ipc.Client.call(Client.java:743)</div><div class="line">解决方法：在root权限下关闭防火墙：service iptables stop</div></pre></td></tr></table></figure>
+<p>最好配置成机器重启默认防火墙关闭：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables off   #开机不启动防火墙服务</span></div><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables on   #开机启动防火墙服务</span></div></pre></td></tr></table></figure>
+<p>解决以后服务重新跑一遍已经搞定。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop2.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop3.png" alt=""></figure></p>
 
 	
 
