@@ -41,12 +41,12 @@
 		<span class="article__date">2017-07-04</span><br />
 		
 			<span class="article__category">
-				<a class="article-category-link" href="/categories/Big-data-Hadoop/">Big data Hadoop</a>
+				<a class="article-category-link" href="/categories/Bigdata-Hadoop/">Bigdata Hadoop</a>
 			</span><br />
 		
 		
 			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
+			  	<a class="article__tag-link" href="/tags/Hadoop/">Hadoop</a> <a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
 			</span>
 		
 	</div>
@@ -75,6 +75,8 @@
 <p>这个结论似乎太书生气和不实用。我们通常建议partition的数量一定要大于等于消费者的数量来实现最大并发。官方曾测试过1万个partition的情况，所以不需要太担心partition过多的问题。下面的知识会有助于读者在生产环境做出最佳的选择：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">a、一个partition就是一个存储kafka-log的目录。</div><div class="line">b、一个partition只能寄宿在一个broker上。</div><div class="line">c、单个partition是可以实现消息的顺序写入的。</div><div class="line">d、单个partition只能被单个消费者进程消费，与该消费者所属于的消费组无关。这样做，有助于实现顺序消费。</div><div class="line">e、单个消费者进程可同时消费多个partition，即partition限制了消费端的并发能力。</div><div class="line">f、partition越多则file和memory消耗越大，要在服务器承受服务器设置。</div><div class="line">g、每个partition信息都存在所有的zk节点中。</div><div class="line">h、partition越多则失败选举耗时越长。</div><div class="line">k、offset是对每个partition而言的，partition越多，查询offset就越耗时。</div><div class="line">i、partition的数量是可以动态增加的（只能加不能减）。</div></pre></td></tr></table></figure>
 <p>我们建议的做法是，如果是3个broker的集群，有5个消费者，那么建议partition的数量是15，也就是broker和consumer数量的最小公倍数。当然，也可以是一个大于消费者的broker数量的倍数，比如6或者9，还请读者自行根据实际环境裁定。</p>
+<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
+<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
 
 	
 

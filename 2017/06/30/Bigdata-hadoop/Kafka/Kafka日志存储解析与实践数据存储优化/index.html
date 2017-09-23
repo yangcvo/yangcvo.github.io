@@ -41,7 +41,7 @@
 		<span class="article__date">2017-06-30</span><br />
 		
 			<span class="article__category">
-				<a class="article-category-link" href="/categories/Big-data-Hadoop/">Big data Hadoop</a>
+				<a class="article-category-link" href="/categories/Bigdata-Hadoop/">Bigdata Hadoop</a>
 			</span><br />
 		
 		
@@ -83,6 +83,8 @@
 <h5 id="2）为数据文件建索引"><a href="#2）为数据文件建索引" class="headerlink" title="2）为数据文件建索引"></a>2）为数据文件建索引</h5><p>数据文件分段使得可以在一个较小的数据文件中查找对应offset的Message了，但是这依然需要顺序扫描才能找到对应<code>offset的Message</code>。为了进一步提高查找的效率，Kafka为每个分段后的数据文件建立了索引文件，文件名与数据文件的名字是一样的，只是文件扩展名为.index。<br>索引文件中包含若干个索引条目，每个条目表示数据文件中一条Message的索引。索引包含两个部分（均为4个字节的数字），分别为相对<code>offset和position</code>。</p>
 <p>相对<code>offset</code>：因为数据文件分段以后，每个数据文件的起始offset不为0，相对offset表示这条Message相对于其所属数据文件中最小的offset的大小。举例，分段后的一个数据文件的offset是从20开始，那么offset为25的Message在index文件中的相对offset就是25-20 = 5。存储相对offset可以减小索引文件占用的空间。</p>
 <p><code>position</code>，表示该条<code>Message</code>在数据文件中的绝对位置。只要打开文件并移动文件指针到这个position就可以读取对应的<code>Message</code>了。<br>index文件中并没有为数据文件中的每条Message建立索引，而是采用了稀疏存储的方式，每隔一定字节的数据建立一条索引。这样避免了索引文件占用过多的空间，从而可以将索引文件保留在内存中。但缺点是没有建立索引的Message也不能一次定位到其在数据文件的位置，从而需要做一次顺序扫描，但是这次顺序扫描的范围就很小了。</p>
+<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
+<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
 
 	
 
