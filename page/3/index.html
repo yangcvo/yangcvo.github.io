@@ -41,159 +41,6 @@
 
 	<article>
 	
-		<h1><a href="/2017/05/08/Bigdata-hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/">Bigdata-hadoop新增节点集群启动请求异常：Last contact：200</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-05-08</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/大数据/">大数据</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h3 id="前言闲谈："><a href="#前言闲谈：" class="headerlink" title="前言闲谈："></a>前言闲谈：</h3><p>之前做CDN云计算公司来到美年大健康现在在一家医疗大数据公司负责运维部门大大小小的活，既然是医疗大数据当然离不开大数据存储的维护，现在也同时维护大数据运维相关工作 <code>hadoop,spark,sqoop,hue,hive,Hbase,zookeeper</code>等等 测试开发生产使用起来,从集群环境维护 提升数据稳定性 高可用维护。</p>
-<p>前面说了一堆自己闲聊，真正解决这次问题是hadoop新增节点需要注意哪几点：</p>
-<p><code>新增节点如何新增我会在另外一篇详细说的这里我讲一些需要注意掉的问题。</code></p>
-<h3 id="需要修改几个配置："><a href="#需要修改几个配置：" class="headerlink" title="需要修改几个配置："></a>需要修改几个配置：</h3><p>（1）hadoop data 数据目录 VERSION 里面的搭建集群时，直接克隆会出现这个问题。解决方法同上两种，最好修改${/hadoop/tmp/dir}/dfs/data/current/VERSION中的storageID，使其不同。第一种会导致hdfs数据丢失。</p>
-<p>解决方法：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">（1） datanode启动是会加载DataStorage，如果不存在则会format</div><div class="line">（2）初次启动DataStorage的storageID是空的，所以会生成一个storageID</div></pre></td></tr></table></figure>
-<p>参考我解决的：<code>这里我拷贝过来 直接删除。等集群namenode启动 会自动生成。</code></p>
-<p>这个解决以后 新增的机器必须关闭防火墙。因为这个原因会导致我 hadoop新增节点集群启动请求异常：Last contact：200</p>
-<p>（2） 集群重启时防火墙自动开启导致：</p>
-<p>这里贴张图片给大家看看：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop1.png" alt=""></figure></p>
-<p>问题：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">2017-07-04 18:43:30,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 8 time(s).</div><div class="line">2017-07-04 18:43:31,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 9 time(s).</div><div class="line">2017-07-04 18:43:31,479 ERROR org.apache.hadoop.hdfs.server.datanode.DataNode: java.io.IOException: Call to /192.168.18.218:9000 failed on <span class="built_in">local</span> exception: java.net.NoRouteToHostException: 没有到主机的路由</div><div class="line">        at org.apache.hadoop.ipc.Client.wrapException(Client.java:775)</div><div class="line">        at org.apache.hadoop.ipc.Client.call(Client.java:743)</div><div class="line">解决方法：在root权限下关闭防火墙：service iptables stop</div></pre></td></tr></table></figure>
-<p>最好配置成机器重启默认防火墙关闭：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables off   #开机不启动防火墙服务</span></div><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables on   #开机启动防火墙服务</span></div></pre></td></tr></table></figure>
-<p>解决以后服务重新跑一遍已经搞定。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop2.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop3.png" alt=""></figure></p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/04/29/Bigdata-hadoop/Kafka/Bigdata-Kafka三款监控工具比较/">Bigdata-Kafka三款监控工具比较</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-04-29</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/大数据/">大数据</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Bigdata-Hadoop/">Bigdata Hadoop</a> <a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<p>在之前的博客中，介绍了<code>Kafka Web Console</code>这个监控工具，在生产环境中使用，运行一段时间后，发现该工具会和Kafka生产者、消费者、ZooKeeper建立大量连接，从而导致网络阻塞。并且这个Bug也在其他使用者中出现过，看来使用开源工具要慎重！该Bug暂未得到修复，不得已，只能研究下其他同类的Kafka监控软件。</p>
-<p>通过研究，发现主流的三种kafka监控程序分别为：</p>
-<ul>
-<li>1、Kafka Web Conslole</li>
-<li>2、Kafka Manager</li>
-<li>3、KafkaOffsetMonitor</li>
-</ul>
-<p>现在依次介绍以上三种工具：</p>
-<h2 id="1、Kafka-Web-Conslole"><a href="#1、Kafka-Web-Conslole" class="headerlink" title="1、Kafka Web Conslole"></a>1、Kafka Web Conslole</h2><p>使用Kafka Web Console，可以监控：</p>
-<ul>
-<li>Brokers列表</li>
-<li>Kafka 集群中 Topic列表，及对应的Partition、LogSiz e等信息</li>
-<li>点击Topic，可以浏览对应的Consumer Groups、Offset、Lag等信息</li>
-<li>生产和消费流量图、消息预览…</li>
-</ul>
-<p>程序运行后，会定时去读取kafka集群分区的日志长度，读取完毕后，连接没有正常释放，一段时间后产生大量的socket连接，导致网络堵塞。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Kafka_web_console.png" alt=""></figure></p>
-<h2 id="2、Kafka-Manager"><a href="#2、Kafka-Manager" class="headerlink" title="2、Kafka Manager"></a>2、Kafka Manager</h2><p>雅虎开源的Kafka集群管理工具:</p>
-<ul>
-<li>管理几个不同的集群</li>
-<li>监控集群的状态(topics, brokers, 副本分布, 分区分布)</li>
-<li>产生分区分配(Generate partition assignments)基于集群的当前状态</li>
-<li>重新分配分区</li>
-</ul>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka_manager.png" alt=""></figure></p>
-<h2 id="3、KafkaOffsetMonitor"><a href="#3、KafkaOffsetMonitor" class="headerlink" title="3、KafkaOffsetMonitor"></a>3、KafkaOffsetMonitor</h2><ul>
-<li>KafkaOffsetMonitor可以实时监控：</li>
-<li>Kafka集群状态</li>
-<li>Topic、Consumer Group列表</li>
-<li>图形化展示topic和consumer之间的关系</li>
-<li>图形化展示consumer的Offset、Lag等信息</li>
-</ul>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafkaoffsetmonitor.png" alt=""></figure></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过使用，个人总结以上三种监控程序的优缺点：</p>
-<p><a href="https://github.com/claudemamo/kafka-web-console" target="_blank" rel="external">Kafka Web Console</a>：监控功能较为全面，可以预览消息，监控Offset、Lag等信息，但存在bug，不建议在生产环境中使用。</p>
-<p><a href="https://github.com/yahoo/kafka-manager" target="_blank" rel="external">Kafka Manager</a>：偏向Kafka集群管理，若操作不当，容易导致集群出现故障。对Kafka实时生产和消费消息是通过JMX实现的。没有记录Offset、Lag等信息。</p>
-<p><a href="https://github.com/quantifind/KafkaOffsetMonitor" target="_blank" rel="external">KafkaOffsetMonitor</a>：程序一个jar包的形式运行，部署较为方便。只有监控功能，使用起来也较为安全。</p>
-<p>若只需要监控功能，推荐使用KafkaOffsetMonito，若偏重Kafka集群管理，推荐使用Kafka Manager。</p>
-<p>因为都是开源程序，稳定性欠缺。故需先了解清楚目前已存在哪些Bug，多测试一下，避免出现类似于Kafka Web Console的问题。</p>
-<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
-<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/03/30/日志分析平台/Elasticsearch/研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？/">研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-03-30</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Elasticsearch/">Elasticsearch</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<p><img src="http://img13.deviantart.net/1fb9/i/2013/051/6/1/ella_vs__elastic_yoko_by_gamepal-d5vmtjm.png" alt=""></p>
-<p>ES 现在普遍大公司都已经在使用，有的用来做数据存储，也有做性能监控，也有做日志收集，跟大数据结合做日志分析。<br>今天在家无聊研究官网学习了下Elasticsearch5.0.0 功能新增哪些，个人觉得ES也是现在开源日志分析平台比较火的，从14年开始陆续使用频率不断提升。<br>之前也有了解过Graylog  现在比ES 做数据存储分析 不错的是Graylog 比ES性能好。<br>废话不多说了哈哈</p>
-		<p><a class="article__read-more-link" href="/2017/03/30/日志分析平台/Elasticsearch/研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？/">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
 		<h1><a href="/2017/03/29/Bigdata-hadoop/countly/Bigdata-countly需要迁移/">Bigdata-countly需要迁移</a></h1>
 	
 	<div class="article__infos">
@@ -224,6 +71,64 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">5、修改硬盘block：</div><div class="line">     blockdev --setra 256 /dev/mapper/xvdc--vg-xvdc–lv    <span class="comment">##按照mongo提示操作</span></div></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">6、修改nginx配置文件  conf.d/default.conf</div><div class="line">      将127.0.0.1修改为本地私有地址</div></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">7、重启countly   mongodb  nginx</div><div class="line"></div><div class="line">countly restart</div><div class="line"></div><div class="line">/etc/init.d/mongod restart</div><div class="line"></div><div class="line">service nginx restart</div><div class="line">迁移完毕</div></pre></td></tr></table></figure>
+<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
+<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/03/28/Bigdata-hadoop/Kafka/Bigdata-Kafka集群快速搭建与增删改查命令讲解/">Bigdata-Kafka集群快速搭建与命令讲解</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-03-28</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Bigdata-Hadoop/">Bigdata Hadoop</a> <a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h1 id="Bigdata-Kafka集群快速搭建与命令讲解"><a href="#Bigdata-Kafka集群快速搭建与命令讲解" class="headerlink" title="Bigdata-Kafka集群快速搭建与命令讲解"></a>Bigdata-Kafka集群快速搭建与命令讲解</h1><h3 id="kafka集群和zookeeper集群规范"><a href="#kafka集群和zookeeper集群规范" class="headerlink" title="kafka集群和zookeeper集群规范"></a>kafka集群和zookeeper集群规范</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">kafka集群和zookeeper集群规范</div><div class="line">kafka版本：kafka_2.10-0.8.2.1</div><div class="line">zookeeper版本：zookeeper-3.4.5</div><div class="line"></div><div class="line">启动用户：jollybi</div><div class="line">kafka安装目录：/data/tools/</div><div class="line">kafka新建消息目录：/data/tools/kafka_2.10-0.8.2.1/kafka-logs</div><div class="line"></div><div class="line">启动用户：jollybi</div><div class="line">zookeeper安装目录：/data/tools/</div><div class="line">zookeeper新建日志目录：/data/tools/zookeeper-3.4.5/tmp/logs</div><div class="line"></div><div class="line">统一配置hosts</div><div class="line"></div><div class="line"></div><div class="line">10.155.90.153 kafka1.jollychic.com kafka1</div><div class="line">10.155.90.155 kafka2.jollychic.com kafka2</div><div class="line">10.155.90.138 kafka3.jollychic.com kafka3</div></pre></td></tr></table></figure>
+<p>本文使用了3台机器部署Kafka集群，IP和主机名对应关系如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">10.155.90.153 kafka1.jollychic.com kafka1</div><div class="line">10.155.90.155 kafka2.jollychic.com kafka2</div><div class="line">10.155.90.138 kafka3.jollychic.com kafka3</div></pre></td></tr></table></figure>
+<h3 id="Step1-配置-etc-hosts-（3台一致）"><a href="#Step1-配置-etc-hosts-（3台一致）" class="headerlink" title="Step1: 配置/etc/hosts （3台一致）"></a>Step1: 配置/etc/hosts （3台一致）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">127.0.0.1 localhost.localdomain localhost</div><div class="line">10.155.90.153 kafka1.jollychic.com kafka1</div><div class="line">10.155.90.155 kafka2.jollychic.com kafka2</div><div class="line">10.155.90.138 kafka3.jollychic.com kafka3</div></pre></td></tr></table></figure>
+<h3 id="Step2-环境KafKa集群环境"><a href="#Step2-环境KafKa集群环境" class="headerlink" title="Step2: 环境KafKa集群环境"></a>Step2: 环境KafKa集群环境</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">下载地址：http://mirrors.hust.edu.cn/apache/kafka/0.9.0.0/kafka_2.10-0.8.2.1.tgz</div><div class="line">[jollybi@kafka1 ]<span class="comment"># tar -xvf kafka_2.10-0.8.2.1.tgz -C /data/tools/</span></div><div class="line"><span class="built_in">cd</span> /data/tools/kafka_2.10-0.8.2.1/config</div></pre></td></tr></table></figure>
+<h3 id="设置data目录，最好不要用默认的-tmp-kafka-logs"><a href="#设置data目录，最好不要用默认的-tmp-kafka-logs" class="headerlink" title="设置data目录，最好不要用默认的/tmp/kafka-logs"></a>设置data目录，最好不要用默认的/tmp/kafka-logs</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mkdir -p /data/tools/kafka_2.10-0.8.2.1/kafka-logs/</div></pre></td></tr></table></figure>
+<p><em>修改kafka配置文件</em></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">[root@kafka_01 config]<span class="comment"># vim server.properties</span></div><div class="line"></div><div class="line"></div><div class="line"> 设置brokerid（从0开始，3个节点分别设为1,2,3，不能重复）在这里id=0跟zookeeper id设置一样就行。 集群机器：按顺序写1</div><div class="line">broker.id=1  </div><div class="line"></div><div class="line">auto.leader.rebalance.enable=<span class="literal">true</span> </div><div class="line"></div><div class="line"><span class="comment">#修改本地IP地址：</span></div><div class="line">listeners=PLAINTEXT://10.46.72.172:9092</div><div class="line">port=9292 //设置访问端口</div><div class="line">host.name=10.155.90.153   kafka本机IP</div><div class="line">log.dirs=/data/tools/kafka_2.10-0.8.2.1/kafka-logs</div><div class="line"></div><div class="line"><span class="comment">#设置注册地址（重要，默认会把本机的hostanme注册到zk中，客户端连接时需要解析该hostanme，所以这里直接注册本机的IP地址，避免hostname解析失败，报错java.nio.channels.UnresolvedAddressException或java.io.IOException: Can not resolve address）</span></div><div class="line"><span class="comment">#设置zookeeper地址</span></div><div class="line"><span class="comment">#zookeeper.connect=10.46.72.172:2181,10.47.88.103:2181,10.47.102.137:2181</span></div><div class="line">zookeeper.connect=kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281</div><div class="line"></div><div class="line">//这里我设置hosts代替IP</div></pre></td></tr></table></figure>
+<p><em>配置zookeeper地址</em></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">vim zookeeper.properties </div><div class="line">dataDir=/data/tools/zookeeper-3.4.5/tmp</div><div class="line"><span class="comment"># the port at which the clients will connect</span></div><div class="line">clientPort=2281</div><div class="line"><span class="comment"># disable the per-ip limit on the number of connections since this is a non-production config</span></div><div class="line">maxClientCnxns=0</div><div class="line">~</div></pre></td></tr></table></figure>
+<p><em>配置kafka访问地址</em></p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">vim</span> producer.properties </div><div class="line">metadata.broker.list=<span class="number">169.44.62.139:9292</span>,<span class="number">169.44.59.138:9292</span>,<span class="number">169.44.62.137:9292</span>   </div><div class="line"><span class="comment"># name of the partitioner class for partitioning events; default partition spreads data randomly</span></div><div class="line"><span class="comment">#partitioner.class=</span></div><div class="line"></div><div class="line"><span class="comment"># specifies whether the messages are sent asynchronously (async) or synchronously (sync)</span></div><div class="line">producer.type=sync</div><div class="line"></div><div class="line"><span class="comment"># specify the compression codec for all data generated: none, gzip, snappy, lz4.</span></div><div class="line"><span class="comment"># the old config values work as well: 0, 1, 2, 3 for none, gzip, snappy, lz4, respectively</span></div><div class="line">compression.codec=<span class="literal">none</span></div><div class="line"></div><div class="line"><span class="comment"># message encoder</span></div><div class="line">serializer.class=kafka.serializer.DefaultEncoder</div></pre></td></tr></table></figure>
+<h3 id="Step3-集群机器快速拷贝配置"><a href="#Step3-集群机器快速拷贝配置" class="headerlink" title="Step3: 集群机器快速拷贝配置:"></a>Step3: 集群机器快速拷贝配置:</h3><p>远程复制分发安装文件<br>最好是把文件打包scp过去<br>接下来将上面的安装文件拷贝到集群中的其他机器上对应的目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">scp -P58958 -r kafka_2.10-0.8.2.1 jollybi@169.44.62.137:/home/jollybi/tools/. </div><div class="line">scp -P58958 -r kafka_2.10-0.8.2.1 jollybi@169.44.62.138:/home/jollybi/tools/.</div></pre></td></tr></table></figure>
+<p>统一修改分别其他两台kafka <code>server.properties</code></p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">broker.id=<span class="number">2</span>  </div><div class="line">host.name=<span class="number">169.44</span><span class="number">.62</span><span class="number">.137</span>   kafka2本机IP</div><div class="line"></div><div class="line">broker.id=<span class="number">3</span> </div><div class="line">host.name=<span class="number">169.44</span><span class="number">.62</span><span class="number">.138</span>   kafka3本机IP</div></pre></td></tr></table></figure>
+<h3 id="Step4-启动-kafka集群"><a href="#Step4-启动-kafka集群" class="headerlink" title="Step4:启动 kafka集群"></a>Step4:启动 kafka集群</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">./kafka-server-start.sh -daemon ../config/server.properties</div><div class="line"></div><div class="line">[jollybi@kafka1 config]$ jps</div><div class="line">3443 QuorumPeerMain</div><div class="line">16280 Jps</div><div class="line">3628 Kafka</div><div class="line">Step5: Kafka常用命令(普及)</div></pre></td></tr></table></figure>
+<h4 id="Step5-测试集群基本命令"><a href="#Step5-测试集群基本命令" class="headerlink" title="Step5:测试集群基本命令"></a>Step5:测试集群基本命令</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div></pre></td><td class="code"><pre><div class="line"><span class="comment">### 默认创建kafka Topic:  1个副本备份 1个分区消费</span></div><div class="line"></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 1 --partitions 1 --topic mongotail_lz4</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 1 --partitions 1 --topic mongotail_lz4_imp</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 大数据这边需要12个分区这里我删除Topic重新创建Topic：</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 删除kafka Topic:</span></div><div class="line"></div><div class="line"></div><div class="line">第一步：删除kafka topic</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --delete --topic  mongotail_lz4 </div><div class="line"></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --delete --topic  mongotail_lz4_imp</div><div class="line"></div><div class="line"><span class="comment">### 这是由于删除topic没删干净会报错：</span></div><div class="line"></div><div class="line">org.apache.kafka.common.errors.UnknownTopicOrPartitionException: This server does not host this topic-partition.</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 删除线程执行删除操作的真正逻辑是：</span></div><div class="line">1. 它首先会给当前所有broker发送更新元数据信息的请求，告诉这些broker说这个topic要删除了，你们可以把它的信息从缓存中删掉了</div><div class="line">2. 开始删除这个topic的所有分区</div><div class="line">2.1 给所有broker发请求，告诉它们这些分区要被删除。broker收到后就不再接受任何在这些分区上的客户端请求了</div><div class="line">2.2 把每个分区下的所有副本都置于OfflineReplica状态，这样ISR就不断缩小，当leader副本最后也被置于OfflineReplica状态时leader信息将被更新为-1</div><div class="line">2.3 将所有副本置于ReplicaDeletionStarted状态</div><div class="line">2.4 副本状态机捕获状态变更，然后发起StopReplicaRequest给broker，broker接到请求后停止所有fetcher线程、移除缓存，然后删除底层<span class="built_in">log</span>文件</div><div class="line">2.5 关闭所有空闲的Fetcher线程</div><div class="line">    </div><div class="line"><span class="comment">### 第二步：删除zookeeper相关的路径：</span></div><div class="line">[jollybi@kafka1 zookeeper-3.4.5]$ ./bin/zkCli.sh -server 127.0.0.1:2281 </div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 1] rmr /brokers/topics/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 0] rmr /consumers/group_ml_general/offsets/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 1] rmr /consumers/group_ml_general/owners/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 3] rmr  /config/topics/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 4] rmr /admin/delete_topics/mongotail_lz4</div><div class="line"></div><div class="line"><span class="comment">### 删除topic上面消费组 </span></div><div class="line"></div><div class="line">删除 ZooKeeper 下面的 /consumers/[group_id] 路径就可以了。ZooKeeper 原生API只支持删除空的路径，所以建议你使用 curator framework 进行这个删除操作，ZkPaths.deleteChildren 会递归式地删除整个路径（包括子路径）。</div><div class="line"></div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 0] rmr /consumers/kafka-node1-imp-group</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 1] rmr /consumers/kafka-node1-group</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 2] rmr /consumers/console-consumer-59053</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 3] rmr /consumers/</div><div class="line"></div><div class="line"></div><div class="line">1、设置配置文件允许删除</div><div class="line">delete.topic.enable=<span class="literal">true</span> 配置添加到 config/server.properties</div><div class="line">2、执行删除命令</div><div class="line">./bin/kafka-topics.sh --zookeeper localhost:2181 --delete --topic <span class="built_in">test</span>-topic</div><div class="line"></div><div class="line">在zookeeper中确认：</div><div class="line"></div><div class="line"> 删除zookeeper下/brokers/topics/<span class="built_in">test</span>-topic节点</div><div class="line"> 删除zookeeper下/config/topics/<span class="built_in">test</span>-topic节点</div><div class="line"> 删除zookeeper下/admin/delete_topics/<span class="built_in">test</span>-topic节点</div><div class="line"> </div><div class="line">consumer 的话 删除groupid</div><div class="line"> </div><div class="line"></div><div class="line"><span class="comment">### 重启kafka集群</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 大数据kafka建topic，不能建一个分区，那样吞吐量上不去，不够用，我们以前建了12个分区的</span></div><div class="line"><span class="comment">### 创建新 kafka Topic: 3个副本，12个分区</span></div><div class="line"></div><div class="line"> ./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 3 --partitions 12  --topic mongotail_lz4</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 3 --partitions 12  --topic mongotail_lz4_imp</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 查看创建的Topic:</span></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh  --describe --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281  --topic mongotail_lz4</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh  --describe --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281  --topic mongotail_lz4_imp</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 查看集群情况：</span></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh  --describe --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281  --topic mongotail_lz4</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 模拟生产者（producer）kafka生产客户端生产数据命令：</span></div><div class="line"></div><div class="line">./bin/kafka-console-producer.sh --broker-list 75.126.39.124:9292,75.126.5.162:9292,75.126.5.178:9292 --topic mongotail_lz4_imp                      </div><div class="line">......</div><div class="line">my <span class="built_in">test</span> message 1</div><div class="line">my <span class="built_in">test</span> message 2</div><div class="line">^C</div><div class="line"><span class="comment">### 模拟消费者（consumer）kafka消费客户端数据命令 现在我们来看看消息：</span></div><div class="line"></div><div class="line"> ./bin/kafka-console-consumer.sh --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  --fm-beginning --topic mongotail_lz4_imp</div><div class="line">......</div><div class="line">my <span class="built_in">test</span> message 1</div><div class="line">my <span class="built_in">test</span> message 2</div><div class="line"></div><div class="line">^C</div></pre></td></tr></table></figure>
+<h3 id="Kafka常用命令"><a href="#Kafka常用命令" class="headerlink" title="Kafka常用命令"></a>Kafka常用命令</h3><p>以下是kafka常用命令行总结：  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">1、 list topic 显示所有topic</div><div class="line">./bin/kafka-topics.sh --list --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281</div><div class="line"></div><div class="line">2、 查看topic的详细信息  </div><div class="line"> ./bin/kafka-topics.sh --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  -describe -topic mongotail_lz4_imp</div><div class="line"></div><div class="line">3、为topic增加partition分区 参数：--alter --partitions</div><div class="line">./bin/kafka-topics.sh  --alter --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  --partitions 20 --topic mongotail_lz4_imp</div><div class="line"></div><div class="line">4、kafka生产者客户端命令  </div><div class="line">./bin/kafka-console-producer.sh --broker-list 75.126.39.124:9292,75.126.5.162:9292,75.126.5.178:9292 --topic mongotail_lz4_imp                        </div><div class="line"></div><div class="line">5、kafka消费者客户端命令  </div><div class="line">./bin/kafka-console-consumer.sh --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  --fm-beginning --topic </div><div class="line"></div><div class="line">6、kafka服务启动  </div><div class="line">./kafka-server-start.sh -daemon ../config/server.properties   </div><div class="line"></div><div class="line">7、下线broker  </div><div class="line">./kafka-run-class.sh kafka.admin.ShutdownBroker --zookeeper 127.0.0.1:2181 --broker <span class="comment">#brokerId# --num.retries 3 --retry.interval.ms 60  </span></div><div class="line">shutdown broker  </div><div class="line"></div><div class="line">8、删除topic  </div><div class="line">./kafka-run-class.sh kafka.admin.DeleteTopicCommand --topic <span class="built_in">test</span>KJ1 --zookeeper 127.0.0.1:2181  </div><div class="line">./kafka-topics.sh --zookeeper localhost:2181 --delete --topic <span class="built_in">test</span>KJ1  </div><div class="line"></div><div class="line">9、查看consumer组内消费的offset  </div><div class="line">./kafka-run-class.sh kafka.tools.ConsumerOffsetChecker --zookeeper localhost:2181 --group <span class="built_in">test</span> --topic <span class="built_in">test</span>KJ1</div></pre></td></tr></table></figure>
+<h4 id="Step6-Kafka存储"><a href="#Step6-Kafka存储" class="headerlink" title="Step6:Kafka存储"></a>Step6:Kafka存储</h4><p>每个replica一个目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[jollybi@kafka1 kafka_2.10-0.8.2.0]<span class="comment"># cd /data/tools/kafka_2.10-0.8.2.0/kafka-logs/</span></div><div class="line">[root@master kafka-logs]<span class="comment"># ls</span></div><div class="line">__consumer_offsets-0   __consumer_offsets-20  __consumer_offsets-32  __consumer_offsets-44   my-replicatedtopic1-0</div><div class="line">__consumer_offsets-1   __consumer_offsets-21  __consumer_offsets-33  __consumer_offsets-45   my-replicated-topic1-1</div></pre></td></tr></table></figure>
+<p>二级结构</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[jollybi@kafka1 kafka-logs]<span class="comment"># cd my-replicated-topic1-0/</span></div><div class="line">[jollybi@kafka1  my-replicated-topic1-0]<span class="comment"># ls</span></div><div class="line">00000000000000000000.index  00000000000000000000.log</div></pre></td></tr></table></figure>
+<p><figure class="figure"><img src="http://static.zybuluo.com/sasaki/f71rtngyz2y8n3m6uxq1z2ec/%E5%9B%BE%E7%89%871.png" alt=""></figure></p>
 <h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
 <p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
 
@@ -757,6 +662,127 @@ graylog2-server.uris=&quot;http://127.0.0.1:12900/&quot;
 <h4 id="其余参考文档"><a href="#其余参考文档" class="headerlink" title="其余参考文档"></a>其余参考文档</h4><p><a href="http://docs.graylog.org/en/1.3/" target="_blank" rel="external">参考官网</a></p>
 <p><a href="http://blog.topspeedsnail.com/archives/4066" target="_blank" rel="external">Centos7 搭建graylog</a></p>
 <p><a href="https://my.oschina.net/fitnessefan/blog/464351?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">Graylog——日志聚合工具中的后起之秀</a></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2016/09/11/个人生活记录/考驾照的艰辛历程/">考驾照的艰辛历程</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-09-11</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/生活/">生活</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Personal-life-record/">Personal life record</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>🍓</p>
+<p>   今天是2016年9月11号，在过几天就是中秋节了，刚刚大学毕业出来一年了，在加上实习工作一年多了，算起来工作两年多了，在读大学和参加一些技术培训班就没有时间去考一本属于自己的驾照，一直拖到现在的确是挺忙的。</p>
+		<p><a class="article__read-more-link" href="/2016/09/11/个人生活记录/考驾照的艰辛历程/">...read more</a></p>
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2016/09/02/个人生活记录/厨艺依然好👍/">厨艺依然好👍</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-09-02</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/生活/">生活</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Personal-life-record/">Personal life record</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p> 一个男的能做的出一手好的美食是多么棒👍的一件事。这还要感谢我有一个特别的棒的父亲。</p>
+<p> 记得小时候12岁我就开始学会做饭，学会第一道菜南瓜饭🎃。</p>
+<p> 这个的确也是我对做美食也很感兴趣，什么红烧鸡翅，红烧排骨，红烧肉，🐟鱼类最拿手了。 江南家常菜都比较会点，这也是我一个优点吧。 </p>
+<p>自己出来工作，在外面工作来往同事朋友来家里玩，自己会下厨可以露一手。</p>
+<p><strong>最近工作不是特别忙就继续拿起程式菜谱小弄了几道小菜：</strong></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/cai.JPG" alt=""></figure></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/cai1.JPG" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/cai2.JPG" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/cai3.JPG" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/cai4.JPG" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/cai5.JPG" alt=""></figure></p>
+<p><strong>是不是特别棒</strong>👍 😁 </p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2016/07/31/个人生活记录/推荐一个保护眼睛👀的软件－f-lux/">推荐一个保护眼睛👀的软件－f-lux</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-07-31</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/生活/">生活</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Personal-life-record/">Personal life record</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>最近天天加班然后晚上盯着电脑，眼睛一直很干涩，非常难受。正巧昨天在GitHub上闲逛，无意间发现了别人推荐的这个软件f.lux，Mac上下载试用了一下。觉得很不错，推荐一下！也许是我孤陋寡闻了，可能大家都已经在用了……</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p><code>f.lux</code>的功能很简单，就是可以根据时间的变化调节电脑的显示。但是这里的调节不是简单的亮度调节，而是调节显示屏的色温（简单的说就是白天冷色调，晚上暖色调）。可以从<a href="https://justgetflux.com/" target="_blank" rel="external">f.lux官网</a>下载安装，然后打开，界面如下：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/f.lux1.png" alt=""></figure></p>
+<p>官网翻译:</p>
+<p>你<code>f.lux</code>安装程序是一个.zip文件 - 它应该是在你下载的文件夹中。双击它安装f.lux。</p>
+<p>一旦f.lux安装并运行，你应该看到f.lux Preferences窗口出现。在这里，你可以输入自己的位置，并设置你平时的起床时间。f.lux使用此信息为您创建一个自定义照明计划。</p>
+<p>你可以打开首随时查看和更改您的f.lux设置。<br>该f.lux菜单总是可以找到您的系统时钟的左侧。</p>
+<p><a href="https://justgetflux.com/news/pages/macquickstart/" target="_blank" rel="external">官网使用说明地址</a></p>
+<h3 id="f-lux"><a href="#f-lux" class="headerlink" title="f.lux"></a>f.lux</h3><p>白天是每当太阳在你的位置。默认情况下，f.lux在6500K白天，并且不改变你的屏幕的颜色。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/f.lux3.png" alt=""></figure></p>
+<p>如果你喜欢很暖白天的颜色，选择选项&gt;扩展白天设置从f.lux菜单。</p>
+<p>日落时太阳已经下山了，但你是清醒的。如果你是一个早起的人，这也是你的日出前的清晨设置。<br>日落的颜色被设计成与正常的暖白光室内照明很好地工作。如果平时在日出前醒来，你可能更喜欢一个更温和的（4500K或亮）日落设置。</p>
+<p>睡前是当你上床准备（或已经在它）睡觉前的时间。<br>在睡前设置你的唤醒时间的变化。它清除掉，从你的屏幕尽可能提醒的光芒使你能感觉到自己的身体越来越厌倦。你可以去用f.lux随时随地睡觉-每当你感到困倦。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/f.lux4.png" alt=""></figure></p>
+<p><code>f.lux</code>的色温调节有三个时段，分别是白天、日落和睡眠。日落时间会根据设置的经纬度自动设置，每个时间段的色温可以自已定义，也可以选择右上角的定义好的模式。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/f.lux2.png" alt=""></figure></p>
+<h3 id="多系统支持"><a href="#多系统支持" class="headerlink" title="多系统支持"></a>多系统支持</h3><p>目前<code>f.lux</code> 支持<code>Windows</code>、<code>Mac</code>、<code>Linux</code>以及iOS（要越狱）。几乎覆盖了当前主要的操作系统，Android也很快会支持。</p>
+<p>这个软件很小，而且装上之后系统资源占用很低，非常值得一试的软件。从现在开始保护你的眼睛吧！</p>
 
 	
 

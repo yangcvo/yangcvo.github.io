@@ -41,196 +41,6 @@
 
 	<article>
 	
-		<h1><a href="/2017/06/28/Bigdata-hadoop/Kafka/Bigdata-开源的Kafka集群管理器(kafka-web-console)/">Bigdata-开源的Kafka集群管理器(kafka-web-console)</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-06-28</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/大数据/">大数据</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>源码的地址在:<a href="https://github.com/claudemamo/kafka-web-console" target="_blank" rel="external">kafka-web-console</a></p>
-<p><code>Kafka Web Console</code>也是用Scala语言编写的<code>Java web</code>程序用于监控<code>Apache Kafka</code>。这个系统的功能和<code>KafkaOffsetMonitor</code>很类似，但是我们从源码角度来看，这款系统实现比<code>KafkaOffsetMonitor</code>要复杂很多，而且编译配置比<code>KafkaOffsetMonitor</code>较麻烦。</p>
-<p>　要想运行这套系统我们需要的先行条件为：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Play Framework 2.2.x</div><div class="line">Apache Kafka 0.8.x</div><div class="line">Zookeeper 3.3.3 or 3.3.4</div></pre></td></tr></table></figure>
-<h3 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h3><p>同样，我们从<code>https://github.com/claudemamo/kafka-web-console</code>上面将源码下载下来，然后用<code>sbt</code>进行编译，在编译前我们需要做如下的修改：</p>
-<p>Kafka Web控制台需要一个关系数据库。默认情况下，服务器连接到嵌入式H2数据库，不需要数据库安装或配置。请咨询Play！的文档以指定控制台的数据库。支持以下数据库：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git <span class="built_in">clone</span> https://github.com/claudemamo/kafka-web-console.git</div></pre></td></tr></table></figure>
-<ul>
-<li>H2（默认）</li>
-<li>PostgreSql</li>
-<li>Oracle</li>
-<li>DB2</li>
-<li>MySQL</li>
-<li>Apache Derby</li>
-<li>Microsoft SQL Server</li>
-</ul>
-<p>为了方便，我们可以使用Mysql数据库，只要做如下修改即可，找到 <code>conf/application.conf</code>文件，并修改如下</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">将这个</div><div class="line">db.default.driver=org.h2.Driver</div><div class="line">db.default.url=<span class="string">"jdbc:h2:file:play"</span></div><div class="line"><span class="comment"># db.default.user=sa</span></div><div class="line"><span class="comment"># db.default.password=""</span></div><div class="line"> </div><div class="line"> </div><div class="line">修改成</div><div class="line">db.default.driver=com.mysql.jdbc.Driver</div><div class="line">db.default.url=<span class="string">"jdbc:mysql://localhost:3306/kafkamonitor"</span></div><div class="line">db.default.user=iteblog</div><div class="line">db.default.pass=wyp</div></pre></td></tr></table></figure>
-<p>我们还需要修改build.sbt，加入对Mysql的依赖:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="string">"mysql"</span> % <span class="string">"mysql-connector-java"</span> % <span class="string">"5.1.31"</span></div></pre></td></tr></table></figure>
-<p>　2、执行<code>conf/evolutions/default/bak</code>目录下面的<code>1.sql、2.sql和3.sql</code>三个文件。需要注意的是，这三个sql文件不能直接运行，有语法错误，需要做一些修改。<br>上面的注意事项弄完之后，我们就可以编译下载过来的源码：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> sbt package</span></div></pre></td></tr></table></figure>
-<p>编译的过程比较慢，有些依赖包下载速度非常地慢，请耐心等待。<br>　在编译的过程中，可能会出现有些依赖包无法下载，如下错误：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">[warn] module not found: com.typesafe.play<span class="comment">#sbt-plugin;2.2.1</span></div><div class="line">[warn] ==== typesafe-ivy-releases: tried</div><div class="line">[warn] http://repo.typesafe.com/typesafe/ivy-releases/</div><div class="line">com.typesafe.play/sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== sbt-plugin-releases: tried</div><div class="line">[warn] http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/</div><div class="line">com.typesafe.play/sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== <span class="built_in">local</span>: tried</div><div class="line">[warn] /home/iteblog/.ivy2/<span class="built_in">local</span>/com.typesafe.play/</div><div class="line">sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== Typesafe repository: tried</div><div class="line">[warn] http://repo.typesafe.com/typesafe/releases/com/</div><div class="line">typesafe/play/sbt-plugin_2.9.2_0.12/2.2.1/sbt-plugin-2.2.1.pom</div><div class="line">[warn] ==== public: tried</div><div class="line">[warn] http://repo1.maven.org/maven2/com/typesafe/play/</div><div class="line">sbt-plugin_2.9.2_0.12/2.2.1/sbt-plugin-2.2.1.pom</div><div class="line">[warn] ::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">==== <span class="built_in">local</span>: tried</div><div class="line"> </div><div class="line">/home/iteblog/.ivy2/<span class="built_in">local</span>/org.scala-sbt/collections/0.13.0/jars/collections.jar</div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">:: FAILED DOWNLOADS ::</div><div class="line"> </div><div class="line">:: ^ see resolution messages <span class="keyword">for</span> details ^ ::</div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">:: org.scala-sbt<span class="comment">#collections;0.13.0!collections.jar</span></div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div></pre></td></tr></table></figure>
-<p>我们可以手动地下载相关依赖，并放到类似<code>/home/iteblog/.ivy2/local/org.scala-sbt/collections/0.13.0/jars/</code>目录下面。然后再编译就可以了。</p>
-<p>　　最后，我们可以通过下面命令启动<code>Kafka Web Console</code>监控系统：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> sbt run</span></div></pre></td></tr></table></figure>
-<p>并可以在<a href="http://localhost:9000" target="_blank" rel="external">http://localhost:9000</a> 查看下面是一张效果图</p>
-<p><figure class="figure"><img src="https://www.iteblog.com/pic/topics.png" alt=""></figure></p>
-<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
-<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/06/01/Monitoring/Zabbix监控Kafka集群 Brokers服务/">Zabbix监控Kafka集群 Brokers服务</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-06-01</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Kafka/">Kafka</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a> <a class="article__tag-link" href="/tags/Zabbix/">Zabbix</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h3 id="Zabbix监控Kafka集群-Brokers服务"><a href="#Zabbix监控Kafka集群-Brokers服务" class="headerlink" title="Zabbix监控Kafka集群 Brokers服务"></a>Zabbix监控Kafka集群 Brokers服务</h3><p><img src="https://datadog-prod.imgix.net/img/blog/monitor-kafka-with-datadog/dash1.png?fit=max" alt=""></p>
-<h4 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h4><p>Monitoring Kafka with Datadog</p>
-<p>This post is the final part of a 3-part series on how to monitor Kafka. Part 1 explores the key metrics available from Kafka, and Part 2 is about collecting those metrics on an ad hoc basis.</p>
-<p>To implement ongoing, meaningful monitoring, you will need a dedicated system that allows you to store, visualize, and correlate your Kafka metrics with the rest of your infrastructure.</p>
-<p>Kafka deployments often rely on additional software packages not included in the Kafka codebase itself, in particular Apache ZooKeeper. A comprehensive monitoring implementation includes all the layers of your deployment, including host-level metrics when appropriate, and not just the metrics emitted by Kafka itself.</p>
-		<p><a class="article__read-more-link" href="/2017/06/01/Monitoring/Zabbix监控Kafka集群 Brokers服务/">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/05/29/Monitoring/Zabbix-Monitoring Kafka Consumer | kafka的监控和告警/">Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-05-29</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Kafka/">Kafka</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a> <a class="article__tag-link" href="/tags/Zabbix/">Zabbix</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<p><img src="http://adminotes.com/wp-content/uploads/2016/08/Screenshot-from-2016-08-12-16-41-55.png" alt=""></p>
-<h3 id="Zabbix-Monitoring-Kafka集群-Consumer-kafka的监控和告警"><a href="#Zabbix-Monitoring-Kafka集群-Consumer-kafka的监控和告警" class="headerlink" title="Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警"></a>Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警</h3><p>前面一篇讲了我们监控kafka集群Brokers服务状态监控。生产环境监控，可以在Zabbix中对Kafka进行监控，一种是监控JMX端口，另外一种是直接写脚本，使用bin/kafka-run-class.sh里提供的相关方法类。</p>
-<p>根据我们的业务场景，最为主要的的是监控消费者Lag的情况。所有我直接写脚本了。<br>我们对某一个Topic的30个分区，每个分区，当前Consumer的Lag情况。<br>当然还可以生成汇总图，在此不做多展示。在Zabbix中配置对应的Triggers，当Lag超过阀值，实现报警。</p>
-		<p><a class="article__read-more-link" href="/2017/05/29/Monitoring/Zabbix-Monitoring Kafka Consumer | kafka的监控和告警/">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/05/28/Bigdata-hadoop/Kafka/Bigdata-Kafka集群快速搭建与增删改查命令讲解/">Bigdata-Kafka集群快速搭建与命令讲解</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-05-28</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/大数据/">大数据</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Bigdata-Hadoop/">Bigdata Hadoop</a> <a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h1 id="Bigdata-Kafka集群快速搭建与命令讲解"><a href="#Bigdata-Kafka集群快速搭建与命令讲解" class="headerlink" title="Bigdata-Kafka集群快速搭建与命令讲解"></a>Bigdata-Kafka集群快速搭建与命令讲解</h1><h3 id="kafka集群和zookeeper集群规范"><a href="#kafka集群和zookeeper集群规范" class="headerlink" title="kafka集群和zookeeper集群规范"></a>kafka集群和zookeeper集群规范</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">kafka集群和zookeeper集群规范</div><div class="line">kafka版本：kafka_2.10-0.8.2.1</div><div class="line">zookeeper版本：zookeeper-3.4.5</div><div class="line"></div><div class="line">启动用户：jollybi</div><div class="line">kafka安装目录：/data/tools/</div><div class="line">kafka新建消息目录：/data/tools/kafka_2.10-0.8.2.1/kafka-logs</div><div class="line"></div><div class="line">启动用户：jollybi</div><div class="line">zookeeper安装目录：/data/tools/</div><div class="line">zookeeper新建日志目录：/data/tools/zookeeper-3.4.5/tmp/logs</div><div class="line"></div><div class="line">统一配置hosts</div><div class="line"></div><div class="line"></div><div class="line">10.155.90.153 kafka1.jollychic.com kafka1</div><div class="line">10.155.90.155 kafka2.jollychic.com kafka2</div><div class="line">10.155.90.138 kafka3.jollychic.com kafka3</div></pre></td></tr></table></figure>
-<p>本文使用了3台机器部署Kafka集群，IP和主机名对应关系如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">10.155.90.153 kafka1.jollychic.com kafka1</div><div class="line">10.155.90.155 kafka2.jollychic.com kafka2</div><div class="line">10.155.90.138 kafka3.jollychic.com kafka3</div></pre></td></tr></table></figure>
-<h3 id="Step1-配置-etc-hosts-（3台一致）"><a href="#Step1-配置-etc-hosts-（3台一致）" class="headerlink" title="Step1: 配置/etc/hosts （3台一致）"></a>Step1: 配置/etc/hosts （3台一致）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">127.0.0.1 localhost.localdomain localhost</div><div class="line">10.155.90.153 kafka1.jollychic.com kafka1</div><div class="line">10.155.90.155 kafka2.jollychic.com kafka2</div><div class="line">10.155.90.138 kafka3.jollychic.com kafka3</div></pre></td></tr></table></figure>
-<h3 id="Step2-环境KafKa集群环境"><a href="#Step2-环境KafKa集群环境" class="headerlink" title="Step2: 环境KafKa集群环境"></a>Step2: 环境KafKa集群环境</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">下载地址：http://mirrors.hust.edu.cn/apache/kafka/0.9.0.0/kafka_2.10-0.8.2.1.tgz</div><div class="line">[jollybi@kafka1 ]<span class="comment"># tar -xvf kafka_2.10-0.8.2.1.tgz -C /data/tools/</span></div><div class="line"><span class="built_in">cd</span> /data/tools/kafka_2.10-0.8.2.1/config</div></pre></td></tr></table></figure>
-<h3 id="设置data目录，最好不要用默认的-tmp-kafka-logs"><a href="#设置data目录，最好不要用默认的-tmp-kafka-logs" class="headerlink" title="设置data目录，最好不要用默认的/tmp/kafka-logs"></a>设置data目录，最好不要用默认的/tmp/kafka-logs</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mkdir -p /data/tools/kafka_2.10-0.8.2.1/kafka-logs/</div></pre></td></tr></table></figure>
-<p><em>修改kafka配置文件</em></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">[root@kafka_01 config]<span class="comment"># vim server.properties</span></div><div class="line"></div><div class="line"></div><div class="line"> 设置brokerid（从0开始，3个节点分别设为1,2,3，不能重复）在这里id=0跟zookeeper id设置一样就行。 集群机器：按顺序写1</div><div class="line">broker.id=1  </div><div class="line"></div><div class="line">auto.leader.rebalance.enable=<span class="literal">true</span> </div><div class="line"></div><div class="line"><span class="comment">#修改本地IP地址：</span></div><div class="line">listeners=PLAINTEXT://10.46.72.172:9092</div><div class="line">port=9292 //设置访问端口</div><div class="line">host.name=10.155.90.153   kafka本机IP</div><div class="line">log.dirs=/data/tools/kafka_2.10-0.8.2.1/kafka-logs</div><div class="line"></div><div class="line"><span class="comment">#设置注册地址（重要，默认会把本机的hostanme注册到zk中，客户端连接时需要解析该hostanme，所以这里直接注册本机的IP地址，避免hostname解析失败，报错java.nio.channels.UnresolvedAddressException或java.io.IOException: Can not resolve address）</span></div><div class="line"><span class="comment">#设置zookeeper地址</span></div><div class="line"><span class="comment">#zookeeper.connect=10.46.72.172:2181,10.47.88.103:2181,10.47.102.137:2181</span></div><div class="line">zookeeper.connect=kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281</div><div class="line"></div><div class="line">//这里我设置hosts代替IP</div></pre></td></tr></table></figure>
-<p><em>配置zookeeper地址</em></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">vim zookeeper.properties </div><div class="line">dataDir=/data/tools/zookeeper-3.4.5/tmp</div><div class="line"><span class="comment"># the port at which the clients will connect</span></div><div class="line">clientPort=2281</div><div class="line"><span class="comment"># disable the per-ip limit on the number of connections since this is a non-production config</span></div><div class="line">maxClientCnxns=0</div><div class="line">~</div></pre></td></tr></table></figure>
-<p><em>配置kafka访问地址</em></p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">vim</span> producer.properties </div><div class="line">metadata.broker.list=<span class="number">169.44.62.139:9292</span>,<span class="number">169.44.59.138:9292</span>,<span class="number">169.44.62.137:9292</span>   </div><div class="line"><span class="comment"># name of the partitioner class for partitioning events; default partition spreads data randomly</span></div><div class="line"><span class="comment">#partitioner.class=</span></div><div class="line"></div><div class="line"><span class="comment"># specifies whether the messages are sent asynchronously (async) or synchronously (sync)</span></div><div class="line">producer.type=sync</div><div class="line"></div><div class="line"><span class="comment"># specify the compression codec for all data generated: none, gzip, snappy, lz4.</span></div><div class="line"><span class="comment"># the old config values work as well: 0, 1, 2, 3 for none, gzip, snappy, lz4, respectively</span></div><div class="line">compression.codec=<span class="literal">none</span></div><div class="line"></div><div class="line"><span class="comment"># message encoder</span></div><div class="line">serializer.class=kafka.serializer.DefaultEncoder</div></pre></td></tr></table></figure>
-<h3 id="Step3-集群机器快速拷贝配置"><a href="#Step3-集群机器快速拷贝配置" class="headerlink" title="Step3: 集群机器快速拷贝配置:"></a>Step3: 集群机器快速拷贝配置:</h3><p>远程复制分发安装文件<br>最好是把文件打包scp过去<br>接下来将上面的安装文件拷贝到集群中的其他机器上对应的目录</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">scp -P58958 -r kafka_2.10-0.8.2.1 jollybi@169.44.62.137:/home/jollybi/tools/. </div><div class="line">scp -P58958 -r kafka_2.10-0.8.2.1 jollybi@169.44.62.138:/home/jollybi/tools/.</div></pre></td></tr></table></figure>
-<p>统一修改分别其他两台kafka <code>server.properties</code></p>
-<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">broker.id=<span class="number">2</span>  </div><div class="line">host.name=<span class="number">169.44</span><span class="number">.62</span><span class="number">.137</span>   kafka2本机IP</div><div class="line"></div><div class="line">broker.id=<span class="number">3</span> </div><div class="line">host.name=<span class="number">169.44</span><span class="number">.62</span><span class="number">.138</span>   kafka3本机IP</div></pre></td></tr></table></figure>
-<h3 id="Step4-启动-kafka集群"><a href="#Step4-启动-kafka集群" class="headerlink" title="Step4:启动 kafka集群"></a>Step4:启动 kafka集群</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">./kafka-server-start.sh -daemon ../config/server.properties</div><div class="line"></div><div class="line">[jollybi@kafka1 config]$ jps</div><div class="line">3443 QuorumPeerMain</div><div class="line">16280 Jps</div><div class="line">3628 Kafka</div><div class="line">Step5: Kafka常用命令(普及)</div></pre></td></tr></table></figure>
-<h4 id="Step5-测试集群基本命令"><a href="#Step5-测试集群基本命令" class="headerlink" title="Step5:测试集群基本命令"></a>Step5:测试集群基本命令</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div></pre></td><td class="code"><pre><div class="line"><span class="comment">### 默认创建kafka Topic:  1个副本备份 1个分区消费</span></div><div class="line"></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 1 --partitions 1 --topic mongotail_lz4</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 1 --partitions 1 --topic mongotail_lz4_imp</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 大数据这边需要12个分区这里我删除Topic重新创建Topic：</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 删除kafka Topic:</span></div><div class="line"></div><div class="line"></div><div class="line">第一步：删除kafka topic</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --delete --topic  mongotail_lz4 </div><div class="line"></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --delete --topic  mongotail_lz4_imp</div><div class="line"></div><div class="line"><span class="comment">### 这是由于删除topic没删干净会报错：</span></div><div class="line"></div><div class="line">org.apache.kafka.common.errors.UnknownTopicOrPartitionException: This server does not host this topic-partition.</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 删除线程执行删除操作的真正逻辑是：</span></div><div class="line">1. 它首先会给当前所有broker发送更新元数据信息的请求，告诉这些broker说这个topic要删除了，你们可以把它的信息从缓存中删掉了</div><div class="line">2. 开始删除这个topic的所有分区</div><div class="line">2.1 给所有broker发请求，告诉它们这些分区要被删除。broker收到后就不再接受任何在这些分区上的客户端请求了</div><div class="line">2.2 把每个分区下的所有副本都置于OfflineReplica状态，这样ISR就不断缩小，当leader副本最后也被置于OfflineReplica状态时leader信息将被更新为-1</div><div class="line">2.3 将所有副本置于ReplicaDeletionStarted状态</div><div class="line">2.4 副本状态机捕获状态变更，然后发起StopReplicaRequest给broker，broker接到请求后停止所有fetcher线程、移除缓存，然后删除底层<span class="built_in">log</span>文件</div><div class="line">2.5 关闭所有空闲的Fetcher线程</div><div class="line">    </div><div class="line"><span class="comment">### 第二步：删除zookeeper相关的路径：</span></div><div class="line">[jollybi@kafka1 zookeeper-3.4.5]$ ./bin/zkCli.sh -server 127.0.0.1:2281 </div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 1] rmr /brokers/topics/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 0] rmr /consumers/group_ml_general/offsets/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 1] rmr /consumers/group_ml_general/owners/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 3] rmr  /config/topics/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 4] rmr /admin/delete_topics/mongotail_lz4</div><div class="line"></div><div class="line"><span class="comment">### 删除topic上面消费组 </span></div><div class="line"></div><div class="line">删除 ZooKeeper 下面的 /consumers/[group_id] 路径就可以了。ZooKeeper 原生API只支持删除空的路径，所以建议你使用 curator framework 进行这个删除操作，ZkPaths.deleteChildren 会递归式地删除整个路径（包括子路径）。</div><div class="line"></div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 0] rmr /consumers/kafka-node1-imp-group</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 1] rmr /consumers/kafka-node1-group</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 2] rmr /consumers/console-consumer-59053</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 3] rmr /consumers/</div><div class="line"></div><div class="line"></div><div class="line">1、设置配置文件允许删除</div><div class="line">delete.topic.enable=<span class="literal">true</span> 配置添加到 config/server.properties</div><div class="line">2、执行删除命令</div><div class="line">./bin/kafka-topics.sh --zookeeper localhost:2181 --delete --topic <span class="built_in">test</span>-topic</div><div class="line"></div><div class="line">在zookeeper中确认：</div><div class="line"></div><div class="line"> 删除zookeeper下/brokers/topics/<span class="built_in">test</span>-topic节点</div><div class="line"> 删除zookeeper下/config/topics/<span class="built_in">test</span>-topic节点</div><div class="line"> 删除zookeeper下/admin/delete_topics/<span class="built_in">test</span>-topic节点</div><div class="line"> </div><div class="line">consumer 的话 删除groupid</div><div class="line"> </div><div class="line"></div><div class="line"><span class="comment">### 重启kafka集群</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 大数据kafka建topic，不能建一个分区，那样吞吐量上不去，不够用，我们以前建了12个分区的</span></div><div class="line"><span class="comment">### 创建新 kafka Topic: 3个副本，12个分区</span></div><div class="line"></div><div class="line"> ./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 3 --partitions 12  --topic mongotail_lz4</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 3 --partitions 12  --topic mongotail_lz4_imp</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 查看创建的Topic:</span></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh  --describe --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281  --topic mongotail_lz4</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh  --describe --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281  --topic mongotail_lz4_imp</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 查看集群情况：</span></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh  --describe --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281  --topic mongotail_lz4</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 模拟生产者（producer）kafka生产客户端生产数据命令：</span></div><div class="line"></div><div class="line">./bin/kafka-console-producer.sh --broker-list 75.126.39.124:9292,75.126.5.162:9292,75.126.5.178:9292 --topic mongotail_lz4_imp                      </div><div class="line">......</div><div class="line">my <span class="built_in">test</span> message 1</div><div class="line">my <span class="built_in">test</span> message 2</div><div class="line">^C</div><div class="line"><span class="comment">### 模拟消费者（consumer）kafka消费客户端数据命令 现在我们来看看消息：</span></div><div class="line"></div><div class="line"> ./bin/kafka-console-consumer.sh --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  --fm-beginning --topic mongotail_lz4_imp</div><div class="line">......</div><div class="line">my <span class="built_in">test</span> message 1</div><div class="line">my <span class="built_in">test</span> message 2</div><div class="line"></div><div class="line">^C</div></pre></td></tr></table></figure>
-<h3 id="Kafka常用命令"><a href="#Kafka常用命令" class="headerlink" title="Kafka常用命令"></a>Kafka常用命令</h3><p>以下是kafka常用命令行总结：  </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">1、 list topic 显示所有topic</div><div class="line">./bin/kafka-topics.sh --list --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281</div><div class="line"></div><div class="line">2、 查看topic的详细信息  </div><div class="line"> ./bin/kafka-topics.sh --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  -describe -topic mongotail_lz4_imp</div><div class="line"></div><div class="line">3、为topic增加partition分区 参数：--alter --partitions</div><div class="line">./bin/kafka-topics.sh  --alter --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  --partitions 20 --topic mongotail_lz4_imp</div><div class="line"></div><div class="line">4、kafka生产者客户端命令  </div><div class="line">./bin/kafka-console-producer.sh --broker-list 75.126.39.124:9292,75.126.5.162:9292,75.126.5.178:9292 --topic mongotail_lz4_imp                        </div><div class="line"></div><div class="line">5、kafka消费者客户端命令  </div><div class="line">./bin/kafka-console-consumer.sh --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  --fm-beginning --topic </div><div class="line"></div><div class="line">6、kafka服务启动  </div><div class="line">./kafka-server-start.sh -daemon ../config/server.properties   </div><div class="line"></div><div class="line">7、下线broker  </div><div class="line">./kafka-run-class.sh kafka.admin.ShutdownBroker --zookeeper 127.0.0.1:2181 --broker <span class="comment">#brokerId# --num.retries 3 --retry.interval.ms 60  </span></div><div class="line">shutdown broker  </div><div class="line"></div><div class="line">8、删除topic  </div><div class="line">./kafka-run-class.sh kafka.admin.DeleteTopicCommand --topic <span class="built_in">test</span>KJ1 --zookeeper 127.0.0.1:2181  </div><div class="line">./kafka-topics.sh --zookeeper localhost:2181 --delete --topic <span class="built_in">test</span>KJ1  </div><div class="line"></div><div class="line">9、查看consumer组内消费的offset  </div><div class="line">./kafka-run-class.sh kafka.tools.ConsumerOffsetChecker --zookeeper localhost:2181 --group <span class="built_in">test</span> --topic <span class="built_in">test</span>KJ1</div></pre></td></tr></table></figure>
-<h4 id="Step6-Kafka存储"><a href="#Step6-Kafka存储" class="headerlink" title="Step6:Kafka存储"></a>Step6:Kafka存储</h4><p>每个replica一个目录</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[jollybi@kafka1 kafka_2.10-0.8.2.0]<span class="comment"># cd /data/tools/kafka_2.10-0.8.2.0/kafka-logs/</span></div><div class="line">[root@master kafka-logs]<span class="comment"># ls</span></div><div class="line">__consumer_offsets-0   __consumer_offsets-20  __consumer_offsets-32  __consumer_offsets-44   my-replicatedtopic1-0</div><div class="line">__consumer_offsets-1   __consumer_offsets-21  __consumer_offsets-33  __consumer_offsets-45   my-replicated-topic1-1</div></pre></td></tr></table></figure>
-<p>二级结构</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[jollybi@kafka1 kafka-logs]<span class="comment"># cd my-replicated-topic1-0/</span></div><div class="line">[jollybi@kafka1  my-replicated-topic1-0]<span class="comment"># ls</span></div><div class="line">00000000000000000000.index  00000000000000000000.log</div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://static.zybuluo.com/sasaki/f71rtngyz2y8n3m6uxq1z2ec/%E5%9B%BE%E7%89%871.png" alt=""></figure></p>
-<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
-<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
 		<h1><a href="/2017/05/27/Bigdata-hadoop/zookeeper/Bigdata-ZooKeeper的配置详解优化/">Bigdata-ZooKeeper的配置详解优化</a></h1>
 	
 	<div class="article__infos">
@@ -296,6 +106,68 @@
 
 	<article>
 	
+		<h1><a href="/2017/05/25/Bigdata-hadoop/Kafka/Bigdata-开源的Kafka集群管理器(kafka-web-console)/">Bigdata-开源的Kafka集群管理器(kafka-web-console)</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-05-25</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>源码的地址在:<a href="https://github.com/claudemamo/kafka-web-console" target="_blank" rel="external">kafka-web-console</a></p>
+<p><code>Kafka Web Console</code>也是用Scala语言编写的<code>Java web</code>程序用于监控<code>Apache Kafka</code>。这个系统的功能和<code>KafkaOffsetMonitor</code>很类似，但是我们从源码角度来看，这款系统实现比<code>KafkaOffsetMonitor</code>要复杂很多，而且编译配置比<code>KafkaOffsetMonitor</code>较麻烦。</p>
+<p>　要想运行这套系统我们需要的先行条件为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Play Framework 2.2.x</div><div class="line">Apache Kafka 0.8.x</div><div class="line">Zookeeper 3.3.3 or 3.3.4</div></pre></td></tr></table></figure>
+<h3 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h3><p>同样，我们从<code>https://github.com/claudemamo/kafka-web-console</code>上面将源码下载下来，然后用<code>sbt</code>进行编译，在编译前我们需要做如下的修改：</p>
+<p>Kafka Web控制台需要一个关系数据库。默认情况下，服务器连接到嵌入式H2数据库，不需要数据库安装或配置。请咨询Play！的文档以指定控制台的数据库。支持以下数据库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git <span class="built_in">clone</span> https://github.com/claudemamo/kafka-web-console.git</div></pre></td></tr></table></figure>
+<ul>
+<li>H2（默认）</li>
+<li>PostgreSql</li>
+<li>Oracle</li>
+<li>DB2</li>
+<li>MySQL</li>
+<li>Apache Derby</li>
+<li>Microsoft SQL Server</li>
+</ul>
+<p>为了方便，我们可以使用Mysql数据库，只要做如下修改即可，找到 <code>conf/application.conf</code>文件，并修改如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">将这个</div><div class="line">db.default.driver=org.h2.Driver</div><div class="line">db.default.url=<span class="string">"jdbc:h2:file:play"</span></div><div class="line"><span class="comment"># db.default.user=sa</span></div><div class="line"><span class="comment"># db.default.password=""</span></div><div class="line"> </div><div class="line"> </div><div class="line">修改成</div><div class="line">db.default.driver=com.mysql.jdbc.Driver</div><div class="line">db.default.url=<span class="string">"jdbc:mysql://localhost:3306/kafkamonitor"</span></div><div class="line">db.default.user=iteblog</div><div class="line">db.default.pass=wyp</div></pre></td></tr></table></figure>
+<p>我们还需要修改build.sbt，加入对Mysql的依赖:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="string">"mysql"</span> % <span class="string">"mysql-connector-java"</span> % <span class="string">"5.1.31"</span></div></pre></td></tr></table></figure>
+<p>　2、执行<code>conf/evolutions/default/bak</code>目录下面的<code>1.sql、2.sql和3.sql</code>三个文件。需要注意的是，这三个sql文件不能直接运行，有语法错误，需要做一些修改。<br>上面的注意事项弄完之后，我们就可以编译下载过来的源码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> sbt package</span></div></pre></td></tr></table></figure>
+<p>编译的过程比较慢，有些依赖包下载速度非常地慢，请耐心等待。<br>　在编译的过程中，可能会出现有些依赖包无法下载，如下错误：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">[warn] module not found: com.typesafe.play<span class="comment">#sbt-plugin;2.2.1</span></div><div class="line">[warn] ==== typesafe-ivy-releases: tried</div><div class="line">[warn] http://repo.typesafe.com/typesafe/ivy-releases/</div><div class="line">com.typesafe.play/sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== sbt-plugin-releases: tried</div><div class="line">[warn] http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/</div><div class="line">com.typesafe.play/sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== <span class="built_in">local</span>: tried</div><div class="line">[warn] /home/iteblog/.ivy2/<span class="built_in">local</span>/com.typesafe.play/</div><div class="line">sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== Typesafe repository: tried</div><div class="line">[warn] http://repo.typesafe.com/typesafe/releases/com/</div><div class="line">typesafe/play/sbt-plugin_2.9.2_0.12/2.2.1/sbt-plugin-2.2.1.pom</div><div class="line">[warn] ==== public: tried</div><div class="line">[warn] http://repo1.maven.org/maven2/com/typesafe/play/</div><div class="line">sbt-plugin_2.9.2_0.12/2.2.1/sbt-plugin-2.2.1.pom</div><div class="line">[warn] ::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">==== <span class="built_in">local</span>: tried</div><div class="line"> </div><div class="line">/home/iteblog/.ivy2/<span class="built_in">local</span>/org.scala-sbt/collections/0.13.0/jars/collections.jar</div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">:: FAILED DOWNLOADS ::</div><div class="line"> </div><div class="line">:: ^ see resolution messages <span class="keyword">for</span> details ^ ::</div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">:: org.scala-sbt<span class="comment">#collections;0.13.0!collections.jar</span></div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div></pre></td></tr></table></figure>
+<p>我们可以手动地下载相关依赖，并放到类似<code>/home/iteblog/.ivy2/local/org.scala-sbt/collections/0.13.0/jars/</code>目录下面。然后再编译就可以了。</p>
+<p>　　最后，我们可以通过下面命令启动<code>Kafka Web Console</code>监控系统：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> sbt run</span></div></pre></td></tr></table></figure>
+<p>并可以在<a href="http://localhost:9000" target="_blank" rel="external">http://localhost:9000</a> 查看下面是一张效果图</p>
+<p><figure class="figure"><img src="https://www.iteblog.com/pic/topics.png" alt=""></figure></p>
+<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
+<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
 		<h1><a href="/2017/05/08/Bigdata-hadoop/HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群 /">HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群</a></h1>
 	
 	<div class="article__infos">
@@ -339,7 +211,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">安装：postgresql-libs-8.4.20-3.el6_6.x86_64 1/4</div><div class="line">安装：postgresql-8.4.20-3.el6_6.x86_64 2/4</div><div class="line">安装：postgresql-server-8.4.20-3.el6_6.x86_64 3/4</div><div class="line">安装：ambari-server-2.4.2.0-1470.x86_64 4/4</div><div class="line">验证：ambari-server-2.4.2.0-1470.x86_64 1/4</div><div class="line">验证：postgresql-8.4.20-3.el6_6.x86_64 2/4</div><div class="line">验证：postgresql-server-8.4.20-3.el6_6.x86_64 3/4</div><div class="line">验证：postgresql-libs-8.4.20-3.el6_6.x86_64 4/4</div><div class="line"></div><div class="line">安装：</div><div class="line">  ambari-server.x86_64 0：2.4.2.0-1470  安装这里的时候会有点慢，因为是访问国外网站下载资源。</div><div class="line"></div><div class="line">已安装依赖关系：</div><div class="line"> postgresql.x86_64 0：8.4.20-3.el6_6           </div><div class="line"> postgresql-libs.x86_64 0：8.4.20-3.el6_6        </div><div class="line"> postgresql-server.x86_64 0：8.4.20-3.el6_6</div></pre></td></tr></table></figure>
 <p>❗️❗️【注意】</p>
 <p>接受有关信任<code>Hortonworks GPG</code>密钥的警告。该键将自动下载并用于验证Hortonworks的软​​件包。您将看到以下消息：</p>
-<p>Importing GPG key 0x07513CAD: Userid: “Jenkins (HDP Builds) <a href="&#x6d;&#97;&#x69;&#108;&#116;&#x6f;&#x3a;&#x6a;&#101;&#x6e;&#107;&#105;&#x6e;&#64;&#104;&#x6f;&#114;&#116;&#x6f;&#x6e;&#119;&#x6f;&#114;&#x6b;&#x73;&#x2e;&#x63;&#111;&#109;">&#x6a;&#101;&#x6e;&#107;&#105;&#x6e;&#64;&#104;&#x6f;&#114;&#116;&#x6f;&#x6e;&#119;&#x6f;&#114;&#x6b;&#x73;&#x2e;&#x63;&#111;&#109;</a>“ From :<code>http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins</code></p>
+<p>Importing GPG key 0x07513CAD: Userid: “Jenkins (HDP Builds) <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#x6f;&#58;&#106;&#x65;&#x6e;&#x6b;&#x69;&#110;&#64;&#104;&#111;&#x72;&#x74;&#111;&#110;&#119;&#x6f;&#114;&#107;&#x73;&#x2e;&#x63;&#x6f;&#109;">&#106;&#x65;&#x6e;&#x6b;&#x69;&#110;&#64;&#104;&#111;&#x72;&#x74;&#111;&#110;&#119;&#x6f;&#114;&#107;&#x73;&#x2e;&#x63;&#x6f;&#109;</a>“ From :<code>http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins</code></p>
 <p>❗️❗️【注意】</p>
 <p>在具有有限Internet访问或没有Internet访问的群集上部署HDP时，应使用其他方法提供对位的访问。<br>有关设置本地存储库的详细信息，请参阅使用本地存储库。</p>
 <p><code>Ambari</code>服务器默认使用嵌入式<code>PostgreSQL</code>数据库。当您安装<code>Ambari</code>服务器时，PostgreSQL软件包和依赖关系必须可用于安装。这些包通常作为操作系统存储库的一部分提供。请确认您具有适用于<code>postgresql-server</code>软件包的相应存储库。</p>
@@ -500,6 +372,200 @@
 <p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari008.png" alt=""></figure></p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>安装Ambari官网地址<a href="https://docs.hortonworks.com/HDPDocuments/Ambari-2.4.2.0/bk_ambari-installation/content/download_the_ambari_repo_lnx6.html" target="_blank" rel="external">install Ambari</a><br><a href="https://cwiki.apache.org/confluence/display/AMBARI/Installation+Guide+for+Ambari+2.4.2" target="_blank" rel="external">编译安装Ambari 2.4.2安装指南</a></p>
 
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/05/08/Bigdata-hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/">Bigdata-hadoop新增节点集群启动请求异常：Last contact：200</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-05-08</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="前言闲谈："><a href="#前言闲谈：" class="headerlink" title="前言闲谈："></a>前言闲谈：</h3><p>之前做CDN云计算公司来到美年大健康现在在一家医疗大数据公司负责运维部门大大小小的活，既然是医疗大数据当然离不开大数据存储的维护，现在也同时维护大数据运维相关工作 <code>hadoop,spark,sqoop,hue,hive,Hbase,zookeeper</code>等等 测试开发生产使用起来,从集群环境维护 提升数据稳定性 高可用维护。</p>
+<p>前面说了一堆自己闲聊，真正解决这次问题是hadoop新增节点需要注意哪几点：</p>
+<p><code>新增节点如何新增我会在另外一篇详细说的这里我讲一些需要注意掉的问题。</code></p>
+<h3 id="需要修改几个配置："><a href="#需要修改几个配置：" class="headerlink" title="需要修改几个配置："></a>需要修改几个配置：</h3><p>（1）hadoop data 数据目录 VERSION 里面的搭建集群时，直接克隆会出现这个问题。解决方法同上两种，最好修改${/hadoop/tmp/dir}/dfs/data/current/VERSION中的storageID，使其不同。第一种会导致hdfs数据丢失。</p>
+<p>解决方法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">（1） datanode启动是会加载DataStorage，如果不存在则会format</div><div class="line">（2）初次启动DataStorage的storageID是空的，所以会生成一个storageID</div></pre></td></tr></table></figure>
+<p>参考我解决的：<code>这里我拷贝过来 直接删除。等集群namenode启动 会自动生成。</code></p>
+<p>这个解决以后 新增的机器必须关闭防火墙。因为这个原因会导致我 hadoop新增节点集群启动请求异常：Last contact：200</p>
+<p>（2） 集群重启时防火墙自动开启导致：</p>
+<p>这里贴张图片给大家看看：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop1.png" alt=""></figure></p>
+<p>问题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">2017-07-04 18:43:30,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 8 time(s).</div><div class="line">2017-07-04 18:43:31,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 9 time(s).</div><div class="line">2017-07-04 18:43:31,479 ERROR org.apache.hadoop.hdfs.server.datanode.DataNode: java.io.IOException: Call to /192.168.18.218:9000 failed on <span class="built_in">local</span> exception: java.net.NoRouteToHostException: 没有到主机的路由</div><div class="line">        at org.apache.hadoop.ipc.Client.wrapException(Client.java:775)</div><div class="line">        at org.apache.hadoop.ipc.Client.call(Client.java:743)</div><div class="line">解决方法：在root权限下关闭防火墙：service iptables stop</div></pre></td></tr></table></figure>
+<p>最好配置成机器重启默认防火墙关闭：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables off   #开机不启动防火墙服务</span></div><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables on   #开机启动防火墙服务</span></div></pre></td></tr></table></figure>
+<p>解决以后服务重新跑一遍已经搞定。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop2.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop3.png" alt=""></figure></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/04/29/Bigdata-hadoop/Kafka/Bigdata-Kafka三款监控工具比较/">Bigdata-Kafka三款监控工具比较</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-04-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Bigdata-Hadoop/">Bigdata Hadoop</a> <a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>在之前的博客中，介绍了<code>Kafka Web Console</code>这个监控工具，在生产环境中使用，运行一段时间后，发现该工具会和Kafka生产者、消费者、ZooKeeper建立大量连接，从而导致网络阻塞。并且这个Bug也在其他使用者中出现过，看来使用开源工具要慎重！该Bug暂未得到修复，不得已，只能研究下其他同类的Kafka监控软件。</p>
+<p>通过研究，发现主流的三种kafka监控程序分别为：</p>
+<ul>
+<li>1、Kafka Web Conslole</li>
+<li>2、Kafka Manager</li>
+<li>3、KafkaOffsetMonitor</li>
+</ul>
+<p>现在依次介绍以上三种工具：</p>
+<h2 id="1、Kafka-Web-Conslole"><a href="#1、Kafka-Web-Conslole" class="headerlink" title="1、Kafka Web Conslole"></a>1、Kafka Web Conslole</h2><p>使用Kafka Web Console，可以监控：</p>
+<ul>
+<li>Brokers列表</li>
+<li>Kafka 集群中 Topic列表，及对应的Partition、LogSiz e等信息</li>
+<li>点击Topic，可以浏览对应的Consumer Groups、Offset、Lag等信息</li>
+<li>生产和消费流量图、消息预览…</li>
+</ul>
+<p>程序运行后，会定时去读取kafka集群分区的日志长度，读取完毕后，连接没有正常释放，一段时间后产生大量的socket连接，导致网络堵塞。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Kafka_web_console.png" alt=""></figure></p>
+<h2 id="2、Kafka-Manager"><a href="#2、Kafka-Manager" class="headerlink" title="2、Kafka Manager"></a>2、Kafka Manager</h2><p>雅虎开源的Kafka集群管理工具:</p>
+<ul>
+<li>管理几个不同的集群</li>
+<li>监控集群的状态(topics, brokers, 副本分布, 分区分布)</li>
+<li>产生分区分配(Generate partition assignments)基于集群的当前状态</li>
+<li>重新分配分区</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka_manager.png" alt=""></figure></p>
+<h2 id="3、KafkaOffsetMonitor"><a href="#3、KafkaOffsetMonitor" class="headerlink" title="3、KafkaOffsetMonitor"></a>3、KafkaOffsetMonitor</h2><ul>
+<li>KafkaOffsetMonitor可以实时监控：</li>
+<li>Kafka集群状态</li>
+<li>Topic、Consumer Group列表</li>
+<li>图形化展示topic和consumer之间的关系</li>
+<li>图形化展示consumer的Offset、Lag等信息</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafkaoffsetmonitor.png" alt=""></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过使用，个人总结以上三种监控程序的优缺点：</p>
+<p><a href="https://github.com/claudemamo/kafka-web-console" target="_blank" rel="external">Kafka Web Console</a>：监控功能较为全面，可以预览消息，监控Offset、Lag等信息，但存在bug，不建议在生产环境中使用。</p>
+<p><a href="https://github.com/yahoo/kafka-manager" target="_blank" rel="external">Kafka Manager</a>：偏向Kafka集群管理，若操作不当，容易导致集群出现故障。对Kafka实时生产和消费消息是通过JMX实现的。没有记录Offset、Lag等信息。</p>
+<p><a href="https://github.com/quantifind/KafkaOffsetMonitor" target="_blank" rel="external">KafkaOffsetMonitor</a>：程序一个jar包的形式运行，部署较为方便。只有监控功能，使用起来也较为安全。</p>
+<p>若只需要监控功能，推荐使用KafkaOffsetMonito，若偏重Kafka集群管理，推荐使用Kafka Manager。</p>
+<p>因为都是开源程序，稳定性欠缺。故需先了解清楚目前已存在哪些Bug，多测试一下，避免出现类似于Kafka Web Console的问题。</p>
+<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
+<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/03/30/日志分析平台/Elasticsearch/研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？/">研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-03-30</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Elasticsearch/">Elasticsearch</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p><img src="http://img13.deviantart.net/1fb9/i/2013/051/6/1/ella_vs__elastic_yoko_by_gamepal-d5vmtjm.png" alt=""></p>
+<p>ES 现在普遍大公司都已经在使用，有的用来做数据存储，也有做性能监控，也有做日志收集，跟大数据结合做日志分析。<br>今天在家无聊研究官网学习了下Elasticsearch5.0.0 功能新增哪些，个人觉得ES也是现在开源日志分析平台比较火的，从14年开始陆续使用频率不断提升。<br>之前也有了解过Graylog  现在比ES 做数据存储分析 不错的是Graylog 比ES性能好。<br>废话不多说了哈哈</p>
+		<p><a class="article__read-more-link" href="/2017/03/30/日志分析平台/Elasticsearch/研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？/">...read more</a></p>
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/03/30/Bigdata-hadoop/Kafka/Kafka日志存储解析与实践数据存储优化/">Kafka日志存储解析与实践数据存储优化</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-03-30</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Bigdata-Hadoop/">Bigdata Hadoop</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p><img src="https://cdn-images-1.medium.com/max/640/1*kV768OHeCILNIYVCNPUyuQ.jpeg" alt=""></p>
+<h4 id="Kafka的名词解释"><a href="#Kafka的名词解释" class="headerlink" title="Kafka的名词解释"></a>Kafka的名词解释</h4><p>kafka是一款分布式消息发布和订阅的系统，具有高性能和高吞吐率。 </p>
+<ul>
+<li>1，<code>Broker</code>： 一个单独的kafka机器节点就称为一个broker，多个broker组成的集群，称为kafka集群</li>
+<li>2，<code>Topic</code>：类似数据库中的一个表，我们将数据存储在Topic里面，当然这只是逻辑上的，在物理上，一个Topic 可能被多个Broker分区存储，这对用户是透明的，用户只需关注消息的产生于消费即可.</li>
+<li>3，<code>Partition</code>：类似分区表，每个Topic可根据设置将数据存储在多个整体有序的Partition中，每个顺序化partition会生成2个文件，一个是index文件一个是log文件，index文件存储索引和偏移量，log文件存储具体的数据.</li>
+<li>4，<code>Producer</code>：生产者，向Topic里面发送消息的角色 </li>
+<li>5，<code>Consumer</code>：消费者，从Topic里面读取消息的角色 </li>
+<li>6，<code>Consumer Group</code>：每个Consumer属于一个特定的消费者组，可为Consumer指定group name，如果不指定默认属于group </li>
+</ul>
+		<p><a class="article__read-more-link" href="/2017/03/30/Bigdata-hadoop/Kafka/Kafka日志存储解析与实践数据存储优化/">...read more</a></p>
 	
 
 	
