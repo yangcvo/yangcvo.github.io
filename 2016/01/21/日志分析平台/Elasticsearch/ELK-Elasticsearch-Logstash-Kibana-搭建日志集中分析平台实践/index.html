@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta name="theme-color" content="#33474d">
-	<title>ELK(Elasticsearch + Logstash + Kibana)搭建日志集中分析平台实践 | Yancy&#39;s blog</title>
+	<title>ELK(Elasticsearch1.7+ + Logstash1.5+ + Kibana4.1)搭建日志集中分析平台实践 | Yancy&#39;s blog</title>
 	<link rel="stylesheet" href="/css/style.css" />
 	
       <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
@@ -35,7 +35,7 @@
 	<main>
 		<article>
 	
-		<h1>ELK(Elasticsearch + Logstash + Kibana)搭建日志集中分析平台实践</h1>
+		<h1>ELK(Elasticsearch1.7+ + Logstash1.5+ + Kibana4.1)搭建日志集中分析平台实践</h1>
 	
 	<div class="article__infos">
 		<span class="article__date">2016-01-21</span><br />
@@ -46,7 +46,7 @@
 		
 		
 			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Log-analysis-platform/">Log analysis platform</a>
+			  	<a class="article__tag-link" href="/tags/Elasticsearch/">Elasticsearch</a> <a class="article__tag-link" href="/tags/Kibana/">Kibana</a>
 			</span>
 		
 	</div>
@@ -55,26 +55,20 @@
 
 	
 		<h4 id="关注可参考："><a href="#关注可参考：" class="headerlink" title="关注可参考："></a>关注可参考：</h4><p>本文将安装Elasticsearch-1.7.2, Logstash-1.5.5, Kibana-4.1.5。 请注意版本要求，有些组件需要响应的版本要求。<br>logstash是负责搜集和转发日志的，es用于存储和检索，kibana提供web端的展现…他们是独立运行的，也可以部署在同一台机器，也可以不同的机器。</p>
-<p>可以关注我的Github上面有详细文档：<a href="https://github.com/yangcvo/ELK" target="_blank" rel="external">https://github.com/yangcvo/ELK</a><br> 启动脚本下载：<a href="https://github.com/yangcvo/ELK" target="_blank" rel="external">https://github.com/yangcvo/ELK</a></p>
+<p>可以关注我的Github上面有详细文档：<a href="https://github.com/yangcvo/ELK" target="_blank" rel="external">https://github.com/yangcvo/ELK</a></p>
 <ul>
+<li>启动脚本下载：<a href="https://github.com/yangcvo/ELK" target="_blank" rel="external">https://github.com/yangcvo/ELK</a></li>
 <li>详细配置优化做集群与写收集日志规则教程: <a href="https://github.com/yangcvo/ELK" target="_blank" rel="external">https://github.com/yangcvo/ELK</a></li>
 </ul>
 <h4 id="组件预览"><a href="#组件预览" class="headerlink" title="组件预览"></a>组件预览</h4><ul>
-<li><p>JDK  <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank" rel="external">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a></p>
-</li>
-<li><p>Elasticsearch <a href="https://www.elastic.co/downloads/elasticsearch" target="_blank" rel="external">https://www.elastic.co/downloads/elasticsearch</a></p>
-</li>
-<li><p>Logstash <a href="https://www.elastic.co/downloads/logstash" target="_blank" rel="external">https://www.elastic.co/downloads/logstash</a></p>
-</li>
-</ul>
-<ul>
-<li><p>Kibana下载地址:<a href="https://www.elastic.co/downloads/kibana" target="_blank" rel="external">https://www.elastic.co/downloads/kibana</a></p>
-</li>
-<li><p>redis下载地址: <a href="http://redis.io/download" target="_blank" rel="external">http://redis.io/download</a></p>
-</li>
+<li>JDK  <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank" rel="external">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a></li>
+<li>Elasticsearch <a href="https://www.elastic.co/downloads/elasticsearch" target="_blank" rel="external">https://www.elastic.co/downloads/elasticsearch</a></li>
+<li>Logstash <a href="https://www.elastic.co/downloads/logstash" target="_blank" rel="external">https://www.elastic.co/downloads/logstash</a></li>
+<li>Kibana下载地址:<a href="https://www.elastic.co/downloads/kibana" target="_blank" rel="external">https://www.elastic.co/downloads/kibana</a></li>
+<li>redis下载地址: <a href="http://redis.io/download" target="_blank" rel="external">http://redis.io/download</a></li>
 </ul>
 <h4 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作:"></a>准备工作:</h4><p>服务端：系统centos 6.7   ip:192.168.1.234   JDK1.8    Elasticsearch-1.7.2  Kibana-4.1.2<br>客户端：系统centos 6.7   ip:192.168.1.235   JDK1.8    Logash-1.4.2</p>
-<h4 id="基本配置设置FQDN："><a href="#基本配置设置FQDN：" class="headerlink" title="基本配置设置FQDN："></a>基本配置设置FQDN：</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">创建SSL证书的时候需要配置FQDN</div><div class="line">#修改hostname</div><div class="line">cat /etc/hostname</div><div class="line">elk</div><div class="line"></div><div class="line">#修改hosts</div><div class="line">cat /etc/hosts</div><div class="line"><span class="number">127.0</span>.<span class="number">0.1</span> localhost localhost<span class="selector-class">.localdomain</span> localhost4 localhost4<span class="selector-class">.localdomain4</span></div><div class="line">::<span class="number">1</span> localhost localhost<span class="selector-class">.localdomain</span> localhost6 localhost6<span class="selector-class">.localdomain6</span></div><div class="line"><span class="number">192.168</span>.<span class="number">1.234</span> elk<span class="selector-class">.ooxx</span><span class="selector-class">.com</span> elk</div><div class="line"></div><div class="line">#刷新环境</div><div class="line">hostname -F /etc/hostname</div><div class="line"></div><div class="line">#复查结果</div><div class="line">hostname -f</div><div class="line">elk<span class="selector-class">.ooxx</span><span class="selector-class">.com</span></div><div class="line"></div><div class="line">hostname</div><div class="line">elk</div></pre></td></tr></table></figure>
+<h4 id="基本配置设置FQDN："><a href="#基本配置设置FQDN：" class="headerlink" title="基本配置设置FQDN："></a>基本配置设置FQDN：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">创建SSL证书的时候需要配置FQDN</div><div class="line"><span class="comment">#修改hostname</span></div><div class="line">cat /etc/hostname</div><div class="line">elk</div><div class="line"></div><div class="line"><span class="comment">#修改hosts</span></div><div class="line">cat /etc/hosts</div><div class="line">127.0.0.1 localhost localhost.localdomain localhost4 localhost4.localdomain4</div><div class="line">::1 localhost localhost.localdomain localhost6 localhost6.localdomain6</div><div class="line">192.168.1.234 elk.ooxx.com elk</div><div class="line"></div><div class="line"><span class="comment">#刷新环境</span></div><div class="line">hostname -F /etc/hostname</div><div class="line"></div><div class="line"><span class="comment">#复查结果</span></div><div class="line">hostname <span class="_">-f</span></div><div class="line">elk.ooxx.com</div><div class="line"></div><div class="line">hostname</div><div class="line">elk</div></pre></td></tr></table></figure>
 <h4 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#service iptables stop</span></div><div class="line"><span class="comment">#setenforce 0</span></div><div class="line"></div><div class="line">不过这里我防火墙是开启的，后期添加出去端口即可。</div><div class="line">或者可以不关闭防火墙，但是要在iptables中打开相关的端口：</div><div class="line"></div><div class="line"><span class="comment"># vim /etc/sysconfig/iptables</span></div><div class="line">-A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT</div><div class="line">-A INPUT -m state --state NEW -m tcp -p tcp --dport 9200 -j ACCEPT</div><div class="line">-A INPUT -m state --state NEW -m tcp -p tcp --dport 9292 -j ACCEPT</div><div class="line"><span class="comment"># service iptables restart</span></div></pre></td></tr></table></figure>
 <h4 id="安装java："><a href="#安装java：" class="headerlink" title="安装java："></a>安装java：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ElasticSearch和Logstash依赖于JDK，所以需要安装JDK：</div><div class="line"><span class="comment"># yum -y install java-1.8.0-openjdk*</span></div><div class="line"><span class="comment"># java -version</span></div><div class="line">这里我是用yum安装方法，也可以自行下载tar包，注意设置java路径。</div><div class="line">java也可到这个地址下载https://www.reucon.com/cdn/java/</div></pre></td></tr></table></figure>
 <h4 id="安装Elasticsearch："><a href="#安装Elasticsearch：" class="headerlink" title="安装Elasticsearch："></a>安装Elasticsearch：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">RPM安装</div><div class="line">下载ElasticSearch ElasticSearch默认的对外服务的HTTP端口是9200，节点间交互的TCP端口是9300。</div><div class="line">.以 CentOS 下使用安装包RPM安装</div><div class="line">＃mkdir -p /opt/software &amp;&amp; <span class="built_in">cd</span> /opt/software</div><div class="line">＃wget -c https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.2.noarch.rpm</div><div class="line">＃rpm -ivh elasticsearch-1.7.2.noarch.rpm</div><div class="line"></div><div class="line">可以自定义下存储文件目录 用RPM 安装。</div><div class="line"></div><div class="line">vim /etc/elasticsearch/elasticsearch.yml</div><div class="line">cluster.name: graylog-development</div><div class="line">node.data: <span class="literal">true</span></div><div class="line">index.number_of_shards: 5</div><div class="line">index.number_of_replicas: 1</div><div class="line">path.data: /home/data/es-data   自定存储目录</div><div class="line">path.work: /home/data/es-work</div><div class="line">network.host: 192.168.1.234</div></pre></td></tr></table></figure>
