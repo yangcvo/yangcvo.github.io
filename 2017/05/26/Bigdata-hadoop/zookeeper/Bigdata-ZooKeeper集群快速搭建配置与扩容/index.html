@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Bigdata-ZooKeeper集群快速搭建配置与扩容 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>Bigdata-ZooKeeper集群快速搭建配置与扩容</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-05-26</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Bigdata-Hadoop/">Bigdata Hadoop</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/ZooKeeper/">ZooKeeper</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="ZooKeeper集群快速搭建"><a href="#ZooKeeper集群快速搭建" class="headerlink" title="ZooKeeper集群快速搭建"></a>ZooKeeper集群快速搭建</h3><p>之前搞过了hadoop和spark，hue，现在使用kafka集群结合zookeeper集群做数据消费处理，本文是<code>ZooKeeper</code>的快速搭建,旨在帮助大家以最快的速度完成一个<code>ZK</code>集群的搭建,以便开展其它工作。</p>
+<a id="more"></a>
+<h2 id="集群："><a href="#集群：" class="headerlink" title="集群："></a>集群：</h2><p>本文使用了3台机器部署ZooKeeper集群，IP和主机名对应关系如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">IP             主机名</div><div class="line">169.44.62.11 zk1.jollychic.com </div><div class="line">169.44.59.12 zk2.jollychic.com</div><div class="line">169.44.62.13 zk3.jollychic.com</div></pre></td></tr></table></figure>
+<h3 id="安装说明"><a href="#安装说明" class="headerlink" title="安装说明"></a>安装说明</h3><p><code>Zookeeper</code>机器间不需要设置免密码登录，其它hadoop也可以不设置，只要不使用hadoop-daemons.sh来启动、停止进程，注意不是hadoop-daemon.sh，而是带“s”的那个，带“s”的会读取hadoop的salves文件，远程ssh启动DataNode和备NameNode等。</p>
+<p>配置<code>/etc/hosts</code><br>将3台机器的IP和主机名映射关系，在3台机器上都配置一下，亦即在3台机器的<code>/etc/hosts</code>文件中，均增加以下内容（可以先配置好一台，然后通过scp等命令复制到其它机器上，注意主机名不能包含任何下划线）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">127.0.0.1 localhost.localdomain localhost</div><div class="line">169.44.62.12 zk1.jollychic.com</div><div class="line">169.44.59.13 zk2.jollychic.com</div><div class="line">169.44.62.14 zk3.jollychic.com</div></pre></td></tr></table></figure>
+<h3 id="Step1"><a href="#Step1" class="headerlink" title="Step1:"></a>Step1:</h3><p>配置JAVA环境。检验方法:执行 <code>java –version</code> 和 <code>javac –version</code> 命令。<br>下载并解压 <code>zookeeper</code>。<a href="http://mirror.bjtu.edu.cn/apache/zookeeper/zookeeper-3.4.3/" target="_blank" rel="external">链接一</a> ，<a href="http://www-eu.apache.org/dist/zookeeper/" target="_blank" rel="external">链接二</a> (更多版本:<a href="http://dwz.cn/37HGI" target="_blank" rel="external">http://dwz.cn/37HGI</a>)</p>
+<h3 id="Step2"><a href="#Step2" class="headerlink" title="Step2:"></a>Step2:</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">1.zookeeper的环境变量的配置：</div><div class="line">为了今后操作方便，我们需要对Zookeeper的环境变量进行配置，方法如下：</div><div class="line">在/etc/profile.d/zk.sh文件中加入如下的内容：</div><div class="line"></div><div class="line"><span class="comment">#set zookeeper environment</span></div><div class="line"><span class="built_in">export</span> ZOOKEEPER_HOME=/data/tools/zookeeper-3.4.5</div><div class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$ZOOKEEPER_HOME</span>/bin:<span class="variable">$ZOOKEEPER_HOME</span>/conf</div></pre></td></tr></table></figure>
+<h3 id="Step3"><a href="#Step3" class="headerlink" title="Step3:"></a>Step3:</h3><figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="number">2.</span>下载以后解压到我自己新建的：</div><div class="line">[hadoop@namenode ~]$ tar -zxvf zookeeper<span class="number">-3.3</span><span class="number">.6</span>.tar.gz -C <span class="meta-keyword">/srv/</span>hadoop/</div><div class="line">[hadoop@namenode ]$ cd <span class="meta-keyword">/srv/</span>hadoop/zookeeper<span class="number">-3.3</span><span class="number">.6</span><span class="meta-keyword">/conf/</span></div><div class="line"></div><div class="line"><span class="meta">### 将zoo_sample.cfg拷贝一份命名为zoo.cfg,这里我拷贝一份命名为：zoo.cfg</span></div><div class="line">[hadoop@namenode conf]$ cp -r zoo_sample.cfg zoo.cfg</div><div class="line"></div><div class="line"><span class="meta">### 这里先创建/data和/logs 这两个目录。</span></div><div class="line"></div><div class="line">mkdir -p <span class="meta-keyword">/data/</span>tools/zookeeper<span class="number">-3.4</span><span class="number">.5</span><span class="meta-keyword">/zookeeper/</span>data</div><div class="line">mkdir -p <span class="meta-keyword">/data/</span>tools/zookeeper<span class="number">-3.4</span><span class="number">.5</span><span class="meta-keyword">/zookeeper/</span>logs</div></pre></td></tr></table></figure>
+<p>注意上图的配置中master，slave1分别为主机名。</p>
+<p>在上面的配置文件中<code>&quot;server.id=host:port:port&quot;</code>中的第一个port是从机器<code>（follower）</code>连接到主机器<code>（leader）</code>的端口号，第二个port是进行<code>leadership</code>选举的端口号。</p>
+<p>修改配置：<code>zoo.cfg</code>修改有的默认存在，添加红色的内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">tickTime=2000</div><div class="line">clientPort=2181</div><div class="line">initLimit=10</div><div class="line">syncLimit=5</div><div class="line">maxClientCnxns=0    <span class="comment">#这个是设置连接数0没有做限制</span></div><div class="line">dataDir=/data/tools/zookeeper-3.4.5/zookeeper/data</div><div class="line">dataLogDir=/data/tools/zookeeper-3.4.5/zookeeper/logs</div><div class="line"></div><div class="line">server.0=zk1.jollychic.com:2888:3888</div><div class="line">server.1=zk2.jollychic.com:2888:3888</div><div class="line">server.2=zk3.jollychic.com:2888:3888</div></pre></td></tr></table></figure>
+<h3 id="创建maid"><a href="#创建maid" class="headerlink" title="创建maid:"></a>创建maid:</h3><p>这里所有节点都需要创建，接下来在<code>dataDir</code>所指定的目录下创建一个文件名为<code>myid</code>的文件，文件中的内容只有一行，为本主机对应的id值，也就是上图中<code>server.id</code>中的id。例如：在服务器1中的myid的内容应该写入1。<br>创建myid：在<code>zoo.cfg</code>配置文件中的dataDir的目录下面创建<code>myid</code>，每个节点myid要求不一样：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">vim /data/tools/zookeeper-3.4.5/tmp/myid </div><div class="line">0</div></pre></td></tr></table></figure>
+<h3 id="Step4"><a href="#Step4" class="headerlink" title="Step4:"></a>Step4:</h3><p>远程复制分发安装文件。<br>最好是把文件打包scp过去。<br>接下来将上面的安装文件拷贝到集群中的其他机器上对应的目录下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">scp -P58958 -r zookeeper-3.4.5  jollybi@169.44.62.137:/data/tools/. </div><div class="line">scp -P58958 -r zookeeper-3.4.5  jollybi@169.44.59.138:/data/tools/. </div><div class="line">拷贝完成后修改对应的机器上的myid。例如修改其他两台机器中的myid如下：</div><div class="line"><span class="built_in">echo</span> 1 &gt; /data/tools/zookeeper-3.4.5/tmp/myid </div><div class="line"><span class="built_in">echo</span> 2 &gt; /data/tools/zookeeper-3.4.5/tmp/myid</div></pre></td></tr></table></figure>
+<h3 id="Step5"><a href="#Step5" class="headerlink" title="Step5:"></a>Step5:</h3><p>启动 ZooKeeper集群<br>在ZooKeeper集群的每个结点上，执行启动ZooKeeper服务的脚本，如下所示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">在ZooKeeper集群的每个结点上，执行启动ZooKeeper服务的脚本，如下所示：</div><div class="line">[jollybi@zk1.jollychic.com ~]$   /data/tools/zookeeper-3.4.5/bin/zkServer.sh start </div><div class="line">[jollybi@zk1.jollychic.com ~]$   /data/tools/zookeeper-3.4.5/bin/zkServer.sh start </div><div class="line">[jollybi@zk1.jollychic.com ~]$   /data/tools/zookeeper-3.4.5/bin/zkServer.sh start </div><div class="line"></div><div class="line">[jollybi@zk1.jollychic.com ~]$ jps</div><div class="line">123189 QuorumPeerMain</div><div class="line">123309 Kafka</div><div class="line">1151 Jps</div></pre></td></tr></table></figure>
+<p>执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/haozhuo/hadoop/zookeeper-3.4.5/bin/zkServer.sh start</div></pre></td></tr></table></figure>
+<h3 id="Step6"><a href="#Step6" class="headerlink" title="Step6:"></a>Step6:</h3><p>检测是否成功启动:执行 <code>jps</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">24933 QuorumPeerMain</div></pre></td></tr></table></figure>
+<p>其中，QuorumPeerMain是zookeeper进程，启动正常。</p>
+<p><code>./zkServer.sh status</code> 查看当前运行状态。</p>
+<p>namenode1</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[jollybi@zk1.jollychic.com zookeeper-3.4.5]<span class="comment"># ./zkServer.sh status</span></div><div class="line">JMX enabled by default</div><div class="line">Using config: /srv/zookeeper-3.4.5/bin/../conf/zoo.cfg</div><div class="line">Mode: follower</div><div class="line"></div><div class="line">[jollybi@zk1.jollychic.com zookeeper-3.4.5]<span class="comment"># ./bin/zkServer.sh status</span></div><div class="line">JMX enabled by default</div><div class="line">Using config: /srv/zookeeper-3.4.5/bin/../conf/zoo.cfg</div><div class="line">Mode: leader</div><div class="line"></div><div class="line">[jollybi@zk1.jollychic.com zookeeper-3.4.5]<span class="comment"># ./bin/zkServer.sh status</span></div><div class="line">JMX enabled by default</div><div class="line">Using config: /srv/zookeeper-3.4.5/bin/../conf/zoo.cfg</div><div class="line">Mode: leader</div></pre></td></tr></table></figure>
+<h3 id="链接测试"><a href="#链接测试" class="headerlink" title="链接测试"></a>链接测试</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">bin/zkCli.sh -server 127.0.0.1:2181</div><div class="line">bin/zkCli.sh -server 127.0.0.1:2181</div><div class="line">bin/zkCli.sh -server 127.0.0.1:2181</div></pre></td></tr></table></figure>
+<h3 id="Step7"><a href="#Step7" class="headerlink" title="Step7:"></a>Step7:</h3><p>如果单台可以其他几台不行，看配置，如果没有问题。启动查看状态出现异常。</p>
+<p>异常解决:<code>Error contacting service. It is probably not running.</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">而其他一个节点却是现实正常;</div><div class="line">先stop掉原zk</div><div class="line">./bin/zkServer.sh stop</div><div class="line">然后以start-foreground方式启动，会看到启动日志</div><div class="line">./bin/zkServer.sh start</div></pre></td></tr></table></figure>
+<p>当出现问题的时候，记得查看日志zookeeper.out，在你配置的dataDir（在conf/zoo.cfg中查看）目录下。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">2015-12-29 11:09:38,034 [myid:1] - WARN  [WorkerSender[myid=1]:QuorumCnxManager@400] - Cannot open channel to 3 at election address Node2/10.0.0.102:38888</div><div class="line">java.net.ConnectException: 拒绝连接</div><div class="line">at java.net.PlainSocketImpl.socketConnect(Native Method)</div></pre></td></tr></table></figure>
+<p>可以看到是连接到Node2的3888端口不通（我配置文件设置的节点端口，server.3=Node2:2888:3888），这样就找到问题了，所以当遇到问题的时候记得查看日志文件，这才是最有帮助的，而不是修改什么nc参数。</p>
+<p>这里主要看下是否加入hosts</p>
+<p>查看Node2节点发现，<code>38888端口</code>绑带到<code>127.0.0.1</code>上了，这让Master节点怎么连接呀，只需修改<code>/etc/hosts</code>文件即可，同理，修改Node1，然后重启zookeeper，发现问题解决。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">127.0.0.1 localhost  zk1.jollychic.com</div><div class="line">::1        localhost localhost.localdomain localhost6 localhost6.localdomain6</div><div class="line">169.44.62.12 zk1.jollychic.com</div><div class="line">169.44.59.13 zk2.jollychic.com</div><div class="line">169.44.62.14 zk3.jollychic.com</div></pre></td></tr></table></figure>
+<p>这里我<code>127.0.0.1 localhost zk1.jollychic.com</code> 就可以了。</p>
+<h3 id="Step8-如何扩容zookeeper？"><a href="#Step8-如何扩容zookeeper？" class="headerlink" title="Step8: 如何扩容zookeeper？"></a>Step8: 如何扩容zookeeper？</h3><p>只需要将已有的zookeeper打包复制到新的机器上，然后修改myid文件并设置好，然后启动zookeeper即可。</p>
+<hr>
+<h3 id="设置开机自动启动"><a href="#设置开机自动启动" class="headerlink" title="设置开机自动启动"></a>设置开机自动启动</h3><p>1.写个启动脚本放到<code>/etc/rc.d/init.d/zookeeper</code><br>这里<code>touch zookeeper &amp;&amp; chmod +x zookeeper &amp;&amp; vim zookeeper</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">!/bin/bash</div><div class="line"><span class="comment">#chkconfig:2345 20 90</span></div><div class="line"><span class="comment">#description:zookeeper</span></div><div class="line"><span class="comment">#processname:zookeeper</span></div><div class="line"><span class="built_in">export</span> JAVA_HOME=/srv/jdk1.8.0_66</div><div class="line"><span class="built_in">export</span> PATH=<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$PATH</span></div><div class="line"><span class="keyword">case</span> <span class="variable">$1</span> <span class="keyword">in</span></div><div class="line">    start) su root /srv/zookeeper-3.3.6/bin/zkServer.sh start;;</div><div class="line">    stop) su root /srv/zookeeper-3.3.6/bin/zkServer.sh stop;;</div><div class="line">    status) su root /srv/zookeeper-3.3.6/bin/zkServer.sh status;;</div><div class="line">    restart) su root /srv/zookeeper-3.3.6/bin/zkServer.shrestart;;</div><div class="line">    *)  <span class="built_in">echo</span> <span class="string">"requirestart|stop|status|restart"</span>;;</div><div class="line"><span class="keyword">esac</span></div></pre></td></tr></table></figure>
+<p>2.设置开机启动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chkconfig zookeeper on</div></pre></td></tr></table></figure>
+<p>3.验证</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">chkconfig --add zookeeper</div><div class="line">chkconfig --list zookeeper</div></pre></td></tr></table></figure>
+<p>这个时候我们就可以用service zookeeper start/stop来启动停止zookeeper服务了.<br>使用<code>chkconfig--add zookeeper</code>命令把<code>zookeeper</code>添加到开机启动里面<br>添加完成之后接这个使用<code>chkconfig--list</code>来看看我们添加的<code>zookeeper</code>是否在里面<br>如果上面的操作都正常的话；重启服务器测试就行。</p>
+<div class="tip"><br><br>注意：zookeeper重启出现几种报错：<br><br>1. 启动服务报错找不到指定好的pid文件。<br>2. 关闭服务报错没有在/tmp/路径下面没有/srv/zookeeper-3.3.6/zookeeper/data/zookeeper_server.pid<br></div>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[root@zookeeper zookeeper-3.3.6]<span class="comment"># ./bin/zkServer.sh start</span></div><div class="line">JMX enabled by default</div><div class="line">Using config: /srv/zookeeper-3.3.6/bin/../conf/zoo.cfg</div><div class="line">Starting zookeeper ... ./bin/zkServer.sh: line 93: [: /tmp/zookeeper: binary operator expected</div><div class="line">./bin/zkServer.sh: line 103: /tmp/zookeeper</div><div class="line">/srv/zookeeper-3.3.6/zookeeper/data/zookeeper_server.pid: 没有那个文件或目录</div><div class="line">FAILED TO WRITE PID</div><div class="line">[root@zookeeper zookeeper-3.3.6]<span class="comment"># ./bin/zkServer.sh stop</span></div><div class="line">JMX enabled by default</div><div class="line">Using config: /srv/zookeeper-3.3.6/bin/../conf/zoo.cfg</div><div class="line">Stopping zookeeper ... no zookeeper to stop (could not find file /tmp/zookeeper</div><div class="line">/srv/zookeeper-3.3.6/zookeeper/data/zookeeper_server.pid)</div></pre></td></tr></table></figure>
+<p>解决方法：网上很少有人讲这么详细，这里我就说下，就是你在修改zoo.cfg配置文件里面：</p>
+<p>dataDir指定的路径是自定义的话等于的时候不要空格写。</p>
+<p>如果重新另外写dataDir ,不要注释掉之前的，最好直接删除，重新指定这样就不会报错了，如果注释掉默认的<code>#dataDir = /tmp</code>这里需要空格。</p>
+<h3 id="Step9-报错占用端口："><a href="#Step9-报错占用端口：" class="headerlink" title="Step9.报错占用端口："></a>Step9.报错占用端口：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">JMX enabled by default</div><div class="line">Using config: /opt/app/zookeeper/bin/../conf/zoo3.cfg</div><div class="line">Starting zookeeper ... STARTED</div></pre></td></tr></table></figure>
+<p>查看状态：<br>用jps命令查看进程：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># jps</span></div><div class="line">24617 QuorumPeerMain （这个就是zookeeper进程）</div><div class="line"></div><div class="line">/opt/app/zookeeper/bin/zkServer.sh status zoo1.cfg</div><div class="line">JMX enabled by default</div><div class="line">Using config: /opt/app/zookeeper/bin/../conf/zoo1.cfg</div><div class="line">Error contacting service. It is probably not running.</div></pre></td></tr></table></figure>
+<p>Ihaozhuo_b3314<br>说明有错误，查看日志文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># cd &lt;zookeeper_home&gt;</span></div><div class="line"><span class="comment"># less zookeeper.out</span></div><div class="line">java.net.BindException: 地址已在使用</div><div class="line">杀掉当前进程：</div><div class="line"><span class="comment"># kill -9 24617</span></div></pre></td></tr></table></figure>
+<h4 id="报错-启动服务正常。"><a href="#报错-启动服务正常。" class="headerlink" title="报错: 启动服务正常。"></a>报错: 启动服务正常。</h4><figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@api1 zookeeper<span class="number">-3.3</span><span class="number">.6</span>]<span class="comment"># ./bin/zkServer.sh start</span></div><div class="line">JMX enabled <span class="keyword">by</span> <span class="keyword">default</span></div><div class="line">Using config: <span class="regexp">/srv/zookeeper-3.3.6/bin/</span>../conf/zoo.cfg</div><div class="line">Starting zookeeper ... STARTED</div></pre></td></tr></table></figure>
+<p>可是查询进程不存在，可是看pid是有的，然后关闭服务就说没有这个进程。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">JMX enabled by <span class="keyword">default</span></div><div class="line">Using <span class="string">config:</span> <span class="regexp">/srv/</span>zookeeper<span class="number">-3.3</span><span class="number">.6</span><span class="regexp">/bin/</span>..<span class="regexp">/conf/</span>zoo.cfg</div><div class="line">Stopping zookeeper ... ./zkServer.<span class="string">sh:</span> line <span class="number">133</span>: <span class="string">kill:</span> (<span class="number">31415</span>) - 没有那个进程</div></pre></td></tr></table></figure>
+<h4 id="走kafka查看是否所有节点都启动："><a href="#走kafka查看是否所有节点都启动：" class="headerlink" title="走kafka查看是否所有节点都启动："></a>走kafka查看是否所有节点都启动：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[root@kafka_03 bin]<span class="comment"># sh zkCli.sh</span></div><div class="line">Connecting to localhost:2181</div><div class="line">2017-01-04 19:20:24,849 [myid:] - INFO  [main:Environment@100] - Client environment:zookeeper.version=3.4.6-1569965, built on 02/20/2014 09:09 GMT</div><div class="line">2017-01-04 19:20:24,853 [myid:] - INFO  [main:Environment@100] - Client environment:host.name=kafka_03</div><div class="line">2017-01-04 19:20:24,853 [myid:] - INFO  [main:Environment@100] - Client environment:java.version=1.8.0_66</div><div class="line">2017-01-04 19:20:24,856 [myid:] - INFO  [main:Environment@100] - Client environment:java.vendor=Oracle Corporation</div><div class="line">2017-01-04 19:20:24,856 [myid:] - INFO  [main:Environment@100] - Client environment:java.home=/srv/jdk1.8.0_66/jre</div><div class="line">2017-01-04 19:20:24,856 [myid:] - INFO  [main:Environment@100] - Client environment:java.class.path=/srv/zookeeper-3.4.6/bin/../build/classes:/srv/zookeeper-3.4.6/bin/../build/lib/*.jar:/srv/zookeeper-3.4.6/bin/../lib/slf4j-log4j12-1.6.1.jar:/srv/zookeeper-3.4.6/bin/../lib/slf4j-api-1.6.1.jar:/srv/zookeeper-3.4.6/bin/../lib/netty-3.7.0.Final.jar:/srv/zookeeper-3.4.6/bin/../lib/<span class="built_in">log</span>4j-1.2.16.jar:/srv/zookeeper-3.4.6/bin/../lib/jline-0.9.94.jar:/srv/zookeeper-3.4.6/bin/../zookeeper-3.4.6.jar:/srv/zookeeper-3.4.6/bin/../src/java/lib/*.jar:/srv/zookeeper-3.4.6/bin/../conf:</div><div class="line">2017-01-04 19:20:24,856 [myid:] - INFO  [main:Environment@100] - Client environment:java.library.path=/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib</div><div class="line"></div><div class="line">[zk: localhost:2181(CONNECTED) 0] ls /</div><div class="line">[controller_epoch, brokers, zookeeper, kafka, dubbo, admin, isr_change_notification, consumers, config, sthp]</div><div class="line">[zk: localhost:2181(CONNECTED) 5] ls /kafka/brokers/ids</div><div class="line">[0, 1, 2]</div><div class="line"></div><div class="line">显示0 1 2 三台集群机器。</div></pre></td></tr></table></figure>
+<p>kafka 三台集群这里可以看到获取到ids。</p>
+<h3 id="Step10-相关文档"><a href="#Step10-相关文档" class="headerlink" title="Step10: 相关文档"></a>Step10: 相关文档</h3><p>《HBase-0.98.0分布式安装指南》</p>
+<p>《Hive 0.12.0安装指南》</p>
+<p>《ZooKeeper-3.4.6分布式安装指南》</p>
+<p>《Hadoop 2.3.0源码反向工程》</p>
+<p>《在Linux上编译Hadoop-2.4.0》</p>
+<p>《Accumulo-1.5.1安装指南》</p>
+<p>《Drill 1.0.0安装指南》</p>
+<p>《Shark 0.9.1安装指南》</p>
+<p>更多，敬请关注技术博客：<a href="http://blog.yancy.cc">http://blog.yancy.cc</a></p>
+<h3 id="Step11-结束语"><a href="#Step11-结束语" class="headerlink" title="Step11:  结束语"></a>Step11:  结束语</h3><p>至此，ZooKeeper分布式安装大告成功！更多细节，请浏览<a href="http://zookeeper.apache.org/doc/trunk/zookeeperStarted.html" target="_blank" rel="external">官方文档</a></p>
+<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
+<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2017/05/26/Bigdata-hadoop/zookeeper/Bigdata-ZooKeeper集群快速搭建配置与扩容/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>
