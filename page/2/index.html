@@ -41,42 +41,6 @@
 
 	<article>
 	
-		<h1><a href="/2017/06/01/Monitoring/Zabbix监控Kafka集群 Brokers服务/">Zabbix监控Kafka集群 Brokers服务</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-06-01</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Kafka/">Kafka</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a> <a class="article__tag-link" href="/tags/Zabbix/">Zabbix</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h3 id="Zabbix监控Kafka集群-Brokers服务"><a href="#Zabbix监控Kafka集群-Brokers服务" class="headerlink" title="Zabbix监控Kafka集群 Brokers服务"></a>Zabbix监控Kafka集群 Brokers服务</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-datadog.png" alt=""></p>
-<h4 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h4><p>Monitoring Kafka with Datadog</p>
-<p>This post is the final part of a 3-part series on how to monitor Kafka. Part 1 explores the key metrics available from Kafka, and Part 2 is about collecting those metrics on an ad hoc basis.</p>
-<p>To implement ongoing, meaningful monitoring, you will need a dedicated system that allows you to store, visualize, and correlate your Kafka metrics with the rest of your infrastructure.</p>
-<p>Kafka deployments often rely on additional software packages not included in the Kafka codebase itself, in particular Apache ZooKeeper. A comprehensive monitoring implementation includes all the layers of your deployment, including host-level metrics when appropriate, and not just the metrics emitted by Kafka itself.</p>
-		<p><a class="article__read-more-link" href="/2017/06/01/Monitoring/Zabbix监控Kafka集群 Brokers服务/">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
 		<h1><a href="/2017/05/28/Bigdata-hadoop/Kafka/开源的Kafka集群管理器(Kafka Manager)/">Bigdata-开源的Kafka集群管理器(Kafka Manager)</a></h1>
 	
 	<div class="article__infos">
@@ -279,18 +243,18 @@
 
 	<article>
 	
-		<h1><a href="/2017/05/08/Bigdata-hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/">Bigdata-hadoop新增节点集群启动请求异常：Last contact：200</a></h1>
+		<h1><a href="/2017/05/11/日志分析平台/Elasticsearch/ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述/">ElasticStack 5.x+Kibana-5.5.x+Logstash5.5+kafka2.10版本部署概述</a></h1>
 	
 	<div class="article__infos">
-		<span class="article__date">2017-05-08</span><br />
+		<span class="article__date">2017-05-11</span><br />
 		
 			<span class="article__category">
-				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
 			</span><br />
 		
 		
 			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a>
+			  	<a class="article__tag-link" href="/tags/Elasticsearch/">Elasticsearch</a> <a class="article__tag-link" href="/tags/Kibana/">Kibana</a>
 			</span>
 		
 	</div>
@@ -298,24 +262,10 @@
 	
 
 	
-		<h3 id="前言闲谈："><a href="#前言闲谈：" class="headerlink" title="前言闲谈："></a>前言闲谈：</h3><p>之前做CDN云计算公司来到美年大健康现在在一家医疗大数据公司负责运维部门大大小小的活，既然是医疗大数据当然离不开大数据存储的维护，现在也同时维护大数据运维相关工作 <code>hadoop,spark,sqoop,hue,hive,Hbase,zookeeper</code>等等 测试开发生产使用起来,从集群环境维护 提升数据稳定性 高可用维护。</p>
-<p>前面说了一堆自己闲聊，真正解决这次问题是hadoop新增节点需要注意哪几点：</p>
-<p><code>新增节点如何新增我会在另外一篇详细说的这里我讲一些需要注意掉的问题。</code></p>
-<h3 id="需要修改几个配置："><a href="#需要修改几个配置：" class="headerlink" title="需要修改几个配置："></a>需要修改几个配置：</h3><p>（1）hadoop data 数据目录 VERSION 里面的搭建集群时，直接克隆会出现这个问题。解决方法同上两种，最好修改${/hadoop/tmp/dir}/dfs/data/current/VERSION中的storageID，使其不同。第一种会导致hdfs数据丢失。</p>
-<p>解决方法：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">（1） datanode启动是会加载DataStorage，如果不存在则会format</div><div class="line">（2）初次启动DataStorage的storageID是空的，所以会生成一个storageID</div></pre></td></tr></table></figure>
-<p>参考我解决的：<code>这里我拷贝过来 直接删除。等集群namenode启动 会自动生成。</code></p>
-<p>这个解决以后 新增的机器必须关闭防火墙。因为这个原因会导致我 hadoop新增节点集群启动请求异常：Last contact：200</p>
-<p>（2） 集群重启时防火墙自动开启导致：</p>
-<p>这里贴张图片给大家看看：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop1.png" alt=""></figure></p>
-<p>问题：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">2017-07-04 18:43:30,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 8 time(s).</div><div class="line">2017-07-04 18:43:31,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 9 time(s).</div><div class="line">2017-07-04 18:43:31,479 ERROR org.apache.hadoop.hdfs.server.datanode.DataNode: java.io.IOException: Call to /192.168.18.218:9000 failed on <span class="built_in">local</span> exception: java.net.NoRouteToHostException: 没有到主机的路由</div><div class="line">        at org.apache.hadoop.ipc.Client.wrapException(Client.java:775)</div><div class="line">        at org.apache.hadoop.ipc.Client.call(Client.java:743)</div><div class="line">解决方法：在root权限下关闭防火墙：service iptables stop</div></pre></td></tr></table></figure>
-<p>最好配置成机器重启默认防火墙关闭：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables off   #开机不启动防火墙服务</span></div><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables on   #开机启动防火墙服务</span></div></pre></td></tr></table></figure>
-<p>解决以后服务重新跑一遍已经搞定。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop2.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop3.png" alt=""></figure></p>
-
+		<h2 id="ElasticStack-5-x介绍"><a href="#ElasticStack-5-x介绍" class="headerlink" title="ElasticStack 5.x介绍"></a>ElasticStack 5.x介绍</h2><h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/elastic-elk-b.png" alt=""><br><code>ELK=ElasticSearch 官方博客:分布式以及 Elastic</code></p>
+<p>Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一款开源分布式日志系统，一般说来包括了Elasticsearch、Logstash和Kibana，涵盖了后端日志采集、日志搜索服务和前端数据展示等功能。<br>本文将会对Elastic Stack的安装部署流程进行一系列简单的介绍，并记录下了一些部署过程中遇到的坑及解决方法。</p>
+<p>对于一个软件或互联网公司来说，对计算资源和应用进行监控和告警是非常基础的需求。对于大公司或成熟公司，一个高度定制化的监控系统应该已经存在了很长时间并且非常成熟了。而对于一个初创公司或小公司来说，如何利用现有开源工具快速搭建一套日志监控及分析平台是需要探索的事情。</p>
+		<p><a class="article__read-more-link" href="/2017/05/11/日志分析平台/Elasticsearch/ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述/">...read more</a></p>
 	
 
 	
@@ -370,7 +320,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">安装：postgresql-libs-8.4.20-3.el6_6.x86_64 1/4</div><div class="line">安装：postgresql-8.4.20-3.el6_6.x86_64 2/4</div><div class="line">安装：postgresql-server-8.4.20-3.el6_6.x86_64 3/4</div><div class="line">安装：ambari-server-2.4.2.0-1470.x86_64 4/4</div><div class="line">验证：ambari-server-2.4.2.0-1470.x86_64 1/4</div><div class="line">验证：postgresql-8.4.20-3.el6_6.x86_64 2/4</div><div class="line">验证：postgresql-server-8.4.20-3.el6_6.x86_64 3/4</div><div class="line">验证：postgresql-libs-8.4.20-3.el6_6.x86_64 4/4</div><div class="line"></div><div class="line">安装：</div><div class="line">  ambari-server.x86_64 0：2.4.2.0-1470  安装这里的时候会有点慢，因为是访问国外网站下载资源。</div><div class="line"></div><div class="line">已安装依赖关系：</div><div class="line"> postgresql.x86_64 0：8.4.20-3.el6_6           </div><div class="line"> postgresql-libs.x86_64 0：8.4.20-3.el6_6        </div><div class="line"> postgresql-server.x86_64 0：8.4.20-3.el6_6</div></pre></td></tr></table></figure>
 <p>❗️❗️【注意】</p>
 <p>接受有关信任<code>Hortonworks GPG</code>密钥的警告。该键将自动下载并用于验证Hortonworks的软​​件包。您将看到以下消息：</p>
-<p>Importing GPG key 0x07513CAD: Userid: “Jenkins (HDP Builds) <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#106;&#101;&#x6e;&#x6b;&#105;&#x6e;&#64;&#104;&#x6f;&#x72;&#x74;&#x6f;&#110;&#119;&#111;&#114;&#x6b;&#x73;&#x2e;&#x63;&#111;&#x6d;">&#106;&#101;&#x6e;&#x6b;&#105;&#x6e;&#64;&#104;&#x6f;&#x72;&#x74;&#x6f;&#110;&#119;&#111;&#114;&#x6b;&#x73;&#x2e;&#x63;&#111;&#x6d;</a>“ From :<code>http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins</code></p>
+<p>Importing GPG key 0x07513CAD: Userid: “Jenkins (HDP Builds) <a href="&#109;&#97;&#105;&#108;&#x74;&#x6f;&#x3a;&#106;&#101;&#x6e;&#x6b;&#x69;&#110;&#64;&#104;&#x6f;&#x72;&#x74;&#x6f;&#110;&#x77;&#111;&#114;&#x6b;&#115;&#x2e;&#99;&#111;&#x6d;">&#106;&#101;&#x6e;&#x6b;&#x69;&#110;&#64;&#104;&#x6f;&#x72;&#x74;&#x6f;&#110;&#x77;&#111;&#114;&#x6b;&#115;&#x2e;&#99;&#111;&#x6d;</a>“ From :<code>http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins</code></p>
 <p>❗️❗️【注意】</p>
 <p>在具有有限Internet访问或没有Internet访问的群集上部署HDP时，应使用其他方法提供对位的访问。<br>有关设置本地存储库的详细信息，请参阅使用本地存储库。</p>
 <p><code>Ambari</code>服务器默认使用嵌入式<code>PostgreSQL</code>数据库。当您安装<code>Ambari</code>服务器时，PostgreSQL软件包和依赖关系必须可用于安装。这些包通常作为操作系统存储库的一部分提供。请确认您具有适用于<code>postgresql-server</code>软件包的相应存储库。</p>
@@ -530,6 +480,54 @@
 </blockquote>
 <p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari008.png" alt=""></figure></p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>安装Ambari官网地址<a href="https://docs.hortonworks.com/HDPDocuments/Ambari-2.4.2.0/bk_ambari-installation/content/download_the_ambari_repo_lnx6.html" target="_blank" rel="external">install Ambari</a><br><a href="https://cwiki.apache.org/confluence/display/AMBARI/Installation+Guide+for+Ambari+2.4.2" target="_blank" rel="external">编译安装Ambari 2.4.2安装指南</a></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/05/08/Bigdata-hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/">Bigdata-hadoop新增节点集群启动请求异常：Last contact：200</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-05-08</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Big-data-Hadoop/">Big data Hadoop</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="前言闲谈："><a href="#前言闲谈：" class="headerlink" title="前言闲谈："></a>前言闲谈：</h3><p>之前做CDN云计算公司来到美年大健康现在在一家医疗大数据公司负责运维部门大大小小的活，既然是医疗大数据当然离不开大数据存储的维护，现在也同时维护大数据运维相关工作 <code>hadoop,spark,sqoop,hue,hive,Hbase,zookeeper</code>等等 测试开发生产使用起来,从集群环境维护 提升数据稳定性 高可用维护。</p>
+<p>前面说了一堆自己闲聊，真正解决这次问题是hadoop新增节点需要注意哪几点：</p>
+<p><code>新增节点如何新增我会在另外一篇详细说的这里我讲一些需要注意掉的问题。</code></p>
+<h3 id="需要修改几个配置："><a href="#需要修改几个配置：" class="headerlink" title="需要修改几个配置："></a>需要修改几个配置：</h3><p>（1）hadoop data 数据目录 VERSION 里面的搭建集群时，直接克隆会出现这个问题。解决方法同上两种，最好修改${/hadoop/tmp/dir}/dfs/data/current/VERSION中的storageID，使其不同。第一种会导致hdfs数据丢失。</p>
+<p>解决方法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">（1） datanode启动是会加载DataStorage，如果不存在则会format</div><div class="line">（2）初次启动DataStorage的storageID是空的，所以会生成一个storageID</div></pre></td></tr></table></figure>
+<p>参考我解决的：<code>这里我拷贝过来 直接删除。等集群namenode启动 会自动生成。</code></p>
+<p>这个解决以后 新增的机器必须关闭防火墙。因为这个原因会导致我 hadoop新增节点集群启动请求异常：Last contact：200</p>
+<p>（2） 集群重启时防火墙自动开启导致：</p>
+<p>这里贴张图片给大家看看：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop1.png" alt=""></figure></p>
+<p>问题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">2017-07-04 18:43:30,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 8 time(s).</div><div class="line">2017-07-04 18:43:31,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 9 time(s).</div><div class="line">2017-07-04 18:43:31,479 ERROR org.apache.hadoop.hdfs.server.datanode.DataNode: java.io.IOException: Call to /192.168.18.218:9000 failed on <span class="built_in">local</span> exception: java.net.NoRouteToHostException: 没有到主机的路由</div><div class="line">        at org.apache.hadoop.ipc.Client.wrapException(Client.java:775)</div><div class="line">        at org.apache.hadoop.ipc.Client.call(Client.java:743)</div><div class="line">解决方法：在root权限下关闭防火墙：service iptables stop</div></pre></td></tr></table></figure>
+<p>最好配置成机器重启默认防火墙关闭：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables off   #开机不启动防火墙服务</span></div><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables on   #开机启动防火墙服务</span></div></pre></td></tr></table></figure>
+<p>解决以后服务重新跑一遍已经搞定。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop2.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop3.png" alt=""></figure></p>
 
 	
 

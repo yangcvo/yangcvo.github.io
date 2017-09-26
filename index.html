@@ -59,70 +59,9 @@
 
 	
 		<h4 id="Zookeeper集群日志配置详解和清理自定义启动内存"><a href="#Zookeeper集群日志配置详解和清理自定义启动内存" class="headerlink" title="Zookeeper集群日志配置详解和清理自定义启动内存"></a>Zookeeper集群日志配置详解和清理自定义启动内存</h4><h3 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h3><p>搭建zookeeper和kafka集群运行大数据处理数据消费，公司dubbo使用zookeeper做服务端的服务发现管理及配置中心，在使用时都出现过由于zk的日志大小过大塞满磁盘的情况 ，遇到了Zookeeper日志问题输出路径的问题, 发现zookeeper设置log4j.properties不能解决日志路径问题, 发现解决方案如下。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zookeeper_cartoon.jpg" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zookeeper_cartoon.jpg" alt=""></p>
 <h3 id="zookeeper日志说明"><a href="#zookeeper日志说明" class="headerlink" title="zookeeper日志说明"></a>zookeeper日志说明</h3><p>ZooKeeper使用<code>SLF4J(the Simple Logging Facade for Java)</code>作为日志的抽象层，默认使用<code>Log4J</code>来做实际的日志工作。使用2层日志抽象看起来真是够呛，这里简要的说明如何来配置<code>Log4J</code>。尽管Log4J非常灵活且强大，但它也有一些复杂，可以用一整本书来描述它，这里只是简要的介绍一下基本的用法。</p>
-<p>Log4J的配置文件名为<code>log4j.properties</code>，从classpath中查找。如果没有找到log4j.properties文件，会输出如下警告信息：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">log</span>4j:WARN No appenders could be found <span class="keyword">for</span> logger (org.apache.zookeeper.serv ...  </div><div class="line"><span class="built_in">log</span>4j:WARN Please initialize the <span class="built_in">log</span>4j system properly.</div></pre></td></tr></table></figure>
-<p>它说的是所有后续的日志消息会被丢弃，通常<code>log4j.properties</code>文件会放在<code>conf</code>文件夹，并放在<code>classpath</code>下。<br>来看看<code>ZooKeeper</code>使用的<code>log4j.properties</code>的主要部分：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">[jollybi@kafka2 conf]$ cat <span class="built_in">log</span>4j.properties | grep -Pv <span class="string">"^$|^#"</span></div><div class="line">zookeeper.root.logger=INFO, CONSOLE  <span class="comment">#（1）</span></div><div class="line">zookeeper.console.threshold=INFO</div><div class="line">zookeeper.log.dir=.</div><div class="line">zookeeper.log.file=zookeeper.log</div><div class="line">zookeeper.log.threshold=DEBUG</div><div class="line">zookeeper.tracelog.dir=.                                                                     </div><div class="line">zookeeper.tracelog.file=zookeeper_trace.log</div><div class="line"><span class="built_in">log</span>4j.rootLogger=<span class="variable">$&#123;zookeeper.root.logger&#125;</span> <span class="comment">#（2）</span></div><div class="line"><span class="built_in">log</span>4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender  <span class="comment">#（3）</span></div><div class="line"><span class="built_in">log</span>4j.appender.CONSOLE.Threshold=<span class="variable">$&#123;zookeeper.console.threshold&#125;</span> <span class="comment">#（4）</span></div><div class="line"><span class="built_in">log</span>4j.appender.CONSOLE.layout=org.apache.log4j.PatternLayout <span class="comment">#（5）</span></div><div class="line"><span class="built_in">log</span>4j.appender.CONSOLE.layout.ConversionPattern=%d&#123;ISO8601&#125; [myid:%X&#123;myid&#125;] - %-5p [%t:%C&#123;1&#125;@%L] - %m%n</div><div class="line"><span class="built_in">log</span>4j.appender.ROLLINGFILE=org.apache.log4j.RollingFileAppender <span class="comment">#（6）</span></div><div class="line"><span class="built_in">log</span>4j.appender.ROLLINGFILE.Threshold=<span class="variable">$&#123;zookeeper.log.threshold&#125;</span> <span class="comment">#（7）</span></div><div class="line"><span class="built_in">log</span>4j.appender.ROLLINGFILE.File=<span class="variable">$&#123;zookeeper.log.dir&#125;</span>/<span class="variable">$&#123;zookeeper.log.file&#125;</span></div><div class="line"><span class="built_in">log</span>4j.appender.ROLLINGFILE.MaxFileSize=10MB</div><div class="line"><span class="built_in">log</span>4j.appender.ROLLINGFILE.layout=org.apache.log4j.PatternLayout</div><div class="line"><span class="built_in">log</span>4j.appender.ROLLINGFILE.layout.ConversionPattern=%d&#123;ISO8601&#125; [myid:%X&#123;myid&#125;] - %-5p [%t:%C&#123;1&#125;@%L] - %m%n</div><div class="line"><span class="built_in">log</span>4j.appender.TRACEFILE=org.apache.log4j.FileAppender</div><div class="line"><span class="built_in">log</span>4j.appender.TRACEFILE.Threshold=TRACE</div><div class="line"><span class="built_in">log</span>4j.appender.TRACEFILE.File=<span class="variable">$&#123;zookeeper.tracelog.dir&#125;</span>/<span class="variable">$&#123;zookeeper.tracelog.file&#125;</span></div><div class="line"><span class="built_in">log</span>4j.appender.TRACEFILE.layout=org.apache.log4j.PatternLayout</div><div class="line"><span class="built_in">log</span>4j.appender.TRACEFILE.layout.ConversionPattern=%d&#123;ISO8601&#125; [myid:%X&#123;myid&#125;] - %-5p [%t:%C&#123;1&#125;@%L][%x] - %m%n</div></pre></td></tr></table></figure>
-<ul>
-<li><p>(1) <code>zookeeper.root.logger=INFO, CONSOLE</code><br>第一组设置以<code>zookeeper</code>开头，它们实际上是<code>Java system property</code>，可以被<code>-D</code>形式的命令行参数覆盖。<br>第一行配置了日志级别，默认的设置是说在INFO级别以下的日志会被丢弃，并且日志会使用<code>CONSOLE appender</code>输出。你可以指定多个<code>appender</code>，例如如果你想使用<code>CONSOLE appender</code>和<code>ROLLINGFILE appender</code>输出日志，那么可以配置<code>zookeeper.logger</code>为<code>INFO,CONSOLE,ROLLINGFILE</code>。</p>
-</li>
-<li><p>(2) <code>rootLogger</code>处理所有日志的<code>logger</code>，因为我们没有定义其他<code>logger</code>。</p>
-</li>
-<li><p>(3) <code>log4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender</code>这一行把CONSOLE appender和实际上处理日志输出的类绑定在一起，这里是ConsoleAppender类。</p>
-</li>
-<li><p>(4) <code>appender</code>也可以过滤日志。这一行将过滤任何在INFO级别之下的日志，因为这是在<code>zookeeper.root.logger设置的threshold</code>。</p>
-</li>
-<li><p>(5) <code>appender</code>使用一个布局(layout)类在输出前对日志进行格式化。我们使用pattern layout来记录日志的级别，日期，线程信息和调用位置信息以及消息本身。</p>
-</li>
-<li><p>(6) RollingFileAppender实现了rolling日志文件的功能，而不是持续的写到一个单独的文件或者控制台。如果rootLogger没有关联ROLLINGFILE，则此appender会被忽略。</p>
-</li>
-<li><p>(7) <code>ROLLINGFILE</code>的threshold设置成<code>DEBUG</code>。因为<code>rootLogger</code>过滤了所有在<code>INFO</code>级别之下的日志，没有DEBUG日志会输出到<code>ROLLINGFILE</code>。如果你想要看到<code>DEBUG</code>日志，你必须把<code>zookeeper.root.logger</code>从<code>INFO改成DEBUG</code>。</p>
-</li>
-</ul>
-<p>打日志会影响到进程的性能，尤其是在DEBUG级别下。同时日志会提供有价值的信息为诊断错误提供线索。一个平衡性能开销的有效方式是把appender的threshold设成DEBUG，并把rootLogger设成WARN级别，这在一般的情况都适用，一般只需要关注WARNING和它之上的日志。当你需要诊断问题时可以使用JMX动态设置为INFO或DEBUG级别，这样可以更方便定位问题。</p>
-<h3 id="修改日志输出目录"><a href="#修改日志输出目录" class="headerlink" title="修改日志输出目录"></a>修改日志输出目录</h3><p>之前出现<code>zookeeper</code>在bin目录下出现了<code>zookeeper.out</code>的日志文件，经分析发现此文件是由于<code>nohup</code>命令打印的控制台日志。</p>
-<p>但是，我们在<code>zoo.cfg</code>配置文件中，对日志文件进行了配置（截取部分）</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">dataDir=/data/tools/zookeeper-3.4.5/tmp</div><div class="line">dataLogDir=/data/tools/zookeeper-3.4.5/tmp/logs</div></pre></td></tr></table></figure>
-<p>其中，<code>dataDir和dataLogDir</code>是针对数据信息及数据信息日志的位置配置。但是在zookeeper内部集成了<code>log4j.properties</code>（对应配置文件在conf路径下）。</p>
-<h3 id="参考log4j配置说明"><a href="#参考log4j配置说明" class="headerlink" title="参考log4j配置说明"></a>参考log4j配置说明</h3><p>打开<code>log4j.properties</code>文件，我们会发现有这样的配置，它在说明关于<code>zookeeper</code>本身的一些默认设置，但是可以被系统配置文件所覆盖。那么，在<code>log4j</code>中，<code>root是log4j</code>记录的原始起点，而这部分参数又可以被系统修改，那么系统配置在什么地方呢？</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Define some default values that can be overridden by system properties</span></div><div class="line">zookeeper.root.logger=INFO, CONSOLE</div><div class="line">zookeeper.console.threshold=INFO</div><div class="line">zookeeper.log.dir=.</div><div class="line">zookeeper.log.file=zookeeper.log</div><div class="line">zookeeper.log.threshold=DEBUG</div><div class="line">zookeeper.tracelog.dir=.</div><div class="line">zookeeper.tracelog.file=zookeeper_trace.log</div></pre></td></tr></table></figure>
-<p>zk日志.out及log4j日志路径配置 ：首先修改<code>bin/zkEnv.sh</code>，配置<code>ZOO_LOG_DIR</code>的环境变量，<code>ZOO_LOG_DIR</code>是zookeeper日志输出目录，<code>ZOO_LOG4J_PROP</code>是log4j日志输出的配置：</p>
-<ul>
-<li>默认配置：</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> [ <span class="string">"x<span class="variable">$&#123;ZOO_LOG_DIR&#125;</span>"</span> = <span class="string">"x"</span> ]</div><div class="line"><span class="keyword">then</span></div><div class="line">    ZOO_LOG_DIR=<span class="string">"."</span></div><div class="line"><span class="keyword">fi</span></div><div class="line"></div><div class="line"><span class="keyword">if</span> [ <span class="string">"x<span class="variable">$&#123;ZOO_LOG4J_PROP&#125;</span>"</span> = <span class="string">"x"</span> ]</div><div class="line"><span class="keyword">then</span></div><div class="line">    ZOO_LOG4J_PROP=<span class="string">"INFO,CONSOLE"</span></div><div class="line"><span class="keyword">fi</span></div></pre></td></tr></table></figure>
-<ul>
-<li>生产环境修改：</li>
-</ul>
-<p>在zk目录下面创建logs目录 给予bi组操作权限。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo mkdir /data/tools/zookeeper-3.4.5/logs/</div><div class="line">sudo chown -R jollybi:jollybi /data/tools/zookeeper-3.4.5/logs/</div></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> [ <span class="string">"x<span class="variable">$&#123;ZOO_LOG_DIR&#125;</span>"</span> = <span class="string">"x"</span> ]</div><div class="line"><span class="keyword">then</span></div><div class="line">    ZOO_LOG_DIR=<span class="string">"<span class="variable">$ZOOBINDIR</span>/../logs"</span></div><div class="line"><span class="keyword">fi</span></div><div class="line"></div><div class="line"><span class="keyword">if</span> [ <span class="string">"x<span class="variable">$&#123;ZOO_LOG4J_PROP&#125;</span>"</span> = <span class="string">"x"</span> ]</div><div class="line"><span class="keyword">then</span></div><div class="line">    ZOO_LOG4J_PROP=<span class="string">"INFO,ROLLINGFILE"</span>  //ROLLINGFILE —— 日志轮转，避免单一文件过大</div><div class="line"><span class="keyword">fi</span></div></pre></td></tr></table></figure>
-<h3 id="Zookeeper版本3-4-0以上的zk可以设置定期自动清理-参考链接"><a href="#Zookeeper版本3-4-0以上的zk可以设置定期自动清理-参考链接" class="headerlink" title="Zookeeper版本3.4.0以上的zk可以设置定期自动清理.参考链接"></a>Zookeeper版本3.4.0以上的zk可以设置定期自动清理.<a href="http://nileader.blog.51cto.com/1381108/932156" target="_blank" rel="external">参考链接</a></h3><ul>
-<li>在zoo.cfg中配置：</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">autopurge.purgeInterval: 24*2     <span class="comment">##这个参数指定了清理频率，单位是小时。默认是0，表示不开启自己清理功能。</span></div><div class="line">autopurge.snapRetainCount:  2	    <span class="comment">##这个参数和上面的参数搭配使用，这个参数指定了需要保留的文件数目。默认是保留3个。</span></div></pre></td></tr></table></figure>
-<h3 id="配置zookeeper-out的位置及log4j日志输出"><a href="#配置zookeeper-out的位置及log4j日志输出" class="headerlink" title="配置zookeeper.out的位置及log4j日志输出"></a>配置zookeeper.out的位置及log4j日志输出</h3><p>(1)<code>zookeeper.out</code>由nohup的输出，也就是<code>zookeeper</code>的<code>stdout和stdeer</code>输出。</p>
-<p>在zkServer.sh中：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> [ ! -w <span class="string">"<span class="variable">$ZOO_LOG_DIR</span>"</span> ] ; <span class="keyword">then</span>  </div><div class="line">mkdir -p <span class="string">"<span class="variable">$ZOO_LOG_DIR</span>"</span>  </div><div class="line"><span class="keyword">fi</span>  </div><div class="line">  </div><div class="line">_ZOO_DAEMON_OUT=<span class="string">"<span class="variable">$ZOO_LOG_DIR</span>/zookeeper.out"</span>  <span class="comment">#日志输出文件路径</span></div><div class="line"></div><div class="line"><span class="comment">#nohup日志输出</span></div><div class="line">nohup <span class="variable">$JAVA</span> <span class="string">"-Dzookeeper.log.dir=<span class="variable">$&#123;ZOO_LOG_DIR&#125;</span>"</span> <span class="string">"-Dzookeeper.root.logger=<span class="variable">$&#123;ZOO_LOG4J_PROP&#125;</span>"</span> \  </div><div class="line">-cp <span class="string">"<span class="variable">$CLASSPATH</span>"</span> <span class="variable">$JVMFLAGS</span> <span class="variable">$ZOOMAIN</span> <span class="string">"<span class="variable">$ZOOCFG</span>"</span> &gt; <span class="string">"<span class="variable">$_ZOO_DAEMON_OUT</span>"</span> 2&gt;&amp;1 &lt; /dev/null &amp;</div></pre></td></tr></table></figure>
-<p>(2)log4j日志输出配置 conf/log4j.properties中：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Add ROLLINGFILE to rootLogger to get log file output  </span></div><div class="line"><span class="comment">#    Log DEBUG level and above messages to a log file  </span></div><div class="line"></div><div class="line"><span class="built_in">log</span>4j.appender.ROLLINGFILE=org.apache.log4j.RollingFileAppender  //日志轮转，DaliyRollingFileAppender —— 按天轮转</div><div class="line"><span class="built_in">log</span>4j.appender.ROLLINGFILE.Threshold=<span class="variable">$&#123;zookeeper.log.threshold&#125;</span>  </div><div class="line"><span class="built_in">log</span>4j.appender.ROLLINGFILE.File=<span class="variable">$&#123;zookeeper.log.dir&#125;</span>/<span class="variable">$&#123;zookeeper.log.file&#125;</span></div></pre></td></tr></table></figure>
-<p>轮转前提需要将(1)里bin/zkEnv.sh中的轮转配置好</p>
-<p>4.zk事务日志查看</p>
-<p>zookeeper的事务日志通过zoo.cfg文件中的dataLogDir配置项配置：</p>
-<pre><code># the directory where the snapshot is stored.
-# do not use /tmp for storage, /tmp here is just
-# example sakes.
-dataDir=/tmp/zookeeper    
-</code></pre><p>查看事务日志方法：<br>(需要下载slf4j-api-1.6.1.jar包) </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">java -classpath .:slf4j-api-1.6.1.jar:zookeeper-3.4.5.jar org.apache.zookeeper.server.LogFormatter /tmp/zookeeper/version-2/xxx.xxx</div></pre></td></tr></table></figure>
-<h3 id="怎么自定义zookeeper的启动内存"><a href="#怎么自定义zookeeper的启动内存" class="headerlink" title="怎么自定义zookeeper的启动内存"></a>怎么自定义zookeeper的启动内存</h3><p>运行zookeeper时，使用jmap -heap <pid> 命令查看内存情况如下:</pid></p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zookeeper_01.png" alt=""></figure></p>
-<p>解决：分配内存文件路径：<code>zookeeper/bin/zkEnv.sh</code></p>
-<p>该文件已经明确说明有独立JVM内存的设置文件，路径是<code>zookeeper/conf/java.env</code><br>安装的时候这个路径下没有有<code>java.env</code>文件，需要自己新建一个：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># vim java.env</span></div><div class="line"></div><div class="line"><span class="meta">#!/bin/sh</span></div><div class="line"><span class="built_in">export</span> JAVA_HOME=/usr/java/jdk</div><div class="line"><span class="comment"># heap size MUST be modified according to cluster environment</span></div><div class="line"><span class="built_in">export</span> JVMFLAGS=<span class="string">"-Xms4g -Xmx4g <span class="variable">$JVMFLAGS</span>"</span></div><div class="line"></div><div class="line">对于内存的分配，还是根据项目和机器情况而定。如果内存够用，适当的大点可以提升zk性能。</div></pre></td></tr></table></figure>
-
+		<p><a class="article__read-more-link" href="/2017/08/27/Bigdata-hadoop/zookeeper/Bigdata-Zookeeper集群日志配置详解和清理自定义启动内存 /">...read more</a></p>
 	
 
 	
@@ -267,40 +206,6 @@ dataDir=/tmp/zookeeper
 
 	<article>
 	
-		<h1><a href="/2017/06/11/日志分析平台/Elasticsearch/ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述/">ElasticStack 5.x+Kibana-5.5.x+Logstash5.5+kafka2.10版本部署概述</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-06-11</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Elasticsearch/">Elasticsearch</a> <a class="article__tag-link" href="/tags/Kibana/">Kibana</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h2 id="ElasticStack-5-x介绍"><a href="#ElasticStack-5-x介绍" class="headerlink" title="ElasticStack 5.x介绍"></a>ElasticStack 5.x介绍</h2><h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/elastic-elk-b.png" alt=""><br><code>ELK=ElasticSearch 官方博客:分布式以及 Elastic</code></p>
-<p>Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一款开源分布式日志系统，一般说来包括了Elasticsearch、Logstash和Kibana，涵盖了后端日志采集、日志搜索服务和前端数据展示等功能。<br>本文将会对Elastic Stack的安装部署流程进行一系列简单的介绍，并记录下了一些部署过程中遇到的坑及解决方法。</p>
-<p>对于一个软件或互联网公司来说，对计算资源和应用进行监控和告警是非常基础的需求。对于大公司或成熟公司，一个高度定制化的监控系统应该已经存在了很长时间并且非常成熟了。而对于一个初创公司或小公司来说，如何利用现有开源工具快速搭建一套日志监控及分析平台是需要探索的事情。</p>
-		<p><a class="article__read-more-link" href="/2017/06/11/日志分析平台/Elasticsearch/ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述/">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
 		<h1><a href="/2017/06/05/Monitoring/Zabbix-Monitoring Kafka Consumer | kafka的监控和告警/">Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警</a></h1>
 	
 	<div class="article__infos">
@@ -324,6 +229,42 @@ dataDir=/tmp/zookeeper
 <h3 id="Zabbix-Monitoring-Kafka集群-Consumer-kafka的监控和告警"><a href="#Zabbix-Monitoring-Kafka集群-Consumer-kafka的监控和告警" class="headerlink" title="Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警"></a>Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警</h3><p>前面一篇讲了我们监控kafka集群Brokers服务状态监控。生产环境监控，可以在Zabbix中对Kafka进行监控，一种是监控JMX端口，另外一种是直接写脚本，使用bin/kafka-run-class.sh里提供的相关方法类。</p>
 <p>根据我们的业务场景，最为主要的的是监控消费者Lag的情况。所有我直接写脚本了。<br>我们对某一个Topic的30个分区，每个分区，当前Consumer的Lag情况。<br>当然还可以生成汇总图，在此不做多展示。在Zabbix中配置对应的Triggers，当Lag超过阀值，实现报警。</p>
 		<p><a class="article__read-more-link" href="/2017/06/05/Monitoring/Zabbix-Monitoring Kafka Consumer | kafka的监控和告警/">...read more</a></p>
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/06/01/Monitoring/Zabbix监控Kafka集群 Brokers服务/">Zabbix监控Kafka集群 Brokers服务</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-06-01</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Kafka/">Kafka</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a> <a class="article__tag-link" href="/tags/Zabbix/">Zabbix</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="Zabbix监控Kafka集群-Brokers服务"><a href="#Zabbix监控Kafka集群-Brokers服务" class="headerlink" title="Zabbix监控Kafka集群 Brokers服务"></a>Zabbix监控Kafka集群 Brokers服务</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-datadog.png" alt=""></p>
+<h4 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h4><p>Monitoring Kafka with Datadog</p>
+<p>This post is the final part of a 3-part series on how to monitor Kafka. Part 1 explores the key metrics available from Kafka, and Part 2 is about collecting those metrics on an ad hoc basis.</p>
+<p>To implement ongoing, meaningful monitoring, you will need a dedicated system that allows you to store, visualize, and correlate your Kafka metrics with the rest of your infrastructure.</p>
+<p>Kafka deployments often rely on additional software packages not included in the Kafka codebase itself, in particular Apache ZooKeeper. A comprehensive monitoring implementation includes all the layers of your deployment, including host-level metrics when appropriate, and not just the metrics emitted by Kafka itself.</p>
+		<p><a class="article__read-more-link" href="/2017/06/01/Monitoring/Zabbix监控Kafka集群 Brokers服务/">...read more</a></p>
 	
 
 	
