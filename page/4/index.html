@@ -41,140 +41,6 @@
 
 	<article>
 	
-		<h1><a href="/2017/03/28/Bigdata-hadoop/Kafka/Bigdata-Kafka集群快速搭建与增删改查命令讲解/">Bigdata-Kafka集群快速搭建与命令讲解</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-03-28</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/大数据/">大数据</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h1 id="Bigdata-Kafka集群快速搭建与命令讲解"><a href="#Bigdata-Kafka集群快速搭建与命令讲解" class="headerlink" title="Bigdata-Kafka集群快速搭建与命令讲解"></a>Bigdata-Kafka集群快速搭建与命令讲解</h1><h3 id="kafka集群和zookeeper集群规范"><a href="#kafka集群和zookeeper集群规范" class="headerlink" title="kafka集群和zookeeper集群规范"></a>kafka集群和zookeeper集群规范</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">kafka集群和zookeeper集群规范</div><div class="line">kafka版本：kafka_2.10-0.8.2.1</div><div class="line">zookeeper版本：zookeeper-3.4.5</div><div class="line"></div><div class="line">启动用户：jollybi</div><div class="line">kafka安装目录：/data/tools/</div><div class="line">kafka新建消息目录：/data/tools/kafka_2.10-0.8.2.1/kafka-logs</div><div class="line"></div><div class="line">启动用户：jollybi</div><div class="line">zookeeper安装目录：/data/tools/</div><div class="line">zookeeper新建日志目录：/data/tools/zookeeper-3.4.5/tmp/logs</div><div class="line"></div><div class="line">统一配置hosts</div><div class="line"></div><div class="line"></div><div class="line">10.155.90.153 kafka1.jollychic.com kafka1</div><div class="line">10.155.90.155 kafka2.jollychic.com kafka2</div><div class="line">10.155.90.138 kafka3.jollychic.com kafka3</div></pre></td></tr></table></figure>
-<p>本文使用了3台机器部署Kafka集群，IP和主机名对应关系如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">10.155.90.153 kafka1.jollychic.com kafka1</div><div class="line">10.155.90.155 kafka2.jollychic.com kafka2</div><div class="line">10.155.90.138 kafka3.jollychic.com kafka3</div></pre></td></tr></table></figure>
-<h3 id="Step1-配置-etc-hosts-（3台一致）"><a href="#Step1-配置-etc-hosts-（3台一致）" class="headerlink" title="Step1: 配置/etc/hosts （3台一致）"></a>Step1: 配置/etc/hosts （3台一致）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">127.0.0.1 localhost.localdomain localhost</div><div class="line">10.155.90.153 kafka1.jollychic.com kafka1</div><div class="line">10.155.90.155 kafka2.jollychic.com kafka2</div><div class="line">10.155.90.138 kafka3.jollychic.com kafka3</div></pre></td></tr></table></figure>
-<h3 id="Step2-环境KafKa集群环境"><a href="#Step2-环境KafKa集群环境" class="headerlink" title="Step2: 环境KafKa集群环境"></a>Step2: 环境KafKa集群环境</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">下载地址：http://mirrors.hust.edu.cn/apache/kafka/0.9.0.0/kafka_2.10-0.8.2.1.tgz</div><div class="line">[jollybi@kafka1 ]<span class="comment"># tar -xvf kafka_2.10-0.8.2.1.tgz -C /data/tools/</span></div><div class="line"><span class="built_in">cd</span> /data/tools/kafka_2.10-0.8.2.1/config</div></pre></td></tr></table></figure>
-<h3 id="设置data目录，最好不要用默认的-tmp-kafka-logs"><a href="#设置data目录，最好不要用默认的-tmp-kafka-logs" class="headerlink" title="设置data目录，最好不要用默认的/tmp/kafka-logs"></a>设置data目录，最好不要用默认的/tmp/kafka-logs</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mkdir -p /data/tools/kafka_2.10-0.8.2.1/kafka-logs/</div></pre></td></tr></table></figure>
-<p><em>修改kafka配置文件</em></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">[root@kafka_01 config]<span class="comment"># vim server.properties</span></div><div class="line"></div><div class="line"></div><div class="line"> 设置brokerid（从0开始，3个节点分别设为1,2,3，不能重复）在这里id=0跟zookeeper id设置一样就行。 集群机器：按顺序写1</div><div class="line">broker.id=1  </div><div class="line"></div><div class="line">auto.leader.rebalance.enable=<span class="literal">true</span> </div><div class="line"></div><div class="line"><span class="comment">#修改本地IP地址：</span></div><div class="line">listeners=PLAINTEXT://10.46.72.172:9092</div><div class="line">port=9292 //设置访问端口</div><div class="line">host.name=10.155.90.153   kafka本机IP</div><div class="line">log.dirs=/data/tools/kafka_2.10-0.8.2.1/kafka-logs</div><div class="line"></div><div class="line"><span class="comment">#设置注册地址（重要，默认会把本机的hostanme注册到zk中，客户端连接时需要解析该hostanme，所以这里直接注册本机的IP地址，避免hostname解析失败，报错java.nio.channels.UnresolvedAddressException或java.io.IOException: Can not resolve address）</span></div><div class="line"><span class="comment">#设置zookeeper地址</span></div><div class="line"><span class="comment">#zookeeper.connect=10.46.72.172:2181,10.47.88.103:2181,10.47.102.137:2181</span></div><div class="line">zookeeper.connect=kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281</div><div class="line"></div><div class="line">//这里我设置hosts代替IP</div></pre></td></tr></table></figure>
-<p><em>配置zookeeper地址</em></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">vim zookeeper.properties </div><div class="line">dataDir=/data/tools/zookeeper-3.4.5/tmp</div><div class="line"><span class="comment"># the port at which the clients will connect</span></div><div class="line">clientPort=2281</div><div class="line"><span class="comment"># disable the per-ip limit on the number of connections since this is a non-production config</span></div><div class="line">maxClientCnxns=0</div><div class="line">~</div></pre></td></tr></table></figure>
-<p><em>配置kafka访问地址</em></p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">vim</span> producer.properties </div><div class="line">metadata.broker.list=<span class="number">169.44.62.139:9292</span>,<span class="number">169.44.59.138:9292</span>,<span class="number">169.44.62.137:9292</span>   </div><div class="line"><span class="comment"># name of the partitioner class for partitioning events; default partition spreads data randomly</span></div><div class="line"><span class="comment">#partitioner.class=</span></div><div class="line"></div><div class="line"><span class="comment"># specifies whether the messages are sent asynchronously (async) or synchronously (sync)</span></div><div class="line">producer.type=sync</div><div class="line"></div><div class="line"><span class="comment"># specify the compression codec for all data generated: none, gzip, snappy, lz4.</span></div><div class="line"><span class="comment"># the old config values work as well: 0, 1, 2, 3 for none, gzip, snappy, lz4, respectively</span></div><div class="line">compression.codec=<span class="literal">none</span></div><div class="line"></div><div class="line"><span class="comment"># message encoder</span></div><div class="line">serializer.class=kafka.serializer.DefaultEncoder</div></pre></td></tr></table></figure>
-<h3 id="Step3-集群机器快速拷贝配置"><a href="#Step3-集群机器快速拷贝配置" class="headerlink" title="Step3: 集群机器快速拷贝配置:"></a>Step3: 集群机器快速拷贝配置:</h3><p>远程复制分发安装文件<br>最好是把文件打包scp过去<br>接下来将上面的安装文件拷贝到集群中的其他机器上对应的目录</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">scp -P58958 -r kafka_2.10-0.8.2.1 jollybi@169.44.62.137:/home/jollybi/tools/. </div><div class="line">scp -P58958 -r kafka_2.10-0.8.2.1 jollybi@169.44.62.138:/home/jollybi/tools/.</div></pre></td></tr></table></figure>
-<p>统一修改分别其他两台kafka <code>server.properties</code></p>
-<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">broker.id=<span class="number">2</span>  </div><div class="line">host.name=<span class="number">169.44</span><span class="number">.62</span><span class="number">.137</span>   kafka2本机IP</div><div class="line"></div><div class="line">broker.id=<span class="number">3</span> </div><div class="line">host.name=<span class="number">169.44</span><span class="number">.62</span><span class="number">.138</span>   kafka3本机IP</div></pre></td></tr></table></figure>
-<h3 id="Step4-启动-kafka集群"><a href="#Step4-启动-kafka集群" class="headerlink" title="Step4:启动 kafka集群"></a>Step4:启动 kafka集群</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">./kafka-server-start.sh -daemon ../config/server.properties</div><div class="line"></div><div class="line">[jollybi@kafka1 config]$ jps</div><div class="line">3443 QuorumPeerMain</div><div class="line">16280 Jps</div><div class="line">3628 Kafka</div><div class="line">Step5: Kafka常用命令(普及)</div></pre></td></tr></table></figure>
-<h4 id="Step5-测试集群基本命令"><a href="#Step5-测试集群基本命令" class="headerlink" title="Step5:测试集群基本命令"></a>Step5:测试集群基本命令</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div></pre></td><td class="code"><pre><div class="line"><span class="comment">### 默认创建kafka Topic:  1个副本备份 1个分区消费</span></div><div class="line"></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 1 --partitions 1 --topic mongotail_lz4</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 1 --partitions 1 --topic mongotail_lz4_imp</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 大数据这边需要12个分区这里我删除Topic重新创建Topic：</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 删除kafka Topic:</span></div><div class="line"></div><div class="line"></div><div class="line">第一步：删除kafka topic</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --delete --topic  mongotail_lz4 </div><div class="line"></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --delete --topic  mongotail_lz4_imp</div><div class="line"></div><div class="line"><span class="comment">### 这是由于删除topic没删干净会报错：</span></div><div class="line"></div><div class="line">org.apache.kafka.common.errors.UnknownTopicOrPartitionException: This server does not host this topic-partition.</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 删除线程执行删除操作的真正逻辑是：</span></div><div class="line">1. 它首先会给当前所有broker发送更新元数据信息的请求，告诉这些broker说这个topic要删除了，你们可以把它的信息从缓存中删掉了</div><div class="line">2. 开始删除这个topic的所有分区</div><div class="line">2.1 给所有broker发请求，告诉它们这些分区要被删除。broker收到后就不再接受任何在这些分区上的客户端请求了</div><div class="line">2.2 把每个分区下的所有副本都置于OfflineReplica状态，这样ISR就不断缩小，当leader副本最后也被置于OfflineReplica状态时leader信息将被更新为-1</div><div class="line">2.3 将所有副本置于ReplicaDeletionStarted状态</div><div class="line">2.4 副本状态机捕获状态变更，然后发起StopReplicaRequest给broker，broker接到请求后停止所有fetcher线程、移除缓存，然后删除底层<span class="built_in">log</span>文件</div><div class="line">2.5 关闭所有空闲的Fetcher线程</div><div class="line">    </div><div class="line"><span class="comment">### 第二步：删除zookeeper相关的路径：</span></div><div class="line">[jollybi@kafka1 zookeeper-3.4.5]$ ./bin/zkCli.sh -server 127.0.0.1:2281 </div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 1] rmr /brokers/topics/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 0] rmr /consumers/group_ml_general/offsets/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 1] rmr /consumers/group_ml_general/owners/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 3] rmr  /config/topics/mongotail_lz4</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 4] rmr /admin/delete_topics/mongotail_lz4</div><div class="line"></div><div class="line"><span class="comment">### 删除topic上面消费组 </span></div><div class="line"></div><div class="line">删除 ZooKeeper 下面的 /consumers/[group_id] 路径就可以了。ZooKeeper 原生API只支持删除空的路径，所以建议你使用 curator framework 进行这个删除操作，ZkPaths.deleteChildren 会递归式地删除整个路径（包括子路径）。</div><div class="line"></div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 0] rmr /consumers/kafka-node1-imp-group</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 1] rmr /consumers/kafka-node1-group</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 2] rmr /consumers/console-consumer-59053</div><div class="line">[zk: 127.0.0.1:2281(CONNECTED) 3] rmr /consumers/</div><div class="line"></div><div class="line"></div><div class="line">1、设置配置文件允许删除</div><div class="line">delete.topic.enable=<span class="literal">true</span> 配置添加到 config/server.properties</div><div class="line">2、执行删除命令</div><div class="line">./bin/kafka-topics.sh --zookeeper localhost:2181 --delete --topic <span class="built_in">test</span>-topic</div><div class="line"></div><div class="line">在zookeeper中确认：</div><div class="line"></div><div class="line"> 删除zookeeper下/brokers/topics/<span class="built_in">test</span>-topic节点</div><div class="line"> 删除zookeeper下/config/topics/<span class="built_in">test</span>-topic节点</div><div class="line"> 删除zookeeper下/admin/delete_topics/<span class="built_in">test</span>-topic节点</div><div class="line"> </div><div class="line">consumer 的话 删除groupid</div><div class="line"> </div><div class="line"></div><div class="line"><span class="comment">### 重启kafka集群</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 大数据kafka建topic，不能建一个分区，那样吞吐量上不去，不够用，我们以前建了12个分区的</span></div><div class="line"><span class="comment">### 创建新 kafka Topic: 3个副本，12个分区</span></div><div class="line"></div><div class="line"> ./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 3 --partitions 12  --topic mongotail_lz4</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh --create --zookeeper  kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281 --replication-factor 3 --partitions 12  --topic mongotail_lz4_imp</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 查看创建的Topic:</span></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh  --describe --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281  --topic mongotail_lz4</div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh  --describe --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281  --topic mongotail_lz4_imp</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 查看集群情况：</span></div><div class="line">./kafka_2.10-0.8.2.1/bin/kafka-topics.sh  --describe --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281  --topic mongotail_lz4</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">### 模拟生产者（producer）kafka生产客户端生产数据命令：</span></div><div class="line"></div><div class="line">./bin/kafka-console-producer.sh --broker-list 75.126.39.124:9292,75.126.5.162:9292,75.126.5.178:9292 --topic mongotail_lz4_imp                      </div><div class="line">......</div><div class="line">my <span class="built_in">test</span> message 1</div><div class="line">my <span class="built_in">test</span> message 2</div><div class="line">^C</div><div class="line"><span class="comment">### 模拟消费者（consumer）kafka消费客户端数据命令 现在我们来看看消息：</span></div><div class="line"></div><div class="line"> ./bin/kafka-console-consumer.sh --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  --fm-beginning --topic mongotail_lz4_imp</div><div class="line">......</div><div class="line">my <span class="built_in">test</span> message 1</div><div class="line">my <span class="built_in">test</span> message 2</div><div class="line"></div><div class="line">^C</div></pre></td></tr></table></figure>
-<h3 id="Kafka常用命令"><a href="#Kafka常用命令" class="headerlink" title="Kafka常用命令"></a>Kafka常用命令</h3><p>以下是kafka常用命令行总结：  </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">1、 list topic 显示所有topic</div><div class="line">./bin/kafka-topics.sh --list --zookeeper kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281</div><div class="line"></div><div class="line">2、 查看topic的详细信息  </div><div class="line"> ./bin/kafka-topics.sh --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  -describe -topic mongotail_lz4_imp</div><div class="line"></div><div class="line">3、为topic增加partition分区 参数：--alter --partitions</div><div class="line">./bin/kafka-topics.sh  --alter --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  --partitions 20 --topic mongotail_lz4_imp</div><div class="line"></div><div class="line">4、kafka生产者客户端命令  </div><div class="line">./bin/kafka-console-producer.sh --broker-list 75.126.39.124:9292,75.126.5.162:9292,75.126.5.178:9292 --topic mongotail_lz4_imp                        </div><div class="line"></div><div class="line">5、kafka消费者客户端命令  </div><div class="line">./bin/kafka-console-consumer.sh --zookeeper  75.126.39.124:2281,75.126.5.162:2281,75.126.5.178:2281  --fm-beginning --topic </div><div class="line"></div><div class="line">6、kafka服务启动  </div><div class="line">./kafka-server-start.sh -daemon ../config/server.properties   </div><div class="line"></div><div class="line">7、下线broker  </div><div class="line">./kafka-run-class.sh kafka.admin.ShutdownBroker --zookeeper 127.0.0.1:2181 --broker <span class="comment">#brokerId# --num.retries 3 --retry.interval.ms 60  </span></div><div class="line">shutdown broker  </div><div class="line"></div><div class="line">8、删除topic  </div><div class="line">./kafka-run-class.sh kafka.admin.DeleteTopicCommand --topic <span class="built_in">test</span>KJ1 --zookeeper 127.0.0.1:2181  </div><div class="line">./kafka-topics.sh --zookeeper localhost:2181 --delete --topic <span class="built_in">test</span>KJ1  </div><div class="line"></div><div class="line">9、查看consumer组内消费的offset  </div><div class="line">./kafka-run-class.sh kafka.tools.ConsumerOffsetChecker --zookeeper localhost:2181 --group <span class="built_in">test</span> --topic <span class="built_in">test</span>KJ1</div></pre></td></tr></table></figure>
-<h4 id="Step6-Kafka存储"><a href="#Step6-Kafka存储" class="headerlink" title="Step6:Kafka存储"></a>Step6:Kafka存储</h4><p>每个replica一个目录</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[jollybi@kafka1 kafka_2.10-0.8.2.0]<span class="comment"># cd /data/tools/kafka_2.10-0.8.2.0/kafka-logs/</span></div><div class="line">[root@master kafka-logs]<span class="comment"># ls</span></div><div class="line">__consumer_offsets-0   __consumer_offsets-20  __consumer_offsets-32  __consumer_offsets-44   my-replicatedtopic1-0</div><div class="line">__consumer_offsets-1   __consumer_offsets-21  __consumer_offsets-33  __consumer_offsets-45   my-replicated-topic1-1</div></pre></td></tr></table></figure>
-<p>二级结构</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[jollybi@kafka1 kafka-logs]<span class="comment"># cd my-replicated-topic1-0/</span></div><div class="line">[jollybi@kafka1  my-replicated-topic1-0]<span class="comment"># ls</span></div><div class="line">00000000000000000000.index  00000000000000000000.log</div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://static.zybuluo.com/sasaki/f71rtngyz2y8n3m6uxq1z2ec/%E5%9B%BE%E7%89%871.png" alt=""></figure></p>
-<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
-<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/03/15/运维笔记/APP自动化部署:开发部署-测试部署-灰度发布:蓝绿部署-生产环境等部署流程方案总结/">APP自动化部署:开发部署-测试部署-灰度发布/蓝绿部署-生产环境等部署流程方案总结</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-03-15</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/运维笔记/">运维笔记</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Automation-Deploy/">Automation Deploy</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h1 id="APP自动化部署：开发部署、测试部署、灰度发布等部署方案对比与总结"><a href="#APP自动化部署：开发部署、测试部署、灰度发布等部署方案对比与总结" class="headerlink" title="APP自动化部署：开发部署、测试部署、灰度发布等部署方案对比与总结"></a>APP自动化部署：开发部署、测试部署、灰度发布等部署方案对比与总结</h1><h4 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h4><p>个人现在在一个医疗行业公司：美年大这边负责体检APP的运维相关工作，今天主要是整理了下现在团队APP发布流程<br>方案：</p>
-<p>因为在项目迭代的过程中，不可避免需要”上线”。上线对应着部署，或者重新部署；部署对应着修改；修改则意味着风险。<br>目前有很多用于部署的技术，有的简单，有的复杂；有的得停机，有的不需要停机即可完成部署。</p>
-<p>个人整理下部署流程说明其实现在很多部署方法，现在我们用目前比较流行的几种部署方案，或者说策略方案对比总结简单讨论一下目前比较流行的几种部署方案，或者说策略。如有不足之处请指出，如有谬误，请指正^_^。</p>
-<p>我们有自己开发环境和测试环境 ：</p>
-<h4 id="开发环境部署："><a href="#开发环境部署：" class="headerlink" title="开发环境部署："></a>开发环境部署：</h4><ul>
-<li>问题：</li>
-</ul>
-<p>开发人员每个人在自己电脑环境写代码自己电脑本机测试代码是否run成功，每个开发人员都在自己本地写完测试出现问题是各自环境不统一导致遇到坑阻碍到测试人员测试，基础的bug也会浪费太多时间。</p>
-<ul>
-<li>解决后：</li>
-</ul>
-<p>主要是解决了给予开发团队在写代码或者修改bug可以第一时间更新部署。大家统一一个开发环境这个是为了在开发阶段能立马呈现效果。</p>
-<h4 id="测试环境部署："><a href="#测试环境部署：" class="headerlink" title="测试环境部署："></a>测试环境部署：</h4><ul>
-<li>问题：</li>
-</ul>
-<p>一开始没有测试环境，直接开发环境当作测试环境去跑，发现很多问题，就是测试环境数据跟生产不一样，导致很多bug问题，测试发现测试的时候，开发在更新代码发布，耽误了测试人员的测试过程，环境不能独立都互相占用，刀子效率没有提高，bug每个星期都不断提升。</p>
-<ul>
-<li>解决后：</li>
-</ul>
-<p>主要解决了开发环境和测试环境独立，不会互相影响，测试人员有单独环境去测试生产能准确的数据对比。</p>
-<h4 id="选择灰度环境部署方案："><a href="#选择灰度环境部署方案：" class="headerlink" title="选择灰度环境部署方案："></a>选择灰度环境部署方案：</h4><p>先贴个百度百科：</p>
-<p>灰度发布是指在黑与白之间，能够平滑过渡的一种发布方式。AB test就是一种灰度发布方式，让一部分用户继续用A，一部分用户开始用B，如果用户对B没有什么反对意见，那么逐步扩大范围，把所有用户都迁移到B上面来。灰度发布可以保证整体系统的稳定，在初始灰度的时候就可以发现、调整问题，以保证其影响度。</p>
-<p>灰度环境部署:</p>
-<p>个人理解灰度部署是增量发布的一种类型，它的执行方式是在原有软件生产版本可用的情况下，同时部署一个新的版本。同时运行同一个软件产品的多个版本需要软件针对配置和完美自动化部署进行特别设计。</p>
-<figure class="highlight gcode"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">(1)</span> 准备好部署各个阶段的工件，包括：构建工件，测试脚本，配置文件和部署清单文件。</div><div class="line"><span class="comment">(2)</span> 从负载均衡列表中移除掉“部署灰度环境”服务器。</div><div class="line"><span class="comment">(3)</span> 升级“灰度部署”应用（排掉原有流量并进行部署）。</div><div class="line"><span class="comment">(4)</span> 对应用进行自动化测试。</div><div class="line"><span class="comment">(5)</span> 将“灰度环境”服务器重新添加到负载均衡列表中（连通性和健康检查）。</div><div class="line"><span class="comment">(6)</span> 如果“灰度环境”在线使用测试成功，升级剩余的其他服务器。（否则就回滚）</div><div class="line">灰度发布中，常常按照用户设置路由权重，例如<span class="number">90</span><span class="meta">%</span>的用户维持使用老版本，<span class="number">10</span><span class="meta">%</span>的用户尝鲜新版本。不同版本应用共存，经常与A/B测试一起使用，用于测试选择多种方案。灰度发布比较典型的例子</div></pre></td></tr></table></figure>
-<p>第1步: 把绿色集群的状态改为’备用’. 从负载均衡的池里把这些地址去掉,这样,绿色的集群就不再回接收到来自用户的请求了.转而进入备用负载均衡的池里.</p>
-<h3 id="选择蓝绿环境部署方案："><a href="#选择蓝绿环境部署方案：" class="headerlink" title="选择蓝绿环境部署方案："></a>选择蓝绿环境部署方案：</h3><h5 id="蓝绿发布的意义"><a href="#蓝绿发布的意义" class="headerlink" title="蓝绿发布的意义"></a>蓝绿发布的意义</h5><p>整个发布过程，用户没有感受到任何宕机或者服务重启。</p>
-<h5 id="蓝绿发布的过程"><a href="#蓝绿发布的过程" class="headerlink" title="蓝绿发布的过程"></a>蓝绿发布的过程</h5><ul>
-<li>第0步:部署以前的配置<br><figure class="figure"><img src="http://1.bp.blogspot.com/-K8gbbN7S_xo/UmbijDyvS4I/AAAAAAAAE5M/3DCOJRrrbIY/s1600/Blue+Green+Deployment+for+Zero+Downtime+(8" alt=""></figure>.png)</li>
-<li>第1步: 把绿色集群的状态改为’备用’. 从负载均衡的池里把这些地址去掉,这样,绿色的集群就不再回接收到来自用户的请求了.转而进入备用负载均衡的池里.<br><figure class="figure"><img src="http://1.bp.blogspot.com/-nITj_nPp5IY/UmbiuMblJNI/AAAAAAAAE5U/ovn4sSMcFco/s1600/Blue+Green+Deployment+for+Zero+Downtime+(9" alt=""></figure>.png)</li>
-<li>第2步:在绿色集群里部署新的代码,直到应用启动成功<br><figure class="figure"><img src="http://3.bp.blogspot.com/-2F2dB-vux4g/UmbheBwtcAI/AAAAAAAAE5E/1l9il1igplQ/s1600/Blue+Green+Deployment+for+Zero+Downtime+(4" alt=""></figure>.png)</li>
-<li>第3步:使用备用负载均衡简单测试一下备用集群的部署情况.理想状态下是全自动的.</li>
-<li>第4步:把绿色备用集群的状态改成存货,于是进入了存活负载均衡的池里<br><figure class="figure"><img src="http://3.bp.blogspot.com/-2F2dB-vux4g/UmbheBwtcAI/AAAAAAAAE5E/1l9il1igplQ/s1600/Blue+Green+Deployment+for+Zero+Downtime+(4" alt=""></figure>.png)<br>看到 蓝色运行v1版本,绿色运行v2版本,都连接的是相同的数据库.这意味着v2版本也要在老的数据模型上运行.如果数据库有变更,要等到所有的集群升级到新的代码上.</li>
-<li><p>第5步: 对蓝色集群也进行同样的操作.<br><figure class="figure"><img src="http://4.bp.blogspot.com/-aTz1EdP6pb0/UmbjAx46vrI/AAAAAAAAE5c/qqxolMnae44/s640/Blue+Green+Deployment+for+Zero+Downtime+(5" alt=""></figure>.png)<br><figure class="figure"><img src="http://3.bp.blogspot.com/-95YNOBeYoUU/UmbjFq711dI/AAAAAAAAE5k/Q5Naa80xk64/s640/Blue+Green+Deployment+for+Zero+Downtime+(6" alt=""></figure>.png)</p>
-</li>
-<li><p>最终v2代码完成部署.<br><figure class="figure"><img src="http://2.bp.blogspot.com/-eh1gR1sBPNc/UmbjMkDCixI/AAAAAAAAE5s/vJOeYjV03vI/s640/Blue+Green+Deployment+for+Zero+Downtime+(7" alt=""></figure>.png)</p>
-</li>
-<li><p>第6步:根据情况.运行数据库迁移</p>
-</li>
-</ul>
-<p>参考：tks   <a href="http://sunitspace.blogspot.jp/2013/10/blue-green-deployment.html" target="_blank" rel="external">green-deployment</a></p>
-<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p>1) 蓝绿部署：不停止老版本，额外搞一套新版本，等测试发现新版本OK后，删除老版本。其实这里删除老版本也就是重新部署了老版本成为新版本一起放上去，等需要更新发布迁下期中一个版本环境部署：现在我们公司使用蓝绿部署方案。</p>
-<p>3) 灰度发布：不停止老版本，额外搞一套新版本，常常按照用户设置路由权重，例如90%的用户维持使用老版本，10%的用户尝鲜新版本。不同版本应用共存，经常与A/B测试一起使用，用于测试选择多种方案。</p>
-<h3 id="其实两种含义个人认为相差不是特别大，都特别适合现在发布部署流程方案。"><a href="#其实两种含义个人认为相差不是特别大，都特别适合现在发布部署流程方案。" class="headerlink" title="其实两种含义个人认为相差不是特别大，都特别适合现在发布部署流程方案。"></a>其实两种含义个人认为相差不是特别大，都特别适合现在发布部署流程方案。</h3><h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
-<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
 		<h1><a href="/2016/12/29/日志分析平台/Elasticsearch/搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台/">搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6 Kafka ) Kafka为消息中心的ELK日志平台</a></h1>
 	
 	<div class="article__infos">
@@ -810,6 +676,138 @@ graylog2-server.uris=&quot;http://127.0.0.1:12900/&quot;
 <figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">普通开发者有机会接触容器技术，享受开发发布一体化的便利。</div><div class="line">容器云是区别于传统IaaS服务的另一种更快速更高效的轻量级选择。</div><div class="line">基于镜像的第二个GitHub、<span class="keyword">CI</span>/<span class="keyword">CD</span>服务、代码发布、在线debug。</div></pre></td></tr></table></figure>
 <h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
 <p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2016/09/21/运维笔记/运维工程师的职责和前景/">运维工程师的职责和前景</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-09-21</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/运维笔记/">运维笔记</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Operation-and-maintenance-Road/">Operation and maintenance Road</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h1 id="运维工程师的职责和前景"><a href="#运维工程师的职责和前景" class="headerlink" title="运维工程师的职责和前景"></a>运维工程师的职责和前景</h1><p>运维中关键技术点解剖：</p>
+<figure class="highlight basic"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">1 </span>大量高并发网站的设计方案 ；</div><div class="line"><span class="symbol">2 </span>高可靠、高可伸缩性网络架构设计；</div><div class="line"><span class="symbol">3 </span>网站安全问题，如何避免被黑？</div><div class="line"><span class="symbol">4 </span>南北互联问题,动态CDN解决方案；</div><div class="line"><span class="symbol">5 </span>海量数据存储架构</div></pre></td></tr></table></figure>
+<h4 id="一、什么是大型网站运维？"><a href="#一、什么是大型网站运维？" class="headerlink" title="一、什么是大型网站运维？"></a>一、什么是大型网站运维？</h4><p>首先明确一下，全文所讲的<code>”运维“</code>是指：大型网站运维，与其它运维的区别还是蛮大的；然后我们再对大型网站与小型网站进行范围定义，此定义主要从运维复杂性角度考虑，如网站规范、知名度、服务器量级、pv量等考虑，其它因素不是重点；</p>
+<p>因此，我们先定义服务器规模大于1000台，pv每天至少上亿（至少国内排名前10），如sina、baidu、QQ，51.com等等；</p>
+<p>其它小型网站可能没有真正意义上的运维工程师，这与网站规范不够和成本因素有关，更多的是集合网络、系统、开发工作于一身的<code>“复合性人才”</code>，就如有些公司把一些合同采购都纳入了运维职责范围，还有如IDC网络规划也纳入运维职责。所以，非常重要一定需要明白：</p>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">运维对其它关联工种必须非常了解熟悉：网络、系统、系统开发、存储，安全,<span class="built_in">DB</span>等；</div></pre></td></tr></table></figure>
+<p>我在这里所讲的运维工程师就是指专职运维工程师。<br>我们再来说说一般产品的“出生”流程：</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="number">1</span>、首先公司管理层给出指导思想，PM定位市场需求（或copy成熟应用）进行调研、分析、最终给出详细设计。</div><div class="line"></div><div class="line"><span class="number">2</span>、架构师根据产品设计的需求，如pv大小预估、服务器规模、应用架构等因素完成网络规划,架构设计等（基本上对网络变动不大，除非大项目）</div><div class="line"></div><div class="line"><span class="number">3</span>、开发工程师将设计code实现出来、测试工程师对应用进行测试。</div><div class="line"></div><div class="line"><span class="number">4</span>、好，到运维工程师出马了，首先明确一点不是说前三步就与运维工作无关了，恰恰相反，前三步与运维关系很大：</div></pre></td></tr></table></figure>
+<p>应用的前期架构设计、软/硬件资源评估申请采购、应用设计性能隐患及评估、IDC、服务性能安全调优、服务器系统级优化（与特定应用有关）等都需运维全程参与，并主导整个应用上线项目；运维工程师负责产品服务器上架准备工作，服务器系统安装、网络、IP、通用工具集安装。运维工程师还需要对上线的应用系统架构是否合理、是否具备可扩展性、及安全隐患等因素负责，并负责最后将产品（程序）、网络、系统三者进行拼接并最优化的组合在一起，最终完成产品上线提供用户使用，并周而复使：需求-&gt;开发（升级）-&gt;测试-&gt;上线（性能、安全问题等之前预估外的问题随之慢慢就全出来了）在这里提一点：网站开发模式与传统软件开发完全不一样，网站一天开发上线1~5个升级版本是家常便饭，用户体验为王嘛，如果某个线上问题像M$需要1年解决，用户早跑光了；应用上线后，运维工作才刚开始，具体工作可能包括：</p>
+<p>升级版本上线工作、服务监控、应用状态统计、日常服务状态巡检、突发故障处理、服务日常变更调整、集群管理、服务性能评估优化、数据库管理优化、随着应用PV增减进行应用架构的伸缩、安全、运维开发工作：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">a 、尽量将日常机械性手工工作通过工具实现（如服务监控、应用状态统计、服务上线等等），提高效率。</div><div class="line">b、解决现实中服务存在的问题，如高可靠性、可扩展性问题等。</div><div class="line">c、大规模集群管理工具的开发，如1万台机器如何在1分钟内完成密码修改、或运行指定任务？2000台服务器如何快速安装操作系统？各分布式IDC、存储集群中数PT级的数据如何快速的存储、共享、分析？等一系列挑战都需运维工程师的努力。</div><div class="line">在此说明一下其它配合工种情况，在整个项目中，前端应用对于网络/系统工程师来说是黑匣子，同时开发工程师职责只是负责完成应用的功能性开发，并对应用本身性能、安全性等应用本身负责，它不负责或关心网络/系统架构方面事宜，当然软/硬件采购人员等事业部其它同事也不会关心这些问题，各司其职，但项目的核心是运维工程师~！所有其它部门的桥梁。</div></pre></td></tr></table></figure>
+<h4 id="举例："><a href="#举例：" class="headerlink" title="举例："></a>举例：</h4><p>上面说了很多，我想大家应该对运维有一些概念了，在此打个比方吧，如果我们是一辆高速行驶在高速公路上的汽车，那运维工程师就是司机兼维修工，这个司机不简单，有时需要在高速行驶过程中换轮胎、并根据道路情况换档位、当汽车速度越来越快，汽车本身不能满足高速度时对汽车性能调优或零件升级、高速行进中解决汽车故障及性能问题、时刻关注前方安全问题，并先知先觉的采取规避手段。这就是运维工作~！</p>
+<h4 id="最后说一下运维工程师的职责："><a href="#最后说一下运维工程师的职责：" class="headerlink" title="最后说一下运维工程师的职责："></a>最后说一下运维工程师的职责：</h4><p>”确保线上稳定“，看似简单，但实属不容易，运维工程师必须在诸多不利因素中进行权衡：新产品模式对现有架构及技术的冲击、产品高频度的升级带来的线上BUG隐患、运维自动化管理承度不高导致的人为失误、IT行业追求的高效率导致流程执行上的缺失、用户增涨带来的性能及架构上的压力、IT行业宽松的技术管理文化、创新风险、互联网安全性问题等因素，都会是网站稳定的大敌，运维工程师必须把控好这最后一关，需具体高度的责任感、原则性及协调能力，如果能做到各因素的最佳平衡，那就是一名优秀的运维工程师了。</p>
+<blockquote>
+<p>另外在此聊点题外话，我在这里看到有很多人要sina、QQ、baidu,51.com等聊自已的运维方面的经验，其实这对于它们有点免为其难：</p>
+</blockquote>
+<ul>
+<li><p>a、各公司自已网络架构、规模、或多或少还算是公司的核心秘密，要保密，另外，对于大家所熟知的通用软件、架构，由于很多公司会根据自已实际业务需要，同时因为原版性能、安全性、已知bug、功能等原因，进行过二次开发（如apache,php,mysql），操作系统内核也会根据不同业务类型进行定制的，如某些应用属于运算型、某些是高IO型、或大存储大内存型。根据这些特点进行内核优化定制，如sina就在memcache上进行过二次开发，搞出了一个MemcacheDB，具体做得如何我们不谈，但开源了，是值得称赞的，国内公司对于开源基本上是索取，没有贡献；另外，服务器也不是大家所熟知的型号，根据业务特点，大部份都是找DELL/HP/ibm进行过定制；另外，在分布式储存方面都有自已解决方案，要不就是使用现成开源hadoop等解决方案，或自已开发。但90%都是借鉴google GFS的思想:分布式存储、计算、大表。</p>
+</li>
+<li><p>b、各公司业务方向不一样，会导致运维模式或方法都不一样，如51.com和baidu运维肯定区别很大，因为他们业务模式决定了其架构、服务器量级、IDC分布、网络结构、通用技术都会不一样，主打新闻门户的sina与主打sns的51.com运维模式差异就非常大,甚至职责都不大一样；但有一点，通用技术及大致架构上都大同小异，大家不要太神化，更多的公司只是玩垒积木的游戏罢了，没什么技术含量。</p>
+</li>
+<li><p>c、如上面所讲，目前大型网站运维还处于幼年时期理念和经验都比较零散，没有成熟的知识体系，可能具体什么是运维，大家都要先思索一番，或压根没想过，真正讨论也只是运维工作的冰山一角，局限于具体技术细节，或某某著名网站大的框架，真正运维体化东西没有，这也许是目前网上运维相关资料比较少的原故吧。或者也是国内运维人员比较难招，比较牛的运维工程师比较少见的原因之一吧。</p>
+</li>
+</ul>
+<h4 id="二、运维工作师需要什么样的技能及素质"><a href="#二、运维工作师需要什么样的技能及素质" class="headerlink" title="二、运维工作师需要什么样的技能及素质"></a>二、运维工作师需要什么样的技能及素质</h4><p>做为一名运维工程师需要什么样的技能及素质呢，首先说说技能吧，如大家上面所看到，运维是一个集多IT工种技能与一身的岗位，对系统-&gt;网络-&gt;存储-&gt;协议-&gt;需求-&gt;开发-&gt;测试-&gt;安全等各环节都需要了解一些，但对于某些环节需熟悉甚至精通，如系统(基本操作系统的熟悉使用,*nix,windows..)、协议、系统开发(日常很重要的工作是自动运维化相关开发、大规模集群工具开发、管理）、通用应用（如lvs、ha、web server、db、中间件、存储等）、网络,IDC拓朴架构；</p>
+<h4 id="技能方面总结以下几点："><a href="#技能方面总结以下几点：" class="headerlink" title="技能方面总结以下几点："></a>技能方面总结以下几点：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">1、开发能力，这点非常重要，因为运维工具都需要自已开发，开发语言：perl、python、php（其中之一）、shell（awk,sed,expect….等），需要有过实际项目开发经验，否则工作会非常痛苦。</div><div class="line"></div><div class="line">2、通用应用方面需要了解：操作系统（目前国内主要是linux、bsd）、webserver相关</div><div class="line">(nginx,apahe,php,lighttpd,java。。。)、数据库(mysql,oralce)、其它杂七八拉的东东；系统优化，高可靠性；这些只是加分项，不需必备，可以边工作边慢慢学，这些东西都不难。当然在运维中，有些是有分工偏重点不一样。</div><div class="line"></div><div class="line">3、系统、网络、安全，存储，CDN，DB等需要相当了解，知道其相关原理。</div></pre></td></tr></table></figure>
+<h4 id="个人素质方面："><a href="#个人素质方面：" class="headerlink" title="个人素质方面："></a>个人素质方面：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div></pre></td><td class="code"><pre><div class="line">1、沟通能力、团队协作：运维工作跨部门、跨工种工作很多，需善于沟通、并且团队协作能力要强；这应该是现代企业的基本素质要求了，不多说。</div><div class="line">2、工作中需胆大心细：胆大才能创新、不走寻常路，特别对于运维这种新的工种，更需创新才能促进发展；心细，运维工程师是网站admin,最高线上权限者，一不小心就会遗憾终生或打入十八层地狱。</div><div class="line">3、主动性、执行力、精力旺盛、抗压能力强：由于IT行业的特性，变化快；往往计划赶不上变化，运维工作就更突出了，比如国内各大公司服务器往往是</div><div class="line">全国各地，哪里便宜性价比高，就那往搬，进行大规模服务迁移（牵扯的服务器成百上千台），这是一个非常头痛的问题；往往时间</div><div class="line">非常紧迫，如限1周内完成，这种情况下，运维工程师的主动性及执行力就有很高的要求了：计划、方案、服务无缝迁移、机器搬迁上架、环境准备、安全评估、性</div><div class="line">能评估、基建、各关联部门扯皮,7X24小紧急事故响应等。</div><div class="line">4、其它就是一些基本素质了：头脑要灵光、逻辑思维能力强、为人谦虚稳重、亲和力、乐于助人、有大局观。</div><div class="line">5、最后一点，做网站运维需要有探索创新精神，通过创新型思维解决现实中的问题，因为这是一个处于幼年的职业（国外也一样，但比国内起步早点），没有成熟体系或方法论可以借鉴，只能靠大家自已摸索努力。</div><div class="line">三、怎样才算是一个合格的运维工程师</div><div class="line">1、保证服务达到要求的线上标准，如99.9%；保证线上稳定，这是运维工程师的基本责职所在。</div><div class="line">2、不断的提升应用的可靠性与健壮性、性能优化、安全提升；这方面非常考验主动性和创新思维。</div><div class="line">3、网站各层面监控、统计的覆盖度，软件、硬件、运行状态，能监控的都需要监控统计，避免监控死角、并能实时了解应用的运转情况。</div><div class="line">4、通过创新思维解决运维效率问题；目前各公司大部份运维主要工作还是依赖人工操作干预，需要尽可能的解放双手。</div><div class="line">5、运维知识的积累与沉淀、文档的完备性，运维是一个经验性非常强的岗位，好的经验与陷阱都需积累下来，避免重复性范错。</div><div class="line">6、计划性和执行力；工作有计划，计划后想法设法达到目标，不找借口。</div><div class="line">7、自动化运维；能对日常机械化工作进行提炼、设计并开发成工具、系统，能让系统自动完成的尽量依靠系统；让大家更多的时间用于思考、创新思维、做自已喜欢的事情。</div><div class="line">以上只是技术上的一些层面，当然个人意识也是很重要的。</div><div class="line">四、运维职业的迷惘、现状与发展前景</div><div class="line">运维岗位不像其它岗位，如研发工程师、测试工程师等，有非常明确的职责定位及职业规划，比较有职业认同感与成就感；而运维工作可能给人的感觉是哪方面都了</div><div class="line">解</div><div class="line">一些，但又都比上专职工程师更精通、感觉平时被关注度比较低（除非线上出现故障），慢慢的大家就会迷惘，对职业发展产生困惑,为什么会有这种现象呢？除了</div><div class="line">职业本身特点外，主要还是因为对运维了解不深入、做得不深入导致；其实这个问题其它岗位也会出现，但我发现运维更典型，更容易出现这个问题；</div><div class="line">针对这个问题我谈一下网站运维的现状及发展前景（也在思考中，可能不太深入全面，也请大家斧正补充）</div><div class="line">运维现状：</div><div class="line">1、处于刚起步的初级阶段，各大公司有此专职，但重视或重要程度不高，可替代性强；小公司更多是由其它岗位来兼顾做这一块工作，没有专职，也不可能做得深入。</div><div class="line">2、技术层次比较低；主要处于技术探索、积累阶段，没有型成体系化的理念、技术。</div><div class="line">3、体力劳动偏大；这个问题主要与第二点有关系，很多事情还是依靠人力进行，没有完成好的提练，对于大规模集群没有成熟的自动化管理方法，在此说明一下，大规模集群与运维工作是息息相关的如果只是百十来台机器，那就没有运维太大的生存空间了。</div><div class="line">4、优秀运维人才的极度缺乏；目前各大公司基本上都靠自已培养，这个现状导致行业内运维人才的流动性非常低，非常多好的技术都局限在各大公司内部，</div><div class="line">如 google 50万台机器科学的管理,或者国内互联公司top 10</div><div class="line">的一些运维经验，这些经验是非常有价值的东西并决定了一个公司的核心竞争力；这些问题进而导致业内先进运维技术的流通、贯通、与借签，并最终将限制了运维</div><div class="line">发展。</div><div class="line">5、很多优秀的运维经验都掌握在大公司手中；这不在于公司的技术实力，而在于大公司的技术规模、海量PV、硬件规模足够大，如baidu可怕的流</div><div class="line">量、 51.com海量数据~~~~这些因素决定了他们遇到的问题都是其它中/小公司还没有遇到的，或即将遇到。但大公司可能已有很好的解决方案或系统。</div><div class="line">发展前景：</div><div class="line">1、从行业角度来看，随着中国互联网的高速发展（目前中国网民已跃升为全球第一）、网站规模越来越来大、架构越来越复杂；对专职网站运维工程师、网站架构</div><div class="line">师的要求会越来越急迫,特别是对有经验的优秀运维人才需求量大，而且是越老越值钱；目前国内基本上都是选择毕业生培养（限于大公司），培养成本高，而且没</div><div class="line">有经验人才加入会导致公司技术更新缓慢、影响公司的技术发展；当然，毕业生也有好处：白纸一张，可塑性强，比较认同并容易融入企业文化。</div><div class="line">2、从个人角度，运维工程师技术含量及要求会越来越高，同时也是对公司应用、架构最了解最熟悉的人、越来越得到重视。</div><div class="line">3、网站运维将成为一个融合多学科（网络、系统、开发、安全、应用架构、存储等）的综合性技术岗位，给大家提供一个很好的个人能力与技术广度的发展空间。</div><div class="line">4、运维工作的相关经验将会变得非常重要，而且也将成为个人的核心竞争力，具备很好的各层面问题的解决能力及方案提供、全局思考能力等。</div><div class="line">5、特长发挥和兴趣的培养；由于运维岗位所接触的知识面非常广阔，更容易培养或发挥出个人某些方面的特长或爱好，如内核、网络、开发、数据库等方面，可以做得非常深入精通、成为这方面的专家。</div><div class="line">6、如果真要以后不想做运维了，转到其它岗位也比较容易，不会有太大的局限性。当然了，你得真正用心去做。</div><div class="line">7、技术发展方向：网站/系统架构师。</div><div class="line">五、运维关键技术点解剖</div><div class="line">1、 大规模集群管理问题</div><div class="line">首先我们先要明确集群的概念，集群不是泛指各功能服务器的总合，而是指为了达到某一目的或功能的服务器、硬盘资源的整合（机器数大于两台），对于应用来说</div><div class="line">它就是一个整体，目前常规集群可分为：高可用性集群（HA），负载均衡集群（如lvs），分布式储、计算存储集群（DFS，如google gfs</div><div class="line">,yahoo</div><div class="line">hadoop），特定应用集群（某一特定功能服务器组合、如db、cache层等），目前互联网行业主要基于这四种类型；对于前两种类似，如果业务简单、</div><div class="line">应用上post操作比较少，可以简单的采用四层交换机</div><div class="line">解决（如f5），达到服务高可用/负责均衡的作用，对于资源紧张的公司也有一些开源解决办法如lvs+ha,非常灵活；对于后两种，那就考验公司技术实力</div><div class="line">及应用特点了，第三种DFS主要应用于海量数据应用上，如邮件、搜索等应用，特别是搜索要求就更高了，除了简单海量存储，还包括数据挖掘、用户行为分析；</div><div class="line">如</div><div class="line">google、yahoo就能保存分析近一年的用户记录数据，而baidu应该少于30天、soguo就更少了。。。这些对于搜索准备性、及用户体验是至</div><div class="line">关重要的。</div><div class="line">接下来，我们再谈谈如何科学的管理集群，有以下关键几点：</div><div class="line">I、监控</div><div class="line">主要包括故障监控和性能、流量、负载等状态监控，这些监控关系到集群的健康运行，及潜在问题的及时发现与干预；</div><div class="line">a、服务故障、状态监控：主要是对服务器自身、上层应用、关联服务数据交互监控；例如针对前端web</div><div class="line">server，我们就可以有很多种类型的监控，包括应用端口</div><div class="line">状态监控，便于及时发现服务器或应用本身是否crash、通过icmp包探测服务器健康状态，更上层可能还包括应用各频道业务的监控，常用方法是采用面业</div><div class="line">特征码进行判断，或对重点页面进行签名，以网站被黑篡改（报警、并自动恢复被篡改数据）等等，这些只是一部份，还有N多监控方式，依应用特点而定，还有一</div><div class="line">些问题需解决，如集群过大，如何高性能的进行监控也是一个现实问题。</div><div class="line">b、其它就是集群状态类的监控或统计，为我们合理管理调优集群提供数据参考、包括服务瓶颈、性能问题、异常流量、攻击等问题。</div><div class="line">II、故障管理</div><div class="line">a、硬件故障问题；对于成百上千或上万机器的N多</div><div class="line">集群，服务器死机、硬件故障概率是非常大的，几乎每时每刻都有服务硬件问题，死机、硬盘损坏、电源、内存、交换机。针对这种情况，我们在设计网站架构时需</div><div class="line">要充分考虑到这些问题，并将其视为常态；更多的依靠应用的冗余机制来规避这种风险，但给系统工程师足够宽裕的处理时间。（如google不是号称同时死</div><div class="line">800台机器，服务不会受到任何影响吗）；这就是考验运维工程师及网站架构师功能的地方了，好的设计能达到google所描述自恢复能力，如gfs，糟糕</div><div class="line">的设计那就是一台服务器的死机可能会造成大面积服务的连锁故障反映，直接对用户拒绝响应。</div><div class="line">b、应用故障问题；可能是某一bug被触发、或某一性能阀值被超越、攻击等情况不一而定，但重要的一点，是要有对这些问题的预防性措施，不能想当然，它不</div><div class="line">会出问题，如真出问题了，如何应对？这需要运维工程师平时做足功夫，包括应急响应速度、故障处理的科学性、备用方案的有效等。</div><div class="line">III、自动化</div><div class="line">自动化：简而言之，就是将我们日常手动进行的一些工作通过工具，系统自动来完成，解放我们的双手及枯燥的重复性劳动，例如：没有工具前，我们安装系统需要</div><div class="line">一台一台裸机安装，如2000台，可能需要10人/10天，搞烂N张光盘，人力成本更大。。。而现在通过自动化工具，只需几个简单命令</div><div class="line">就能搞定、还有如机器人类程序，自动完成以往每天人工干预的工作，使其自动完成、汇报结果，并具备一定的专家系统能力，能做一些简单的是/非判断、优化选</div><div class="line">择等。。。这些好处非常明显不再多说。。。应该说，自动化运维是运维工程师职业化的一个追求，利已利公，虽然这是一个异常艰巨的任务：不断变更的业务、不</div><div class="line">规范化的应用设计、开发模式、网络架构变更、IDC变更、规范变动等因素，都可能会对现有自动化系统产生影响，所以需要模块化、接口化、变因参数化等因</div><div class="line">此，自动化相关工作，是运维工程师的核心重点工作之一，也是价值的体现。</div></pre></td></tr></table></figure>
+<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
+<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2016/09/11/个人生活记录/考驾照的艰辛历程/">考驾照的艰辛历程</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-09-11</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/生活/">生活</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Personal-life-record/">Personal life record</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>🍓</p>
+<p>   今天是2016年9月11号，在过几天就是中秋节了，刚刚大学毕业出来一年了，在加上实习工作一年多了，算起来工作两年多了，在读大学和参加一些技术培训班就没有时间去考一本属于自己的驾照，一直拖到现在的确是挺忙的。</p>
+		<p><a class="article__read-more-link" href="/2016/09/11/个人生活记录/考驾照的艰辛历程/">...read more</a></p>
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2016/09/02/个人生活记录/厨艺依然好👍/">厨艺依然好👍</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-09-02</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/生活/">生活</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Personal-life-record/">Personal life record</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p> 一个男的能做的出一手好的美食是多么棒👍的一件事。这还要感谢我有一个特别的棒的父亲。</p>
+<p> 记得小时候12岁我就开始学会做饭，学会第一道菜南瓜饭🎃。</p>
+<p> 这个的确也是我对做美食也很感兴趣，什么红烧鸡翅，红烧排骨，红烧肉，🐟鱼类最拿手了。 江南家常菜都比较会点，这也是我一个优点吧。 </p>
+<p>自己出来工作，在外面工作来往同事朋友来家里玩，自己会下厨可以露一手。</p>
+<p><strong>最近工作不是特别忙就继续拿起程式菜谱小弄了几道小菜：</strong></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/cai.JPG" alt=""></figure></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/cai1.JPG" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/cai2.JPG" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/cai3.JPG" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/cai4.JPG" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/cai5.JPG" alt=""></figure></p>
+<p><strong>是不是特别棒</strong>👍 😁 </p>
 
 	
 
