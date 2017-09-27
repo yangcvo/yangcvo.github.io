@@ -41,6 +41,83 @@
 
 	<article>
 	
+		<h1><a href="/2016/02/14/个人生活记录/在一起的第588天💕/">在一起的第588天💕</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-02-14</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/生活/">生活</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Personal-life-record/">Personal life record</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="今天2016年2月14日我们的第二个情人节："><a href="#今天2016年2月14日我们的第二个情人节：" class="headerlink" title="今天2016年2月14日我们的第二个情人节："></a>今天2016年2月14日我们的第二个情人节：</h3><p> 夜已经很深了，我还坐在电脑前写信给你,慢慢把我们在一起点点滴滴记录下来,这些天总是有很多话想对你说,但对你的思念扰乱了我所有的思绪。我不知道该说些什么或怎么说？说心里话，和你的每一天我很快乐很幸福，是我一生中从未有过的！真的XXL。<br><img src="http://7xrthw.com1.z0.glb.clouddn.com/IMG_0200.JPG" alt=""></p>
+		<p><a class="article__read-more-link" href="/2016/02/14/个人生活记录/在一起的第588天💕/">...read more</a></p>
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2016/01/30/日志分析平台/Elasticsearch/Elasticsearch5.x版本的索引定时自动清理和检测进程状态自动启动/">Elasticsearch5.x版本的索引定时自动清理和检测进程状态自动启动</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-01-30</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Elasticsearch/">Elasticsearch</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h1 id="elasticsearch的索引定时自动清理"><a href="#elasticsearch的索引定时自动清理" class="headerlink" title="elasticsearch的索引定时自动清理"></a>elasticsearch的索引定时自动清理</h1><p>之前用 logstash来做日志收集 并用 elasticsearch来搜索，因为日志没有进行过滤，没几天就发现elasticsearch的索引文件大的吓人，之前还真没清理过。其实要说清理也简单，直接到 elasticsearch data文件夹里删掉就行了，写个脚本定期清理集群es的日志数据。</p>
+<p>这里我清理1月7号的。</p>
+<p>这里后面是索引名称。<br>app_error-2017.01.07</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@es_01 sh]<span class="comment"># curl -XDELETE 'http://10.47.88.206:9200/app_error-2017.01.07'</span></div><div class="line">&#123;<span class="string">"acknowledged"</span>:<span class="literal">true</span>&#125;[root@es_01 sh]<span class="comment">#</span></div></pre></td></tr></table></figure>
+<p>shell 7天清理一次数据写在计划任务里面：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"></div><div class="line">now=`date +%Y%m%d`</div><div class="line"><span class="built_in">echo</span> <span class="variable">$now</span></div><div class="line">days_07_before=`date <span class="_">-d</span> <span class="string">"<span class="variable">$now</span> 7 days ago"</span> +%Y.%m.%d`</div><div class="line"><span class="built_in">echo</span> <span class="variable">$days_07_before</span></div><div class="line">curl -XDELETE <span class="string">"http://<span class="variable">$(hostname)</span>:9200/log-spm-product-<span class="variable">$days_07_before</span>"</span>  &gt; /dev/null 2&gt;&amp;1</div><div class="line">curl -XDELETE <span class="string">"http://<span class="variable">$(hostname)</span>:9200/log-dataexport-product-<span class="variable">$days_07_before</span>"</span>  &gt; /dev/null 2&gt;&amp;1</div></pre></td></tr></table></figure>
+<p>计划任务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">10 0 * * * /opt/sh/logstash-null.sh</div></pre></td></tr></table></figure>
+<p>官网：<a href="https://www.elastic.co/guide/cn/elasticsearch/guide/current/doc-exists.html" target="_blank" rel="external">检查状态是否存在</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">检查文档是否存在编辑</div><div class="line">如果只想检查一个文档是否存在 --根本不想关心内容--那么用 HEAD 方法来代替 GET 方法。 HEAD 请求没有返回体，只返回一个 HTTP 请求报头：</div><div class="line"></div><div class="line">curl -i -XHEAD http://localhost:9200/website/blog/123</div><div class="line">如果文档存在， Elasticsearch 将返回一个 200 ok 的状态码：</div><div class="line"></div><div class="line">HTTP/1.1 200 OK</div><div class="line">Content-Type: text/plain; charset=UTF-8</div><div class="line">Content-Length: 0</div><div class="line">若文档不存在， Elasticsearch 将返回一个 404 Not Found 的状态码：</div><div class="line"></div><div class="line">curl -i -XHEAD http://localhost:9200/website/blog/124</div><div class="line">HTTP/1.1 404 Not Found</div><div class="line">Content-Type: text/plain; charset=UTF-8</div><div class="line">Content-Length: 0</div><div class="line">当然，一个文档仅仅是在检查的时候不存在，并不意味着一毫秒之后它也不存在：也许同时正好另一个进程就创建了该文档。</div></pre></td></tr></table></figure>
+<h4 id="自动检测es端口状态如何不存在启动"><a href="#自动检测es端口状态如何不存在启动" class="headerlink" title="自动检测es端口状态如何不存在启动"></a>自动检测es端口状态如何不存在启动</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">vim /bin/whole51/es_poss.sh</div><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"><span class="built_in">source</span> /etc/profile</div><div class="line">curl -Is <span class="string">"10.11.10.26:9200"</span> | grep -q <span class="string">'HTTP/1.1 200 OK'</span> || su - elasticsearch -c <span class="string">"/usr/local/elasticsearch-5.5.2/bin/elasticsearch -d"</span></div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">*/2 * * * * /bin/whole51/es.sh</div></pre></td></tr></table></figure>
+<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
+<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
 		<h1><a href="/2016/01/29/日志分析平台/Elasticsearch/logstash如何收集tomcat日志分析/">logstash如何写tomcat,redis,nginx日志收集规则</a></h1>
 	
 	<div class="article__infos">

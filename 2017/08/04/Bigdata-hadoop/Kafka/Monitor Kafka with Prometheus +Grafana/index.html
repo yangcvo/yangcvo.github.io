@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Monitor Kafka with Prometheus +Grafana | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>Monitor Kafka with Prometheus +Grafana</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-08-04</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Bigdata-Hadoop/">Bigdata Hadoop</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Grafana/">Grafana</a> <a class="article__tag-link" href="/tags/Kafka/">Kafka</a> <a class="article__tag-link" href="/tags/Prometheus/">Prometheus</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="Monitoring-Kafka-with-Prometheus"><a href="#Monitoring-Kafka-with-Prometheus" class="headerlink" title="Monitoring Kafka with Prometheus"></a>Monitoring Kafka with Prometheus</h3><p>We’ve previously looked at how to monitor Cassandra with <a href="https://www.robustperception.io/monitoring-cassandra-with-prometheus/" target="_blank" rel="external">Prometheus</a>. Let’s see the process for getting metrics from another popular Java application, <a href="https://kafka.apache.org/" target="_blank" rel="external">Kafka.</a></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-overview.png" alt=""></figure></p>
+<a id="more"></a>
+<p>we download Kafka, the JMX exporter and the config file:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">wget http://ftp.heanet.ie/mirrors/www.apache.org/dist/kafka/0.10.1.0/kafka_2.11-0.10.1.0.tgz</div><div class="line">tar -xzf kafka _ *。tgz</div><div class="line"><span class="built_in">cd</span> kafka_ *</div><div class="line"></div><div class="line">wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.6/jmx_prometheus_javaagent-0.6.jar</div><div class="line">wget https://raw.githubusercontent.com/prometheus/jmx_exporter/master/example_configs/kafka-0-8-2.yml</div><div class="line"></div><div class="line">Download the good files and put them under the Kafka directory:</div><div class="line">[hadoop@hadoop6 kafka_2.10-0.9.0.1]$ ll</div><div class="line">drwxr-xr-x 3 hadoop hadoop    4096 9月  27 13:34 bin</div><div class="line">drwxr-xr-x 2 hadoop hadoop    4096 9月  27 21:18 config</div><div class="line">-rw-rw-r-- 1 hadoop hadoop 1225418 2月   5 2016 jmx_prometheus_javaagent-0.6.jar</div><div class="line">-rw-rw-r-- 1 hadoop hadoop    2824 9月  26 17:48 kafka-0-8-2.yml</div><div class="line">drwxr-xr-x 2 hadoop hadoop    4096 9月  27 13:31 libs</div><div class="line">-rw-r--r-- 1 hadoop hadoop   11358 2月  12 2016 LICENSE</div><div class="line">drwxrwxr-x 2 hadoop hadoop  266240 9月  27 21:19 logs</div><div class="line">-rw-r--r-- 1 hadoop hadoop     162 2月  12 2016 NOTICE</div><div class="line">drwxrwxr-x 5 hadoop hadoop    4096 9月  27 15:56 prometheus-1.2.1.linux-amd64</div><div class="line">drwxr-xr-x 2 hadoop hadoop    4096 2月  12 2016 site-docs</div></pre></td></tr></table></figure>
+<p>We start a Zookeeper (a Kafka dependency) and Kafka with the JMX exporter running as a Java agent:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">First step:</div><div class="line">Configure the zookeeper zoo.zoo.cfg port: 2181</div><div class="line">Start zookeeper:</div><div class="line">./zookeeper-3.4.6/bin/zkServer.sh start</div><div class="line"></div><div class="line">Second steps:</div><div class="line">Configuration modification: kafka_2.10-0.9.0.1/config/zookeeper.properties</div><div class="line">Port modification: 2182 <span class="keyword">do</span> not conflict with the zookeeper service port</div><div class="line"></div><div class="line"></div><div class="line">dataDir=/data2/zookeeper-3.4.6/zookeeper-data</div><div class="line"><span class="comment"># the port at which the clients will connect</span></div><div class="line">clientPort=2181</div><div class="line"><span class="comment"># disable the per-ip limit on the number of connections since this is a non-production config</span></div><div class="line">maxClientCnxns=0</div><div class="line"></div><div class="line">./bin/zookeeper-server-start.sh config/zookeeper.properties &amp;</div><div class="line"></div><div class="line">KAFKA_OPTS=<span class="string">"<span class="variable">$KAFKA_OPTS</span> -javaagent:<span class="variable">$PWD</span>/jmx_prometheus_javaagent-0.6.jar=7071:<span class="variable">$PWD</span>/kafka-0-8-2.yml"</span> \</div><div class="line">./bin/kafka-server-start.sh config/server.properties &amp;</div></pre></td></tr></table></figure>
+<h6 id="If-you-visit-http-localhost-7071-metrics-you’ll-see-the-metrics"><a href="#If-you-visit-http-localhost-7071-metrics-you’ll-see-the-metrics" class="headerlink" title="If you visit http://localhost:7071/metrics you’ll see the metrics."></a>If you visit <a href="http://localhost:7071/metrics" target="_blank" rel="external">http://localhost:7071/metrics</a> you’ll see the metrics.</h6><p>Let’s setup a quick Prometheus server:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">wget https://github.com/prometheus/prometheus/releases/download/v1.2.1/prometheus-1.2.1.linux-amd64.tar.gz</div><div class="line">tar -xzf prometheus-*.tar.gz</div><div class="line"><span class="built_in">cd</span> prometheus-*</div><div class="line">cat &lt;&lt;<span class="string">'EOF'</span> &gt; prometheus.yml</div><div class="line">global:</div><div class="line"> scrape_interval: 10s</div><div class="line"> evaluation_interval: 10s</div><div class="line">scrape_configs:</div><div class="line"> - job_name: <span class="string">'kafka'</span></div><div class="line">   static_configs:</div><div class="line">    - targets:</div><div class="line">      - localhost:7071</div><div class="line">EOF</div><div class="line">./prometheus</div></pre></td></tr></table></figure>
+<p>Following run access: <a href="http://localhost:9090/graph" target="_blank" rel="external">http://localhost:9090/graph</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[hadoop@hadoop8 prometheus-1.2.1.linux-amd64]$ ./prometheus</div><div class="line">INFO[0000] Starting prometheus (version=1.2.1, branch=master, revision=dd66f2e94b2b662804b9aa1b6a50587b990ba8b7)  <span class="built_in">source</span>=main.go:75</div><div class="line">INFO[0000] Build context (go=go1.7.1, user=root@fd9b0daff6bd, date=20161010-15:58:23)  <span class="built_in">source</span>=main.go:76</div><div class="line">INFO[0000] Loading configuration file prometheus.yml     <span class="built_in">source</span>=main.go:247</div><div class="line">INFO[0000] Loading series map and head chunks...         <span class="built_in">source</span>=storage.go:354</div><div class="line">INFO[0000] 49 series loaded.                             <span class="built_in">source</span>=storage.go:359</div><div class="line">WARN[0000] No AlertManagers configured, not dispatching any alerts  <span class="built_in">source</span>=notifier.go:176</div><div class="line">INFO[0000] Listening on :9090                            <span class="built_in">source</span>=web.go:240</div><div class="line">INFO[0000] Starting target manager...                    <span class="built_in">source</span>=targetmanager.go:76</div></pre></td></tr></table></figure>
+<p>The Prometheus platform monitors all data from the Kafka index:<br>This function is very powerful, late will explain what each representative means:</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-monitor02.png" alt=""></figure></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-monitor03.png" alt=""></figure></p>
+<p>Install [open source Grafana monitoring] (<a href="http://docs.grafana.org/installation/rpm/#install-stable" target="_blank" rel="external">http://docs.grafana.org/installation/rpm/#install-stable</a>), combine [prometheus.io] (<a href="https://prometheus.io/docs/visualization/grafana/" target="_blank" rel="external">https://prometheus.io/docs/visualization/grafana/</a>) to obtain Prometheus platform data.</p>
+<h3 id="Installing-Grafana"><a href="#Installing-Grafana" class="headerlink" title="Installing Grafana"></a>Installing Grafana</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Download and unpack Grafana from binary tar (adjust version as appropriate).</span></div><div class="line">curl -L -O https://grafanarel.s3.amazonaws.com/builds/grafana-2.5.0.linux-x64.tar.gz</div><div class="line">tar zxf grafana-2.5.0.linux-x64.tar.gz</div><div class="line"></div><div class="line"><span class="comment"># Start Grafana.</span></div><div class="line"><span class="built_in">cd</span> grafana-2.5.0/</div><div class="line">./bin/grafana-server web</div></pre></td></tr></table></figure>
+<h3 id="Using"><a href="#Using" class="headerlink" title="Using"></a>Using</h3><p>By default, Grafana will be listening on <a href="http://localhost:3000" target="_blank" rel="external">http://localhost:3000</a>. The default login is “admin” / “admin”.</p>
+<h4 id="Creating-a-Prometheus-data-source"><a href="#Creating-a-Prometheus-data-source" class="headerlink" title="Creating a Prometheus data source"></a>Creating a Prometheus data source</h4><p>To create a Prometheus data source:</p>
+<ol>
+<li>Click on the Grafana logo to open the sidebar menu.</li>
+<li>Click on “Data Sources” in the sidebar.</li>
+<li>Click on “Add New”.</li>
+<li>Select “Prometheus” as the type.</li>
+<li>Set the appropriate Prometheus server URL (for example, <a href="http://localhost:9090/" target="_blank" rel="external">http://localhost:9090/</a>)</li>
+<li>Adjust other data source settings as desired (for example, turning the proxy access off).</li>
+<li>Click “Add” to save the new data source.</li>
+<li>The following shows an example data source configuration:</li>
+</ol>
+<p>Reference address: <a href="https://prometheus.io/docs/visualization/grafana/" target="_blank" rel="external">GRAFANA SUPPORT FOR PROMETHEUS</a></p>
+<p><figure class="figure"><img src="https://prometheus.io/assets/grafana_configuring_datasource-cb0e78b7cfa.png" alt=""></figure></p>
+<p>Finally load the <a href="https://grafana.com/dashboards/721" target="_blank" rel="external">Kafka Overview</a> dashboard from grafana.net into your Grafana to get the above console!</p>
+<p>If you want to run Kafka inside docker, there’s <a href="https://www.robustperception.io/monitoring-kafka-in-a-docker-container-using-prometheus/" target="_blank" rel="external">another blog post</a> covering that.</p>
+<p>Reference address: <a href="https://www.robustperception.io/monitoring-kafka-with-prometheus/" target="_blank" rel="external">monitoring-kafka-with-prometheus</a></p>
+<h3 id="Communicative-learning"><a href="#Communicative-learning" class="headerlink" title="Communicative learning:"></a>Communicative learning:</h3><p>🐧  Linux shell_ senior operation and maintenance faction: QQ group <code>459096184</code> circle (system operation and maintenance - application operation and maintenance - automation operation and maintenance - virtualization technology research, welcome to join)<br>🐧  BigData-Exchange School:QQ group <code>521621407</code> circles (big data Yun Wei) (Hadoop developer) (big data research enthusiasts) welcome to join</p>
+<p>Bidata have internal WeChat exchange group, learn from each other, join QQ group has links.</p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2017/08/04/Bigdata-hadoop/Kafka/Monitor Kafka with Prometheus +Grafana/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>
