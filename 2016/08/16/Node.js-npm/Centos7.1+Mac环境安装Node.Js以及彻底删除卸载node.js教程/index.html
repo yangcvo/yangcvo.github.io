@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Centos7.1+Mac环境安装Node.Js以及彻底删除卸载node.js教程 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>Centos7.1+Mac环境安装Node.Js以及彻底删除卸载node.js教程</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-08-16</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Node-js/">Node.js</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="linux-Centos7系统快速安装node-js-npm"><a href="#linux-Centos7系统快速安装node-js-npm" class="headerlink" title="linux Centos7系统快速安装node.js npm"></a>linux Centos7系统快速安装node.js npm</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">第一、选择合适的版本安装</div><div class="line"><span class="comment"># 4.x版本</span></div><div class="line">curl --silent --location https://rpm.nodesource.com/setup_4.x | bash -</div><div class="line"><span class="comment"># 5.x版本</span></div><div class="line">curl --silent --location https://rpm.nodesource.com/setup_5.x | bash -</div></pre></td></tr></table></figure>
+<p>如果是Centos7的话会提示报错<code>Requires: libhttp_parser.so.2()(64bit)</code></p>
+<a id="more"></a>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">rpm -ivh https://kojipkgs.fedoraproject.org//packages/http-parser/2.7.1/3.el7/x86_64/http-parser-2.7.1-3.el7.x86_64.rpm &amp;&amp; yum -y install nodejs</div><div class="line"></div><div class="line">[root@logstash kibana-5.5.2]<span class="comment"># node -v</span></div><div class="line">v6.11.1</div><div class="line">[root@logstash kibana-5.5.2]<span class="comment"># npm -v</span></div><div class="line">3.10.10</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Centos6安装命令：</div><div class="line">rpm -ivh https://kojipkgs.fedoraproject.org/packages/http-parser/2.6.0/2.fc24/x86_64/http-parser-2.6.0-2.fc24.x86_64.rpm &amp;&amp; yum -y install nodejs</div></pre></td></tr></table></figure>
+<h3 id="Mac-OS安装"><a href="#Mac-OS安装" class="headerlink" title="Mac OS安装:"></a>Mac OS安装:</h3><blockquote>
+<p>安装报错304：</p>
+</blockquote>
+<p>安装Node.Js 报错 340 解决方法<br>Fixing npm On Mac OS X for Homebrew Users<br>If you just want to fix the issue quickly, scroll down to the “solution” section below.<br>Explanation of the issue<br>If you’re a Homebrew user and you installed node via Homebrew,<br>there is a major philosophical issue with the way Homebrew and NPM work together.<br>If you install node with Homebrew and then try to do  npm update npm -g, you may see an error like this:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">$ npm update npm -g npm http GET https://registry.npmjs.org/npm</div><div class="line">npm http 304 https://registry.npmjs.org/npm </div><div class="line">npm http GET https://registry.npmjs.org/npm/1.4.4 </div><div class="line">npm http 304 https://registry.npmjs.org/npm/1.4.4 </div><div class="line">npm ERR! error rolling back Error: Refusing to delete: /usr/<span class="built_in">local</span>/bin/npm not <span class="keyword">in</span> /usr/<span class="built_in">local</span>/lib/nodemodules/npm </div><div class="line">npm ERR! error rolling back at clobberFail (/usr/<span class="built_in">local</span>/Cellar/node/0.10.26/lib/nodemodules/npm/lib/utils/gently-rm.js:57:12)</div><div class="line">npm ERR! error rolling back at next (/usr/<span class="built_in">local</span>/Cellar/node/0.10.26/lib/nodemodules/npm/lib/utils/gently-rm.js:43:14)</div><div class="line">npm ERR! error rolling back at /usr/<span class="built_in">local</span>/Cellar/node/0.10.26/lib/nodemodules/npm/lib/utils/gently-rm.js:52:12</div><div class="line">npm ERR! error rolling back at Object.oncomplete (fs.js:107:15)</div><div class="line">npm ERR! error rolling back npm@1.4.4 &#123; [Error: Refusing to delete: /usr/<span class="built_in">local</span>/bin/npm not <span class="keyword">in</span> /usr/<span class="built_in">local</span>/lib/nodemodules/npm] </div><div class="line">code: <span class="string">'EEXIST'</span>, path: <span class="string">'/usr/local/bin/npm'</span> &#125; </div><div class="line">npm ERR! Refusing to delete: /usr/<span class="built_in">local</span>/bin/npm not <span class="keyword">in</span> /usr/<span class="built_in">local</span>/lib/nodemodules/npm </div><div class="line">File exists: /usr/<span class="built_in">local</span>/bin/npm </div><div class="line">Move it away, and try again.</div><div class="line">npm ERR! System Darwin 13.1.0 </div><div class="line">npm ERR! <span class="built_in">command</span> <span class="string">"/usr/local/Cellar/node/0.10.26/bin/node"</span> <span class="string">"/usr/local/bin/npm"</span> <span class="string">"update"</span> <span class="string">"npm"</span> <span class="string">"-g"</span> </div><div class="line">npm ERR! cwd /Users/dan/Google Drive/Projects/dotfiles </div><div class="line">npm ERR! node -v v0.10.26 </div><div class="line">npm ERR! npm -v 1.4.3 </div><div class="line">npm ERR! path /usr/<span class="built_in">local</span>/bin/npm </div><div class="line">npm ERR! code EEXIST </div><div class="line">npm ERR! </div><div class="line">npm ERR! Additional logging details can be found <span class="keyword">in</span>: </div><div class="line">npm ERR! /Users/dan/Google Drive/Projects/dotfiles/npm-debug.log </div><div class="line">npm ERR! not ok code 0</div></pre></td></tr></table></figure>
+<p>There’s an NPM bug for this exact problem. The bug has been “fixed”<br>by Homebrew installing npm in a way that allows it to manage itself once the install is complete. However,<br>this is error-prone and still seems to cause problems for some people.<br>The root of the the issue is really that npm is its own package manager and<br>it is therefore better to have npm manage itself and its packages completely on its own instead of letting Homebrew do it.</p>
+<p>Also, using the Homebrew installation of npm will require you to use sudo when installing global packages.<br>Since one of the core ideas behind Homebrew is that apps can be installed without giving them root access,<br>this is a bad idea.</p>
+<h3 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h3><p>This solution fixes the error caused by trying to run npm update npm -g.<br>Once you’re finished, you also won’t need to usesudo to install npm modules globally.<br>Before you start, make a note of any globally installed npm packages.<br>These instructions will have you remove all of those packages.<br>After you’re finished you’ll need to re-install them.<br>Run the following commands to remove all existing global npm modules, uninstall node &amp; npm,<br>re-install node with the right defaults, install npm as its own pacakge,<br>and configure the location for global npm modules to be installed.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">rm -rf /usr/<span class="built_in">local</span>/lib/node_modules </div><div class="line">brew uninstall node </div><div class="line">brew install node --without-npm </div><div class="line"><span class="built_in">echo</span> prefix=~/.node &gt;&gt; ~/.npmrc </div><div class="line">curl -L https://www.npmjs.com/install.sh | sh</div></pre></td></tr></table></figure>
+<p>这里的安装脚本可以看我的<a href="https://github.com/yangcvo/node.js.git" target="_blank" rel="external">GitHub</a></p>
+<p>Node and npm should be correctly installed at this point.<br>The final step is to add ~/.node/bin to your PATH so commands you install globally are usable.<br>I added this line to my ~/.path script, which gets run via ~/.bash_profile.</p>
+<h3 id="设置变量："><a href="#设置变量：" class="headerlink" title="设置变量："></a>设置变量：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">export</span> PATH=<span class="string">"<span class="variable">$HOME</span>/.node/bin:<span class="variable">$PATH</span>"</span></div></pre></td></tr></table></figure>
+<p>Now you can re-install any global packages with the command below,<br>replacing the npm modules with whatever global packages you need.</p>
+<h3 id="测试npm安装http-server："><a href="#测试npm安装http-server：" class="headerlink" title="测试npm安装http-server："></a>测试npm安装http-server：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install -g http-server node-inspector forever nodemon</div></pre></td></tr></table></figure>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/08/16/Node.js-npm/Centos7.1+Mac环境安装Node.Js以及彻底删除卸载node.js教程/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Node.js使用pm2进程守护+keymetrics实时监控Node.js程序 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>Node.js使用pm2进程守护+keymetrics实时监控Node.js程序</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-09-24</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Node-js/">Node.js</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>通过pm2能守护node.js程序永远在线，在实际应用中是非常有必要的。另外，pm2配合keymetrics能实时监控node.js程序的运行，达到监控node.js程序的目的。</p>
+<a id="more"></a>
+<h3 id="安装pm2"><a href="#安装pm2" class="headerlink" title="安装pm2"></a>安装pm2</h3><p>pm2可以使我们的node.js或io.js程序永远在线。这是pm2的官方介绍：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">PM2 is a production process manager <span class="keyword">for</span> Node.js applications with a built-in load balancer. It allows you to keep applications alive forever, to reload them without downtime and to facilitate common system admin tasks.</div></pre></td></tr></table></figure>
+<p>参考地址：<br><a href="https://github.com/Unitech/pm2#usagefeatures" target="_blank" rel="external">https://github.com/Unitech/pm2#usagefeatures</a><br><a href="https://www.npmjs.com/package/pm2" target="_blank" rel="external">https://www.npmjs.com/package/pm2</a><br>官网地址：<a href="http://pm2.keymetrics.io/" target="_blank" rel="external">http://pm2.keymetrics.io/</a></p>
+<pre><code>npm install -g pm2
+</code></pre><p>启动一个node.js程序</p>
+<p>//进入到app的目录去启动</p>
+<pre><code>pm2 start index.js --name &apos;yjk&apos;
+</code></pre><p>其他常用命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">//查看pm2守护的app</div><div class="line">pm2 list</div><div class="line">//或者</div><div class="line">pm2 status</div><div class="line">//重启，restart后面跟--name后面指定的名字</div><div class="line">pm2 restart ghost</div><div class="line">//查看进程的使用资源情况</div><div class="line">pm2 monit</div><div class="line">//查看<span class="built_in">log</span></div><div class="line">pm2 logs ghost</div><div class="line">//查看app的更多详细信息，后面跟id</div><div class="line">pm2 describe 1</div><div class="line">//升级pm2，升级完毕后自动加载之前运行中的所有app</div><div class="line">npm install pm2@latest -g ; pm2 updatePM2</div></pre></td></tr></table></figure>
+<p>使用Keymetrics可以配合pm2来监控node.js程序（也支持io.js程序的监控）。</p>
+<h3 id="安装Keymetrics"><a href="#安装Keymetrics" class="headerlink" title="安装Keymetrics"></a>安装Keymetrics</h3><p>首先需要注册<a href="https://app.keymetrics.io/#/register" target="_blank" rel="external">Keymetrics</a></p>
+<p>登录后，通过new bucket新建，然后进入控制面板，可以看到分配的public key 和secret key。然后，在安装有pm2的服务器端输入以下命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">pm2 link  Secret key   Public key  [machine name]</div><div class="line">pm2 interact your-secret-key your-public-key</div><div class="line">```  </div><div class="line">  </div><div class="line">监控成功后，会有类似下面的提示：</div><div class="line"></div><div class="line">```bash   </div><div class="line">[Keymetrics.io] [Agent created] Agent ACTIVE - Web Access: https://app.keymetrics.io/</div></pre></td></tr></table></figure>
+<p><strong>Monitor your server with:</strong><br>监控您的服务器：</p>
+<pre><code>pm2 install pm2-server-monit
+</code></pre><p>此时，pm2会把收集到的统计信息实时地推送到Keymetrics，我们可以在Keymetrics的后台中实时地查看到node.js程序的运行信息，其中还有一些快捷操作，如重启node.js程序等。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/yang_keymetrics.png" alt=""></figure></p>
+<p>参考官网：<a href="http://pm2.keymetrics.io/docs/usage/quick-start/" target="_blank" rel="external">http://pm2.keymetrics.io/docs/usage/quick-start/</a></p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/09/24/Node.js-npm/Node.js使用pm2进程守护+keymetrics实时监控Node.js程序/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

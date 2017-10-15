@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Node.js+Grunt工具搭建后台管理实践 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>Node.js+Grunt工具搭建后台管理实践</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-11-24</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Grunt/">Grunt</a> <a class="article__tag-link" href="/tags/Node-js/">Node.js</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>最近弄灰度发布系统，由于最近体检项目需要对css文件和js文件进行压缩，各种比较之后，选择了grunt进行构建。google一下，几乎都是grunt最新版的使用说明<code>查看gruntjs的入门 Getting started</code>，又是云里雾里的，好吧，只能耐心看文档和不断的实践吧。</p>
+<a id="more"></a>
+<h2 id="Grunt入门"><a href="#Grunt入门" class="headerlink" title="Grunt入门"></a>Grunt入门</h2><p><a href="https://github.com/yangcvo/Grunt.git" target="_blank" rel="external">入门教程:</a></p>
+<h3 id="系统环境"><a href="#系统环境" class="headerlink" title="系统环境"></a>系统环境</h3><p>centos 6.6 x64</p>
+<h3 id="Grunt安装过程："><a href="#Grunt安装过程：" class="headerlink" title="Grunt安装过程："></a>Grunt安装过程：</h3><p>1、前提安装了nodejs，进入官网后(<a href="http://nodejs.org/)，点击“INSTALL”按钮，就会下载然后安装就行了。觉得现在windows安装node，挺简单的，感觉稳定性也提升了不少。" target="_blank" rel="external">http://nodejs.org/)，点击“INSTALL”按钮，就会下载然后安装就行了。觉得现在windows安装node，挺简单的，感觉稳定性也提升了不少。</a></p>
+<p>2、安装grunt命令行工具，有一句话总结“就是安装完CLI，还要在项目安装Grunt。”</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install -g grunt-cli</div></pre></td></tr></table></figure>
+<p>安装grunt及其插件，进入到某项目根目录，在命令行模式下，例如文件在c盘testGrunt目录下，利用cd命令到testGrunt目录下后，使用命令: </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install grunt --save-dev</div></pre></td></tr></table></figure>
+<p>3、输入版本号验证安装是否成功，输入：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">grunt -version</div></pre></td></tr></table></figure>
+<p>在这里我选择一个存放后台管理的文件目录。</p>
+<h3 id="创建grunt项目"><a href="#创建grunt项目" class="headerlink" title="创建grunt项目"></a>创建grunt项目</h3><p>grunt项目一般需要以下内容:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1 、grunt（ 需要安装）</div><div class="line">2、 grunt 插件 （需要安装） </div><div class="line">3、package.json 和 Gruntfile.js 。</div></pre></td></tr></table></figure>
+<p>(官方入门Getting started 说通过 grunt-init 和 npm init 创建。对于入门来说，这两中方式都不太好用。推荐直接创建 package.json 和Gruntfile.js 文件)</p>
+<p>这里我之前创建过，直接在其他机器上面cp过来即可了。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">1.创建文件夹:health-Grunt </div><div class="line">2.在health-Grunt下面创建2个文件package.json 和 Gruntfile.js</div><div class="line"></div><div class="line"><span class="comment">### 官网推荐：</span></div><div class="line"></div><div class="line">``` bash </div><div class="line">package.json 内容如下</div><div class="line"></div><div class="line">&#123;</div><div class="line">  <span class="string">"name"</span>: <span class="string">"smeitejs"</span>,</div><div class="line">  <span class="string">"version"</span>: <span class="string">"0.1.0"</span>,</div><div class="line">  <span class="string">"description"</span>: <span class="string">"js for smeite.com"</span>,</div><div class="line">  <span class="string">"homepage"</span>: <span class="string">"http://cc.com/"</span>,</div><div class="line">  <span class="string">"author"</span>: <span class="string">"helath &lt;cc@qq.com&gt;"</span>,</div><div class="line">  <span class="string">"devDependencies"</span>: &#123;</div><div class="line">    <span class="string">"grunt"</span>: <span class="string">"~0.4.1"</span>,</div><div class="line">    <span class="string">"grunt-contrib-jshint"</span>: <span class="string">"~0.3.0"</span>,</div><div class="line">    <span class="string">"grunt-contrib-nodeunit"</span>: <span class="string">"~0.1.2"</span>,</div><div class="line">    <span class="string">"grunt-contrib-cssmin"</span>: <span class="string">"~0.5.0"</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里我贴出我的本地配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="string">"name"</span>: <span class="string">"grunt_project"</span>,</div><div class="line">  <span class="string">"version"</span>: <span class="string">"1.0.0"</span>,</div><div class="line">  <span class="string">"description"</span>: <span class="string">""</span>,</div><div class="line">  <span class="string">"main"</span>: <span class="string">"index.js"</span>,</div><div class="line">  <span class="string">"scripts"</span>: &#123;</div><div class="line">    <span class="string">"test"</span>: <span class="string">"echo \"Error: no test specified\" &amp;&amp; exit 1"</span></div><div class="line">  &#125;,</div><div class="line">  <span class="string">"author"</span>: <span class="string">""</span>,</div><div class="line">  <span class="string">"license"</span>: <span class="string">"ISC"</span>,</div><div class="line">  <span class="string">"devDependencies"</span>: &#123;</div><div class="line">    <span class="string">"grunt"</span>: <span class="string">"^0.4.5"</span>,</div><div class="line">    <span class="string">"grunt-contrib-connect"</span>: <span class="string">"^0.11.2"</span>,</div><div class="line">    <span class="string">"grunt-contrib-watch"</span>: <span class="string">"^0.6.1"</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Gruntfile-js"><a href="#Gruntfile-js" class="headerlink" title="Gruntfile.js"></a>Gruntfile.js</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line">module.exports = <span class="keyword">function</span>(grunt) &#123;</div><div class="line">// Project configuration.</div><div class="line">grunt.initConfig(&#123;</div><div class="line">  uglify: &#123;</div><div class="line">    options: &#123;</div><div class="line">      mangle: <span class="literal">false</span></div><div class="line">    &#125;,</div><div class="line">    build: &#123;</div><div class="line">      files: &#123;</div><div class="line">        <span class="string">'assets/config.min.js'</span>: [<span class="string">'js/config.js'</span>],</div><div class="line">         <span class="string">'assets/smeite.min.js'</span>: [<span class="string">'js/smeite.js'</span>],</div><div class="line">	 <span class="string">'assets/index.min.js'</span>: [<span class="string">'js/index.js'</span>]</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;,</div><div class="line"></div><div class="line">cssmin: &#123;</div><div class="line">  compress: &#123;</div><div class="line">    files: &#123;</div><div class="line">      <span class="string">'assets/all.min.css'</span>: [<span class="string">'css/base.css'</span>, <span class="string">'css/global.css'</span>]</div><div class="line">    &#125;</div><div class="line">  &#125;,</div><div class="line"> // smeite: &#123;</div><div class="line">  //  files: &#123;</div><div class="line">  //    <span class="string">'assets/smeite.all.css'</span>: [<span class="string">'/play21/smeite.com/public/assets/css/**/*.css'</span>]</div><div class="line">  //  &#125;</div><div class="line"> // &#125;,</div><div class="line">  with_banner: &#123;</div><div class="line">    options: &#123;</div><div class="line">      banner: <span class="string">'/* My minified css file test test */'</span></div><div class="line">    &#125;,</div><div class="line">    files: &#123;</div><div class="line">      <span class="string">'assets/min/base.css'</span>: [<span class="string">'css/base.css'</span>],</div><div class="line">      <span class="string">'assets/min/global.css'</span>: [<span class="string">'css/global.css'</span>]</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">&#125;);</div><div class="line"></div><div class="line">  // Load the plugin that provides the <span class="string">"uglify"</span> task.</div><div class="line">  grunt.loadNpmTasks(<span class="string">'grunt-contrib-uglify'</span>);</div><div class="line">  grunt.loadNpmTasks(<span class="string">'grunt-contrib-cssmin'</span>);</div><div class="line"></div><div class="line">  // Default task(s).</div><div class="line">  grunt.registerTask(<span class="string">'default'</span>, [<span class="string">'uglify'</span>]);</div><div class="line"></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>这里我自己配置的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">module.exports = <span class="keyword">function</span> (grunt) &#123;</div><div class="line">    grunt.initConfig(&#123;</div><div class="line">        pkg: grunt.file.readJSON(<span class="string">'package.json'</span>),</div><div class="line">        connect:&#123;</div><div class="line">            yjklog:&#123;</div><div class="line">                options:&#123;</div><div class="line">                    port:8088, 端口</div><div class="line">                    base:<span class="string">'yjklog/front'</span>, 文件后台的日志查询的</div><div class="line">                    livereload:<span class="literal">true</span>, </div><div class="line">                    hostname:<span class="string">'192.168.1.133'</span> 本机机器</div><div class="line">                &#125;</div><div class="line">            &#125;,</div><div class="line">            yjk:&#123;</div><div class="line">                options:&#123;</div><div class="line">                    port:8080, 端口</div><div class="line">                    base:<span class="string">'yjk/front'</span>, 后台</div><div class="line">                    livereload:<span class="literal">true</span>,</div><div class="line">                    hostname:<span class="string">'192.168.1.133'</span></div><div class="line">                &#125;</div><div class="line">            &#125;,</div><div class="line">            jgs:&#123;</div><div class="line">                options:&#123;</div><div class="line">                    port:80,  端口</div><div class="line">                    base:<span class="string">'yjk/jgs'</span>, 项目后台访问</div><div class="line">                    livereload:<span class="literal">true</span>,</div><div class="line">                    hostname:<span class="string">'192.168.1.182'</span></div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;,</div><div class="line">        watch: &#123;</div><div class="line">            options: &#123;</div><div class="line">                livereload: <span class="string">'&lt;%= connect.yjklog.options.livereload %&gt;'</span></div><div class="line">            &#125;,</div><div class="line">            files: [</div><div class="line">                <span class="string">'&lt;%= pkg.root %&gt;/app/**/*'</span>,</div><div class="line">                <span class="string">'&lt;%= pkg.root %&gt;/assets/**/*'</span></div><div class="line">            ]</div><div class="line">        &#125;</div><div class="line">        &#125;);</div><div class="line">    grunt.loadNpmTasks(<span class="string">'grunt-contrib-connect'</span>);</div><div class="line">    grunt.loadNpmTasks(<span class="string">'grunt-contrib-watch'</span>);</div><div class="line">    grunt.registerTask(<span class="string">'default'</span>, [<span class="string">'connect'</span>,<span class="string">'watch'</span>]);</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>所有在Gruntfile.js 配置了2个grunt插件:grunt-contrib-connect 和 grunt-contrib-watch<br>如果项目只需要压缩js和css文件。所有在Gruntfile.js 配置了2个grunt插件： grunt-contrib-uglify 和 grunt-contrib-cssmin</p>
+<h3 id="安装-grunt-插件："><a href="#安装-grunt-插件：" class="headerlink" title="安装 grunt 插件："></a>安装 grunt 插件：</h3><p>在git 客户端键入命令 cd  /health-Grunt; </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">键入命令 npm install grunt-contrib-watch  安装watch</div><div class="line">键入命令 npm install grunt-contrib-connect 安装connect</div><div class="line">键入命令 npm install grunt-contrib-uglify  安装uglify</div><div class="line">键入命令 npm install  grunt-contrib-cssmin  安装cssmin</div></pre></td></tr></table></figure>
+<p>官方的的话：查看第4步</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">4、 准备相关资料</div><div class="line">在 <span class="built_in">test</span>Grunt 目录下，创建 js目录，并在js目录下创建文件config.js  smeite.js index.js ，创建css目录，并在css目录下创建base.css 和 global.css。 （这些文件都在Gruntfile.js 有配置，所以需要创建，内容可以随意的写）</div><div class="line">5、执行grunt 命令</div><div class="line">执行js压缩命令 grunt uglify 效果如下</div></pre></td></tr></table></figure>
+<p>我参考官网上面我Gruntfile.js 有配置，需要创建这些文件目录。yjk,front,yjklog.<br>后面就是前端事情了。<br>具体的就不详解了！<br>可以查看我github上面有详细的文档。</p>
+<h3 id="启动服务："><a href="#启动服务：" class="headerlink" title="启动服务："></a>启动服务：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">在目录当前后台启动: grunt &amp;</div></pre></td></tr></table></figure>
+<p>搭建后台，需要对后台的端口开放防火墙设置。</p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/11/24/Node.js-npm/Node.js-Grunt工具搭建后台管理实践/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>
