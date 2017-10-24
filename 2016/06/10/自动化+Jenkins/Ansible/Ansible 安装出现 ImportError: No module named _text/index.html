@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Ansible安装出现 ImportError/ No module named _text | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>Ansible安装出现 ImportError/ No module named _text</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-06-10</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Automation/">Automation</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Ansible/">Ansible</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="centos6-7-ansible-yum安装出现问题："><a href="#centos6-7-ansible-yum安装出现问题：" class="headerlink" title="centos6.7 ansible yum安装出现问题："></a>centos6.7 ansible yum安装出现问题：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ansible --version</div><div class="line">Traceback (most recent call last):</div><div class="line">  File <span class="string">"/usr/bin/ansible"</span>, line 46, <span class="keyword">in</span> &lt;module&gt;</div><div class="line">    from ansible.module_utils._text import to_text</div><div class="line">ImportError: No module named _text</div></pre></td></tr></table></figure>
+<p>提示这个错误，后面查看官网epel包需要更新，这里我已更新发现还是有问题。</p>
+<h5 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h5><h5 id="使用pip-install安装过ansible就正常使用"><a href="#使用pip-install安装过ansible就正常使用" class="headerlink" title="使用pip install安装过ansible就正常使用"></a>使用pip install安装过ansible就正常使用</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">[root@ansible_01 ~]<span class="comment"># pip install ansible</span></div><div class="line">Collecting ansible</div><div class="line">  Downloading ansible-1.9.4.tar.gz (937kB)</div><div class="line">    100% |████████████████████████████████| 937kB 100kB/s </div><div class="line">Collecting paramiko (from ansible)</div><div class="line">  Downloading paramiko-1.15.3-py2.py3-none-any.whl (166kB)</div><div class="line">    100% |████████████████████████████████| 167kB 136kB/s </div><div class="line">Collecting jinja2 (from ansible)</div><div class="line">  Downloading Jinja2-2.8-py2.py3-none-any.whl (263kB)</div><div class="line">    100% |████████████████████████████████| 266kB 1.4MB/s </div><div class="line">Collecting PyYAML (from ansible)</div><div class="line">  Downloading PyYAML-3.11.tar.gz (248kB)</div><div class="line">    100% |████████████████████████████████| 249kB 72kB/s </div><div class="line">Requirement already satisfied (use --upgrade to upgrade): setuptools <span class="keyword">in</span> /usr/<span class="built_in">local</span>/python27/lib/python2.7/site-packages/setuptools-18.4-py2.7.egg (from ansible)</div><div class="line">Collecting pycrypto&gt;=2.6 (from ansible)</div><div class="line">  Downloading pycrypto-2.6.1.tar.gz (446kB)</div><div class="line">    100% |████████████████████████████████| 446kB 117kB/s </div><div class="line">Collecting ecdsa&gt;=0.11 (from paramiko-&gt;ansible)</div><div class="line">  Downloading ecdsa-0.13-py2.py3-none-any.whl (86kB)</div><div class="line">    100% |████████████████████████████████| 90kB 141kB/s </div><div class="line">Collecting MarkupSafe (from jinja2-&gt;ansible)</div><div class="line">  Downloading MarkupSafe-0.23.tar.gz</div><div class="line">Installing collected packages: ecdsa, pycrypto, paramiko, MarkupSafe, jinja2, PyYAML, ansible</div><div class="line">  Running setup.py install <span class="keyword">for</span> pycrypto</div><div class="line">  Running setup.py install <span class="keyword">for</span> MarkupSafe</div><div class="line">  Running setup.py install <span class="keyword">for</span> PyYAML</div><div class="line">  Running setup.py install <span class="keyword">for</span> ansible</div><div class="line">Successfully installed MarkupSafe-0.23 PyYAML-3.11 ansible-1.9.4 ecdsa-0.13 jinja2-2.8 paramiko-1.15.3 pycrypto-2.6.1</div></pre></td></tr></table></figure>
+<p>如果提示没有<code>No package &#39;libffi&#39; found</code> </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install libffi-devel</div></pre></td></tr></table></figure>
+<p>如果可以正常显示不需要设置 如果还是有问题设置下依赖：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[root@ansible_01 ~]<span class="comment"># find / -name ansible</span></div><div class="line">/etc/ansible</div><div class="line">/usr/<span class="built_in">local</span>/bin/ansible</div><div class="line">/usr/<span class="built_in">local</span>/src/ansible</div><div class="line">/usr/<span class="built_in">local</span>/src/ansible/docsite/js/ansible</div><div class="line">/usr/<span class="built_in">local</span>/src/ansible/bin/ansible</div><div class="line">/usr/<span class="built_in">local</span>/src/ansible/packaging/port/sysutils/ansible</div><div class="line">/usr/<span class="built_in">local</span>/src/ansible/packaging/macports/sysutils/ansible</div><div class="line">/usr/<span class="built_in">local</span>/src/ansible/build/scripts-2.6/ansible</div><div class="line">/usr/<span class="built_in">local</span>/src/ansible/build/lib/ansible</div><div class="line">/usr/<span class="built_in">local</span>/src/ansible/lib/ansible</div><div class="line">/usr/<span class="built_in">local</span>/src/ansible/.git/modules/lib/ansible</div><div class="line">/usr/<span class="built_in">local</span>/lib/python2.7/site-packages/ansible</div><div class="line">/usr/lib/python2.6/site-packages/ansible-2.1.0-py2.6.egg/ansible</div><div class="line">/usr/lib/python2.6/site-packages/ansible-2.1.0-py2.6.egg/EGG-INFO/scripts/ansible</div><div class="line">/home/ansible</div></pre></td></tr></table></figure>
+<p>然后安装完成正常显示版本信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"> ln <span class="_">-s</span> /usr/<span class="built_in">local</span>/bin/ansible /usr/bin/ansible </div><div class="line"> </div><div class="line"> [root@LAN_zabbix pip-9.0.1]<span class="comment"># ansible --version</span></div><div class="line">ansible 2.2.1.0</div><div class="line">  config file =</div><div class="line">  configured module search path = Default w/o overrides</div></pre></td></tr></table></figure>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/06/10/自动化+Jenkins/Ansible/Ansible 安装出现 ImportError: No module named _text/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

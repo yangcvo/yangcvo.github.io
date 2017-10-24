@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>zabbix-server3.0.3版本环境安装部署 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>zabbix-server3.0.3版本环境安装部署</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-06-19</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="系统环境："><a href="#系统环境：" class="headerlink" title="系统环境："></a>系统环境：</h2><ul>
+<li>192.168.1.170 MySQL主 </li>
+<li>192.168.1.183 zabbix-server</li>
+</ul>
+<p>CentOS Linux release 7.2.1511 (Core)</p>
+<ul>
+<li>zabbix源码下载 : <a href="http://www.zabbix.com/download.php" target="_blank" rel="external">http://www.zabbix.com/download.php</a></li>
+<li>依赖下载： <a href="https://github.com/zabbixcn/curl-rpm/tree/master/RPMS" target="_blank" rel="external">https://github.com/zabbixcn/curl-rpm/tree/master/RPMS</a></li>
+<li>zabbix Down下载安装包：<a href="http://repo.zabbix.com/zabbix/3.2/rhel/6/x86_64/" target="_blank" rel="external">http://repo.zabbix.com/zabbix/3.2/rhel/6/x86_64/</a></li>
+<li>zabbix3.2 <a href="http://jaist.dl.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/3.2.4/zabbix-3.2.4.tar.gz" target="_blank" rel="external">http://jaist.dl.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/3.2.4/zabbix-3.2.4.tar.gz</a></li>
+</ul>
+<h3 id="第一步zabbix："><a href="#第一步zabbix：" class="headerlink" title="第一步zabbix："></a>第一步zabbix：</h3><p>关闭本机上的selinux与iptables服务</p>
+<p>1、关闭SELinux</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#下面的命令实现永久关闭SELinux</span></div><div class="line"> sed -i <span class="string">'s/^SELINUX=.*/#&amp;/;s/^SELINUXTYPE=.*/#&amp;/;/SELINUX=.*/a SELINUX=disabled'</span> /etc/sysconfig/selinux</div><div class="line"><span class="comment">#下面的命令实现临时关闭SELinux</span></div><div class="line"></div><div class="line">/usr/sbin/setenforce 0</div><div class="line">/usr/sbin/setenforce: SELinux is disabled</div></pre></td></tr></table></figure>
+<p>也可以设置开放端口出去。</p>
+<p>CentOS 7.0默认使用的是firewall作为防火墙，这里改为iptables防火墙。</p>
+<p>firewall：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">systemctl start firewalld.service<span class="comment">#启动firewall</span></div><div class="line">systemctl stop firewalld.service<span class="comment">#停止firewall</span></div><div class="line">systemctl <span class="built_in">disable</span> firewalld.service<span class="comment">#禁止firewall开机启动</span></div></pre></td></tr></table></figure>
+<p>CentOS7默认的防火墙不是iptables,而是firewalle.<br>centos 7 的默认没有安装iptables 需要安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">yum install iptables-services</div><div class="line"><span class="comment">#保存上述规则 </span></div><div class="line">service iptables save</div></pre></td></tr></table></figure>
+<p>等会再添加端口：10050 ，10051 </p>
+<p>搭建LAMP环境，或LNMP环境</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install mysql-server httpd php –y</div></pre></td></tr></table></figure>
+<p>安装其它依赖包</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install mysql-devel gcc net-snmp-devel curl-devel perl-DBI php-gd php-mysql php-bcmath  php-mbstring php-<span class="keyword">xml</span> <span class="title">–y</span>  gcc OpenIPMI-devel net-snmp-devel.x86_64 libxml2-devel mysql-devel</div></pre></td></tr></table></figure>
+<p> 这里MySQL我已经在MySQL服务器上面安装好了。只需要创建个新的zabbix数据库即可。</p>
+<p> 增加zabbix用户和组</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">groupadd zabbix</div><div class="line">useradd –g zabbix –m zabbix</div></pre></td></tr></table></figure>
+<p>下载zabbix3.0版本，解压安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">wget http://oak0aohum.bkt.clouddn.com/zabbix-3.0.3.tar.gz  -c /tmp/</div><div class="line"><span class="built_in">cd</span> /tmp/</div><div class="line">tar zxf zabbix-3.0.3.tar.gz</div><div class="line">./configure --prefix=/usr/<span class="built_in">local</span>/zabbix --enable-server --with-mysql --with-net-snmp --with-libxml2 --with-libcurl --with-openipmi --enable-proxy --enable-agent --enable-java --with-ldap</div><div class="line"></div><div class="line">编译成功这里会出现：</div><div class="line">***********************************************************</div><div class="line">*            Now run <span class="string">'make install'</span>                       *</div><div class="line">*                                                         *</div><div class="line">*            Thank you <span class="keyword">for</span> using Zabbix!                  *</div><div class="line">*              &lt;http://www.zabbix.com&gt;                    *</div><div class="line">***********************************************************</div><div class="line"><span class="comment">#直接make install 安装即可：</span></div><div class="line"> </div><div class="line">make install</div></pre></td></tr></table></figure>
+<p>这里编译安装 我加上了：–enable-java 这样防止后期监控tomcat需要重新编译。</p>
+<h3 id="3-配置数据库"><a href="#3-配置数据库" class="headerlink" title="3.配置数据库"></a>3.配置数据库</h3><p> 登陆到192.168.1.170服务器上面：</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># mysql -e "create database zabbix character set utf8 collate  utf8_bin;"   #修改时区</span></div><div class="line"><span class="comment"># mysql -e "grant all privileges on zabbix.* to zabbix@localhost identified by 'zabbix';"  #创建数据库名</span></div></pre></td></tr></table></figure>
+<p> 这里我设置了只能192.168.1.0网段可以访问数据库。<br> 所以这里创建数据库直接这么操作了。</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">[root@mysql ~]<span class="comment"># mysql -uroot -pIhaozhuo_b313 -h 192.168.1.170</span></div><div class="line">Warning: Using a password on the <span class="built_in">command</span> line interface can be insecure.</div><div class="line">Welcome to the MySQL monitor.  Commands end with ; or \g.</div><div class="line">Your MySQL connection id is 10</div><div class="line">Server version: 5.6.20-log MySQL Community Server (GPL)</div><div class="line"></div><div class="line">Copyright (c) 2000, 2014, Oracle and/or its affiliates. All rights reserved.</div><div class="line"></div><div class="line">Oracle is a registered trademark of Oracle Corporation and/or its</div><div class="line">affiliates. Other names may be trademarks of their respective</div><div class="line">owners.</div><div class="line"></div><div class="line">Type <span class="string">'help;'</span> or <span class="string">'\h'</span> <span class="keyword">for</span> help. Type <span class="string">'\c'</span> to clear the current input statement.</div><div class="line"></div><div class="line">mysql&gt; create database zabbix character <span class="built_in">set</span> utf8 collate  utf8_bin;</div><div class="line">Query OK, 1 row affected (0.06 sec)</div><div class="line">mysql&gt; GRANT ALL ON zabbix.* TO <span class="string">'zabbix'</span>@<span class="string">'192.168.1.%'</span> IDENTIFIED BY <span class="string">'zabbix123.com'</span>;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div><div class="line">mysql&gt; flush privileges;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div></pre></td></tr></table></figure>
+<h3 id="四-导入数据库文件："><a href="#四-导入数据库文件：" class="headerlink" title="四.导入数据库文件："></a>四.导入数据库文件：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /usr/share/doc/zabbix-server-mysql-2.4.8/create</div></pre></td></tr></table></figure>
+<p>操作三条命令把数据导入到在指定的MySQL：zabbix</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mysql -uzabbix -pzabbix123.com -h 192.168.1.170  zabbix &lt; schema.sql</div><div class="line">mysql -uzabbix -pzabbix123.com -h 192.168.1.170  zabbix &lt; images.sql</div><div class="line">mysql -uzabbix -pzabbix123.com -h 192.168.1.170  zabbix &lt; data.sql</div></pre></td></tr></table></figure>
+<h3 id="五、配置文件及web前端文件修改"><a href="#五、配置文件及web前端文件修改" class="headerlink" title="五、配置文件及web前端文件修改"></a>五、配置文件及web前端文件修改</h3><p>添加服务端口</p>
+<p>vi /etc/services #编辑，在最后添加以下代码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Zabbix</span></div><div class="line">zabbix-agent 10050/tcp   <span class="comment"># Zabbix Agent</span></div><div class="line">zabbix-agent 10050/udp   <span class="comment"># Zabbix Agent</span></div><div class="line">zabbix-trapper 10051/tcp <span class="comment"># Zabbix Trapper</span></div><div class="line">zabbix-trapper 10051/udp <span class="comment"># Zabbix Trapper</span></div><div class="line">:wq! <span class="comment">#保存退出</span></div></pre></td></tr></table></figure>
+<p>添加后如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># grep zabbix /etc/services</span></div><div class="line">zabbix-agent     10050/tcp  <span class="comment">#ZabbixAgent</span></div><div class="line">zabbix-agent     10050/udp  <span class="comment">#ZabbixAgent</span></div><div class="line">zabbix-trapper   10051/tcp  <span class="comment">#ZabbixTrapperz</span></div><div class="line">abbix-trapper    10051/udp  <span class="comment">#ZabbixTrapper</span></div></pre></td></tr></table></figure>
+<p>修改zabbix配置文件</p>
+<p>vim /usr/local/zabbix/etc/zabbix_server.conf</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">DBName=zabbix <span class="comment">#数据库名称</span></div><div class="line">DBUser=zabbix <span class="comment">#数据库用户名</span></div><div class="line">DBPassword=zabbix123.com <span class="comment">#数据库密码</span></div><div class="line">ListenIP=192.168.1.170 <span class="comment">#数据库ip地址</span></div><div class="line">AlertScriptsPath=/usr/<span class="built_in">local</span>/zabbix/share/zabbix/alertscripts   <span class="comment">#zabbix运行脚本存放目录</span></div></pre></td></tr></table></figure>
+<p>:wq! #保存退出</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">vi /usr/<span class="built_in">local</span>/zabbix/etc/zabbix_agentd.conf</div><div class="line">Include=/usr/<span class="built_in">local</span>/zabbix/etc/zabbix_agentd.conf.d/</div><div class="line">UnsafeUserParameters=1 <span class="comment">#启用自定义key</span></div><div class="line">:wq! <span class="comment">#保存退出</span></div></pre></td></tr></table></figure>
+<p>1.2 COPY相关脚本到新编译的目录下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"> cp /tmp/zabbix-3.0.3/misc/init.d/fedora/core/zabbix_server  /etc/rc.d/init.d/zabbix_server</div><div class="line">[root@salt etc]<span class="comment"># cp /tmp/zabbix-3.0.3/misc/init.d/fedora/core/zabbix_agentd /etc/rc.d/init.d/zabbix_agentd</span></div><div class="line"></div><div class="line"></div><div class="line">修改脚本路径：</div><div class="line"></div><div class="line">vim /etc/init.d/zabbix_server </div><div class="line">  </div><div class="line"> BASEDIR=/usr/<span class="built_in">local</span>/zabbix/</div><div class="line"></div><div class="line">vim /etc/init.d/zabbix_agentd</div><div class="line"></div><div class="line">BASEDIR=/usr/<span class="built_in">local</span>/zabbix  </div><div class="line"></div><div class="line">chmod +x /etc/rc.d/init.d/zabbix_server <span class="comment">#添加脚本执行权限</span></div><div class="line">chmod +x /etc/rc.d/init.d/zabbix_agentd <span class="comment">#添加脚本执行权限</span></div><div class="line">chkconfig zabbix_server on <span class="comment">#添加开机启动</span></div><div class="line">chkconfig zabbix_agentd on <span class="comment">#添加开机启动</span></div></pre></td></tr></table></figure>
+<p>八、配置web站点</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> zabbix-2.4.8</div><div class="line">cp -r /zabbix-2.4.8/frontends/php /var/www/html/zabbix</div><div class="line"><span class="built_in">cd</span> /var/www/html/</div><div class="line">chown -R zabbix:zabbix zabbix</div></pre></td></tr></table></figure>
+<p>service zabbix_server start #启动zabbix服务端</p>
+<p>service zabbix_agentd start #启动zabbix客户端</p>
+<p>然后重启服务。</p>
+<p>发现出现<code>500</code> 网页无法显示，我去网上Google了下，说我的PHP文件版本过低。</p>
+<p>我查看了下我的版本：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">php -version</div><div class="line">PHP <span class="number">5.3</span><span class="number">.3</span> (cli) (<span class="string">built:</span> Feb  <span class="number">9</span> <span class="number">2016</span> <span class="number">10</span>:<span class="number">36</span>:<span class="number">17</span>)</div><div class="line">Copyright (c) <span class="number">1997</span><span class="number">-2010</span> The PHP Group</div><div class="line">Zend Engine v2<span class="number">.3</span><span class="number">.0</span>, Copyright (c) <span class="number">1998</span><span class="number">-2010</span> Zend Technologies</div><div class="line"></div><div class="line">whereis php</div><div class="line"><span class="string">php:</span> <span class="regexp">/usr/</span>bin<span class="regexp">/php /</span>etc<span class="regexp">/php.d /</span>etc<span class="regexp">/php.ini /</span>usr<span class="regexp">/lib64/</span>php <span class="regexp">/usr/</span>share<span class="regexp">/php /</span>usr<span class="regexp">/share/</span>man<span class="regexp">/man1/</span>php<span class="number">.1</span>.gz</div></pre></td></tr></table></figure>
+<p>查询了下这是默认安装的，yum安装的。</p>
+<p>mv /usr/share/php/ /usr/share/php.5.3.3<br>备份之前的方便回滚，然后升级PHP：</p>
+<h3 id="快速将PHP-5-3升级至PHP-5-5"><a href="#快速将PHP-5-3升级至PHP-5-5" class="headerlink" title="快速将PHP 5.3升级至PHP 5.5"></a>快速将PHP 5.3升级至PHP 5.5</h3><p>CentOS 6.7<br>以下为 CentOS 下安装 PHP 方法：</p>
+<p>添加 epel 源</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta"># rpm -Uvh http:<span class="comment">//download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm</span></span></div></pre></td></tr></table></figure>
+<p>添加 remi 源</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta"># rpm -Uvh http:<span class="comment">//rpms.famillecollet.com/enterprise/remi-release-6.rpm</span></span></div></pre></td></tr></table></figure>
+<p>安装 PHP</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> yum --enablerepo=remi,remi-php55 install php-fpm php-common php-devel php-mysqlnd php-mbstring php-mcrypt</span></div></pre></td></tr></table></figure>
+<p>查看 PHP 版本</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># <span class="selector-tag">php</span> <span class="selector-tag">-v</span></div><div class="line"><span class="selector-tag">PHP</span> 5<span class="selector-class">.5</span><span class="selector-class">.9</span> (<span class="selector-tag">cli</span>) (<span class="selector-tag">built</span>: <span class="selector-tag">Feb</span> 11 2014 08<span class="selector-pseudo">:25</span><span class="selector-pseudo">:33)</span></div><div class="line"><span class="selector-tag">Copyright</span> (<span class="selector-tag">c</span>) 1997<span class="selector-tag">-2014</span> <span class="selector-tag">The</span> <span class="selector-tag">PHP</span> <span class="selector-tag">Group</span></div><div class="line"><span class="selector-tag">Zend</span> <span class="selector-tag">Engine</span> <span class="selector-tag">v2</span><span class="selector-class">.5</span><span class="selector-class">.0</span>, <span class="selector-tag">Copyright</span> (<span class="selector-tag">c</span>) 1998<span class="selector-tag">-2014</span> <span class="selector-tag">Zend</span> <span class="selector-tag">Technologies</span></div></pre></td></tr></table></figure>
+<p>启动 php-fpm</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># service php-fpm start</span></div><div class="line"><span class="attribute">Starting</span> php-fpm:　<span class="meta">　[  OK  ]</span></div></pre></td></tr></table></figure>
+<p>这里重启完以后，记得要让php生效，不然的话不行。</p>
+<p>我一开始刷新还是出现了500错误，后来用php指针测试了下版本是多少？</p>
+<p>www站点添加。info.php </p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="php"><span class="meta">&lt;?php</span></span></div><div class="line"></div><div class="line"> phpinfo();</div><div class="line"></div><div class="line"><span class="meta">?&gt;</span>;</div></pre></td></tr></table></figure>
+<p>访问地址/info.php  出现版本是5.3 环境问题，重启http就可以了。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-server3.0.png" alt=""></figure></p>
+<p>这里已经搞定咯。</p>
+<p> 如果出现图形乱码：可以参考下面的文档。</p>
+<p>其实把之前的字体拷贝过去，然后先修改下配置文件即可。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cp <span class="regexp">/var/</span>www<span class="regexp">/html/</span>zabbix.<span class="number">2.4</span>.<span class="number">7</span><span class="regexp">/fonts/</span>simkai.ttf <span class="regexp">/var/</span>www<span class="regexp">/html/</span>zabbix<span class="regexp">/fonts/</span>.</div></pre></td></tr></table></figure>
+<p>zabbix-server2.4服务端编译安装 <a href="http://blog.yangcvo.me/2015/01/18/zabbix-server服务端编译安装/" target="_blank" rel="external">zabbix-server服务端编译安装</a></p>
+<p>zabbix2.4监控80端口状态 : <a href="http://blog.yangcvo.me/2016/07/20/zabbix监控80端口状态/" target="_blank" rel="external">zabbix监控80端口状态</a></p>
+<p>zabbix+Grafana安装使用监控结合 ：<a href="http://blog.yangcvo.me/2016/07/13/zabbix-Grafana安装使用结合/" target="_blank" rel="external">zabbix+Grafana安装使用监控结合</a></p>
+<p>zabbix监控MySQL-添加自定义监控项 : <a href="http://blog.yangcvo.me/2015/09/29/zabbix监控MySQL-添加自定义监控项/" target="_blank" rel="external">zabbix监控MySQL-添加自定义监控项</a></p>
+<p>zabbix的ICMP_Ping模版实现对客户端网络状态的监控 : <a href="http://blog.yangcvo.me/2015/11/18/zabbix的ICMP-Ping模版实现对客户端网络状态的监控/" target="_blank" rel="external">zabbix的ICMP_Ping模版实现对客户端网络状态的监控</a></p>
+<p>zabbix性能监控故障总结 <a href="http://blog.yangcvo.me/2016/02/07/zabbix-故障总结/" target="_blank" rel="external">zabbix性能监控故障总结</a></p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/06/19/性能监控/Zabbix/zabbix-server3-0-3版本环境安装部署/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

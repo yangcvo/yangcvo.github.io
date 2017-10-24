@@ -79,34 +79,7 @@
 <li>可选地，启用JMX轮询代理级和主题级度量。</li>
 <li>可选地筛选出在zookeeper中没有ids / owner /＆offset /目录的消费者。</li>
 </ul>
-<p>参考开源地址：<a href="https://github.com/yahoo/kafka-manager" target="_blank" rel="external">https://github.com/yahoo/kafka-manager</a></p>
-<h4 id="Requirements"><a href="#Requirements" class="headerlink" title="Requirements"></a>Requirements</h4><p>Kafka 0.8.1.1 or 0.8.2.<em> or 0.9.0.</em> or 0.10.0.*<br>Java 8+</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">sudo wget --header <span class="string">"Cookie: oraclelicense=accept-securebackup-cookie”   http://download.oracle.com/otn-pub/java/jdk/8u144-b01/090f390dda5b47b9b721c7dfaa008135/jdk-8u144-linux-x64.tar.gz</span></div><div class="line"></div><div class="line">sudo vim /etc/profile</div><div class="line">export JAVA_HOME=/home/jollybi/tools/jdk1.8.0_144</div><div class="line">export LASSPATH=.:<span class="variable">$JAVA_HOME</span>/lib/tools.jar:<span class="variable">$JAVA_HOME</span>/lib/dt.jar:<span class="variable">$JAVA_HOME</span>/lib:<span class="variable">$JAVA_HOME</span>/jre/lib:<span class="variable">$JAVA_HOME</span>/bin</div><div class="line">export PATH=<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$JAVA_HOME</span>/jre/bin:<span class="variable">$TOMCAT_HOME</span>/bin:<span class="variable">$PATH</span></div></pre></td></tr></table></figure>
-<h4 id="Deployment"><a href="#Deployment" class="headerlink" title="Deployment"></a>Deployment</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">git <span class="built_in">clone</span> https://github.com/yahoo/kafka-manager.git</div><div class="line">./sbt clean dist</div><div class="line"></div><div class="line">[info]   Compilation completed <span class="keyword">in</span> 13.366 s</div><div class="line">model contains 672 documentable templates</div><div class="line">[info] Main Scala API documentation successful.</div><div class="line">[info] Packaging /home/jollybi/kafka-manager/target/scala-2.11/kafka-manager_2.11-1.3.3.8-javadoc.jar ...</div><div class="line">[info] Done packaging.</div><div class="line">[info] Packaging /home/jollybi/kafka-manager/target/scala-2.11/kafka-manager_2.11-1.3.3.8.jar ...</div><div class="line">[info] Done packaging.</div><div class="line">[info] Packaging /home/jollybi/kafka-manager/target/scala-2.11/kafka-manager_2.11-1.3.3.8-sans-externalized.jar ...</div><div class="line">[info] Done packaging.</div><div class="line">[info]</div><div class="line">[info] Your package is ready <span class="keyword">in</span> /home/jollybi/kafka-manager/target/universal/kafka-manager-1.3.3.8.zip</div><div class="line">[info]</div><div class="line">[success] Total time: 142 s, completed Jul 27, 2017 3:48:35 PM</div><div class="line">完成</div></pre></td></tr></table></figure>
-<h4 id="Starting-the-service"><a href="#Starting-the-service" class="headerlink" title="Starting the service"></a>Starting the service</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">解压缩生成的zip文件后，将工作目录更改为可以运行的服务：</div><div class="line"></div><div class="line">unzip /home/jollybi/kafka-manager/target/universal/kafka-manager-1.3.3.8.zip</div><div class="line"></div><div class="line"></div><div class="line">修改zk地址和管理员账号和密码：</div><div class="line"></div><div class="line">vim kafka-manager-1.3.3.8/conf/application.conf</div><div class="line"></div><div class="line"><span class="comment">#kafka-manager.zkhosts="kafka-manager-zookeeper:2181"</span></div><div class="line"><span class="comment">#zk集群可以这么配置：</span></div><div class="line">kafka-manager.zkhosts=<span class="string">"kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281"</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">#根据个人公司这里可以开启true 设置账号和密码</span></div><div class="line">basicAuthentication.enabled=<span class="literal">true</span></div><div class="line">basicAuthentication.username=<span class="string">"admin"</span></div><div class="line">basicAuthentication.password=<span class="string">"admin"</span></div><div class="line"></div><div class="line"></div><div class="line">默认情况下，它将选择端口9000.这是可以覆盖的，配置文件的位置也是如此。例如：</div><div class="line"></div><div class="line">$ ./bin/kafka-manager -Dconfig.file=conf/application.conf -Dhttp.port=8080</div><div class="line"></div><div class="line">后台生效：</div><div class="line"></div><div class="line">$ ./bin/kafka-manager -Dconfig.file=conf/application.conf -Dhttp.port=8080 &amp;</div><div class="line"></div><div class="line">再次，如果java不在您的路径中，或者您需要针对不同版本的Java运行，请按如下所示添加-java-home选项：</div><div class="line"></div><div class="line">$ bin/kafka-manager -java-home /usr/<span class="built_in">local</span>/oracle-java-8</div></pre></td></tr></table></figure>
-<h4 id="Packaging"><a href="#Packaging" class="headerlink" title="Packaging"></a>Packaging</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">If you<span class="string">'d like to create a Debian or RPM package instead, you can run one of:</span></div><div class="line"></div><div class="line">sbt debian:packageBin</div><div class="line"></div><div class="line">sbt rpm:packageBin</div></pre></td></tr></table></figure>
-<h3 id="查看端口："><a href="#查看端口：" class="headerlink" title="查看端口："></a>查看端口：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[jollybi@kafka1 conf]$ netstat -ntulp | grep 8080</div><div class="line">(Not all processes could be identified, non-owned process info</div><div class="line"> will not be shown, you would have to be root to see it all.)</div><div class="line">tcp6       0      0 :::8080                 :::*                    LISTEN      70517/java</div></pre></td></tr></table></figure>
-<h3 id="网站访问kafka-Manger"><a href="#网站访问kafka-Manger" class="headerlink" title="网站访问kafka Manger"></a>网站访问kafka Manger</h3><p>这里我设置了登录账号和密码： admin admin</p>
-<p><figure class="figure"><img src="media/15014722977191.jpg" alt=""></figure></p>
-<p>创建kafka名字;<br>选择kafka版本号;<br>JMX这个不需要;<br>下面选择默认点击确认即可.</p>
-<p><figure class="figure"><img src="media/15014724051756.jpg" alt=""></figure></p>
-<blockquote>
-<p>(2)kafka 启用 JMX端口</p>
-</blockquote>
-<p><figure class="figure"><img src="media/15020729297106.jpg" alt=""></figure></p>
-<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">以如下命令重新启动kafka</div><div class="line"></div><div class="line">JMX_PORT=<span class="number">9999</span> bin/kafka-<span class="built_in">server</span>-start.sh config/<span class="built_in">server</span>.properties</div><div class="line">或者修改kafka-<span class="built_in">server</span>-start.sh 文件，追加JMX_PORT=<span class="string">"9999"</span></div><div class="line"></div><div class="line"> <span class="keyword">if</span> [ <span class="string">"x$KAFKA_HEAP_OPTS"</span> = <span class="string">"x"</span> ]; <span class="keyword">then</span></div><div class="line">    export KAFKA_HEAP_OPTS=<span class="string">"-Xmx1G -Xms1G"</span></div><div class="line">    export JMX_PORT=<span class="string">"9999"</span></div><div class="line">fi</div><div class="line">然后重新启动kafka</div><div class="line">bin/kafka-<span class="built_in">server</span>-start.sh config/<span class="built_in">server</span>.properties</div><div class="line"></div><div class="line">但是Metrics中数据都是零</div><div class="line">查看 kafka manager 报错，无法连接jxm</div></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">解决方法 修改每个kafka broker的 kafka_2.11-0.10.1.0/bin/kafka-run-class.sh文件</div><div class="line">​</div><div class="line"><span class="comment"># JMX settings</span></div><div class="line"><span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$KAFKA_JMX_OPTS</span>"</span> ]; <span class="keyword">then</span></div><div class="line">  KAFKA_JMX_OPTS=<span class="string">"-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false  -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=75.126.5.162"</span></div><div class="line"><span class="keyword">fi</span></div><div class="line"></div><div class="line"></div><div class="line">-Djava.rmi.server.hostname 的值为当前kafka服务器ip</div><div class="line"></div><div class="line">这里说明下集群kafka都需要修改</div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="media/15020745879851.jpg" alt=""></figure></p>
-<p><figure class="figure"><img src="media/15014725443386.jpg" alt=""></figure></p>
-<p><figure class="figure"><img src="media/15014725288425.jpg" alt=""></figure></p>
-<p><figure class="figure"><img src="media/15014725659340.jpg" alt=""></figure></p>
-<p><figure class="figure"><img src="media/15014725864134.jpg" alt=""></figure></p>
-<p><figure class="figure"><img src="media/15014726361909.jpg" alt=""></figure></p>
-<p><figure class="figure"><img src="media/15014727525618.jpg" alt=""></figure></p>
-<p><figure class="figure"><img src="media/15014727932029.jpg" alt=""></figure></p>
-<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
-<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
-
+		<p><a class="article__read-more-link" href="/2017/05/28/Bigdata-hadoop/Kafka/开源的Kafka集群管理器(Kafka Manager)/">...read more</a></p>
 	
 
 	
@@ -204,36 +177,129 @@
 	
 		<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>源码的地址在:<a href="https://github.com/claudemamo/kafka-web-console" target="_blank" rel="external">kafka-web-console</a></p>
 <p><code>Kafka Web Console</code>也是用Scala语言编写的<code>Java web</code>程序用于监控<code>Apache Kafka</code>。这个系统的功能和<code>KafkaOffsetMonitor</code>很类似，但是我们从源码角度来看，这款系统实现比<code>KafkaOffsetMonitor</code>要复杂很多，而且编译配置比<code>KafkaOffsetMonitor</code>较麻烦。</p>
-<p>　要想运行这套系统我们需要的先行条件为：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Play Framework 2.2.x</div><div class="line">Apache Kafka 0.8.x</div><div class="line">Zookeeper 3.3.3 or 3.3.4</div></pre></td></tr></table></figure>
-<h3 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h3><p>同样，我们从<code>https://github.com/claudemamo/kafka-web-console</code>上面将源码下载下来，然后用<code>sbt</code>进行编译，在编译前我们需要做如下的修改：</p>
-<p>Kafka Web控制台需要一个关系数据库。默认情况下，服务器连接到嵌入式H2数据库，不需要数据库安装或配置。请咨询Play！的文档以指定控制台的数据库。支持以下数据库：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git <span class="built_in">clone</span> https://github.com/claudemamo/kafka-web-console.git</div></pre></td></tr></table></figure>
-<ul>
-<li>H2（默认）</li>
-<li>PostgreSql</li>
-<li>Oracle</li>
-<li>DB2</li>
-<li>MySQL</li>
-<li>Apache Derby</li>
-<li>Microsoft SQL Server</li>
-</ul>
-<p>为了方便，我们可以使用Mysql数据库，只要做如下修改即可，找到 <code>conf/application.conf</code>文件，并修改如下</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">将这个</div><div class="line">db.default.driver=org.h2.Driver</div><div class="line">db.default.url=<span class="string">"jdbc:h2:file:play"</span></div><div class="line"><span class="comment"># db.default.user=sa</span></div><div class="line"><span class="comment"># db.default.password=""</span></div><div class="line"> </div><div class="line"> </div><div class="line">修改成</div><div class="line">db.default.driver=com.mysql.jdbc.Driver</div><div class="line">db.default.url=<span class="string">"jdbc:mysql://localhost:3306/kafkamonitor"</span></div><div class="line">db.default.user=iteblog</div><div class="line">db.default.pass=wyp</div></pre></td></tr></table></figure>
-<p>我们还需要修改build.sbt，加入对Mysql的依赖:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="string">"mysql"</span> % <span class="string">"mysql-connector-java"</span> % <span class="string">"5.1.31"</span></div></pre></td></tr></table></figure>
-<p>　2、执行<code>conf/evolutions/default/bak</code>目录下面的<code>1.sql、2.sql和3.sql</code>三个文件。需要注意的是，这三个sql文件不能直接运行，有语法错误，需要做一些修改。<br>上面的注意事项弄完之后，我们就可以编译下载过来的源码：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> sbt package</span></div></pre></td></tr></table></figure>
-<p>编译的过程比较慢，有些依赖包下载速度非常地慢，请耐心等待。<br>　在编译的过程中，可能会出现有些依赖包无法下载，如下错误：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">[warn] module not found: com.typesafe.play<span class="comment">#sbt-plugin;2.2.1</span></div><div class="line">[warn] ==== typesafe-ivy-releases: tried</div><div class="line">[warn] http://repo.typesafe.com/typesafe/ivy-releases/</div><div class="line">com.typesafe.play/sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== sbt-plugin-releases: tried</div><div class="line">[warn] http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/</div><div class="line">com.typesafe.play/sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== <span class="built_in">local</span>: tried</div><div class="line">[warn] /home/iteblog/.ivy2/<span class="built_in">local</span>/com.typesafe.play/</div><div class="line">sbt-plugin/scala_2.9.2/sbt_0.12/2.2.1/ivys/ivy.xml</div><div class="line">[warn] ==== Typesafe repository: tried</div><div class="line">[warn] http://repo.typesafe.com/typesafe/releases/com/</div><div class="line">typesafe/play/sbt-plugin_2.9.2_0.12/2.2.1/sbt-plugin-2.2.1.pom</div><div class="line">[warn] ==== public: tried</div><div class="line">[warn] http://repo1.maven.org/maven2/com/typesafe/play/</div><div class="line">sbt-plugin_2.9.2_0.12/2.2.1/sbt-plugin-2.2.1.pom</div><div class="line">[warn] ::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">==== <span class="built_in">local</span>: tried</div><div class="line"> </div><div class="line">/home/iteblog/.ivy2/<span class="built_in">local</span>/org.scala-sbt/collections/0.13.0/jars/collections.jar</div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">:: FAILED DOWNLOADS ::</div><div class="line"> </div><div class="line">:: ^ see resolution messages <span class="keyword">for</span> details ^ ::</div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div><div class="line"> </div><div class="line">:: org.scala-sbt<span class="comment">#collections;0.13.0!collections.jar</span></div><div class="line"> </div><div class="line">::::::::::::::::::::::::::::::::::::::::::::::</div></pre></td></tr></table></figure>
-<p>我们可以手动地下载相关依赖，并放到类似<code>/home/iteblog/.ivy2/local/org.scala-sbt/collections/0.13.0/jars/</code>目录下面。然后再编译就可以了。</p>
-<p>　　最后，我们可以通过下面命令启动<code>Kafka Web Console</code>监控系统：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> sbt run</span></div></pre></td></tr></table></figure>
-<p>并可以在<a href="http://localhost:9000" target="_blank" rel="external">http://localhost:9000</a> 查看下面是一张效果图</p>
-<p><figure class="figure"><img src="https://www.iteblog.com/pic/topics.png" alt=""></figure></p>
-<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
-<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
+		<p><a class="article__read-more-link" href="/2017/05/25/Bigdata-hadoop/Kafka/Bigdata-开源的Kafka集群管理器(kafka-web-console)/">...read more</a></p>
+	
 
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/05/21/性能监控/Zabbix/Zabbix 告警收敛/">Zabbix 告警收敛</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-05-21</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="Zabbix-告警收敛"><a href="#Zabbix-告警收敛" class="headerlink" title="Zabbix 告警收敛"></a>Zabbix 告警收敛</h3><blockquote>
+<p>在多个运维技术分享中都会谈及到“告警风暴”这个词，即在大规模网络发生异常的时候，报警量激增，运维伙伴手机在1个多小时中不断的接受报警通知，这样有可能会造成“狼来了”等一系列的问题，不但对运维人员造成了困扰，给排查问题带了不小的难度。某族同样也困扰过，但在建设了告警平台，对告警进行合并等操作，由原来的月报警8000+ 降低至800条。</p>
+</blockquote>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix_001.png" alt=""></figure></p>
+<blockquote>
+<p>听了若干的技术“吹bi”大会，都在说用了某某的东西后就多么多么的厉害，耳朵都快听出茧子了。真正的把干货分享出来的很少，只能犄角旮旯里面抠出来自己需要的东西，然后回来自己琢磨。说的也是人家也不会把核心做法告诉你，不过也算是给了个方向。闲话不多说，自己琢磨出来的收敛的方法，不管low不low总算把问题解决了，也算是成长路上的突破。</p>
+</blockquote>
+<hr>
+<h3 id="一、收敛架构图"><a href="#一、收敛架构图" class="headerlink" title="一、收敛架构图"></a>一、收敛架构图</h3><ul>
+<li>① 所有产生告警均由zabbix调用脚本推入缓存redis当中</li>
+<li>② 分析系统将在规定时间（1分钟）内去redis中拉取数据，根据定义好的一系列规则进行，合并、分析或直接丢弃，并存入分析平台数据库，以便供历史查询。</li>
+<li>③ 根据预先定义好的规则将报警通过定义好的方式发送给相关人员。</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix_002.png" alt=""></figure></p>
+<pre><code>告警收敛架构
+</code></pre><h3 id="二、对zabbix-进行设置"><a href="#二、对zabbix-进行设置" class="headerlink" title="二、对zabbix 进行设置"></a>二、对zabbix 进行设置</h3><h5 id="1-zabbix-Actions"><a href="#1-zabbix-Actions" class="headerlink" title="1.zabbix Actions"></a>1.zabbix Actions</h5><p>对Actions进行特殊设置，Default subject极为重要，是识别收敛的标示。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix_003.png" alt=""></figure></p>
+<h5 id="Actions-配置"><a href="#Actions-配置" class="headerlink" title="Actions 配置"></a>Actions 配置</h5><ul>
+<li>Default subject</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;EVENT.ID&#125;_1</div></pre></td></tr></table></figure>
+<ul>
+<li>Default message</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">triggervalue|&#123;TRIGGER.VALUE&#125;<span class="comment">#hostname|&#123;HOSTNAME1&#125;#ipaddress|&#123;IPADDRESS&#125;#hostgroup|&#123;TRIGGER.HOSTGROUP.NAME&#125;#triggernseverity|&#123;TRIGGER.NSEVERITY&#125;#triggername|&#123;TRIGGER.NAME&#125;#triggerkey|&#123;TRIGGER.KEY1&#125;#triggeritems|&#123;ITEM.NAME&#125;#itemvalue|&#123;ITEM.VALUE&#125;#eventid|&#123;EVENT.ID&#125;</span></div></pre></td></tr></table></figure>
+<ul>
+<li>Recovery subject</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;EVENT.ID&#125;_0</div></pre></td></tr></table></figure>
+<ul>
+<li>Recovery message</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">triggervalue|&#123;TRIGGER.VALUE&#125;<span class="comment">#hostname|&#123;HOSTNAME1&#125;#ipaddress|&#123;IPADDRESS&#125;#hostgroup|&#123;TRIGGER.HOSTGROUP.NAME&#125;#triggernseverity|&#123;TRIGGER.NSEVERITY&#125;#triggername|&#123;TRIGGER.NAME&#125;#triggerkey|&#123;TRIGGER.KEY1&#125;#triggeritems|&#123;ITEM.NAME&#125;#itemvalue|&#123;ITEM.VALUE&#125;#eventid|&#123;EVENT.ID&#125;</span></div></pre></td></tr></table></figure>
+<h5 id="2-Media-types"><a href="#2-Media-types" class="headerlink" title="2.Media types"></a>2.Media types</h5><p>这里只需要传递subject 参数就可以了。</p>
+<p>Media 配置<br>police.py–报警函数：zabbix告警是调用此函数，将事件id推入redis。</p>
+<p>redis 安装查看第三部分</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">/usr/<span class="built_in">local</span>/zabbix/share/zabbix/alertscripts/police.py</div><div class="line"><span class="comment">#!/usr/bin/env python</span></div><div class="line"><span class="comment">#coding:utf-8</span></div><div class="line"></div><div class="line">import redis</div><div class="line">import sys</div><div class="line"> </div><div class="line">subject=sys.argv[1]</div><div class="line">r = redis.StrictRedis(host=<span class="string">'**.**.**.**'</span>, port=6379)</div><div class="line">r.set(subject,subject)</div></pre></td></tr></table></figure>
+<h4 id="三、操作部分"><a href="#三、操作部分" class="headerlink" title="三、操作部分"></a>三、操作部分</h4><p>1.环境安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#安装python、mysql、redis模块</span></div><div class="line">pip install redis</div><div class="line">pip install mysql-python</div><div class="line">yum install gcc python-devel</div></pre></td></tr></table></figure>
+<p>2.脚本部署</p>
+<p> <a href="https://github.com/yangcvo/Monitor" target="_blank" rel="external">脚本下载地址</a></p>
+<p>①dbread.py–数据库查询函数：接收事件id参数，将zabbix数据库内的数据切割分片并返回告警信息<br>②operation.py –操作函数：接收dbread.py返回的告警信息，进行告警合并，告警压缩处理。并返回处理结果<br>③weixin.py–发送微信告警通知函数：将处理结果发送至指定运维人员<br>④allpolice.py–综合函数：将①②③整合起来，定时每1分钟执行一次</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">*<span class="comment">#文件分布</span></div><div class="line">mkdir -p /data/police</div><div class="line">├── police</div><div class="line">│   ├── dbread.py</div><div class="line">│   ├── allpolice.py</div><div class="line">│   ├── operation.py</div><div class="line">│   ├── send.log</div><div class="line">│   └── weixin.py</div></pre></td></tr></table></figure>
+<h4 id="四、定时任务"><a href="#四、定时任务" class="headerlink" title="四、定时任务"></a>四、定时任务</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">crontab <span class="_">-e</span></div><div class="line"><span class="comment">#告警收敛定时检测#</span></div><div class="line">*/1 * * * * python /data/police/allpolice.py &gt;&gt; /data/police/send.log</div></pre></td></tr></table></figure>
+<h4 id="五、最终效果"><a href="#五、最终效果" class="headerlink" title="五、最终效果"></a>五、最终效果</h4><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix_005.png" alt=""></figure></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/05/21/性能监控/Zabbix/ZABBIX 3.0 自动发现  (九)/">ZABBIX 3.0 自动发现  (九)</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-05-21</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>####自动化分类</p>
+<p><strong>所有的自动化都可以分为2种</strong> </p>
+<blockquote>
+<p>1.自动注册 </p>
+</blockquote>
+<ul>
+<li>zabbix-agnet自动添加 </li>
+</ul>
+<blockquote>
+<p>2.主动发现 </p>
+</blockquote>
+<ul>
+<li>自动发现 Discover</li>
+<li>zabbix api</li>
+</ul>
+		<p><a class="article__read-more-link" href="/2017/05/21/性能监控/Zabbix/ZABBIX 3.0 自动发现  (九)/">...read more</a></p>
 	
 
 	
@@ -268,221 +334,6 @@
 <p>Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一款开源分布式日志系统，一般说来包括了Elasticsearch、Logstash和Kibana，涵盖了后端日志采集、日志搜索服务和前端数据展示等功能。<br>本文将会对Elastic Stack的安装部署流程进行一系列简单的介绍，并记录下了一些部署过程中遇到的坑及解决方法。</p>
 <p>对于一个软件或互联网公司来说，对计算资源和应用进行监控和告警是非常基础的需求。对于大公司或成熟公司，一个高度定制化的监控系统应该已经存在了很长时间并且非常成熟了。而对于一个初创公司或小公司来说，如何利用现有开源工具快速搭建一套日志监控及分析平台是需要探索的事情。</p>
 		<p><a class="article__read-more-link" href="/2017/05/11/日志分析平台/Elasticsearch/ElasticStack 5.x+Kibana-5.5.x+Logstash版本部署概述/">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/05/08/Bigdata-hadoop/HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群 /">HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-05-08</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Bigdata-Hadoop/">Bigdata Hadoop</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Ambari/">Ambari</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h2 id="HORTONW0RKS数据平台搭建Ambari管理监控Hadoop集群"><a href="#HORTONW0RKS数据平台搭建Ambari管理监控Hadoop集群" class="headerlink" title="HORTONW0RKS数据平台搭建Ambari管理监控Hadoop集群"></a>HORTONW0RKS数据平台搭建Ambari管理监控Hadoop集群</h2><p><strong> 题外话 </strong></p>
-<p>我现在在一家上市公司旗下控股子公司负责运维部门，负责IT网络安全办公：主要做的应用运维和网络运维，兼大数据运维。<br>最近跟新来的架构师聊了下Hadoop监控方面：HORTONW0RKS数据平台搭建Ambari监控Hadoop集群.</p>
-<p><strong>HORTONW0RKS数据平台（HDP ®）</strong><br>HDP是业内唯一真正安全的企业级开源的<code>Apache的Hadoop™ ®</code>分配基于集中式架构。HDP解决了静态数据的完整需求，为实时客户应用提供支持，并提供可加速决策和创新的可靠分析。</p>
-<p>使用Hortonworks Sandbox试用最新的HDP功能，或者为生产环境设置HDP，安装和配置群集。<br>查看官网文档：<a href="https://hortonworks.com/downloads/#data-platform" target="_blank" rel="external">HORTONWORKS CONNECTED DATA PLATFORMS DOWNLOADS</a></p>
-<h3 id="1-将Ambari服务存储库文件下载到安装主机上的目录。"><a href="#1-将Ambari服务存储库文件下载到安装主机上的目录。" class="headerlink" title="1. 将Ambari服务存储库文件下载到安装主机上的目录。"></a>1. 将Ambari服务存储库文件下载到安装主机上的目录。</h3><ul>
-<li>Centos6.5 </li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wget -nv http://public-repo-1.hortonworks.com/ambari/centos6/2.x/updates/2.4.2.0/ambari.repo -O /etc/yum.repos.d/ambari.repo</div></pre></td></tr></table></figure>
-<p>⚠️警告：不要修改<code>ambari.repo</code>文件名。在代理注册期间，此文件应在Ambari服务器主机上可用。</p>
-<ol>
-<li>通过检查repo列表确认存储库已配置。</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum repolist</div></pre></td></tr></table></figure>
-<p>您应该在列表中看到类似于以下Ambari存储库的值。</p>
-<p>版本值因安装而异。</p>
-<ol>
-<li>安装Ambari服务。这也安装了默认的PostgreSQL Ambari数据库。</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install ambari-server</div></pre></td></tr></table></figure>
-<p>输入<code>y</code>提示，以确认交易和依赖性检查时。</p>
-<p>成功安装将显示类似于以下内容的输出：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">安装：postgresql-libs-8.4.20-3.el6_6.x86_64 1/4</div><div class="line">安装：postgresql-8.4.20-3.el6_6.x86_64 2/4</div><div class="line">安装：postgresql-server-8.4.20-3.el6_6.x86_64 3/4</div><div class="line">安装：ambari-server-2.4.2.0-1470.x86_64 4/4</div><div class="line">验证：ambari-server-2.4.2.0-1470.x86_64 1/4</div><div class="line">验证：postgresql-8.4.20-3.el6_6.x86_64 2/4</div><div class="line">验证：postgresql-server-8.4.20-3.el6_6.x86_64 3/4</div><div class="line">验证：postgresql-libs-8.4.20-3.el6_6.x86_64 4/4</div><div class="line"></div><div class="line">安装：</div><div class="line">  ambari-server.x86_64 0：2.4.2.0-1470  安装这里的时候会有点慢，因为是访问国外网站下载资源。</div><div class="line"></div><div class="line">已安装依赖关系：</div><div class="line"> postgresql.x86_64 0：8.4.20-3.el6_6           </div><div class="line"> postgresql-libs.x86_64 0：8.4.20-3.el6_6        </div><div class="line"> postgresql-server.x86_64 0：8.4.20-3.el6_6</div></pre></td></tr></table></figure>
-<p>❗️❗️【注意】</p>
-<p>接受有关信任<code>Hortonworks GPG</code>密钥的警告。该键将自动下载并用于验证Hortonworks的软​​件包。您将看到以下消息：</p>
-<p>Importing GPG key 0x07513CAD: Userid: “Jenkins (HDP Builds) <a href="&#109;&#97;&#105;&#108;&#116;&#x6f;&#58;&#106;&#101;&#x6e;&#x6b;&#x69;&#x6e;&#x40;&#x68;&#111;&#x72;&#x74;&#x6f;&#110;&#x77;&#x6f;&#114;&#x6b;&#115;&#x2e;&#99;&#111;&#x6d;">&#106;&#101;&#x6e;&#x6b;&#x69;&#x6e;&#x40;&#x68;&#111;&#x72;&#x74;&#x6f;&#110;&#x77;&#x6f;&#114;&#x6b;&#115;&#x2e;&#99;&#111;&#x6d;</a>“ From :<code>http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins</code></p>
-<p>❗️❗️【注意】</p>
-<p>在具有有限Internet访问或没有Internet访问的群集上部署HDP时，应使用其他方法提供对位的访问。<br>有关设置本地存储库的详细信息，请参阅使用本地存储库。</p>
-<p><code>Ambari</code>服务器默认使用嵌入式<code>PostgreSQL</code>数据库。当您安装<code>Ambari</code>服务器时，PostgreSQL软件包和依赖关系必须可用于安装。这些包通常作为操作系统存储库的一部分提供。请确认您具有适用于<code>postgresql-server</code>软件包的相应存储库。</p>
-<h3 id="2-设置Ambari服务器"><a href="#2-设置Ambari服务器" class="headerlink" title="2.设置Ambari服务器"></a>2.设置Ambari服务器</h3><p>在启动<code>Ambari</code>服务器之前，必须设置Ambari服务器。安装程序将Ambari配置为与Ambari数据库通信，安装JDK并允许您自定义Ambari Server守护程序将作为运行的用户帐户。该 <code>ambari-server setup</code>命令管理设置过程。在Ambari服务器主机上运行以下命令以开始设置过程。您还可以将“ 设置选项”附加到命令。</p>
-<ul>
-<li>启动服务</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line">ambari-server setup</div><div class="line"></div><div class="line"><span class="comment">###这里由于下载jdk1.8太慢速度过慢。我提前把jdk下载下来放到了/srv/jdk1.8.0_66 目录</span></div><div class="line"></div><div class="line">[root@ambari-server_01 ~]<span class="comment"># ambari-server setup</span></div><div class="line">Using python  /usr/bin/python</div><div class="line">Setup ambari-server</div><div class="line">Checking SELinux...</div><div class="line">SELinux status is <span class="string">'enabled'</span></div><div class="line">SELinux mode is <span class="string">'permissive'</span></div><div class="line">WARNING: SELinux is <span class="built_in">set</span> to <span class="string">'permissive'</span> mode and temporarily disabled.</div><div class="line">OK to <span class="built_in">continue</span> [y/n] (y)? y</div><div class="line">Customize user account <span class="keyword">for</span> ambari-server daemon [y/n] (n)? y</div><div class="line">Enter user account <span class="keyword">for</span> ambari-server daemon (root):</div><div class="line">Adjusting ambari-server permissions and ownership...</div><div class="line">Checking firewall status...</div><div class="line">Checking JDK...</div><div class="line">[1] Oracle JDK 1.8 + Java Cryptography Extension (JCE) Policy Files 8</div><div class="line">[2] Oracle JDK 1.7 + Java Cryptography Extension (JCE) Policy Files 7</div><div class="line">[3] Custom JDK</div><div class="line">==============================================================================</div><div class="line">Enter choice (1): 3</div><div class="line">WARNING: JDK must be installed on all hosts and JAVA_HOME must be valid on all hosts.</div><div class="line">WARNING: JCE Policy files are required <span class="keyword">for</span> configuring Kerberos security. If you plan to use Kerberos,please make sure JCE Unlimited Strength Jurisdiction Policy Files are valid on all hosts.</div><div class="line">Path to JAVA_HOME: /srv/jdk1.8.0_66</div><div class="line">Validating JDK on Ambari Server...done.</div><div class="line">Completing setup...</div><div class="line">Configuring database...</div><div class="line">Enter advanced database configuration [y/n] (n)? y</div><div class="line">Configuring database...</div><div class="line">==============================================================================</div><div class="line">Choose one of the following options:</div><div class="line">[1] - PostgreSQL (Embedded)</div><div class="line">[2] - Oracle</div><div class="line">[3] - MySQL / MariaDB</div><div class="line">[4] - PostgreSQL</div><div class="line">[5] - Microsoft SQL Server (Tech Preview)</div><div class="line">[6] - SQL Anywhere</div><div class="line">[7] - BDB</div><div class="line">==============================================================================</div><div class="line">Enter choice (1):3</div><div class="line">Database name (ambari):</div><div class="line">Postgres schema (ambari):</div><div class="line">Username (ambari):</div><div class="line">Enter Database Password (bigdata):</div><div class="line">Default properties detected. Using built-in database.</div><div class="line">Configuring ambari database...</div><div class="line">Checking PostgreSQL...</div><div class="line">Running initdb: This may take up to a minute.</div><div class="line">正在初始化数据库：[确定]</div><div class="line"></div><div class="line">About to start PostgreSQL</div><div class="line">Configuring <span class="built_in">local</span> database...</div><div class="line">Connecting to <span class="built_in">local</span> database...done.</div><div class="line">Configuring PostgreSQL...</div><div class="line">Restarting PostgreSQL</div><div class="line">Extracting system views...</div><div class="line">ambari-admin-2.4.2.0.136.jar</div><div class="line">............</div><div class="line">Adjusting ambari-server permissions and ownership...</div><div class="line">Ambari Server <span class="string">'setup'</span> completed successfully.</div><div class="line">You have mail <span class="keyword">in</span> /var/spool/mail/root</div></pre></td></tr></table></figure>
-<h5 id="2-1-响应安装提示："><a href="#2-1-响应安装提示：" class="headerlink" title="2.1 响应安装提示："></a>2.1 响应安装提示：</h5><p>如果您没有暂时禁用<code>SELinux</code>，您可能会收到警告。接受默认值<code>（y）</code>，然后继续。</p>
-<p>默认情况下，Ambari服务器运行在<code>root</code>。在<code>Customize user account for ambari-server daemon</code>提示符处接受默认<code>（n）</code>，以继续root。</p>
-<p>如果要创建其他用户以运行<code>Ambari</code>服务器或分配以前创建的用户，请<code>y</code>在 <code>Customize user account for ambari-server daemon</code>提示符处选择，然后提供用户名。<br>有关以非root用户身份运行Ambari服务器的更多信息，请参阅Hortonworks数据平台Apache Ambari参考&gt; <a href="http://docs.hortonworks.com/HDPDocuments/Ambari-2.4.2.0/bk_ambari-security/content/configuring_ambari_for_non-root.html" target="_blank" rel="external">为非根用户配置Ambari</a></p>
-<p>如果您没有暂时停用<code>iptables</code>，可能会收到警告。输入<code>y</code>以继续。</p>
-<p>JDK<br>选择要下载的<code>JDK</code>版本。输入<code>1</code>以下载<code>Oracle JDK 1.8</code>。或者，您可以选择输入<code>自定义JDK</code>。如果选择“<code>自定义JDK</code>”，则必须在所有主机上手动安装JDK并指定<code>Java Home</code>路径。</p>
-<p>❗️❗️【注意】</p>
-<p>JDK支持完全取决于您选择的<code>HDP Stack</code>版本。请参阅<a href="http://docs.hortonworks.com/HDPDocuments/Ambari-2.4.2.0/bk_ambari-reference/content/ch_changing_the_jdk_version_on_an_existing_cluster.html" target="_blank" rel="external">Hortonworks数据平台Apache Ambari</a>参考以查看要安装的HDP Stack版本支持的JDK版本。默认情况下，Ambari服务器设置下载并安装Oracle JDK 1.8和随附的Java密码术扩展（JCE）策略文件。如果计划使用其他版本的JDK，请参阅 设置选项以获取更多信息。</p>
-<p>出现提示时接受<code>Oracle JDK</code>许可证。您必须接受此许可证才能从Oracle下载必需的JDK。JDK在部署阶段安装。</p>
-<blockquote>
-<p>数据库选择：</p>
-</blockquote>
-<p>选择<code>n</code>为，<code>Enter advanced database configuration</code>以便为<code>Ambari</code>使用默认的嵌入式<code>PostgreSQL</code>数据库。默认的PostgreSQL数据库名是ambari。默认用户名和密码为ambari/bigdata。否则，要使用现有的PostgreSQL，MySQL / MariaDB或Oracle数据库与Ambari，请选择y。</p>
-<p>如果使用现有的PostgreSQL，MySQL / MariaDB或Oracle数据库实例，请使用以下提示之一：</p>
-<p>❗️❗️[重要]<br>在运行安装程序和输入高级数据库配置之前，必须使用<code>“使用非默认数据库</code>- Ambari”中详述的步骤准备非默认数据库实例。</p>
-<p>❗️❗️[重要]</p>
-<p>不支持使用Microsoft SQL Server或SQL Anywhere数据库选项。</p>
-<p>要使用现有的Oracle实例，并为该数据库选择自己的数据库名称，用户名和密码，请输入<code>2</code>。<br>选择要使用的数据库，并提供在提示中请求的任何信息，包括主机名，端口，服务名或SID，用户名和密码。<br>要使用现有的MySQL / MariaDB数据库，并为该数据库选择自己的数据库名称，用户名和密码，请输入3。<br>选择要使用的数据库，并提供在提示中请求的任何信息，包括主机名，端口，数据库名称，用户名和密码。<br>要使用现有的PostgreSQL数据库，并为该数据库选择自己的数据库名称，用户名和密码，请输入4。<br>选择要使用的数据库，并提供在提示中请求的任何信息，包括主机名，端口，数据库名称，用户名和密码。<br>继续配置远程数据库连接属性[y / n]选择<code>y</code>。</p>
-<blockquote>
-<p>这里数据库用户名和密码都是默认安装：</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Database name (ambari)</div><div class="line">Postgres schema (ambari)</div><div class="line">Username (ambari)</div><div class="line">Enter Database Password (bigdata)</div></pre></td></tr></table></figure>
-<blockquote>
-<p>这里我做了一层Nginx代理：将Ambari服务器配置为使用此代理服务器</p>
-</blockquote>
-<h3 id="3-启动Ambari服务器"><a href="#3-启动Ambari服务器" class="headerlink" title="3.启动Ambari服务器"></a>3.启动Ambari服务器</h3><p>在Ambari服务器主机上运行以下命令：</p>
-<pre><code>ambari-server start
-</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[root@ambari-server ~]<span class="comment"># ambari-server start</span></div><div class="line">Using python  /usr/bin/python</div><div class="line">Starting ambari-server</div><div class="line">Ambari Server running with administrator privileges.</div><div class="line">Organizing resource files at /var/lib/ambari-server/resources...</div><div class="line">Ambari database consistency check started...</div><div class="line">No errors were found.</div><div class="line">Ambari database consistency check finished</div><div class="line">Server PID at: /var/run/ambari-server/ambari-server.pid</div><div class="line">Server out at: /var/<span class="built_in">log</span>/ambari-server/ambari-server.out</div><div class="line">Server <span class="built_in">log</span> at: /var/<span class="built_in">log</span>/ambari-server/ambari-server.log</div><div class="line">Waiting <span class="keyword">for</span> server start....................</div><div class="line">Ambari Server <span class="string">'start'</span> completed successfully.</div><div class="line">You have mail <span class="keyword">in</span> /var/spool/mail/root</div></pre></td></tr></table></figure>
-<p>要检查Ambari服务器进程：</p>
-<pre><code>ambari-server status
-</code></pre><p>停止Ambari服务器：</p>
-<pre><code>ambari-server stop
-</code></pre><p>在Ambari服务器启动时，<code>Ambari</code>运行数据库一致性检查，查找问题。如果发现任何问题，Ambari服务器启动将中止，并且一条消息将打印到控制台“数据库配置一致性检查失败”。更多详细信息将写入以下日志文​​件：</p>
-<pre><code>/var/log/ambari-server/ambari-server-check-database.log
-</code></pre><p>您可以通过使用以下选项跳过此检查来强制Ambari服务器启动：</p>
-<pre><code>ambari-server start --skip-database-check
-</code></pre><p>如果存在数据库问题，请选择跳过此检查，在更正数据库一致性问题之前，不要对集群拓扑进行任何更改或执行集群升级。最好查看官网操作。</p>
-<h2 id="第3章安装，配置和部署HDP集群"><a href="#第3章安装，配置和部署HDP集群" class="headerlink" title="第3章安装，配置和部署HDP集群"></a>第3章安装，配置和部署HDP集群</h2><h3 id="1-登录到Apache-Ambari"><a href="#1-登录到Apache-Ambari" class="headerlink" title="1.登录到Apache Ambari"></a>1.登录到Apache Ambari</h3><ul>
-<li><p>将浏览器指向 <code>http://&lt;your.ambari.server&gt; :8080</code>，其中<code>&lt;your.ambari.server&gt;</code>是您的ambari服务器主机的名称。例如，默认Ambari服务器主机位于<code>http://c6401.ambari.apache.org:8080</code>。</p>
-</li>
-<li><p>使用默认用户名/密码登录Ambari服务器：<code>admin / admin</code>。您可以稍后更改这些凭据。</p>
-</li>
-</ul>
-<h3 id="2-启动Ambari安装向导"><a href="#2-启动Ambari安装向导" class="headerlink" title="2.启动Ambari安装向导"></a>2.启动Ambari安装向导</h3><p>从<code>Ambari Welcome</code>页面，选择启动安装向导。</p>
-<p>提供集群，管理谁可以访问群集，以及自定义视图为Ambari用户。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Ambariwelcome.png" alt=""></figure></p>
-<p><figure class="figure"><img src="http://docs.hortonworks.com/HDPDocuments/Ambari-2.4.2.0/bk_ambari-installation/content/figures/2/figures/170AmbariWelcome.png" alt=""></figure></p>
-<h3 id="3-命名您的群集"><a href="#3-命名您的群集" class="headerlink" title="3.命名您的群集"></a>3.命名您的群集</h3><p>在Name your cluster，键入要创建的集群的名称。名称中不要使用空格或特殊字符。</p>
-<p>选择Next。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_02.png" alt=""></figure></p>
-<h3 id="4-选择版本"><a href="#4-选择版本" class="headerlink" title="4.选择版本"></a>4.选择版本</h3><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_03.png" alt=""></figure></p>
-<p>这里我选择<code>redhat6</code> 其他的都<code>remove</code>掉。</p>
-<p>在此步骤中，您将选择群集的软件版本和交付方式。使用公共存储库需要Internet连接。使用本地存储库需要您在网络中可用的存储库中配置软件。</p>
-<ul>
-<li>选择堆栈</li>
-</ul>
-<p>可用的HDP版本显示在TAB中。当您选择TAB时，Ambari会尝试发现该HDP堆栈的特定版本可用。该列表显示在DROPDOWN中。对于该特定版本，将显示可用的服务，其中的版本显示在TABLE中。</p>
-<ul>
-<li>选择版本</li>
-</ul>
-<p>如果Ambari可以访问Internet，则特定版本将作为选项列在DROPDOWN中。如果您有未列出的版本的版本定义文件，您可以单击添加版本…并上载VDF文件。此外，如果您无法访问Internet或不确定要安装哪个特定版本，则 默认版本定义也包含在列表中。</p>
-<ul>
-<li>选择存储库</li>
-</ul>
-<p>Ambari允许您选择从公共存储库（如果您有Internet访问权限）或本地存储库安装软件。无论您的选择如何，您都可以编辑存储库的基本URL。将显示可用的操作系统，您可以从列表中添加/删除操作系统以适合您的环境</p>
-<p>❗️❗️注意<br>UI显示基于操作系统系列（OS系列）的存储库基本URL。请确保基于正在运行的操作系统设置正确的操作系统系列。下表将OS系列映射到操作系统。</p>
-<ul>
-<li><p><strong>高级选项</strong></p>
-</li>
-<li><p><strong>有高级存储库选项可用。</strong></p>
-</li>
-</ul>
-<p>跳过存储库基本URL验证（高级）： 当您单击下一步时，Ambari将尝试连接到存储库基本URL，并验证您已输入验证存储库。如果没有，将显示一个错误，您必须在继续之前纠正。</p>
-<p>使用<code>RedHat Satellite/Spacewalk：</code>仅当计划使用本地存储库时，才会启用此选项。当您为软件存储库选择此选项时，您负责配置<code>Satellite/Spacewalk</code>中的存储库通道，并确认所选群集版本的存储库在群集中的主机上可用。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_04.png" alt=""></figure></p>
-<h3 id="5-安装选项"><a href="#5-安装选项" class="headerlink" title="5.安装选项"></a>5.安装选项</h3><p>为了构建集群，安装向导将提示您有关如何设置它的一般信息。您需要提供每个主机的FQDN。该向导还需要访问在设置无密码SSH中创建的私钥文件  。使用主机名和密钥文件信息，向导可以定位，访问和与群集中的所有主机安全交互。</p>
-<p>使用Target Hosts文本框输入主机名列表，每行一个。您可以使用括号内的范围来表示较大的主机集。例如，对于host01.domain通过host10.domain使用 host[01-10].domain</p>
-<p>⚠️ <strong>安装服务器集群机器一定要系统版本要一致不然安装会提示版本不兼容。</strong></p>
-<p>❗️❗️    注意<br>如果要在EC2上部署，请使用内部专用<code>DNS主机名</code>。</p>
-<p>在ambari服务器配置hosts</p>
-<pre><code>vim /etc/hosts
-</code></pre><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.151</span>    <span class="selector-tag">datanode151</span></div><div class="line">192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.173</span>    <span class="selector-tag">datanode_173</span> <span class="selector-tag">datanode-173</span><span class="selector-class">.hadoop</span></div></pre></td></tr></table></figure>
-<p>如果要让<code>Ambari</code>使用SSH在所有主机上自动安装Ambari代理，请选择<code>Provide your SSH Private Key</code>并使用部分中的 <code>Choose File</code>按钮<code>Host Registration Information</code>查找与先前在所有主机上安装的公钥相匹配的私钥文件，或者剪切并粘贴键手动插入文本框。</p>
-<p>填写您选择的SSH密钥的用户名。如果不想使用root用户，则必须为可以在不输入密码的情况下执行sudo的帐户提供用户名。如果您的环境中的主机上的SSH配置为22以外的端口，您也可以更改它。</p>
-<p>如果您不希望Ambari自动安装Ambari代理，请选择<code>Perform manual registration</code>。有关更多信息，请参阅手动安装Ambari代理。</p>
-<p>选择<code>Register and Confirm</code>继续。</p>
-<p>这里提示：The following hostnames are not valid FQDNs: datanode_173.hadoop</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_06.png" alt=""></figure></p>
-<p>这里跳转到安装页面：发现报错提示datanode-173.hadoop主机访问Ambari机器不能访问。<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_07.png" alt=""></figure></p>
-<h3 id="6-确认主机"><a href="#6-确认主机" class="headerlink" title="6.确认主机"></a>6.确认主机</h3><p><code>Confirm Hosts</code> 提示您确认<code>Ambari</code>已为您的集群找到正确的主机，并检查这些主机以确保它们具有继续安装所需的正确目录，软件包和进程。</p>
-<p>如果选择了错误的主机，您可以通过选择相应的复选框并单击灰色<code>Remove Selected</code>按钮来删除它们。要删除单个主机，请单击Remove“操作”列中的小白色按钮。</p>
-<p>在屏幕底部，您可能会注意到一个黄色框，表示在检查过程中遇到了一些警告。例如，您的主机可能已有<code>wget</code>或的副本 <code>curl</code>。选择<code>Click here to see the warnings</code> 查看检查内容和导致警告的原因的列表。警告页面还提供对python脚本的访问，可以帮助您清除可能遇到的任何问题，让您运行<code>Rerun Checks</code>。</p>
-<p>在datanode_173服务器配置hosts</p>
-<pre><code>vim /etc/hosts
-</code></pre><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.151</span>    <span class="selector-tag">datanode151</span></div><div class="line">192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.173</span>    <span class="selector-tag">datanode_173</span> <span class="selector-tag">datanode-173</span><span class="selector-class">.hadoop</span></div></pre></td></tr></table></figure>
-<p>每台节点里配置FQDN，如下以主节点为例</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">vi /etc/sysconfig/network</div><div class="line">NETWORKING=yes</div><div class="line">HOSTNAME=SY-001.hadoop</div></pre></td></tr></table></figure>
-<p>配置上就可以了。 把datanode151也是ambari机器配置在hosts就可以了。</p>
-<p><strong>最好设置root的无密码登录，因为我们配置的集群都是内网的，没什么安全性问题，使用root操作可以省去一些麻烦，非root用户可能在安装Hadoop组件时不能成功</strong></p>
-<p>下面是我安装这里提示没有找到文件目录查看安装报错操作：</p>
-<pre><code>mkdir /var/lib/ambari-agent/data
-</code></pre><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Ambari_08.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_09.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_10.png" alt=""></figure></p>
-<h3 id="7-选择服务"><a href="#7-选择服务" class="headerlink" title="7.选择服务"></a>7.选择服务</h3><p>将看到选择要安装到群集中的服务。HDP堆栈包括许多服务。您可以选择立即安装任何其他可用服务，或稍后添加服务。默认情况下，安装向导将选择所有可用的服务进行安装。</p>
-<p>选择<code>none</code>清除所有选择，或选择 <code>all</code>选择所有列出的服务。</p>
-<p>选择或清除单个复选框以定义一组要立即安装的服务。</p>
-<p>选择要立即安装的服务后，选择Next。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_11.png" alt=""></figure></p>
-<h3 id="8-分配主站"><a href="#8-分配主站" class="headerlink" title="8.分配主站"></a>8.分配主站</h3><p>Ambari安装向导会将所选服务的主组件分配给集群中的相应主机，并在Assign Masters中显示分配。左列显示服务和当前主机。右列显示主机的当前主组件分配，指示每个主机上安装的CPU内核数量和RAM数量。</p>
-<p>要更改服务的主机分配，请从该服务的下拉菜单中选择主机名。</p>
-<p>要删除ZooKeeper实例，请单击要删除的主机地址旁边的绿色减号图标。</p>
-<p>当您对作业感到满意时，选择Next。</p>
-<p><figure class="figure"><img src="" alt=""></figure></p>
-<h3 id="9-分配从属和客户端"><a href="#9-分配从属和客户端" class="headerlink" title="9.分配从属和客户端"></a>9.分配从属和客户端</h3><p>Ambari安装向导将从属组件（DataNodes，NodeManager和RegionServers）分配给集群中的相应主机。它还会尝试选择主机以安装适当的客户端集。</p>
-<p>使用<code>all</code>或<code>none</code>可分别选择列中的所有主机或不选择任何主机。</p>
-<p>如果主机旁边有星号，则该主机也运行一个或多个主组件。将鼠标悬停在星号上，以查看该主机上的哪些主组件。</p>
-<p>通过使用特定主机旁边的复选框来微调您的选择。</p>
-<p>当你对你的作业感到满意时，选择<code>Next</code>。</p>
-<h3 id="10-自定义服务"><a href="#10-自定义服务" class="headerlink" title="10.自定义服务"></a>10.自定义服务</h3><p>自定义服务步骤为您提供一组选项卡，您可以查看和修改HDP集群设置。向导会尝试为每个选项设置合理的默认值。你是强烈建议，以检查这些设置为您的要求可能略有不同。</p>
-<p>浏览每个服务标签，然后将光标悬停在每个属性上，您可以看到属性做什么的简要说明。显示的服务选项卡数取决于您决定在群集中安装的服务。任何需要输入的选项卡都会显示一个红色徽章，其中包含需要注意的属性数。选择显示红色徽章编号的每个服务选项卡，然后输入相应的信息。</p>
-<ul>
-<li>目录</li>
-</ul>
-<p>HDP将存储信息的目录的选择是至关重要的。Ambari将尝试根据您环境中可用的安装点选择合理的默认值，但强烈建议您查看Ambari推荐的默认目录设置。特别是，确认目录，例如<code>/tmp和 /var</code>被不被用于下<code>HDFS的NameNode</code>目录和数据管理部目录HDFS标签。</p>
-<ul>
-<li>密码</li>
-</ul>
-<p>您必须为Hive和Oozie服务以及Knox的主密钥提供数据库密码。使用Hive作为示例，选择Hive选项卡并展开高级部分。在以红色标记的数据库密码字段中，提供密码，然后重新键入以确认。</p>
-<p>安装各个服务，并且完成安装后会启动相关服务，安装过程比较长，如中中出现错误，根据具体提供或日志进行操作。 </p>
-<p>这里我就不贴出来了，因为测试环境机器我做测试用机器配置不够所有后面结果经验写出来了。</p>
-<p>安装的还是提示失败：<code>ImportError: No module named rpm</code></p>
-<p>参考这篇文章重新安装解决了这个问题：<a href="http://stackoverflow.com/questions/17490921/no-module-named-rpm-when-i-call-yum-on-shell" target="_blank" rel="external">ImportError: No module named rpm</a></p>
-<h3 id="11-安装，启动和测试"><a href="#11-安装，启动和测试" class="headerlink" title="11.安装，启动和测试"></a>11.安装，启动和测试</h3><p>安装的进度将显示在屏幕上。Ambari安装，启动，并对每个组件运行一个简单的测试。过程的总体状态显示在屏幕顶部的进度栏中，主机的主机状态显示在主要部分。在此过程中不要刷新浏览器。刷新浏览器可能会中断进度指示器。</p>
-<p>要查看每个主机已完成的任务的具体信息，请单击Message相应主机列中的链接。在 Tasks弹出窗口中，单击单个任务以查看相关的日志文件。您可以使用Show下拉列表选择过滤条件。要查看更大版本的日志内容，请单击Open图标或将内容复制到剪贴板，使用Copy图标。</p>
-<p><strong>安装完成效果图:</strong></p>
-<p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari002.png" alt=""></figure></p>
-<blockquote>
-<p>让我们从左侧栏或下拉菜单中选择Yarn进入YARN信息中心。</p>
-</blockquote>
-<p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari004.png" alt=""></figure></p>
-<blockquote>
-<p>我们将开始更新线程容量调度策略的配置。</p>
-</blockquote>
-<p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari005.png" alt=""></figure></p>
-<p>向下滚动到<code>Scheduler</code>页面的部分。默认容量调度策略只有一个队列。</p>
-<p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari006.png" alt=""></figure></p>
-<p>让我们看看调度策略。向上滚动到页面顶部，然后点击快速链接。然后从下拉列表中选择<code>ResourceManager UI</code>。</p>
-<p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari007.png" alt=""></figure></p>
-<blockquote>
-<p>正如你可以看到，我们只有默认策略。</p>
-</blockquote>
-<p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari008.png" alt=""></figure></p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>安装Ambari官网地址<a href="https://docs.hortonworks.com/HDPDocuments/Ambari-2.4.2.0/bk_ambari-installation/content/download_the_ambari_repo_lnx6.html" target="_blank" rel="external">install Ambari</a><br><a href="https://cwiki.apache.org/confluence/display/AMBARI/Installation+Guide+for+Ambari+2.4.2" target="_blank" rel="external">编译安装Ambari 2.4.2安装指南</a></p>
-
 	
 
 	
@@ -530,47 +381,6 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables off   #开机不启动防火墙服务</span></div><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables on   #开机启动防火墙服务</span></div></pre></td></tr></table></figure>
 <p>解决以后服务重新跑一遍已经搞定。</p>
 <p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop2.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop3.png" alt=""></figure></p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/05/04/Bigdata-hadoop/zookeeper/Zookeeper 报错：Unable to connect to zookeeper server within timeout: 6000/">Zookeeper 报错：Unable to connect to zookeeper server within timeout:6000</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-05-04</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Bigdata/">Bigdata</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/ZooKeeper/">ZooKeeper</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h4 id="Zookeeper-报错：Unable-to-connect-to-zookeeper-server-within-timeout-6000"><a href="#Zookeeper-报错：Unable-to-connect-to-zookeeper-server-within-timeout-6000" class="headerlink" title="Zookeeper 报错：Unable to connect to zookeeper server within timeout : 6000"></a>Zookeeper 报错：Unable to connect to zookeeper server within timeout : 6000</h4><h4 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h4><p>Exception in thread “main” org.I0Itec.zkclient.exception.ZkTimeoutException: <code>Unable to connect to zookeeper server within timeout: 6000</code></p>
-<h4 id="解决："><a href="#解决：" class="headerlink" title="解决："></a>解决：</h4><p>I had the same problem and here is how I fixed it:<br>1) Stop all Kafka and Zookeeper processes</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ps -aux | grep zoo</div><div class="line">ps -aux | grep kafka</div></pre></td></tr></table></figure>
-<p>(then proceed to kill all process ids from above jobs)<br>2) Run zookeeper</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;kafka_dir&gt;/bin/zookeeper-server-start.sh ../config/zookeeper.properties</div></pre></td></tr></table></figure>
-<p>3) Run kafka server</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;kafka_dir&gt;/bin/kafka-server-start.sh ../config/server.properties</div></pre></td></tr></table></figure>
-<p>✨✨查看zk配置然后重启服务。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">./zookeeper-3.4.6/bin/zkServer.sh start</div><div class="line">./zookeeper-3.4.6/bin/zkServer.sh status</div><div class="line">./bin/kafka-server-start.sh config/server.properties &amp;</div></pre></td></tr></table></figure>
-<p>先重启zk后重启kafka 因为kafka基于zk运行的,Zk运行超时。说明连接有问题。查看启动日志。</p>
 
 	
 

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Centos7搭建配置phabricator开源的可视化代码审查工具 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>Centos7搭建配置phabricator开源的可视化代码审查工具</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-01-07</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/automation/">automation</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Phabricator/">Phabricator</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="Phabricator是由Fackbook开发的一个开源的可视化代码审查工具。"><a href="#Phabricator是由Fackbook开发的一个开源的可视化代码审查工具。" class="headerlink" title="Phabricator是由Fackbook开发的一个开源的可视化代码审查工具。"></a>Phabricator是由Fackbook开发的一个开源的可视化代码审查工具。</h2><p>公司项目管理和代码审查一直用<code>jira</code>和<code>git</code>来做,最近发现一个不错的开源的项目管理平台 自己搭建下感觉还挺好用的话就转移过来了。</p>
+<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>在Phabricator中，可以非常方便的针对每一段代码进行交际讨论;负责审查的工程师可以接受代码改变，可以提出疑问要求原作者继续修改等等。</p>
+<p>在Pharbricator中，可以新建代码仓库（也就是在phabricator中宿主仓库），也可以导入外部仓库（从外部仓库拉取数据，并跟踪该外部仓库保持数据同步，phabricator内部有一个更新机制）;支持http ，也支持ssh（不过配置比较麻烦点）; Phabricator支持两种代码审查工作流：“提交前审查”和“audit”（提交后审查）。</p>
+<h3 id="在Phabricator的主面板中主要有以下几个工具："><a href="#在Phabricator的主面板中主要有以下几个工具：" class="headerlink" title="在Phabricator的主面板中主要有以下几个工具："></a>在Phabricator的主面板中主要有以下几个工具：</h3><ul>
+<li>差分 - 审查代码：管理预推代码审查工作流程;</li>
+<li>Maniphest - 任务和错误：管理成员的所有任务和Bug，可对任务或Bug展开讨论;</li>
+<li>Diffusion - 主机和浏览存储库：管理代码仓库，支持Git / Hg / SVN;</li>
+<li>审计 - 浏览和审计提交：管理后推代码审查工作流程;</li>
+<li>Phriction - Wiki：文档管理;</li>
+<li>项目 - 组织：工程管理，可关联资源库;</li>
+<li>源代码托管在<a href="https://github.com/phacility/phabricator" target="_blank" rel="external">Github</a></li>
+</ul>
+<h3 id="特性："><a href="#特性：" class="headerlink" title="特性："></a>特性：</h3><p>代码审查（Code Review）<br>git仓库<br>跟踪bug<br>项目管理<br>团队沟通</p>
+<p>关于phabricator更多的介绍，访问项目官网：<a href="https：//secure.phabricator.com/book/phabricator/article/introduction/">phabricator</a></p>
+<h3 id="环境要求："><a href="#环境要求：" class="headerlink" title="环境要求："></a>环境要求：</h3><p>Phabricator是一个LAMP应用套件，因此最基本的要求就是LAMP环境：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">* Linux系统环境：centos7.1 64位</div><div class="line">* Apache（或nginx，或lighttpd）：需要Apache 2.2.7以上版本。</div><div class="line">* MySQL：MySQL必需</div><div class="line">* PHP：需要PHP5.2以上版本</div><div class="line"></div><div class="line">这里我安装版本：</div><div class="line">* Apache 2.2.15</div><div class="line">* mysql 5.6.29</div><div class="line">* php 5.4.16</div></pre></td></tr></table></figure>
+<h3 id="phabricator安装"><a href="#phabricator安装" class="headerlink" title="phabricator安装"></a>phabricator安装</h3><p>参考：<a href="https : //secure.phabricator.com/book/phabricator/article/installation_guide/">官网phabricator安装</a></p>
+<p>具体过程不描述，以我参考的网络资源进行说明。网上的资源参考了特别多，只放我认为最有帮助的。</p>
+<p>首先，<code>phabricator</code>是基于php的，同时需要发送邮件（提醒代码审查者），所以假定服务器上已经配置好了<code>php，mysql，nginx，postfix</code>等环境;同时，官方推荐开启APC性能.</p>
+<p>###1 安装MariaDB数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install mariadb mariadb-server</div></pre></td></tr></table></figure>
+<p>启动Mariadb服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">systemctl start mariadb</div><div class="line">systemctl <span class="built_in">enable</span> mariadb</div></pre></td></tr></table></figure>
+<p>运行MySQL初始化安装脚本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql_secure_installation</div></pre></td></tr></table></figure>
+<p>默认密码为空。</p>
+<p>这里需要配置优化my.cnf 如果默认不优化也是可以的不过安装完成以后可以看到我下面文章会出现10多个问题 大部分都是跟MySQL相关的。</p>
+<h5 id="配置优化MariaDB数据库："><a href="#配置优化MariaDB数据库：" class="headerlink" title="配置优化MariaDB数据库："></a>配置优化MariaDB数据库：</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">vim /etc/my.cnf</div><div class="line">[mysqld]</div><div class="line">innodb_buffer_pool_size = 1600M</div><div class="line">max_allowed_packet = <span class="string">"33554432"</span></div><div class="line">sql_mode=STRICT_ALL_TABLES</div><div class="line">ft_stopword_file=/var/www/html/phabricator/resources/sql/stopwords.txt</div><div class="line">ft_min_word_len = 3</div></pre></td></tr></table></figure>
+<h5 id="需要执行的SQL语句："><a href="#需要执行的SQL语句：" class="headerlink" title="需要执行的SQL语句："></a>需要执行的SQL语句：</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[root@Phabricator sql]<span class="comment"># mysql -uroot -pqwde1dsdfg3.com</span></div><div class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</div><div class="line">Your MariaDB connection id is 75</div><div class="line">Server version: 5.5.52-MariaDB MariaDB Server</div><div class="line"></div><div class="line">Copyright (c) 2000, 2016, Oracle, MariaDB Corporation Ab and others.</div><div class="line"></div><div class="line">Type <span class="string">'help;'</span> or <span class="string">'\h'</span> <span class="keyword">for</span> help. Type <span class="string">'\c'</span> to clear the current input statement.</div><div class="line"></div><div class="line">MariaDB [(none)]&gt; REPAIR TABLE phabricator_search.search_documentfield;</div><div class="line">+-----------------------------------------+--------+----------+----------+</div><div class="line">| Table                                   | Op     | Msg_type | Msg_text |</div><div class="line">+-----------------------------------------+--------+----------+----------+</div><div class="line">| phabricator_search.search_documentfield | repair | status   | OK       |</div><div class="line">+-----------------------------------------+--------+----------+----------+</div><div class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</div></pre></td></tr></table></figure>
+<ul>
+<li>mysql 5.6安装，不过这里我最后启用的是5.6版本，原因已经说明了.</li>
+</ul>
+<h3 id="2-安装Apache"><a href="#2-安装Apache" class="headerlink" title="2 安装Apache"></a>2 安装Apache</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">＃yum -y install httpd</div></pre></td></tr></table></figure>
+<p>配置Apache，提高一点安全性：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sed -i <span class="string">'s/^/#&amp;/g'</span> /etc/httpd/conf.d/welcome.conf  <span class="comment"># 注释掉每一行</span></div><div class="line">sed -i <span class="string">"s/Options Indexes FollowSymLinks/Options FollowSymLinks/"</span> /etc/httpd/conf/httpd.conf</div></pre></td></tr></table></figure>
+<p>启动Apache web服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">systemctl start httpd</div><div class="line">systemctl <span class="built_in">enable</span> httpd</div></pre></td></tr></table></figure>
+<h3 id="3-安装PHP和一些模块"><a href="#3-安装PHP和一些模块" class="headerlink" title="3 安装PHP和一些模块"></a>3 安装PHP和一些模块</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install php php-mysqli php-mbstring php-gd php-curl php-cli php-common php-process</div></pre></td></tr></table></figure>
+<p>配置优化 不然安装成功以后会出现问题错误提现❌：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">1. 未配置服务器时区  </div><div class="line"></div><div class="line">[root@Phabricator sql]<span class="comment"># vim /etc/php.ini</span></div><div class="line">例 </div><div class="line">;date.timezone = </div><div class="line">改成: </div><div class="line">date.timezone = Asia/Shanghai </div><div class="line"> </div><div class="line">PHP post_max_size未配置 </div><div class="line">将PHP 配置中的post_max_size 调整为至少32MB。设置为较小值时，大文件上传可能无法正常工作。</div><div class="line">post_max_size = 32M</div></pre></td></tr></table></figure>
+<ul>
+<li>php5.4版本可以直接使用<a href="https://secure.phabricator.com/diffusion/P/browse/master/scripts/install/install_rhel-derivs.sh" target="_blank" rel="external">phabricator.sh</a>提供的脚本安装，这个脚本会检查<code>phabricator</code>需要的环境，没有的会自动安装，之后会安装好phabricator，安装参考<a href="https://my.oschina.net/yoyoko/blog/126325" target="_blank" rel="external">phabricator</a>安装向导.</li>
+</ul>
+<h3 id="4-安装Git"><a href="#4-安装Git" class="headerlink" title="4 安装Git"></a>4 安装Git</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install git</div></pre></td></tr></table></figure>
+<p>可参考网上防火墙和selinux建议根据此文章配置一下.</p>
+<p>如果你已经设置好LAMP环境，你可以已经获得你所需的任何东东。如何安装LAMP可以查看我写<a href="http://blog.yangcvo.me/2014/12/07/Linux%E7%AC%94%E8%AE%B0/LAMP/yum%E4%B8%80%E9%94%AE%E5%AE%89%E8%A3%85%E4%B8%8E%E5%8D%B8%E8%BD%BDLAMP%E7%8E%AF%E5%A2%83/" target="_blank" rel="external">yum一键安装与卸载LAMP环境</a></p>
+<h3 id="5-下载安装Phabricator"><a href="#5-下载安装Phabricator" class="headerlink" title="5 下载安装Phabricator"></a>5 下载安装Phabricator</h3><p>既然你已经安装以上所需的依赖环境服务，下面获取Phabricator以及其依赖包：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">mkdir /var/www/html/</div><div class="line"><span class="built_in">cd</span> /var/www/html/</div><div class="line">git <span class="built_in">clone</span> https://github.com/phacility/libphutil.git</div><div class="line">git <span class="built_in">clone</span> https://github.com/phacility/arcanist.git</div><div class="line">git <span class="built_in">clone</span> https://github.com/phacility/phabricator.git</div><div class="line">chown -R apache: /var/www/html/*</div></pre></td></tr></table></figure>
+<h3 id="6-创建Apache虚拟主机配置文件"><a href="#6-创建Apache虚拟主机配置文件" class="headerlink" title="6 创建Apache虚拟主机配置文件"></a>6 创建Apache虚拟主机配置文件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vim /etc/httpd/conf.d/phabricator.conf</div></pre></td></tr></table></figure>
+<p>写入内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&lt;VirtualHost *:80&gt;</div><div class="line">    ServerAdmin phabricator.ihaozhuo.com</div><div class="line">    DocumentRoot /var/www/html/phabricator/webroot/</div><div class="line">    ServerName phabricator.ihaozhuo.com</div><div class="line">    ServerAlias phabricator.ihaozhuo.com</div><div class="line">    RewriteEngine on</div><div class="line">    RewriteRule ^/rsrc/(.*)     -                       [L,QSA]</div><div class="line">    RewriteRule ^/favicon.ico   -                       [L,QSA]</div><div class="line">    RewriteRule ^(.*)$          /index.php?__path__=<span class="variable">$1</span>  [B,L,QSA]</div><div class="line">    &lt;Directory /var/www/html/phabricator/webroot/&gt;</div><div class="line">        AllowOverride All</div><div class="line">    &lt;/Directory&gt;</div><div class="line">    ErrorLog /var/<span class="built_in">log</span>/httpd/phabricator.ihaozhuo.com-error_log</div><div class="line">    CustomLog /var/<span class="built_in">log</span>/httpd/phabricator.ihaozhuo.com-access_log common</div><div class="line">&lt;/VirtualHost&gt;</div></pre></td></tr></table></figure>
+<p>❗️❗️注意替换上面的域名。<br>其中<code>/var/www/html/phabricator/webroot</code>是我的<code>phabricator</code>安装路径，大家使用时候换成自己的即可。<br>安装好phabricator之后，需要使用phabricator安装目录下bin文件夹下的命令来更新下.</p>
+<h3 id="重启apache服务："><a href="#重启apache服务：" class="headerlink" title="重启apache服务："></a>重启apache服务：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">systemctl restart httpd</div></pre></td></tr></table></figure>
+<h3 id="7-设置MariaDB数据库"><a href="#7-设置MariaDB数据库" class="headerlink" title="7 设置MariaDB数据库"></a>7 设置MariaDB数据库</h3><p>配置Phabricator连接MariaDB需要的信息：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">cd</span> <span class="string">/var/www/html/phabricator/</span></div><div class="line"><span class="string">./bin/config</span> <span class="keyword">set</span> mysql.host localhost  </div><div class="line"><span class="string">./bin/config</span> <span class="keyword">set</span> mysql.port 3306</div><div class="line"><span class="string">./bin/config</span> <span class="keyword">set</span> mysql.user root</div><div class="line"><span class="string">./bin/config</span> <span class="keyword">set</span> mysql.pass &lt;your-MySQL-root-password&gt;</div></pre></td></tr></table></figure>
+<h3 id="创建数据库："><a href="#创建数据库：" class="headerlink" title="创建数据库："></a>创建数据库：</h3><p>出现问题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">[root@phabricator bin]<span class="comment"># ./storage upgrade</span></div><div class="line">MySQL Credentials Not Configured</div><div class="line"></div><div class="line">Unable to connect to MySQL using the configured credentials. You must</div><div class="line">configure standard credentials before you can upgrade storage. Run these</div><div class="line">commands to <span class="built_in">set</span> up credentials:</div><div class="line"></div><div class="line">  phabricator/ $ ./bin/config <span class="built_in">set</span> mysql.host __host__</div><div class="line">  phabricator/ $ ./bin/config <span class="built_in">set</span> mysql.user __username__</div><div class="line">  phabricator/ $ ./bin/config <span class="built_in">set</span> mysql.pass __password__</div><div class="line"></div><div class="line">These standard credentials are separate from any administrative credentials</div><div class="line">provided to this <span class="built_in">command</span> with __--user__ or __--password__, and must be</div><div class="line">configured correctly before you can proceed.</div><div class="line"></div><div class="line">Raw MySQL Error: Attempt to connect to root@localhost failed with error</div><div class="line"><span class="comment">#2002: Can't connect to local MySQL server through socket</span></div><div class="line"><span class="string">'/var/lib/mysql/mysql.sock'</span> (2).</div></pre></td></tr></table></figure>
+<p>出现这一步问题 就是因为没有配置好MySQL的连接地址信息。配置下mysql的user和pass就行。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@Phabricator <span class="built_in">local</span>]<span class="comment">#  cat /var/www/html/phabricator/conf/local/local.json</span></div><div class="line">&#123;</div><div class="line">  <span class="string">"mysql.pass"</span>: <span class="string">"qwde1dsdfg3.com"</span>,</div><div class="line">  <span class="string">"mysql.user"</span>: <span class="string">"root"</span>,</div><div class="line">  <span class="string">"mysql.port"</span>: <span class="string">"3306"</span>,</div><div class="line">  <span class="string">"mysql.host"</span>: <span class="string">"localhost"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="重新初始化数据库："><a href="#重新初始化数据库：" class="headerlink" title="重新初始化数据库："></a>重新初始化数据库：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">[root@Phabricator phabricator]<span class="comment"># ./bin/storage upgrade</span></div><div class="line">Before running storage upgrades, you should take down the Phabricator web</div><div class="line">interface and stop any running Phabricator daemons (you can <span class="built_in">disable</span> this</div><div class="line">warning with --force).</div><div class="line"></div><div class="line">    Are you ready to <span class="built_in">continue</span>? [y/N] y</div><div class="line"></div><div class="line">Loading quickstart template onto <span class="string">"localhost:3306"</span>...</div><div class="line">Applying patch <span class="string">"phabricator:db.packages"</span> to host <span class="string">"localhost:3306"</span>...</div><div class="line">Applying patch <span class="string">"phabricator:20160201.revision.properties.1.sql"</span> to host <span class="string">"localhost:3306"</span>...</div><div class="line">Applying patch <span class="string">"phabricator:20160201.revision.properties.2.sql"</span> to host <span class="string">"localhost:3306"</span>...</div><div class="line">Applying patch <span class="string">"phabricator:20160706.phame.blog.parentdomain.2.sql"</span> to host <span class="string">"localhost:3306"</span>...</div><div class="line">Applying patch <span class="string">"phabricator:20160706.phame.blog.parentsite.1.sql"</span> to host <span class="string">"localhost:3306"</span>...</div><div class="line">Applying patch <span class="string">"phabricator:20160707.calendar.01.stub.sql"</span> to host <span class="string">"localhost:3306"</span>...</div><div class="line">Applying patch <span class="string">"phabricator:20160711.files.01.builtin.sql"</span> to host <span class="string">"localhost:3306"</span>...</div><div class="line">.....</div><div class="line">.....</div><div class="line"></div><div class="line">Missing Key</div><div class="line">phabricator_search       search_documentfield     corpus            Surplus Key</div><div class="line">phabricator_search       search_documentfield     key_corpus        Missing Key</div><div class="line">phabricator_worker       worker_archivetask       key_modified      Missing Key</div><div class="line">Applying schema adjustments...</div><div class="line">Done.</div><div class="line">Completed applying all schema adjustments.</div></pre></td></tr></table></figure>
+<h3 id="8-查看数据库："><a href="#8-查看数据库：" class="headerlink" title="8 查看数据库："></a>8 查看数据库：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">[root@Phabricator phabricator]<span class="comment"># mysql -uroot -pqwde1dsdfg3.com</span></div><div class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</div><div class="line">Your MariaDB connection id is 177</div><div class="line">Server version: 5.5.52-MariaDB MariaDB Server</div><div class="line"></div><div class="line">Copyright (c) 2000, 2016, Oracle, MariaDB Corporation Ab and others.</div><div class="line"></div><div class="line">Type <span class="string">'help;'</span> or <span class="string">'\h'</span> <span class="keyword">for</span> help. Type <span class="string">'\c'</span> to clear the current input statement.</div><div class="line"></div><div class="line">MariaDB [(none)]&gt; show databases;</div><div class="line">+--------------------------+</div><div class="line">| Database                 |</div><div class="line">+--------------------------+</div><div class="line">| information_schema       |</div><div class="line">| mysql                    |</div><div class="line">| performance_schema       |</div><div class="line">| phabricator_almanac      |</div><div class="line">| phabricator_audit        |</div><div class="line">| phabricator_auth         |</div><div class="line">| phabricator_badges       |</div><div class="line">| phabricator_cache        |</div><div class="line">| phabricator_calendar     |</div><div class="line">| phabricator_chatlog      |</div><div class="line">| phabricator_conduit      |</div><div class="line">| phabricator_config       |</div><div class="line">| phabricator_conpherence  |</div><div class="line">| phabricator_countdown    |</div><div class="line">| phabricator_daemon       |</div><div class="line">| phabricator_dashboard    |</div><div class="line">| phabricator_differential |</div><div class="line">| phabricator_diviner      |</div><div class="line">| phabricator_doorkeeper   |</div><div class="line">| phabricator_draft        |</div><div class="line">| phabricator_drydock      |</div><div class="line">| phabricator_fact         |</div><div class="line">| phabricator_feed         |</div><div class="line">| phabricator_file         |</div><div class="line">| phabricator_flag         |</div><div class="line">| phabricator_fund         |</div><div class="line">|      .......             |</div><div class="line">+--------------------------+</div><div class="line">61 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.01 sec)</div></pre></td></tr></table></figure>
+<p>❗️❗️注：upgrade之后，show databases你会发现建立了许多phabrictor开头的数据库。</p>
+<p>###8.1 配置URL：</p>
+<p>未配置此安装的基本URI，并且在配置之前，主要功能将无法正常工作。<br>您应该将基本URI设置为您将用于访问Phabricator的URI，如“<a href="http://phabricator.example.com/”。" target="_blank" rel="external">http://phabricator.example.com/”。</a><br>如果使用的端口不是80（http）或443（https），请包括协议（http或https），域名和端口号。<br>基于此请求，正确的设置似乎是：<code>http : //phabricator.ihaozhuo.com/</code><br>要配置基本URI，请运行以下命令。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@Phabricator phabricator]<span class="comment">#  ./bin/config set phabricator.base-uri 'http://phabricator.ihaozhuo.com/'</span></div><div class="line">Set <span class="string">'phabricator.base-uri'</span> <span class="keyword">in</span> <span class="built_in">local</span> configuration.</div></pre></td></tr></table></figure>
+<h3 id="9-设置防火墙"><a href="#9-设置防火墙" class="headerlink" title="9 设置防火墙"></a>9 设置防火墙</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">firewall-cmd --zone=public --permanent --add-service=http</div><div class="line">firewall-cmd --reload</div></pre></td></tr></table></figure>
+<h3 id="9-1-Phabricator-Daemons-Are-Not-Running"><a href="#9-1-Phabricator-Daemons-Are-Not-Running" class="headerlink" title="9.1 Phabricator Daemons Are Not Running"></a>9.1 Phabricator Daemons Are Not Running</h3><p>启动守护进程<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">phabricator/ $ ./bin/phd start</div></pre></td></tr></table></figure></p>
+<h3 id="10-完成安装"><a href="#10-完成安装" class="headerlink" title="10 完成安装"></a>10 完成安装</h3><p>配置phabricator：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /var/www/html/phabricator/</div><div class="line">./bin/config <span class="built_in">set</span> phabricator.base-uri <span class="string">'http://your_domain_or_IP'</span></div><div class="line">./bin/phd start</div></pre></td></tr></table></figure>
+<p>使用浏览器访问：<a href="http://your_domain_or_IP" target="_blank" rel="external">http://your_domain_or_IP</a></p>
+<p>然后根据提示修复一些问题。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Phabricator_01.png" alt=""></figure></p>
+<p>登录进来管理界面：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Phabricator_02.png" alt=""></figure></p>
+<h3 id="创建项目例子："><a href="#创建项目例子：" class="headerlink" title="创建项目例子："></a>创建项目例子：</h3><p> Projects ——》 Create Project ——》填写好项目名称 ——》Create New Project </p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Phabricator_03.png" alt=""></figure></p>
+<p>创建完成效果：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Phabricator_04.png" alt=""></figure></p>
+<h3 id="安装完成以后出现10多个问题解决："><a href="#安装完成以后出现10多个问题解决：" class="headerlink" title="安装完成以后出现10多个问题解决："></a>安装完成以后出现10多个问题解决：</h3><p>汉化翻译过来：<br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/phabricator_05.png" alt=""></figure></p>
+<p>❓说明：按问题提示操作解决故障。一般都有问题修复解决方法的，官方这点还是很不错的。</p>
+<ul>
+<li>棘手问题1 如果遇到这个问题：Alternate File Domain Not Configured</li>
+</ul>
+<p>操作了这条命令失效 最好别操作：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">phabricator/ $ ./bin/config <span class="built_in">set</span> security.alternate-file-domain &lt;domain&gt;</div><div class="line"></div><div class="line">[root@Phabricator phabricator]<span class="comment"># ./bin/config set security.alternate-file-domain http://cdn.phabricator.com</span></div></pre></td></tr></table></figure>
+<p>如果是CDN数据存放可以使用这个命令。不然会出现访问失败。<br>我是参考这篇文档解决问题：<a href="https://community.bitnami.com/t/phabricator-not-rendering-resources-over-https/39005" target="_blank" rel="external">Phabricator not rendering resources over https</a>删除<code>security.alternate-file-domain</code>可以访问。</p>
+<ul>
+<li>棘手问题2 PHP Extension ‘APC’ Not Installed  参考文章：<a href="http://php.net/manual/zh/apc.installation.php" target="_blank" rel="external">PHP Extension ‘APC’ Not Installed</a></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># yum install php-pear</span></div><div class="line"><span class="comment"># pecl install apc</span></div><div class="line"><span class="comment"># echo "extension=apc.so" &gt;&gt; /etc/php.ini</span></div><div class="line"><span class="comment"># echo "apc.enabled=1" &gt;&gt; /etc/php.ini</span></div><div class="line"><span class="comment"># cp /usr/share/pear/apc.php /var/www/html/apc.php (this step is optional)</span></div><div class="line"><span class="comment"># /etc/init.d/httpd restart</span></div></pre></td></tr></table></figure>
+<p>phabricator官网配置说明<a href="https://secure.phabricator.com/book/phabricator/article/configuration_guide/" target="_blank" rel="external">Configuration Guide</a></p>
+<h3 id="1-身份验证提供者"><a href="#1-身份验证提供者" class="headerlink" title="1. 身份验证提供者"></a>1. 身份验证提供者</h3><p>Phabricator登录的方法被称为身份验证提供者（Authentication Providers）。例如,当我们设置了一个”用户名/密码”身份验证提供者,那么用户可以通过传统的用户名和密码登录。Phabricator支持多种登录系统。当我们使用Administrators登录到后台之后，我们就可以启用或禁用这些Providers，配置用户如何注册或登录到Phabricator。</p>
+<p>在公司内部使用，我们一般使用<code>Username/Password</code>或LDAP，对于开源项目，我们也可以使用类似于GitHub等OAuth第三方登录。在使用<code>Username/Password</code>登录方式时，我们还可以限制注册用户时的邮箱后缀，我们可以设置成公司的邮箱域名。</p>
+<h3 id="1-1-修改登录方式"><a href="#1-1-修改登录方式" class="headerlink" title="1.1 修改登录方式"></a>1.1 修改登录方式</h3><p>网页上可以对其进行相应的修改。具体位置在：<br>左侧菜单<code>Auth -&gt; Add Provider -&gt; username/password</code>(账号密码方式登录)<br>支持 账号密码登录以及第三方（facebook、github等）账号登录。另外，可以选择用户自主注册，或者禁用（管理员配置）。</p>
+<p>这里选择LDAP同步需要安装PHP LDAP扩展：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Before you can <span class="built_in">set</span> up or use LDAP, you need to install the PHP LDAP extension. It is not currently installed, so PHP can not talk to LDAP. Usually you can install it with `yum install php-ldap`, `apt-get install php5-ldap`, or a similar package manager command.</div><div class="line"></div><div class="line">yum install php-ldap -y</div></pre></td></tr></table></figure>
+<p>注：如果第一次管理员登录以后，没有修改登录方式，接着退出。下次登录可能会被锁住，需要使用以下命令解锁。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/bin/auth recover &lt;username&gt;</div></pre></td></tr></table></figure>
+<h3 id="1-2-设置用户登录认证方式"><a href="#1-2-设置用户登录认证方式" class="headerlink" title="1.2 设置用户登录认证方式"></a>1.2 设置用户登录认证方式</h3><p>使用管理员账号登录，在左侧的菜单中选择 Auth ，然后点击右上侧 Add Provider，在列表中选则你需要的认证方式。</p>
+<p>我选择是<code>Username/Password</code>的方式，即用户自己注册<code>Phabricator</code>账号。为了保障安全，我设置了只允许公司邮箱地址注册：<code>Config ---&gt; Core Settings ---&gt; Authentication ---&gt; auth.email-domains</code>。你还可以选择 auth.require-approval ，即新注册用户需要管理员批准。</p>
+<h3 id="1-3-设置邮件发送服务参数"><a href="#1-3-设置邮件发送服务参数" class="headerlink" title="1.3 设置邮件发送服务参数"></a>1.3 设置邮件发送服务参数</h3><p>首先，配置 mail-adapter （邮件发送方式）：<code>Config ---&gt; Core Settings ---&gt; Mail ---&gt; metamta.mail-adapter</code>，我选择的是 PhabricatorMailImplementationPHPMailerAdapter ，通过SMTP的方式发送邮件。在选择完之后，需要设置SMTP服务器地址、账号和密码：Config —&gt; Core Settings —&gt; PHPMailer —&gt; metamta.mail-adapter，根据你自己邮箱的配置，相应的设置 phpmailer.smtp-host、phpmailer.smtp-port、phpmailer.smtp-protocol、phpmailer.smtp-user、phpmailer.smtp-password、phpmailer.smtp-encoding 。</p>
+<h3 id="2-邮箱关联"><a href="#2-邮箱关联" class="headerlink" title="2.邮箱关联"></a>2.邮箱关联</h3><p>切换到<code>phabricator/bin/</code>目录下运行<code>daemon：./bin/phd start</code>。 注意每次重启需要再次启用，因此建议放到启动脚本上。</p>
+<p>配置mail：通过web访问phabricator并在页面上进行配置：（这里使用的是外部SMTP server的方式，更多方式参见phabricator docs）</p>
+<pre><code>用administrator账号登录后，在administration栏选择Config进入
+</code></pre><p>1）选择mail，设置<br>    metamta.default-address – xxxx@163.com // 注意：这里必须要用与smtp服务器对应的邮箱地址，不然邮件发不出去</p>
+<pre><code>metamta.domain -- phabricator.myproject.com // 随意
+
+metamta.mail-adapter: set to &quot;PhabricatorMailImplementationPHPMailerAdapter&quot;
+
+metamta.send-immediately: Send Via Daemons （目前版本貌似没有）
+</code></pre><p>2）选择PHPMailer，设置：（以163.com的SMTP server为例）<br>    phpmailer.mailer: set to “smtp”. （默认）</p>
+<pre><code>phpmailer.smtp-host: smtp.163.com 
+
+phpmailer.smtp-port: 25 （默认）
+
+phpmailer.smtp-user: xxxx
+
+phpmailer.smtp-password: xxxx
+</code></pre><p>目前版本页面上不能配置PHPMailer，只能使用工具/bin/config工具set相对应的配置项。</p>
+<figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="string">phabricator/</span> $ ./<span class="string">bin/</span><span class="string">mail </span><span class="built_in">list-outbound</span>   <span class="comment"># List outbound mail.</span></div><div class="line"><span class="string">phabricator/</span> $ ./<span class="string">bin/</span><span class="string">mail </span><span class="string">show-outbound </span>  <span class="comment"># Show details about messages.</span></div><div class="line"><span class="string">phabricator/</span> $ ./<span class="string">bin/</span><span class="string">mail </span><span class="string">send-test </span>      <span class="comment"># Send test messages.</span></div></pre></td></tr></table></figure>
+<h3 id="3-参考："><a href="#3-参考：" class="headerlink" title="3. 参考："></a>3. 参考：</h3><p><a href="https://www.oschina.net/question/191440_125562" target="_blank" rel="external">https://www.oschina.net/question/191440_125562</a>  Phabricator入门手册</p>
+<p><a href="http://blog.csdn.net/zzllabcd/article/details/49997421" target="_blank" rel="external">http://blog.csdn.net/zzllabcd/article/details/49997421</a> 10.04Ubuntu安装</p>
+<p><a href="http://www.cnblogs.com/clovn/p/5103611.html" target="_blank" rel="external">http://www.cnblogs.com/clovn/p/5103611.html</a> debian7安装</p>
+<p><a href="https://secure.phabricator.com/book/phabricator/article/installation_guide/" target="_blank" rel="external">https://secure.phabricator.com/book/phabricator/article/installation_guide/</a> 官方guider</p>
+<p><a href="https://liuzhichao.com/p/1992.html" target="_blank" rel="external">https://liuzhichao.com/p/1992.html</a>  Phabricator 实践之配置账号和注册</p>
+<p><a href="https://www.oschina.net/question/191440_125562" target="_blank" rel="external">https://www.oschina.net/question/191440_125562</a> 入门手册</p>
+<p><a href="http://www.jianshu.com/p/b1a75a14638c" target="_blank" rel="external">http://www.jianshu.com/p/b1a75a14638c</a>  简书中的分享（较为完整）</p>
+<p><a href="http://www.cnblogs.com/ToDoToTry/p/3956687.html" target="_blank" rel="external">http://www.cnblogs.com/ToDoToTry/p/3956687.html</a> git server搭建指南</p>
+<p><a href="https://my.oschina.net/miger/blog/775609" target="_blank" rel="external">https://my.oschina.net/miger/blog/775609</a> linux平台arc工具的使用</p>
+<p><a href="http://blog.csdn.net/peapon/article/details/29881575" target="_blank" rel="external">http://blog.csdn.net/peapon/article/details/29881575</a> windows中arc的使用</p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2017/01/07/自动化+Jenkins/Phabricator/Centos7搭建配置phabricator开源的可视化代码审查工具/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Zabbix3.0-monitoring出现乱码 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>Zabbix3.0-monitoring出现乱码</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2014-10-02</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="出现乱码："><a href="#出现乱码：" class="headerlink" title="出现乱码："></a>出现乱码：</h2><ul>
+<li>乱码安装包下载地址：<a href="http://oak0aohum.bkt.clouddn.com/simkai.ttf" target="_blank" rel="external">中文汉化乱码包</a></li>
+</ul>
+<ul>
+<li>参考文档：</li>
+</ul>
+<p>zabbix版本都已有汉化功能了，直接选择中文就行。</p>
+<p>可是低版本的就需要安装汉化，可是发现打开图形界面是空白图形：</p>
+<p>遇到中文乱码问题。zabbix乱码是怎么照成的呢？zabbix使用DejaVuSan.ttf字体，不支持中文，导致中文出现乱码。解决方法很简单，把我们电脑里面字体文件传到zabbix服务器上。</p>
+<ul>
+<li>在zabbix-server端上面进入安装目录：</li>
+</ul>
+<p><code>var/www/html/zabbix/fonts</code>目录下面查看，发现之前上传字体的文件名后缀是.ttc，猜着一般见到的都后缀都是ttf的，会不会是这个问题导致的呢。于是在windows系统上找到<code>simkai.ttf</code>,上传到fonts下，编辑<code>/var/www/html/zabbix/include/defines.inc.php</code>，更改两处地方：</p>
+<pre><code>define(‘ZBX_FONT_NAME‘, ‘simkai‘);
+define(‘ZBX_GRAPH_FONT_NAME‘,  ‘simkai‘);
+</code></pre><p>fzytk<br>设置好了，服务重启下，刷新，图下面就有字体了：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-luanma.png" alt=""></figure><br>graphfont</p>
+<p>常见问题：<br>依旧乱码：通过以上的操作，大部分同学的乱码问题解决了，但是依旧有一些同学还是乱码？细心的群友提供另外一种情况：初始化数据库的时候未使用utf8编码所致.初始化数据库使用命令</p>
+<pre><code>create database zabbix default charset utf8;
+</code></pre><p>或者my.cnf增加如下配置</p>
+<pre><code>default-character-set = utf8
+</code></pre><ul>
+<li>总结 </li>
+</ul>
+<p>乱码处理方法很简单，实际上就是替换字体。</p>
+<p>zabbix-server2.4服务端编译安装 <a href="http://blog.yangcvo.me/2015/01/18/zabbix-server服务端编译安装/" target="_blank" rel="external">zabbix-server服务端编译安装</a></p>
+<p>zabbix2.4监控80端口状态 : <a href="http://blog.yangcvo.me/2016/07/20/zabbix监控80端口状态/" target="_blank" rel="external">zabbix监控80端口状态</a></p>
+<p>zabbix+Grafana安装使用监控结合 ：<a href="http://blog.yangcvo.me/2016/07/13/zabbix-Grafana安装使用结合/" target="_blank" rel="external">zabbix+Grafana安装使用监控结合</a></p>
+<p>zabbix监控MySQL-添加自定义监控项 : <a href="http://blog.yangcvo.me/2015/09/29/zabbix监控MySQL-添加自定义监控项/" target="_blank" rel="external">zabbix监控MySQL-添加自定义监控项</a></p>
+<p>zabbix的ICMP_Ping模版实现对客户端网络状态的监控 : <a href="http://blog.yangcvo.me/2015/11/18/zabbix的ICMP-Ping模版&gt;实现对客户端网络状态的监控/" target="_blank" rel="external">zabbix的ICMP_Ping模版实现对客户端网络状态的监控</a></p>
+<p>zabbix性能监控故障总结 <a href="http://blog.yangcvo.me/2016/02/07/zabbix-故障总结/" target="_blank" rel="external">zabbix性能监控故障总结</a></p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2014/10/02/性能监控/Zabbix/zabbix出现乱码/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

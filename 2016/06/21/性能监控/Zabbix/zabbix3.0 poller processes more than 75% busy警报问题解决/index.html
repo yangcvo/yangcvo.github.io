@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Zabbix3.0 poller processes more than 75% busy警报问题解决 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>Zabbix3.0 poller processes more than 75% busy警报问题解决</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-06-21</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>虽然Zabbix的监控警报各种有，但chengyang使用碰到最多的几个莫过于内存耗尽，网络不通，IO太慢还有这个“Zabbix poller processes more than 75% busy”了。一开始的时候因为这个即不影响使用也持续一会儿就自行解决就没有多在意。然后随着数据库的增大，Zabbix消耗的内存可是越来越多，Poller processes（轮询）开始天天Busy了，最终chengyang不得不把Zabbix挪到了另外一台服务器上。</p>
+<p>但这并没有彻底解决问题，警报仍然三天两头来几个。之后Kaijia开启了Zabbix警报的邮件功能，于是开始频繁收到这类邮件，于是Kaijia决定解决这个问题。Google了一下资料，没有找到很权威的答案，造成轮询忙的问题有很多中，支撑Zabbix的MySQL卡住了，Zabbix服务器的IO卡住了都有可能，Zabbix进程分配到内存不足都有可能。一个简单的方法是增加Zabbix Server启动时初始化的进程数量，这样直接增加了轮询的负载量，从比例上来讲忙的情况就少了。</p>
+<p>增加初始化进程的方法非常简单，编辑Zabbix Server的配置文件<code>/etc/zabbix/zabbix_server.conf</code>，找到配置StartPollers的段落：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">1. <span class="comment">### Option: StartPollers</span></div><div class="line">2. <span class="comment">#       Number of pre-forked instances of pollers.</span></div><div class="line">3. <span class="comment">#</span></div><div class="line">4. <span class="comment"># Mandatory: no</span></div><div class="line">5. <span class="comment"># Range: 0-1000</span></div><div class="line">6. <span class="comment"># Default:</span></div><div class="line">7. <span class="comment"># StartPollers=5</span></div></pre></td></tr></table></figure>
+<p>取消StartPollers=一行的注释或者直接在后面增加：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">StartPollers=10</div></pre></td></tr></table></figure>
+<p>因为之前zabbix除了单独跑一个server服务还有<code>agent</code>还有<code>grafana-server</code>还有代理，后面我先扩大内存和服务器CPU.<br>将StartPollers改成多少取决于服务器的性能和监控的数量，Kaijia将StartPollers设置成12之后就再没有遇到过警报。如果内存足够的话可以设置更高。设置完成之后运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">service zabbix-server restart</div></pre></td></tr></table></figure>
+<p>重启Zabbix。当然另外一种从整体上降低Zabbix服务器负载的方法就是定期重启Zabbix，这种方法可以用Cron实现，运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">crontab <span class="_">-e</span></div></pre></td></tr></table></figure>
+<p>在调出的Cron编辑器中增加一个计划：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">00 * * * * service zabbix-server restart &gt; /dev/null 2&gt;&amp;1</div></pre></td></tr></table></figure>
+<p>这个计划会每天自动重启Zabbix服务以结束僵尸进程并清理内存等。目前Kaijia这样配置Zabbix后还没有再次遇到过“Zabbix poller processes more than 75% busy”的问题。</p>
+<h3 id="关联文章"><a href="#关联文章" class="headerlink" title="关联文章"></a>关联文章</h3><ul>
+<li><p><a href="http://blog.yangcvo.me/2014/10/04/%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7/Zabbix/zabbix-%E6%95%85%E9%9A%9C%E6%80%BB%E7%BB%93/" target="_blank" rel="external">zabbix性能监控故障总结</a></p>
+</li>
+<li><p><a href="http://blog.yangcvo.me/2016/06/21/%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7/Zabbix/zabbix3-0%E9%83%A8%E7%BD%B2jmx%E7%9B%91%E6%8E%A7tomcat/" target="_blank" rel="external">zabbix3.0部署jmx监控tomcat</a></p>
+</li>
+<li><a href="http://blog.yangcvo.me/2014/10/01/%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7/Zabbix/zabbix%E7%9A%84ICMP-Ping%E6%A8%A1%E7%89%88%E5%AE%9E%E7%8E%B0%E5%AF%B9%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%BD%91%E7%BB%9C%E7%8A%B6%E6%80%81%E7%9A%84%E7%9B%91%E6%8E%A7/" target="_blank" rel="external">zabbix的ICMP_Ping模版实现对客户端网络状态的监控</a></li>
+</ul>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/06/21/性能监控/Zabbix/zabbix3.0 poller processes more than 75% busy警报问题解决/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

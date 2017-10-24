@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		
+	<span class="different-posts different-posts_earlier">📖 <a href="/page/6">earlier posts</a> 📖</span>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2016/07/29/个人生活记录/坚持一个月3公里跑步🏃下来/">坚持一个月3公里跑步🏃下来</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-07-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/生活/">生活</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Personal-life-record/">Personal life record</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="坚持跑步🏃需要一个圈子"><a href="#坚持跑步🏃需要一个圈子" class="headerlink" title="坚持跑步🏃需要一个圈子"></a>坚持跑步🏃需要一个圈子</h3><p>因为也有一部分的原因是：朋友圈一直在刷跑步的记录，让我也很感兴趣，因为一个人的确是不想跑的，而且这时候：2016年7月20日时杭州今年最热的天气：<code>高温40°c</code>更加没有毅力去坚持每天给自己身体充电了。</p>
+<p>在之前的公司也是天天加班熬夜，没有经常锻炼，一米8的个子从读书出来，62体重。<br>到现在58已经瘦了很多，之前的八块腹肌，现在成了4块。<br>圈子可以加APP里面很多运动跑步团，现在APP做的还是很不错的。</p>
+		<p><a class="article__read-more-link" href="/2016/07/29/个人生活记录/坚持一个月3公里跑步🏃下来/">...read more</a></p>
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2016/07/21/性能监控/Zabbix/Zabbix 监控 KVM集群/">KVM monitoring through Zabbix</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-07-21</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="KVM-monitoring-through-Zabbix"><a href="#KVM-monitoring-through-Zabbix" class="headerlink" title="KVM monitoring through Zabbix"></a>KVM monitoring through Zabbix</h3><p>Monitor your KVM resources through Zabbix</p>
+<p>Zabbix 监控 KVM</p>
+<h4 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h4><p>python2, libvirt-python (tested with 0.9.12.3, 0.10.2 and 1.1.3.x)</p>
+<pre><code>pip install libvirt-python 
+</code></pre><h4 id="KVM-Server-设定程序"><a href="#KVM-Server-设定程序" class="headerlink" title="KVM Server 设定程序"></a>KVM Server 设定程序</h4><figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">cd</span> /usr/local/bin/</div><div class="line">wget http<span class="variable">s:</span>//github.<span class="keyword">com</span>/bushvin/zabbix-kvm-<span class="keyword">res</span>/raw/master/bin/zabbix-kvm-<span class="keyword">res</span>.<span class="keyword">py</span></div><div class="line">chmod <span class="keyword">a</span>+<span class="keyword">x</span> zabbix-kvm-<span class="keyword">res</span>.<span class="keyword">py</span></div><div class="line"><span class="keyword">cd</span> /etc/zabbix/zabbix_agentd.d</div><div class="line">wget http<span class="variable">s:</span>//github.<span class="keyword">com</span>/bushvin/zabbix-kvm-<span class="keyword">res</span>/raw/master/zabbix_agentd.<span class="keyword">conf</span>/UserParameters</div><div class="line">service zabbix-agent restart</div></pre></td></tr></table></figure>
+<h4 id="Zabbix-Server-设定程序"><a href="#Zabbix-Server-设定程序" class="headerlink" title="Zabbix Server 设定程序"></a>Zabbix Server 设定程序</h4><p>至<a href="https://github.com/bushvin/zabbix-kvm-res下载zabbix_kvm.xml" target="_blank" rel="external">https://github.com/bushvin/zabbix-kvm-res下载zabbix_kvm.xml</a><br>将<code>zabbix_kvm.xml 汇入至Zabbix Server → Configuration → Templates → Import</code></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2016/07/19/运维安全/使用shell脚本实现ssh登录报警/">使用shell脚本实现ssh登录报警</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-07-19</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/运维笔记/">运维笔记</a>
+			</span><br />
+		
+		
+	</div>
+
+	
+
+	
+		<p>如果你服务器被入侵了，该怎么做才能让自己第一时间知晓？对大部分的人来说，这个的确很不好定位，其实也可以简单些个变量环境，这样下次登录以后可以看到登录的记录，可是这样的话会被黑客发现，所以我们这里按脚本自动发送。</p>
+<p>在逛一些博客上面看到一篇这文章，所以觉得不错，这里整理了下，发给大家。<br>其实这种脚本可以放到对应的堡垒机或者跳板机机器上面因为对一台做管理，下面做了设置，就很方便了。</p>
+<h3 id="1、首先来配置发件环境，这里介绍CentOS"><a href="#1、首先来配置发件环境，这里介绍CentOS" class="headerlink" title="1、首先来配置发件环境，这里介绍CentOS"></a>1、首先来配置发件环境，这里介绍CentOS</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">yum install perl-IO-Socket-SSL perl-Net-SSLeay -y</div><div class="line">wget http://oak0aohum.bkt.clouddn.com/sendEmail-v1.56.tar.gz -O /tmp/sendEmail-v1.56.tar.gz</div><div class="line"><span class="built_in">cd</span> /tmp</div><div class="line">tar xf sendEmail-v1.56.tar.gz</div><div class="line">mv sendEmail-v1.56/sendEmail /usr/<span class="built_in">local</span>/bin/</div><div class="line">chmod +x /usr/<span class="built_in">local</span>/bin/sendEmail &amp;&amp; <span class="built_in">cd</span></div><div class="line">wget http://oak0aohum.bkt.clouddn.com/jq  -O /usr/<span class="built_in">local</span>/bin/jq</div><div class="line">chmod +x /usr/<span class="built_in">local</span>/bin/jq</div></pre></td></tr></table></figure>
+<h3 id="2、然后配置报警邮件"><a href="#2、然后配置报警邮件" class="headerlink" title="2、然后配置报警邮件"></a>2、然后配置报警邮件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">wget http://oak0aohum.bkt.clouddn.com/WarringLoging.sh  -O /etc/WarringLoging.sh</div><div class="line">chmod +x /etc/WarringLoging.sh</div><div class="line">yum install -y screen 安装screen </div><div class="line"><span class="comment">#echo "screen -fa -d -m -S WL /etc/WarringLoging.sh" &gt;&gt; /etc/profile #第一种方法，新开终端复制终端都会报警</span></div><div class="line"><span class="comment">#echo -e "#!/bin/bash\nbash /etc/WarringLoging.sh" &gt;&gt; /etc/ssh/sshrc #第二种方法，只有ssh登录才会报警</span></div><div class="line"><span class="comment">#上面两种方法任选一个都可以</span></div></pre></td></tr></table></figure>
+<h3 id="3、最后编辑收发邮件的信息"><a href="#3、最后编辑收发邮件的信息" class="headerlink" title="3、最后编辑收发邮件的信息"></a>3、最后编辑收发邮件的信息</h3><p>vim /etc/WarringLoging.sh</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"> <span class="comment">#!/bin/bash</span></div><div class="line"><span class="comment">#########################################################################</span></div><div class="line"><span class="comment"># File Name: WarringLoging.sh</span></div><div class="line"><span class="comment"># Author: yangc</span></div><div class="line"><span class="comment"># Email: yangcvo@gmail.com</span></div><div class="line"><span class="comment"># Version:</span></div><div class="line"><span class="comment"># Created Time: Wed 22 Jul 2015 01:41:09 AM CST</span></div><div class="line"><span class="comment">#########################################################################</span></div><div class="line"></div><div class="line"><span class="built_in">eval</span> `curl <span class="_">-s</span> <span class="string">"http://ip.taobao.com/service/getIpInfo.php?ip=<span class="variable">$&#123;SSH_CLIENT%% *&#125;</span>"</span> | jq . | awk -F<span class="string">':|[ ]+|"'</span> <span class="string">'$3~/^(country|area|region|city|isp)$/&#123;print $3"="$7&#125;'</span>`</div><div class="line"></div><div class="line">EMAIL=`<span class="built_in">which</span> sendEmail`</div><div class="line">FEMAIL=<span class="string">"it@health.com"</span> <span class="comment">#发件邮箱</span></div><div class="line">MAILP=<span class="string">"MzU0ODZjOWI0MWU3"</span> <span class="comment">#发件邮箱密码</span></div><div class="line">MAILSMTP=<span class="string">"smtp.exmail.qq.com"</span> <span class="comment">#发件邮箱的SMTP</span></div><div class="line">MAILT=<span class="string">"chengyangyang@health.com"</span> <span class="comment">#收件邮箱</span></div><div class="line">MAILmessage=<span class="string">"登入者IP地址：<span class="variable">$&#123;SSH_CLIENT%% *&#125;</span>\n\</span></div><div class="line">IP归属地：<span class="variable">$&#123;country&#125;</span>_<span class="variable">$&#123;area&#125;</span>_<span class="variable">$&#123;region&#125;</span>_<span class="variable">$&#123;city&#125;</span>_<span class="variable">$&#123;isp&#125;</span>\n\</div><div class="line">被登录服务器IP：<span class="variable">$(curl -s ip.cn| grep -Eo '([0-9]&#123;1,3&#125;[\.])</span>&#123;3&#125;[0-9]&#123;1,3&#125;')"</div><div class="line"></div><div class="line"><span class="variable">$EMAIL</span> -q <span class="_">-f</span> <span class="variable">$FEMAIL</span> -t <span class="variable">$MAILT</span> -u <span class="string">"您服务器有人登录SSH"</span> -m <span class="string">"<span class="variable">$MAILmessage</span>"</span> <span class="_">-s</span> <span class="variable">$MAILSMTP</span> -o message-charset=utf-8 -xu <span class="variable">$FEMAIL</span> -xp <span class="variable">$MAILP</span></div></pre></td></tr></table></figure>
+<p> 下载脚本地址：<a href="http://oak0aohum.bkt.clouddn.com/WarringLoging.sh" target="_blank" rel="external">WarringLoging.sh</a></p>
+<p>给予执行权限：chmod +x /etc/WarringLoging.sh</p>
+<p>其实这里脚本下面可以自定义：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="_">-f</span> 表示from，发件人地址</div><div class="line">-t 表示to，收件人地址</div><div class="line"><span class="_">-s</span> mail服务器域名</div><div class="line">-u 主题</div><div class="line">-xu 用户名（@之前的）</div><div class="line">-xp 用户密码</div><div class="line">-m 纯文本信息</div><div class="line">-o message-file=/root/.. 发送文件中的内容</div><div class="line"><span class="_">-a</span> 发送附件 （-m,-o,<span class="_">-a</span>可以同时使用）</div></pre></td></tr></table></figure>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ssh-shell.png" alt=""></figure></p>
+<p>邮件发送实现效果。</p>
+<p>iPhone手机提醒效果：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ssh-shell2.png" alt=""></figure></p>
+<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
+<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2016/06/29/运维安全/ 化解自己的阿里云服务器被黑客攻击-暴力破解/">化解自己的阿里云服务器被黑客攻击-暴力破解</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-06-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/运维安全/">运维安全</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Operation-safety/">Operation safety</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>说明下：因为阿里云服务器我是用来自己搭建blog 的做了一些简单的监控。</p>
+<p>因为防止被攻击瘫痪，做到安全防范，可是今天晚上吃完饭，发现又被人攻击，是印度和巴西IP地址暴力破解方式一直在尝试破解我密码。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">还好我在阿里云上面使用了云盾告警，其实它这个一般般，只能提醒，不能有效阻止黑客攻击。</div></pre></td></tr></table></figure>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun.png" alt=""></figure></p>
+<p>收到告警以后，马上打开电脑去云盾上面查看下。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun2.png" alt=""></figure></p>
+<p>然后看了以后发现问题不大，可是上机器查看，发现有不断的攻击痕迹。<br>日志查看到很多来历不明的IP。德国🇩🇪  巴西 印度。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun3.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun4.png" alt=""></figure></p>
+<p>看到这个，我就写了个脚本记录被攻击留下的保存指定文件夹，我看下是否还在继续攻击了。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"> <span class="comment">#!/bin/bash</span></div><div class="line"><span class="comment">#Denyhosts SHELL SCRIPT</span></div><div class="line"><span class="comment">#2016-2-18</span></div><div class="line">cat /var/<span class="built_in">log</span>/secure|awk <span class="string">'/Failed/&#123;print $(NF-  3)&#125;'</span>|sort|uniq -c|awk <span class="string">'&#123;print $2"=" $1;&#125;'</span> &gt;/root/bin/Denyhosts.txt</div><div class="line">DEFINE=<span class="string">"10"</span></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> `cat /root/bin/Denyhosts.txt`</div><div class="line"><span class="keyword">do</span></div><div class="line">    IP=`<span class="built_in">echo</span> <span class="variable">$i</span>|awk -F= <span class="string">'&#123;print $1&#125;'</span>`</div><div class="line">    NUM=`<span class="built_in">echo</span> <span class="variable">$i</span>|awk -F= <span class="string">'&#123;print $2&#125;'</span>`</div><div class="line">    <span class="keyword">if</span> [ <span class="variable">$NUM</span> <span class="_">-gt</span> <span class="variable">$DEFINE</span> ]</div><div class="line">    <span class="keyword">then</span></div><div class="line">            grep <span class="variable">$IP</span> /etc/hosts.deny &gt;/dev/null</div><div class="line">            <span class="keyword">if</span> [ $? <span class="_">-gt</span> 0 ];</div><div class="line">            <span class="keyword">then</span></div><div class="line">            <span class="built_in">echo</span> <span class="string">"sshd:<span class="variable">$IP</span>"</span> &gt;&gt; /etc/hosts.deny</div><div class="line">            <span class="keyword">fi</span></div><div class="line">    <span class="keyword">fi</span></div><div class="line"><span class="keyword">done</span></div></pre></td></tr></table></figure>
+<p>因为保存到其他的txt文件下面：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@iZ28by3xm9eZ bin]<span class="comment"># ll</span></div><div class="line">总用量 4</div><div class="line">-rwxr-xr-x 1 root root 535 2月  17 21:38 Denyhosts.sh</div><div class="line">-rw-r--r-- 1 root root   0 2月  17 21:45 Denyhosts.txt</div></pre></td></tr></table></figure>
+<p>查看里面有不断攻击的IP :</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@iZ28by3xm9eZ bin]<span class="comment"># vim Denyhosts.txt</span></div><div class="line"></div><div class="line">101.69.252.146=1</div><div class="line">115.196.20.181=11</div><div class="line">117.243.176.226=6</div><div class="line">186.208.19.61=5</div><div class="line">186.251.118.71=3</div><div class="line">89.238.64.148=2</div><div class="line">94.215.141.101=1</div></pre></td></tr></table></figure>
+<p>这里我记录了攻击的多少次也有的。</p>
+<p>可是发现的确在继续攻击，我在想如何阻止被破解呢。</p>
+<p>主要是依靠denyhost软件。稳重所讲的是下载安装包安装，实际上可以从直接使用yum或者apt安装，找到相应的源就可以。下边是帖子原文： DenyHosts官方网站为：<a href="http://denyhosts.sourceforge.net" target="_blank" rel="external">http://denyhosts.sourceforge.net</a></p>
+<p>这里下载最新的版本是2008年 2.6 版本的 一直没更新。不过已经足够强大。 1. 安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># tar -zxvf DenyHosts-2.6.tar.gz</span></div><div class="line"><span class="comment"># cd DenyHosts-2.6</span></div><div class="line"><span class="comment"># python setup.py install</span></div></pre></td></tr></table></figure>
+<p>默认是安装到/usr/share/denyhosts目录的。</p>
+<p>1.配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment"># cd /usr/share/denyhosts/</span></div><div class="line"><span class="comment"># cp denyhosts.cfg-dist denyhosts.cfg</span></div><div class="line"><span class="comment"># vi denyhosts.cfg</span></div><div class="line">PURGE_DENY = 50m <span class="comment">#过多久后清除已阻止IP</span></div><div class="line">HOSTS_DENY = /etc/hosts.deny </div><div class="line"><span class="comment">#将阻止IP写入到hosts.deny</span></div><div class="line">BLOCK_SERVICE = sshd </div><div class="line"><span class="comment">#阻止服务名</span></div><div class="line">DENY_THRESHOLD_INVALID = 1 </div><div class="line"><span class="comment">#允许无效用户登录失败的次数</span></div><div class="line">DENY_THRESHOLD_VALID = 10 </div><div class="line"><span class="comment">#允许普通用户登录失败的次数</span></div><div class="line">DENY_THRESHOLD_ROOT = 5 </div><div class="line"><span class="comment">#允许root登录失败的次数</span></div><div class="line">WORK_DIR = /usr/<span class="built_in">local</span>/share/denyhosts/data</div><div class="line"><span class="comment">#将deny的host或ip纪录到Work_dir</span></div><div class="line">DENY_THRESHOLD_RESTRICTED = 1 </div><div class="line"><span class="comment">#设定 deny host 写入到该资料夹</span></div><div class="line">LOCK_FILE = /var/lock/subsys/denyhosts <span class="comment">#将DenyHOts启动的pid纪录到LOCK_FILE中，已确保服务正确启动，防止同时启动多个服务。</span></div><div class="line">HOSTNAME_LOOKUP=NO <span class="comment">#是否做域名反解            ADMIN_EMAIL = #设置管理员邮件地址</span></div><div class="line">DAEMON_LOG = /var/<span class="built_in">log</span>/denyhosts <span class="comment">#自己的日志文件</span></div><div class="line">DAEMON_PURGE = 10m <span class="comment">#该项与PURGE_DENY 设置成一样，也是清除hosts.deniedssh 用户的时间。</span></div></pre></td></tr></table></figure>
+<p>2.设置启动脚本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># cp daemon-control-dist daemon-control</span></div><div class="line"><span class="comment"># chown root daemon-control</span></div><div class="line"><span class="comment"># chmod 700 daemon-control</span></div></pre></td></tr></table></figure>
+<p>完了之后执行daemon-contron start就可以了。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ./daemon-control start</span></div></pre></td></tr></table></figure>
+<p>如果要使DenyHosts每次重起后自动启动还需做如下设置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ln -s /usr/share/denyhosts/daemon-control                 /etc/init.d/denyhosts</span></div><div class="line"><span class="comment"># chkconfig --add denyhosts</span></div><div class="line"><span class="comment"># chkconfig denyhosts on</span></div></pre></td></tr></table></figure>
+<p>然后就可以启动了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># service denyhosts start</span></div></pre></td></tr></table></figure>
+<p>可以看看/etc/hosts.deny内是否有禁止的IP，有的话说明已经成功了。</p>
+<p>启动出现错误解决：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./daemon-control start</div></pre></td></tr></table></figure>
+<p>出现：<code>starting DenyHosts: /usr/bin/env python /usr/bin/denyhosts.py --daemon --config=/usr/share/denyhosts/denyhosts.cfg 
+DenyHosts could not obtain lock (pid: ) 
+[Errno 17] File exists: &#39;/var/lock/subsys/denyhosts&#39;</code> 使用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"> touch /private/var/<span class="built_in">log</span>/system.log</div><div class="line"> touch /var/lock/subsys/denyhosts</div><div class="line">rm <span class="_">-f</span> /var/lock/subsys/denyhosts</div><div class="line"></div><div class="line">./daemon-control start</div><div class="line">starting DenyHosts: /usr/bin/env python /usr/bin/denyhosts.py –daemon –config=/usr/share/denyhosts/denyhosts.cfg </div><div class="line">OK！</div></pre></td></tr></table></figure>
+<p>启动完成啦。 你可以使用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">service denyhosts status来查看运行状态</div></pre></td></tr></table></figure>
+<p>DenyHosts is running with pid = 25874 表示已经启动起来了。<br>接下来就可以使用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cat /etc/hosts.deny来查看记录了</div></pre></td></tr></table></figure>
+<p>然后启动成功以后，我自己测试了下，</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">ssh root@115.28.175.207</div><div class="line">root@115.28.175.207<span class="string">'s password:</span></div><div class="line">Permission denied, please try again.</div><div class="line">root@115.28.175.207's password:</div><div class="line">cPermission denied, please try again.</div><div class="line">root@115.28.175.207<span class="string">'s password:</span></div><div class="line">Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password).</div></pre></td></tr></table></figure>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun5.png" alt=""></figure></p>
+<p>发现自己登陆不上去了，然后只能去阿里控制台操作查看原因。</p>
+<p>原来发现 <code>cat /etc/hosts.deny</code>来查看记录了<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun6.png" alt=""></figure></p>
+<p>然后去掉，115IP 发现就可以登陆了。 所以我做的设置是<code>root</code>尝试破解4次以上，被锁定。</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2016/06/29/运维安全/生产环境-Linux系统安全设置/">生产环境-Linux系统安全统一配置</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-06-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/运维安全/">运维安全</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Operation-safety/">Operation safety</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>今天整理下Linux系统在生产环境安全几点：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">01) 生产环境统一不要用root，统一添加普通用户，管理员操作通过sudo授权管理。</div><div class="line">02）更改默认的远程连接SSH服务端口及禁止root用户远程连接，这里关闭外围IP使用22端口，写防火墙规则，然后禁用root，这样统一使用普通用户统一管理。</div><div class="line">03）定时自动服务器时间，写到计划任务里面，如果机房管理服务器，最好搭建台NTP时间同步服务器。</div><div class="line">04）配置yum更新源，从国内更新源下载安装rpm包。</div><div class="line">05）关闭selinux 开启防火墙一定要熟悉配置防火墙规则。</div><div class="line">06）调整文件描述的数量，进程及文件的打开都会消耗文件描述符。</div><div class="line">07）定时自动服务的日志，定时自动清理/var/spool/clientmqueue/目录垃圾文件。防止inodes节点被占满。</div><div class="line">08）精准开机启动服务（crond,sshd,network,rsyslog）</div><div class="line">09) linux内核参数优化/etc/sysctl.conf 执行sysctl -p 生效。</div><div class="line">10）更改字符集，支持中文。</div><div class="line">11） 锁定关键系统文件。</div><div class="line"> chattr +i /etc/passwd  /etc/shadow /etc/group  /etc/gshahow /etc/inittab</div></pre></td></tr></table></figure>
+<p>1、帐号安全</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">1.1 锁定系统中的自建帐号</div><div class="line">查看帐号：</div><div class="line"><span class="comment">#cat /etc/passwd</span></div><div class="line"><span class="comment">#cat /etc/shadow</span></div><div class="line">查看账户、口令文件，与系统管理员确认不必要的账号。对于一些保留的系统伪帐户如：bin, sys，adm，uucp，lp, nuucp，hpdb, www, daemon等可根据需要锁定登陆。</div><div class="line"></div><div class="line">在修改之前先备份一下，省的出问题：</div><div class="line">备份方法：</div><div class="line"><span class="comment">#cp -p /etc/passwd /etc/passwd_bak</span></div><div class="line"><span class="comment">#cp -p /etc/shadow /etc/shadow_bak</span></div><div class="line">加固方法：</div><div class="line">使用命令passwd <span class="_">-l</span> &lt;用户名&gt;锁定不必要的账号。</div><div class="line">使用命令passwd -u &lt;用户名&gt;解锁需要恢复的账号。</div><div class="line">风险：需要与管理员确认此项操作不会影响到业务系统的登录</div></pre></td></tr></table></figure>
+<pre><code>1.2设置系统口令策略
+</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">    查看密码策略设置：cat /etc/login.defs|grep PASS</div><div class="line">    修改之前先备份一下：　cp -p /etc/login.defs /etc/login.defs_bak</div><div class="line">    修改配置文件：vi /etc/login.defs</div><div class="line">    文件内参数解释：</div><div class="line">    PASS_MAX_DAYS 90    <span class="comment">#新建用户的密码最长使用天数</span></div><div class="line">    PASS_MIN_DAYS 0        <span class="comment">#新建用户的密码最短使用天数</span></div><div class="line">    PASS_WARN_AGE 7    <span class="comment">#新建用户的密码到期提前提醒天数</span></div><div class="line">    PASS_MIN_LEN 0        <span class="comment">#最小密码长度0</span></div><div class="line">    PASS_MAX_LEN 9        <span class="comment">#最大密码长度9</span></div><div class="line">```   </div><div class="line">1.3禁用root之外的超级用户</div><div class="line">    </div><div class="line">```bash</div><div class="line">查看口令文件：cat /etc/passwd</div><div class="line">属性解释：</div><div class="line">login_name：用户名</div><div class="line">password：加密后的用户密码</div><div class="line">user_ID：用户ID，(1 ~ 6000) 若用户ID=0，则该用户拥有超级用户的权限。查看此处是否有多个ID=0。</div><div class="line">group_ID：用户组ID</div><div class="line">comment：用户全名或其它注释信息</div><div class="line">home_dir：用户根目录</div><div class="line"><span class="built_in">command</span>：用户登录后的执行命令</div><div class="line">加固方法与1.1的加固方法一样！</div><div class="line">```   </div><div class="line">1.4 限制能够su为root的用户</div><div class="line"></div><div class="line">```bash</div><div class="line">    修改 /etc/pam.d/su 文件 先备份：cp -p /etc/pam.d/su /etc/pam.d/su_bak</div><div class="line">    在头部添加：auth required /lib/security/pam_wheel.so group=wheel <span class="comment">#只有wheel组的可以su</span></div><div class="line">    将<span class="built_in">test</span>用户加入wheel组：usermod -G wheel <span class="built_in">test</span></div><div class="line">    排错方法：当系统验证出现问题时，首先应当检查/var/<span class="built_in">log</span>/messages或者/var/<span class="built_in">log</span>/secure中的输出信息，根据这些信息判断用户账号的有效性。如果是因为PAM验证故障，而引起root也无法登录，只能使用single user或者rescue模式进行排错。</div><div class="line">```    </div><div class="line">2、最小化服务</div><div class="line">2.1 停止或禁用与承载业务无关的服务</div><div class="line"></div><div class="line">```bash   </div><div class="line">    查看当前init级别 who -r 或者 runlevel</div><div class="line">    查看所有服务的状态 chkconfig –list</div><div class="line">    设置服务在个init级别下开机是否启动 chkconfig –level &lt;服务名&gt; on|off|reset</div><div class="line">    注意：要安装chkconfig，radhat上面自带的有！</div><div class="line">``` </div><div class="line"></div><div class="line">3、数据访问控制</div><div class="line"></div><div class="line">```bash   </div><div class="line">    修改<span class="built_in">umask</span>的值 改变新建文件的安全属性</div><div class="line">    备份：cp -p /etc/profile /etc/profile_bak</div><div class="line">    修改<span class="built_in">umask</span>=027</div><div class="line">    作用：通过设置<span class="built_in">umask</span>值，可以为新创建的文件和目录设置缺省权限</div><div class="line">    风险：会修改新建文件的默认权限，如果该服务器是WEB应用，则此项谨慎修改。</div><div class="line">    具体解释：请百度。。。。</div></pre></td></tr></table></figure>
+<p>4、网络访问控制<br>4.1 使用SSH进行管理</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">查看服务是否开启： ps -aef|grep sshd</div><div class="line">开启服务：service sshd start</div><div class="line">关闭服务：service sshd stop</div><div class="line">重启服务：service sshd restart</div><div class="line">```    </div><div class="line">4.2设置访问控制策略限制能够管理本机的IP地址</div><div class="line">  </div><div class="line">```bash </div><div class="line">先备份文件：cp -p /etc/ssh/sshd_config /etc/ssh/sshd_config_bak</div><div class="line">修改文件：</div><div class="line">添加：AllowUsers *@10.138.*.* <span class="comment">#仅允许10.138.0.0/16网段所有用户通过ssh访问</span></div><div class="line">保存后，重启ssh。</div></pre></td></tr></table></figure>
+<p>4.3 禁止root用户远程使用ssh</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">修改文件/etc/ssh/sshd_config 将PermitRootLogin修改为yes</div><div class="line">记得修改之前要备份</div></pre></td></tr></table></figure>
+<p>4.4 限定信任主机</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">修改/etc/hosts.allow，添加一下代码：</div><div class="line">sshd:192.168.0.100:allow //允许IP 192.168.0.100 登录</div><div class="line">sshd:192.168.10.:allow //允许IP 192.168.10. 网段登录</div><div class="line">修改/etc/hosts.deny，添加一下代码</div><div class="line">sshd:all:deny //禁止其他的所有IP登录</div></pre></td></tr></table></figure>
+<p>4.5防止误使用Ctrl+Alt+Del重启系统</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">修改/etc/init/control-alt-delete.conf 文件，将最后一行：</div><div class="line"><span class="built_in">exec</span> /sbin/shutdown -r now “Control-Alt-Delete pressed” 注释掉就可以了</div></pre></td></tr></table></figure>
+<p>5、用户鉴别<br>5.1设置帐户锁定登录失败锁定次数、锁定时间</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">修改文件/etc/pam.d/system-auth 添加一行：</div><div class="line">auth required pam_tally.so onerr=fail deny=6 unlock_time=300</div><div class="line"><span class="comment">#设置为密码连续错误6次锁定，锁定时间300秒</span></div><div class="line">用户锁定后，解锁：faillog -u &lt;用户名&gt; -r</div><div class="line">风险：需要PAM包的支持;对pam文件的修改应仔细检查，一旦出现错误会导致无法登陆;　　当系统验证出现问题时，首先应当检查/var/<span class="built_in">log</span>/messages或者/var/<span class="built_in">log</span>/secure中的输出信息，根据这些信息判断用户账号的有效性。</div></pre></td></tr></table></figure>
+<p>5.2 修改帐户TMOUT值，设置自动注销时间</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">修改/etc/profile文件</div><div class="line">在”HISTFILESIZE=”后面加入下面这行，添加：TMOUT=600 <span class="comment">#表示无操作600秒后自动退出</span></div><div class="line">``` </div><div class="line">5.3设置Bash保留历史命令的条数</div><div class="line">修改/etc/profile文件的HISTSIZE的值，自己设定</div><div class="line"></div><div class="line">6、审计策略</div><div class="line">6.1 配置系统日志策略配置文件</div><div class="line"> </div><div class="line">```bash </div><div class="line">查看syslog是否启动：ps -aef | grep syslog</div><div class="line">查看rsyslogd的配置，并确认日志文件是否存在：cat /etc/rsyslog.conf</div></pre></td></tr></table></figure>
+<p>6.2审计产生的数据分配合理的存储空间和存储时间<br>查看系统轮询配置：<code>cat /etc/logrotate.conf</code><br>一些属性:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">rotate 4 日志文件保存个数为4，当第5个产生后，删除最早的日志</div><div class="line">size 100k 每个日志的大小</div></pre></td></tr></table></figure>
+<p>7.1 Linux修改<code>/etc/motd</code>文件，威慑入侵者<br>1.）删除<code>/etc/redhat_release</code>  建议修改名字，如果贸然一些软件可能无法安装。<br><code>mv /etc/redhat_release</code>  /etc/新名字<br>2.）编辑<code>/etc/issue</code> #建议修改里面的关键字<br>3.）编写<code>/etc/motd</code>  #公告栏，如果有非授权用户闯入，可以给予文字警告，国外有因为这个事情打官司的，原因是进去提示<code>Welcome</code>呵呵<br>列出以下范文：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">***Wrrning***</div><div class="line">Without the owner<span class="string">'s prior written consent,       </span></div><div class="line">no decompiling or reverse-engineering shall be allowed</div><div class="line">*Notice:</div><div class="line">This is a private communication system.</div><div class="line">Unauthorized access or use may lead to prosecution.</div></pre></td></tr></table></figure>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2016/06/29/运维安全/安全的SSH与CentOS的7谷歌身份验证双因素身份验证/">安全的SSH与CentOS的7谷歌身份验证双因素身份验证</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-06-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/运维安全/">运维安全</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Operation-safety/">Operation safety</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="安装谷歌身份验证"><a href="#安装谷歌身份验证" class="headerlink" title="安装谷歌身份验证"></a>安装谷歌身份验证</h2><ul>
+<li>什么是谷歌身份验证<a href="http://code.google.com/p/google-authenticator/" target="_blank" rel="external">官方github详细介绍</a></li>
+</ul>
+<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>谷歌身份验证项目包括一次性密码生成器为多个移动平台上的实现，以及一个可插拔的身份验证模块（PAM）整个的一次性密码是基于服务器和设备与谷歌，验证程序的时间安装在同步之中。在设备和服务器然后会知道什么一次性代码是正确的，在30秒内，然后它会改变。</p>
+<blockquote>
+<p>SSH访问始终是关键，你可能要想方设法提高你的SSH访问的安全性。在这篇文章中，我们将看到我们如何可以通过使用谷歌的Authenticator保护与简单的双因素身份验证的SSH。在使用它之前，你必须与谷歌身份验证一次性密码协议TOTP服务器上的SSH守护整合，另一个限制是，你必须有你的Andr​​oid手机与你所有的时间，或者至少你想SSH访问的时间。这是教程为CentOS 7编写的。</p>
+</blockquote>
+<ul>
+<li>首先，我们将通过在外壳执行以下命令来安装开源的谷歌身份验证PAM模块。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install google-authenticator</div></pre></td></tr></table></figure>
+<ul>
+<li>安装这步如果提示有没有可用的软件包<code>google-authenticator</code>尝试安装EPEL repo (for CentOS 6 &amp; 7):</li>
+<li>Centos 7是不会提示这个错误的，6的话会提示这个错误。下面是6的安装方法。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"> <span class="comment"># cd /tmp </span></div><div class="line"><span class="comment"># wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm </span></div><div class="line"><span class="comment"># wget http://rpms.famillecollet.com/enterprise/remi-release-6.rpm </span></div><div class="line"><span class="comment"># rpm -Uvh remi-release-6*.rpm epel-release-6*.rpm</span></div></pre></td></tr></table></figure>
+<p>Then verify the EPEL repo exists:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">yum repolist </div><div class="line">... </div><div class="line">epel            Extra Packages <span class="keyword">for</span> Enterprise Linux 6 - x86_64 </div><div class="line">...</div></pre></td></tr></table></figure>
+<p>Finally, install Google Authenticator:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum --enablerepo=epel install google-authenticator</div></pre></td></tr></table></figure>
+<ul>
+<li>现在，我们需要配置PAM身份验证的SSH</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vim /etc/pam.d/sshd</div></pre></td></tr></table></figure>
+<blockquote>
+<p>该文件更改为这一点 -基本上加入“身份验证所需的pam_google_authenticator.so”行</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">auth required pam_google_authenticator.so</div></pre></td></tr></table></figure>
+<ul>
+<li>接下来，现在，我们需要编辑ssh守护进程的配置文件（如果你愿意，你也可以做到这一点从的​​Virtualmin）</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vim /etc/ssh/sshd_config</div></pre></td></tr></table></figure>
+<p>加以下行的文件中，如果它已经放置，然后将参数更改为“yes”：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ChallengeResponseAuthentication yes</div></pre></td></tr></table></figure>
+<ul>
+<li>重新启动SSH服务</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">service sshd restart</div></pre></td></tr></table></figure>
+<ul>
+<li>然后运行服务器运行在谷歌的认证：</li>
+</ul>
+<blockquote>
+<p>此命令将在您安装谷歌认证的Centos 7服务器。下一个步骤是获得的验证码。这是一个非常简单的命令，只需回答服务器的简单的问题，他会问你要获取验证码，并暂存码。为此，您可以一步运行以下命令：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">google-authenticator</div></pre></td></tr></table></figure>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Google-OTP2.png" alt=""></figure></p>
+<p>记得重启ssh服务。</p>
+<blockquote>
+<p>在您的浏览器，加载的URL上面提到的; 它会显示一个QRCode的，你可以扫描到您的手机采用了谷歌身份验证器应用程序的Andr​​oid，iPhone或黑莓。如果你已经有一个谷歌身份验证令牌被您的手机上生成的，您可以添加一个新的，它会显示他们。<br>苹果手机<br>推荐软件：google authenticator 、authy 、洋葱 </p>
+</blockquote>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Google-OTP3.png" alt=""></figure></p>
+<p>Android的可以到我github上面下载：（Google 身份证认证器）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">启动appon您的手机：</div><div class="line">在您的手机中选择基于时间的对于考虑使用SSH使用户</div><div class="line"></div><div class="line">帐户：  根用户名@nginx</div><div class="line">重点：就是key值</div><div class="line">两种添加方法。</div></pre></td></tr></table></figure>
+<h3 id="验证测试："><a href="#验证测试：" class="headerlink" title="验证测试："></a>验证测试：</h3><p>如果一切工作正常，你应该能够通过SSH使用用户名，然后验证码从您的手机/设备，登陆需要先登陆服务器密码，然后在加动态密码即可。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Google-OTP4.png" alt=""></figure></p>
+<h3 id="报错error"><a href="#报错error" class="headerlink" title="报错error"></a>报错error</h3><p>如果提示找不到这个包需要翻墙或者VPN才能下载：</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">wget https://google-authenticator.googlecode.com/files/libpam-google-authenticator-1.0-source.tar.bz2 </div><div class="line">tar -xvzf libpam-google-authenticator-1.0-source.tar.bz2 </div><div class="line"><span class="built_in">cd</span> libpam-google-authenticator-1.0 </div><div class="line">make make install</div></pre></td></tr></table></figure>
+<p>这里我已经下载好安装包了，你可以下载下来编译安装。</p>
+<h3 id="共享资料"><a href="#共享资料" class="headerlink" title="共享资料"></a>共享资料</h3><ul>
+<li>英文安装文档&amp;google-authenticator包：我github上面有安装包也上传了。<a href="https://github.com/yangcvo/Google-Authenticator" target="_blank" rel="external">github</a></li>
+</ul>
+<ul>
+<li>还有什么报错参考链接：<a href="http://blog.remibergsma.com/tag/google-authenticator/" target="_blank" rel="external">google_authenticator</a></li>
+</ul>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ol>
+<li><p>提示一点阿里云上面服务器是安装不上的。因为我都在两个系统6 &amp; 7版本试过了。</p>
+</li>
+<li><p>Selinux：需设定为disabled</p>
+</li>
+<li><p>可与rsa公私钥认证一起使用，但只差别在与电脑里有没有rsa key而已，如果没有的话才会用到。</p>
+</li>
+<li><p>同一个『.google_authenticator』可用在别台Server上，所以在安全性上仍须注意。</p>
+</li>
+<li><p>商用OTP系统一般是C/S网路版方式，有一个统一的Authentication Server，为了保证高可用性，</p>
+<p> 一般会有一主一备两台伺服器。</p>
+</li>
+<li><p>Google Authenticator是一个基于时间的产生验证码的程式，因此不管是伺服器端还是手机用户端，</p>
+<p> 对时间的要求都是非常严格的，要时刻保持与NTP伺服器同步。</p>
+</li>
+<li><p>Google Authenticator和条型码扫瞄器默认是不会产生任何GPRS和WIFI流量的。</p>
+</li>
+<li><p>如果不需要使用者登入时输入OTP密码，而是在使用者su到root时要求输入，</p>
+<p> 可以把PAM认证语句加入到『/etc/pam.d/su』中。</p>
+</li>
+<li><p>当伺服器启用PAM认证之后，所有使用者都是要求输入TOTP密码，</p>
+<p> 所以需要每个使用者在自己的目录下产生一个『.google_authenticator』档案。</p>
+</li>
+</ol>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2016/06/22/性能监控/Zabbix/zabbix3-0实现微信报警/">zabbix3.0实现微信报警</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-06-22</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>  因为我已经在<code>测试环境</code>和·生产环境·都实现了微信和邮件告警。今天有空就写了篇文档后期可以在复习下，现实生产环境中，我们通常使用邮件和短信接受zabbix报警信息，但是邮件经常被工作人员搁置在角落中甚至被设置为垃圾邮件被过滤掉。公司的短信接口又太贵，复杂环境中使用短息报警会使运维成本增加很多。微信提供了很好的第三方接口，我们可以利用微信报警以求降低运维成本。</p>
+<p>   这里我现在公司也用第三方的<code>电话短信猫做告警</code>，严重的故障会用短信来发送到指定的运维人员。这样即使微信和邮件都没有打开收到，短信和电话会第一时间通知。</p>
+<h3 id="微信告警的好处："><a href="#微信告警的好处：" class="headerlink" title="微信告警的好处："></a>微信告警的好处：</h3><p>第一：可以及时通知时间通知运维人员。及时的解决故障。</p>
+<p>第二：下班周末课余时间可以准时接收到。</p>
+<h3 id="安装与配置："><a href="#安装与配置：" class="headerlink" title="安装与配置："></a>安装与配置：</h3><p>微信的第三方接口要求我们先申请一个企业号——传送门：<a href="https://qy.weixin.qq.com/" target="_blank" rel="external">微信企业公众号平台</a></p>
+<p>  第一步：申请微信公众号<br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin1.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin2.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin3.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin4.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin5.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin6.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin7.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin8.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin9.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin10.png" alt=""></figure></p>
+<p>这里跟微信绑定后期登陆只需要扫描下二维码就可以了。</p>
+<p>如何申请也可参考这篇文档：<a href="http://itnihao.blog.51cto.com/1741976/1733245" target="_blank" rel="external">申请微信公众号</a></p>
+<h3 id="如何操作企业号？"><a href="#如何操作企业号？" class="headerlink" title="如何操作企业号？"></a>如何操作企业号？</h3><p>1.通讯录添加企业成员</p>
+<p> 我们要提前把成员信息添加进组织部门，必填项+手机号或者微信号，这样别人扫描二维码的时候才能成功关注企业号。<br>注意：这里有两个我们要用到信息，一个组织部门的ID，一个部门成员的账号（账号是自己手动指定的，不同于微信号，最好是字母加数字）</p>
+<p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin12.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin13.png" alt=""></figure></p>
+<p> 2.应用中心创建应用</p>
+<pre><code>我们要在这里创建应用，因为要通过应用发送消息给部门成员
+注意：这里要记住一个值，应用ID
+</code></pre><p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin14.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin15.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin16.png" alt=""></figure></p>
+<p> 3.给部门设置管理员</p>
+<pre><code>设置---&gt;功能设置----&gt;权限管理----&gt;新建管理组
+管理员必须事先已经关注了企业号，并且已经设置好邮箱地址  
+</code></pre><p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin17.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin18.png" alt=""></figure></p>
+<p>  确定管理员可以读取通讯录，可以使用应用发消息。<br>  <code>注意：我们需要管理员的CorpID和Secret</code></p>
+<p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin19.png" alt=""></figure></p>
+<p>   我们要准备这些东西：</p>
+<pre><code>一个微信企业号
+企业号已经被部门成员关注
+企业号里有一个可以发消息的应用
+一个授权管理员，可以使用该应用给成员发消息
+</code></pre><p>我们要取到这些信息：</p>
+<pre><code>成员账号
+组织部门ID
+应用ID
+CropID
+Secret
+</code></pre><p>如何调用微信接口？</p>
+<p>  调用微信接口需要一个调用接口的凭证：access_token</p>
+<pre><code>通过 ：CropID 、Secret  才能获取到access_token，但是获取到的token有效期为两分钟
+</code></pre><p>微信企业号接口调试工具传送门：<a href="http://qydev.weixin.qq.com/debug" target="_blank" rel="external">http://qydev.weixin.qq.com/debug</a></p>
+<p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin20.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin21.png" alt=""></figure></p>
+<h3 id="测试是否可通："><a href="#测试是否可通：" class="headerlink" title="测试是否可通："></a>测试是否可通：</h3><p>  使用：</p>
+<pre><code>curl -s -G  url    获取 AccessToke
+</code></pre><p>  使用：</p>
+<pre><code>curl --data  url  传送凭证调用企业号接口
+</code></pre><p>这里出现一个问题：</p>
+<p> curl -s -G  url  获取 AccessToke时候为什么我在用企业号发送消息的时候总是返回<code>{&quot;errcode&quot;:41004,&quot;errmsg&quot;:&quot;corpsecret missing”}</code>呢？</p>
+<p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin22.png" alt=""></figure></p>
+<p>主要原因：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">“41004”说明：缺少secret参数，请排查相关问题。</div><div class="line"></div><div class="line">用“”把url括起来就OK，即curl <span class="_">-s</span> -G <span class="string">"url"</span>，估计你已经解决了，帮助后来者吧。</div></pre></td></tr></table></figure>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin23.png" alt=""></figure></p>
+<p>这个问题很棘手，一开始弄搞了一个半个小时后面看到一篇过来人的文章帮助了我：<br>这里我也贴出来了。<a href="参考链接：http://qydev.weixin.qq.com/qa/index.php?qa=16596&amp;qa_1=%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E5%9C%A8%E7%94%A8%E4%BC%81%E4%B8%9A%E5%8F%B7%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF%E7%9A%84%E6%97%B6%E5%80%99%E6%80%BB%E6%98%AF%E8%BF%94%E5%9B%9E">参考文档</a></p>
+<h3 id="python脚本原理"><a href="#python脚本原理" class="headerlink" title="python脚本原理"></a>python脚本原理</h3><pre><code> 使用：
+
+ self.__corpid =  corpid
+
+ 使用：
+
+self.__secret = secret     传送凭证调用企业号接口
+</code></pre><p>脚本已贴出来了，可以下载 <a href="http://oak0aohum.bkt.clouddn.com/weixin4.py" target="_blank" rel="external">weixin.py</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div></pre></td><td class="code"><pre><div class="line">**<span class="comment">#!/usr/bin/env python</span></div><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"></div><div class="line">import urllib,urllib2,json</div><div class="line">import sys</div><div class="line">import logging</div><div class="line">reload(sys)</div><div class="line">sys.setdefaultencoding( <span class="string">"utf-8"</span> )</div><div class="line"></div><div class="line">class WeChat(object):</div><div class="line">	__token_id = <span class="string">''</span></div><div class="line">	<span class="comment"># init attribute</span></div><div class="line">	def __init__(self,url):</div><div class="line">		self.__url = url.rstrip(<span class="string">'/'</span>)</div><div class="line">		self.__corpid = <span class="string">'xxx'</span></div><div class="line">		self.__secret = <span class="string">'xxx'</span></div><div class="line"></div><div class="line">	<span class="comment"># Get TokenID</span></div><div class="line">	def authID(self):</div><div class="line">		params = &#123;<span class="string">'corpid'</span>:self.__corpid, <span class="string">'corpsecret'</span>:self.__secret&#125;</div><div class="line">		data = urllib.urlencode(params)</div><div class="line"></div><div class="line">		content = self.getToken(data)</div><div class="line"></div><div class="line">		try:</div><div class="line">			self.__token_id = content[<span class="string">'access_token'</span>]</div><div class="line">			<span class="comment"># print content['access_token']</span></div><div class="line">		except KeyError:</div><div class="line">			raise KeyError</div><div class="line"></div><div class="line">	<span class="comment"># Establish a connection</span></div><div class="line">	def getToken(self,data,url_prefix=<span class="string">'/'</span>):</div><div class="line">		url = self.__url + url_prefix + <span class="string">'gettoken?'</span></div><div class="line">		try:</div><div class="line">			response = urllib2.Request(url + data)</div><div class="line">		except KeyError:</div><div class="line">			raise KeyError</div><div class="line">		result = urllib2.urlopen(response)</div><div class="line">		content = json.loads(result.read())</div><div class="line">		<span class="built_in">return</span> content</div><div class="line"></div><div class="line">	<span class="comment"># Get sendmessage url</span></div><div class="line">	def postData(self,data,url_prefix=<span class="string">'/'</span>):</div><div class="line">		url = self.__url + url_prefix + <span class="string">'message/send?access_token=%s'</span> % self.__token_id</div><div class="line">		request = urllib2.Request(url,data)</div><div class="line">		try:</div><div class="line">			result = urllib2.urlopen(request)</div><div class="line">		except urllib2.HTTPError as e:</div><div class="line">			<span class="keyword">if</span> hasattr(e,<span class="string">'reason'</span>):</div><div class="line">				<span class="built_in">print</span> <span class="string">'reason'</span>,e.reason</div><div class="line">			<span class="keyword">elif</span> hasattr(e,<span class="string">'code'</span>):</div><div class="line">				<span class="built_in">print</span> <span class="string">'code'</span>,e.code</div><div class="line">			<span class="built_in">return</span> 0</div><div class="line">		<span class="keyword">else</span>:</div><div class="line">			content = json.loads(result.read())</div><div class="line">			result.close()</div><div class="line">		<span class="built_in">return</span> content</div><div class="line"></div><div class="line">	<span class="comment"># send message</span></div><div class="line">	def sendMessage(self,touser,message):</div><div class="line"></div><div class="line">		self.authID()</div><div class="line"></div><div class="line">		data = json.dumps(&#123;</div><div class="line">			<span class="string">'touser'</span>:touser,</div><div class="line">			<span class="string">'toparty'</span>:<span class="string">"3"</span>,</div><div class="line">			<span class="string">'msgtype'</span>:<span class="string">"text"</span>,</div><div class="line">			<span class="string">'agentid'</span>:<span class="string">"3"</span>,</div><div class="line">			<span class="string">'text'</span>:&#123;</div><div class="line">				<span class="string">'content'</span>:message</div><div class="line">			&#125;,</div><div class="line">			<span class="string">'safe'</span>:<span class="string">"0"</span></div><div class="line">		&#125;,ensure_ascii=False)</div><div class="line"></div><div class="line">		response = self.postData(data)</div><div class="line"></div><div class="line">		log_file = <span class="string">"/home/zabbix/weixin.log"</span></div><div class="line"></div><div class="line">		logging.basicConfig(filename=log_file,filemode=<span class="string">'a'</span>,level=logging.DEBUG)</div><div class="line">		logging.info(data)</div><div class="line">		logging.debug(response)</div><div class="line">		<span class="built_in">print</span> response</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">        <span class="keyword">if</span> len(sys.argv) != 4:</div><div class="line">            <span class="built_in">print</span> <span class="string">'error segments, now exit'</span></div><div class="line">            sys.exit()</div><div class="line">	a = WeChat(<span class="string">'https://qyapi.weixin.qq.com/cgi-bin'</span>)</div><div class="line">	a.sendMessage(sys.argv[1],sys.argv[3])</div></pre></td></tr></table></figure>
+<pre><code>log_file = &quot;/home/zabbix/weixin.log&quot; 微信日志
+&apos;toparty&apos;:&quot;3&quot;,
+
+ &apos;agentid&apos;:&quot;3&quot;, 这里3 是我这边应用ID 3
+touser否成员ID列表（消息接收者，多个接收者用‘|’分隔，最多支持1000个）。特殊情况：指定为@all，则向关注该企业应用的全部成员发送
+toparty否部门ID列表，多个接收者用‘|’分隔，最多支持100个。当touser为@all时忽略本参数
+totag否标签ID列表，多个接收者用‘|’分隔。当touser为@all时忽略本参数
+msgtype是消息类型，此时固定为：text
+agentid是企业应用的id，整型。可在应用的设置页面查看
+content是消息内容
+safe否表示是否是保密消息，0表示否，1表示是，默认0
+
+
+&quot;touser&quot;:&quot;touser&quot;,   #企业号中的用户帐号，在zabbix用户Media中配置，如果配置不正常，将按部门发送。
+文中使用的用户, toparty 部门iD为3，agentid 应用ID为3.
+</code></pre><h3 id="为什么要这样写脚本？"><a href="#为什么要这样写脚本？" class="headerlink" title="为什么要这样写脚本？"></a>为什么要这样写脚本？</h3><p>因为微信企业号开放的端口有固定的格式限制<br> 企业号支持的格式：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=消息类型及数据格式" target="_blank" rel="external">http://qydev.weixin.qq.com/wiki/index.php?title=消息类型及数据格式</a></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin24.png" alt=""></figure></p>
+<p>将脚本放入zabbix默认执行路径下</p>
+<pre><code>mv weixin.sh /usr/local/zabbix/share/zabbix/alertscripts
+chown zabbix.zabbix /usr/local/zabbix/share/zabbix/alertscripts/weixin.py
+chmod +x /usr/local/zabbix/share/zabbix/alertscripts/weixin.py
+</code></pre><hr>
+<p>到这里上面基本的已经配置完毕了。</p>
+<h3 id="测试脚本是否可以发送成功消息"><a href="#测试脚本是否可以发送成功消息" class="headerlink" title="测试脚本是否可以发送成功消息"></a>测试脚本是否可以发送成功消息</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@salt alertscripts]<span class="comment"># python weixin.py test world!</span></div><div class="line">&#123;<span class="string">u'errcode'</span>: <span class="number">60011</span>, <span class="string">u'errmsg'</span>: <span class="string">u'no privilege to access/modify contact/party/agent '</span>&#125;</div></pre></td></tr></table></figure>
+<p>出现我是企业号体验账户 我发送消息：微信错误 errcode=60011. 可参考：<a href="http://qydev.weixin.qq.com/qa/index.php?qa=3197&amp;qa_1=%E6%88%91%E6%98%AF%E4%BC%81%E4%B8%9A%E5%8F%B7%E4%BD%93%E9%AA%8C%E8%B4%A6%E6%88%B7-%E6%88%91%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF%EF%BC%9A%E5%BE%AE%E4%BF%A1%E9%94%99%E8%AF%AF&amp;show=3197#q3197" target="_blank" rel="external">微信错误 errcode=60011</a></p>
+<p>我这里的原因是应用ID一开始写1，后来改成3测试就通了。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@salt alertscripts]<span class="comment"># python weixin.py test hello world!</span></div><div class="line">&#123;<span class="string">u'invaliduser'</span>: <span class="string">u'all user invalid'</span>, <span class="string">u'errcode'</span>: <span class="number">0</span>, <span class="string">u'errmsg'</span>: <span class="string">u'ok'</span>&#125;</div></pre></td></tr></table></figure>
+<p>这里用户关注了以后：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@salt alertscripts]<span class="comment"># python weixin.py jinyu hello world!</span></div><div class="line">&#123;<span class="string">u'errcode'</span>: <span class="number">0</span>, <span class="string">u'errmsg'</span>: <span class="string">u'ok'</span>&#125;</div></pre></td></tr></table></figure>
+<h3 id="web服务端配置："><a href="#web服务端配置：" class="headerlink" title="web服务端配置："></a>web服务端配置：</h3><p>至此工具安装完成，在zabbix界面里添加脚本告警</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin25.png" alt=""></figure></p>
+<p>设置脚本，脚本名称为工具名称，设置好点添加按钮</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin26.png" alt=""></figure></p>
+<p>添加新的报警媒介到用户，我以Admin用户为例</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin27.png" alt=""></figure><br>添加</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin28.png" alt=""></figure></p>
+<p>选择刚才的媒介，收件人为我提供的UserID，多个用户用｜隔开</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin29.png" alt=""></figure></p>
+<p>添加后一点要点更新</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin30.png" alt=""></figure></p>
+<p>我们在这里独立设置一个Action，当然你也可以在默认的Action里添加</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin31.png" alt=""></figure></p>
+<p>名称为weixin</p>
+<p>告警消息的格式，大家可以根据自己需求具体设置，下面是我的设置<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin32.png" alt=""></figure></p>
+<p>默认接收人：故障{TRIGGER.STATUS},服务器:{HOSTNAME1}发生: {TRIGGER.NAME}故障!</p>
+<p>默认信息：</p>
+<figure class="highlight dust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="xml">告警主机:</span><span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml"></span></div><div class="line">告警时间:<span class="template-variable">&#123;EVENT.DATE&#125;</span><span class="xml"> </span><span class="template-variable">&#123;EVENT.TIME&#125;</span><span class="xml"></span></div><div class="line">告警等级:<span class="template-variable">&#123;TRIGGER.SEVERITY&#125;</span><span class="xml"></span></div><div class="line">告警信息: <span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml"></span></div><div class="line">告警项目:<span class="template-variable">&#123;TRIGGER.KEY1&#125;</span><span class="xml"></span></div><div class="line">问题详情:<span class="template-variable">&#123;ITEM.NAME&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE&#125;</span><span class="xml"></span></div><div class="line">前状态:<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE1&#125;</span><span class="xml"></span></div><div class="line">事件ID:<span class="template-variable">&#123;EVENT.ID&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">恢复主旨：恢复<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">, 服务器:</span><span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml">: </span><span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml">已恢复!</span></div><div class="line"></div><div class="line">恢复信息：</div><div class="line"></div><div class="line">告警主机:<span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml"></span></div><div class="line">告警时间:<span class="template-variable">&#123;EVENT.DATE&#125;</span><span class="xml"> </span><span class="template-variable">&#123;EVENT.TIME&#125;</span><span class="xml"></span></div><div class="line">告警等级:<span class="template-variable">&#123;TRIGGER.SEVERITY&#125;</span><span class="xml"></span></div><div class="line">告警信息: <span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml"></span></div><div class="line">告警项目:<span class="template-variable">&#123;TRIGGER.KEY1&#125;</span><span class="xml"></span></div><div class="line">问题详情:<span class="template-variable">&#123;ITEM.NAME&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE&#125;</span><span class="xml"></span></div><div class="line">当前状态:<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE1&#125;</span><span class="xml"></span></div><div class="line">事件ID:<span class="template-variable">&#123;EVENT.ID&#125;</span><span class="xml"></span></div></pre></td></tr></table></figure>
+<p>切换到操作标签，添加操作<br>选择发送到Admin用户，只使用weixin，选择好之后点添加,这里我已经添加过了，所以提示更新。<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin33.png" alt=""></figure><br>设置好之后如下，点添加</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin35.png" alt=""></figure></p>
+<p>经过以上步骤，就完成了配置，就可以使用zabbix来告警啦，用dd命令测试下磁盘i/o告警，一会就会看到微信上发过来的告警信息</p>
+<pre><code>dd if=/dev/zero of=/tmp/test2.img bs=1024M count=1000 oflag=dsync
+</code></pre><h3 id="课外普及："><a href="#课外普及：" class="headerlink" title="课外普及："></a>课外普及：</h3><p>普及：</p>
+<p>如何正确使用dd工具测试磁盘的I/O速度</p>
+<p>一般情况下，我们都是使用dd命令创建一个大文件来测试磁盘的读写速度。但是，很多人都存在一个误区，以为dd命令显示的速度就是磁盘的写入速度，其实这是不然的。我们分析一下dd命令是如何工作的。</p>
+<ol>
+<li>dd if=/dev/zero of=/xiaohan/test.iso bs=1024M count=1</li>
+</ol>
+<p>这种情况下测试显示的速度是dd命令将数据写入到内存缓冲区中的速度，只有当数据写入内存缓冲区完成后，才开始将数据刷入硬盘，所以这时候的数据是无法正确衡量磁盘写入速度的。</p>
+<ol>
+<li>dd if=/dev/zero of=/xiaohan/test.iso bs=1024M count=1;sync</li>
+</ol>
+<p>这种情况下测试显示的跟上一种情况是一样的，两个命令是先后执行的，当sync开始执行的时候，dd命令已经将速度信息打印到了屏幕上，仍然无法显示从内存写硬盘时的真正速度。</p>
+<ol>
+<li>dd if=/dev/zero of=/xiaohan/test.iso bs=1024M count=1 conv=fdatasync</li>
+</ol>
+<p>这种情况加入这个参数后，dd命令执行到最后会真正执行一次“同步(sync)”操作，所以这时候你得到的是读取这128M数据到内存并写入到磁盘上所需的时间，这样算出来的时间才是比较符合实际的。</p>
+<ol>
+<li>dd if=/dev/zero of=/xiaohan/test.iso bs=1024M count=1 oflag=dsync</li>
+</ol>
+<p>这种情况下，dd在执行时每次都会进行同步写入操作。也就是说，这条命令每次读取1M后就要先把这1M写入磁盘，然后再读取下面这1M，一共重复128次。这可能是最慢的一种方式，基本上没有用到写缓存(write cache)。</p>
+<p>总结：</p>
+<p>建议使用测试写速度的方式为：</p>
+<p>dd if=/dev/zero of=/xiaohan/test.iso bs=1024M count=1 conv=fdatasync</p>
+<p>建议使用测试读速度的方式为：</p>
+<p>dd if=/xiaohan/test.iso of=/dev/zero bs=1024M count=1 iflag=direct</p>
+<p>*注：要正确测试磁盘读写能力，建议测试文件的大小要远远大于内存的容量！！！</p>
+<h3 id="PS：后续计划"><a href="#PS：后续计划" class="headerlink" title="PS：后续计划"></a>PS：后续计划</h3><p>1.后续可能会增加发送次数计数，方便管理用户</p>
+<p>2.添加查询操作到微信，针对用户定制开发。可通过微信查询zabbix服务器里监控主机的状态，通过微信简单操作zabbix。</p>
+<h3 id="预览"><a href="#预览" class="headerlink" title="预览"></a>预览</h3><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin38.png" alt=""></figure></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin39.jpg" alt=""></figure></p>
+<h3 id="注意事项及报错处理"><a href="#注意事项及报错处理" class="headerlink" title="注意事项及报错处理"></a>注意事项及报错处理</h3><pre><code> #Zabbix-web页面新增用户权限处理，发送对象选择（用户的名称）
+
+#应用当中可见范围选择注意（选这要发送的对象（部门，及部门成员））
+</code></pre><p> zabbix-server2.4服务端编译安装 <a href="http://blog.yangcvo.me/2015/01/18/zabbix-server服务端编译安装/" target="_blank" rel="external">zabbix-server服务端编译安装</a></p>
+<p>zabbix2.4监控80端口状态 : <a href="http://blog.yangcvo.me/2016/07/20/zabbix监控80端口状态/" target="_blank" rel="external">zabbix监控80端口状态</a></p>
+<p>zabbix+Grafana安装使用监控结合 ：<a href="http://blog.yangcvo.me/2016/07/13/zabbix-Grafana安装使用结合/" target="_blank" rel="external">zabbix+Grafana安装使用监控结合</a></p>
+<p>zabbix监控MySQL-添加自定义监控项 : <a href="http://blog.yangcvo.me/2015/09/29/zabbix监控MySQL-添加自定义监控项/" target="_blank" rel="external">zabbix监控MySQL-添加自定义监控项</a></p>
+<p>zabbix的ICMP_Ping模版实现对客户端网络状态的监控 : <a href="http://blog.yangcvo.me/2015/11/18/zabbix的ICMP-Ping模版实现对客户端网络状态的监控/" target="_blank" rel="external">zabbix的ICMP_Ping模版实现对客户端网络状态的监控</a></p>
+<p>zabbix性能监控故障总结 <a href="http://blog.yangcvo.me/2016/02/07/zabbix-故障总结/" target="_blank" rel="external">zabbix性能监控故障总结</a></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2016/06/21/性能监控/Zabbix/zabbix3-0部署jmx监控tomcat/">zabbix3.0部署jmx监控tomcat</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-06-21</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>zabbix提供了一个java gateway的应用去监控jmx（Java Management Extensions，即Java管理扩展）是一个为应用程序、设备、系统等植入管理功能的框架。JMX可以跨越一系列异构操作系统平台、系统体系结构和网络传输协议，灵活的开发无缝集成的系统、网络和服务管理应用。</p>
+<h2 id="一-Zabbix-的JMX监控架构"><a href="#一-Zabbix-的JMX监控架构" class="headerlink" title="一. Zabbix 的JMX监控架构"></a>一. Zabbix 的JMX监控架构</h2><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat1.png" alt=""></figure></p>
+<h3 id="一：部署环境"><a href="#一：部署环境" class="headerlink" title="一：部署环境"></a>一：部署环境</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Centos   6.7</div><div class="line">Zabbix     3.0.3</div><div class="line">Tomcat     7.0.55</div></pre></td></tr></table></figure>
+<h3 id="服务端配置"><a href="#服务端配置" class="headerlink" title="服务端配置"></a>服务端配置</h3><h3 id="1、安装jdk（版本1-7-0-79）"><a href="#1、安装jdk（版本1-7-0-79）" class="headerlink" title="1、安装jdk（版本1.7.0_79）"></a>1、安装jdk（版本1.7.0_79）</h3><p>JDK 各自的版本7.0 还是8.0 版本官网下载：<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank" rel="external">JDK</a></p>
+<p>我这里也上传了7.0.67 版本的和8.0版本的jdk源码包：</p>
+<p><a href="http://oak0aohum.bkt.clouddn.com/jdk1.7.0_67.tar.gz" target="_blank" rel="external">7.0JDK源码包</a></p>
+<p><a href="http://oak0aohum.bkt.clouddn.com/jdk1.8.0_66.tar.gz" target="_blank" rel="external">8.0JDK源码包</a></p>
+<p>并上传到zabbix server</p>
+<p>直接解压下载下来的包到自定义的目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tar -zxvf jdk1.7.0_67.tar.gz -C /srv/</div></pre></td></tr></table></figure>
+<p>安装成功之后添加系统环境变量</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="built_in">cd</span> /etc/profile.d</div><div class="line">vim java.sh</div><div class="line"><span class="built_in">export</span> JAVA_HOME=/srv/jdk1.7.0_67</div><div class="line"><span class="built_in">export</span> CLASS_PATH=<span class="string">"<span class="variable">$JAVA_HOME</span>/lib:<span class="variable">$JAVA_HOME</span>/jre/lib"</span></div><div class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$JAVA_HOME</span>/bin</div></pre></td></tr></table></figure>
+<p>使配置生效</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">source</span> <span class="regexp">/etc/</span>profile</div></pre></td></tr></table></figure>
+<p>安装与配置比较简单。执行java -version命令，出现类似界面表示成功。</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">java </span>-version</div><div class="line"><span class="keyword">java </span>version <span class="string">"1.7.0_67"</span></div><div class="line"><span class="keyword">Java(TM) </span>SE Runtime Environment (<span class="keyword">build </span><span class="number">1</span>.<span class="number">7</span>.<span class="number">0</span>_67-<span class="keyword">b01)</span></div><div class="line"><span class="keyword">Java </span>HotSpot(TM) <span class="number">64</span>-<span class="keyword">Bit </span>Server VM (<span class="keyword">build </span><span class="number">24</span>.<span class="number">65</span>-<span class="keyword">b04, </span>mixed mode)</div></pre></td></tr></table></figure>
+<p>如果出现问题，查看下环境变量是否设置。</p>
+<h3 id="2、安装Zabbix-Java-gateway"><a href="#2、安装Zabbix-Java-gateway" class="headerlink" title="2、安装Zabbix-Java-gateway"></a>2、安装<code>Zabbix-Java-gateway</code></h3><p>Zabbix2.0起添加了支持用于监控JMX应用程序的服务进程，称为“Zabbix-Java-gateway”，它是用java写的一个程序。</p>
+<p>可使用rpm进行安装，我使用源码安装，大家可在安装zabbix时启用–enable-java参数即可安装zabbix java gateway，如果第一次没有加载，可重新加载编译安装</p>
+<p>有两种方法可以安装Zabbix-Java-gateway，第1种是编译安装zabbix时添加–enable java参数。第2种是单独安装，步骤如下：</p>
+<ul>
+<li><code>第一种方法</code>：</li>
+</ul>
+<p>安装gateway，需要java，java-devel依赖</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">yum　install　－ｙ　</div><div class="line">http://repo.zabbix.com/zabbix/2.4/rhel/6/x86_64/zabbix-release-2.4-1.el6.noarch.rpm　　　　　　　　　　　　　　　    安装yum源</div><div class="line">yum install -y  java  java-devel  zabbix-java-gateway　　安装gateway</div></pre></td></tr></table></figure>
+<p>测试是否成功：</p>
+<p>第一：测试java是否成功</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">java </span>-version</div><div class="line"><span class="keyword">java </span>version <span class="string">"1.7.0_67"</span></div><div class="line"><span class="keyword">Java(TM) </span>SE Runtime Environment (<span class="keyword">build </span><span class="number">1</span>.<span class="number">7</span>.<span class="number">0</span>_67-<span class="keyword">b01)</span></div><div class="line"><span class="keyword">Java </span>HotSpot(TM) <span class="number">64</span>-<span class="keyword">Bit </span>Server VM (<span class="keyword">build </span><span class="number">24</span>.<span class="number">65</span>-<span class="keyword">b04, </span>mixed mode)</div></pre></td></tr></table></figure>
+<p>第二：测试gateway是否安装成功</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">service zabbix-java-gateway <span class="built_in">status</span></div><div class="line">zabbix-java-gateway <span class="built_in">is</span> stopped</div></pre></td></tr></table></figure>
+<ul>
+<li><code>第二种方法</code>：</li>
+</ul>
+<p>我这里升级3.0.3版本的时候已经安装好了。所以如果没有安装上的可以单独安装没关系的：</p>
+<p>不受影响步骤如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># tar zxvf zabbix-3.0.3.tar.gz</span></div><div class="line"><span class="comment"># cd zabbix-3.0.3</span></div><div class="line"><span class="comment"># ./configure  --enable-java  --prefix=/data/zabbix/zabbix_java  #/data/zabbix是我的zabbix安装目录</span></div><div class="line"><span class="comment"># make &amp;&amp; make install</span></div></pre></td></tr></table></figure>
+<p>我的目录是默认在/usr/local/zabbix/sbin/zabbix_java/</p>
+<h3 id="3、修改Java-gateway的配置文件并启动它"><a href="#3、修改Java-gateway的配置文件并启动它" class="headerlink" title="3、修改Java-gateway的配置文件并启动它"></a>3、修改<code>Java-gateway</code>的配置文件并启动它</h3><p>配置文件单独安装的路径为/data/zabbix/zabbix_java/sbin/zabbix_java/settings.sh<br>我这里是这个目录。具体根据实际安装情况） /usr/local/zabbix/sbin/zabbix_java/settings.sh<br>启用以下参数：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">LISTEN_IP=<span class="string">"127.0.0.1"</span>       <span class="comment">#监听地址</span></div><div class="line">LISTEN_PORT=10052      <span class="comment">#监听端口</span></div><div class="line">START_POLLERS=50        <span class="comment"># 开启的工作线程数（必须大于等于后面zabbix_server.conf文件的StartJavaPollers参数） #必须配置，启动的进出数</span></div></pre></td></tr></table></figure>
+<p><code>注意事项：</code></p>
+<ol>
+<li>配置文件PID_FILE的路径必须是正确的，可以自己去cd找，yum安装默认情况下不用改动。</li>
+<li>START_POLLERS项是配置启动的进出数，该值必须大于等于Zabbix-Server里面的startJavaPollers项。</li>
+</ol>
+<p>进入/usr/local/zabbix/sbin/zabbix_java/目录，执行./startup.sh</p>
+<p>检查端口是否监听：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">netstat -anp|grep 10052</div><div class="line">tcp        0      0 0.0.0.0:10052               0.0.0.0:*                   LISTEN      21949/java</div></pre></td></tr></table></figure>
+<p>查看是否已经监听10052端口，如果已监听，表示启动成功，如果没有，可通过zabbix_server日志查看解决</p>
+<h3 id="4、修改zabbix-server的配置文件并重启"><a href="#4、修改zabbix-server的配置文件并重启" class="headerlink" title="4、修改zabbix_server的配置文件并重启"></a>4、修改<code>zabbix_server</code>的配置文件并重启</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">vim /usr/<span class="built_in">local</span>/zabbix/etc/zabbix_server.conf</div><div class="line"></div><div class="line">JavaGateway=127.0.0.1      <span class="comment"># JavaGateway 服务器地址，zabbix_server与zabbix_java_gateway在同一台主机</span></div><div class="line">JavaGatewayPort=10052       <span class="comment">#端口</span></div><div class="line">StartJavaPollers=5          <span class="comment"># #设定连接java gateway 的进程数，当设置为0时表示不具有抓取java信息的能力</span></div></pre></td></tr></table></figure>
+<h3 id="5、-添加catalina-jmx-remote-jar"><a href="#5、-添加catalina-jmx-remote-jar" class="headerlink" title="5、 添加catalina-jmx-remote.jar"></a>5、 添加catalina-jmx-remote.jar</h3><p>添加catalina-jmx-remote.jar到zabbix java gateway的lib目录下，catalina-jmx-remote.jar包可在<a href="http://archive.apache.org/dist/tomcat/下，在各版本目录的bin/extras/子目录下" target="_blank" rel="external">http://archive.apache.org/dist/tomcat/下，在各版本目录的bin/extras/子目录下</a></p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd /usr/local/zabbix/sbin/zabbix_java/<span class="class"><span class="keyword">lib</span>/</span></div><div class="line">wget <span class="symbol">http:</span>/<span class="regexp">/archive.apache.org/dist</span><span class="regexp">/tomcat/tomcat</span>-<span class="number">7</span>/v7.<span class="number">0.55</span>/bin/extras/catalina-jmx-remote.jar</div></pre></td></tr></table></figure>
+<p>重启服务zabbix和java gateway 并加入启动项并验证：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">/etc/init.d/zabbix_server restart</div><div class="line">/usr/<span class="built_in">local</span>/zabbix/sbin/zabbix_java/shutdown.sh</div><div class="line">/usr/<span class="built_in">local</span>/zabbix/sbin/zabbix_java/startup.sh</div></pre></td></tr></table></figure>
+<h3 id="6-下载测试工具cmdline-jmxclient-0-10-3-jar"><a href="#6-下载测试工具cmdline-jmxclient-0-10-3-jar" class="headerlink" title="6.下载测试工具cmdline-jmxclient-0.10.3.jar"></a>6.下载测试工具<code>cmdline-jmxclient-0.10.3.jar</code></h3><p>cmdline-jmxclient-0.10.3.jar为一个测试工具，可用来测试jmx是否配置正确，下载cmdline-jmxclient-0.10.3.jar(下载到任意目录)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wget http://crawler.archive.org/cmdline-jmxclient/cmdline-jmxclient-0.10.3.jar</div></pre></td></tr></table></figure>
+<h2 id="二、被监控tomcat-配置［被监控tomcat操作］"><a href="#二、被监控tomcat-配置［被监控tomcat操作］" class="headerlink" title="二、被监控tomcat 配置［被监控tomcat操作］"></a>二、被监控tomcat 配置［被监控tomcat操作］</h2><h3 id="下载catalina-jmx-remote-jar"><a href="#下载catalina-jmx-remote-jar" class="headerlink" title="下载catalina-jmx-remote.jar"></a>下载catalina-jmx-remote.jar</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /srv/tomcat/tomcat-account/lib/</div><div class="line">wget http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.55/bin/extras/catalina-jmx-remote.jar <span class="comment">#我的tomcat版本是7.0.55</span></div><div class="line">chown -R tomcat:tomcat catalina-jmx-remote.jar</div><div class="line">chmod +x catalina-jmx-remote.jar</div></pre></td></tr></table></figure>
+<p>我的tomcat版本是<code>7.0.55</code>  将下载后后的jar包放到被监控的tomcat实例的lib目录下。 </p>
+<h3 id="查看tomcat的版本"><a href="#查看tomcat的版本" class="headerlink" title="查看tomcat的版本"></a>查看tomcat的版本</h3><ul>
+<li>这里之前也自己也忘记了tomcat的版本是多少了，所以我先查看下然后在下载：</li>
+</ul>
+<figure class="highlight ldif"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">cd /srv/tomcat/tomcat_account/bin</span></div><div class="line">[root@tomcat_A1 bin]# ./version.sh --</div><div class="line">Using CATALINA_BASE:   /srv/tomcat/tomcat_account</div><div class="line"><span class="attribute">Using CATALINA_HOME</span>:   /srv/tomcat/tomcat_account</div><div class="line"><span class="attribute">Using CATALINA_TMPDIR</span>: /srv/tomcat/tomcat_account/temp</div><div class="line"><span class="attribute">Using JRE_HOME</span>:        /srv/jdk1.7.0_67</div><div class="line"><span class="attribute">Using CLASSPATH</span>:       /srv/tomcat/tomcat_account/bin/bootstrap.jar:/srv/tomcat/tomcat_account/bin/tomcat-juli.jar</div><div class="line"><span class="attribute">Server version</span>: Apache Tomcat/7.0.55</div><div class="line"><span class="attribute">Server built</span>:   Jul 18 2014 05:34:04</div><div class="line"><span class="attribute">Server number</span>:  7.0.55.0</div><div class="line"><span class="attribute">OS Name</span>:        Linux</div><div class="line"><span class="attribute">OS Version</span>:     2.6.32-573.8.1.el6.x86_64</div><div class="line"><span class="attribute">Architecture</span>:   amd64</div><div class="line"><span class="attribute">JVM Version</span>:    1.7.0_67-b01</div><div class="line"><span class="attribute">JVM Vendor</span>:     Oracle Corporation</div></pre></td></tr></table></figure>
+<p>在tomcat端配置JMX。（tomcat/bin/catalina.sh）自己安装的tomcat路径，找到catalina.sh文件。</p>
+<p>网上很多人修改tomcat/bin/下的catalina.sh，添加如下内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">CATALINA_OPTS=<span class="string">"-Dcom.sun.management.jmxremote</span></div><div class="line">-Dcom.sun.management.jmxremote.authenticate=false</div><div class="line">-Dcom.sun.management.jmxremote.ssl=false</div><div class="line">-Dcom.sun.management.jmxremote.port=12345  #定义jmx监听端口</div><div class="line">-Djava.rmi.server.hostname=192.168.7.186"</div></pre></td></tr></table></figure>
+<ul>
+<li>我这里是直接在bin目录下面创建自定义的脚本。</li>
+</ul>
+<h3 id="修改setenv-sh"><a href="#修改setenv-sh" class="headerlink" title="修改setenv.sh"></a>修改setenv.sh</h3><p>vi /srv/tomcat/tomcat-account/bin/setenv.sh</p>
+<p>添加如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">CATALINA_OPTS=<span class="string">"<span class="variable">$&#123;CATALINA_OPTS&#125;</span> -Djava.rmi.server.hostname=192.168.7.186"</span></div><div class="line">CATALINA_OPTS=<span class="string">"<span class="variable">$&#123;CATALINA_OPTS&#125;</span> -Djavax.management.builder.initial="</span></div><div class="line">CATALINA_OPTS=<span class="string">"<span class="variable">$&#123;CATALINA_OPTS&#125;</span> -Dcom.sun.management.jmxremote=true"</span></div><div class="line">CATALINA_OPTS=<span class="string">"<span class="variable">$&#123;CATALINA_OPTS&#125;</span> -Dcom.sun.management.jmxremote.ssl=false"</span></div><div class="line">CATALINA_OPTS=<span class="string">"<span class="variable">$&#123;CATALINA_OPTS&#125;</span> -Dcom.sun.management.jmxremote.authenticate=false"</span></div></pre></td></tr></table></figure>
+<p>注意：hostname位机器ip地址，即被监控机器对外服务地址</p>
+<h3 id="3-修改server-xml"><a href="#3-修改server-xml" class="headerlink" title="3.修改server.xml"></a>3.修改server.xml</h3><p>vi /opt/apache-tomcat/conf/server.xml<br>添加如下，注意添加位置在</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Listener className=<span class="string">"org.apache.catalina.core.ThreadLocalLeakPreventionListener"</span> /&gt;</div></pre></td></tr></table></figure>
+<p>之后添加如下代码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Listener className=<span class="string">"org.apache.catalina.mbeans.JmxRemoteLifecycleListener"</span> rmiRegistryPortPlatform=<span class="string">"12345"</span> rmiServerPortPlatform=<span class="string">"12345"</span> /&gt;</div></pre></td></tr></table></figure>
+<p>3、重启<code>tomcat</code><br>这里我之前是用写好的启动脚本去启动的，发现一个问题。<br>因为我都是用/etc/init.d/tomcat stop start 来启动。<br>可是发现服务启动了，可是之前的tomcat服务端口不见了。我之前的tomcat服务端口<code>10001</code></p>
+<p>然后查看日志出现报错：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">	at java<span class="selector-class">.lang</span><span class="selector-class">.reflect</span><span class="selector-class">.Method</span><span class="selector-class">.invoke</span>(Method<span class="selector-class">.java</span>:<span class="number">606</span>)</div><div class="line">	at org<span class="selector-class">.apache</span><span class="selector-class">.commons</span><span class="selector-class">.daemon</span><span class="selector-class">.support</span><span class="selector-class">.DaemonLoader</span><span class="selector-class">.start</span>(DaemonLoader<span class="selector-class">.java</span>:<span class="number">243</span>)</div><div class="line">Caused by: java<span class="selector-class">.lang</span><span class="selector-class">.IllegalArgumentException</span>: jmxremote<span class="selector-class">.access</span> (没有那个文件或目录)</div><div class="line">	at javax<span class="selector-class">.management</span><span class="selector-class">.remote</span><span class="selector-class">.rmi</span><span class="selector-class">.RMIConnectorServer</span><span class="selector-class">.start</span>(RMIConnectorServer<span class="selector-class">.java</span>:<span class="number">373</span>)</div><div class="line">	at org<span class="selector-class">.apache</span><span class="selector-class">.catalina</span><span class="selector-class">.mbeans</span><span class="selector-class">.JmxRemoteLifecycleListener</span><span class="selector-class">.createServer</span>(JmxRemoteLifecycleListener<span class="selector-class">.java</span>:<span class="number">313</span>)</div><div class="line">	at org<span class="selector-class">.apache</span><span class="selector-class">.catalina</span><span class="selector-class">.mbeans</span><span class="selector-class">.JmxRemoteLifecycleListener</span><span class="selector-class">.lifecycleEvent</span>(JmxRemoteLifecycleListener<span class="selector-class">.java</span>:<span class="number">259</span>)</div><div class="line">	at org<span class="selector-class">.apache</span><span class="selector-class">.catalina</span><span class="selector-class">.util</span><span class="selector-class">.LifecycleSupport</span><span class="selector-class">.fireLifecycleEvent</span>(LifecycleSupport<span class="selector-class">.java</span>:<span class="number">117</span>)</div><div class="line">	at org<span class="selector-class">.apache</span><span class="selector-class">.catalina</span><span class="selector-class">.util</span><span class="selector-class">.LifecycleBase</span><span class="selector-class">.fireLifecycleEvent</span>(LifecycleBase<span class="selector-class">.java</span>:<span class="number">90</span>)</div><div class="line">	at org<span class="selector-class">.apache</span><span class="selector-class">.catalina</span><span class="selector-class">.util</span><span class="selector-class">.LifecycleBase</span><span class="selector-class">.setStateInternal</span>(LifecycleBase<span class="selector-class">.java</span>:<span class="number">402</span>)</div><div class="line">	at org<span class="selector-class">.apache</span><span class="selector-class">.catalina</span><span class="selector-class">.util</span><span class="selector-class">.LifecycleBase</span><span class="selector-class">.setState</span>(LifecycleBase<span class="selector-class">.java</span>:<span class="number">347</span>)</div><div class="line">	at org<span class="selector-class">.apache</span><span class="selector-class">.catalina</span><span class="selector-class">.core</span><span class="selector-class">.StandardServer</span><span class="selector-class">.startInternal</span>(StandardServer<span class="selector-class">.java</span>:<span class="number">732</span>)</div><div class="line">	at org<span class="selector-class">.apache</span><span class="selector-class">.catalina</span><span class="selector-class">.util</span><span class="selector-class">.LifecycleBase</span><span class="selector-class">.start</span>(LifecycleBase<span class="selector-class">.java</span>:<span class="number">150</span>)</div><div class="line">	... <span class="number">11</span> more</div><div class="line">Caused by: java<span class="selector-class">.io</span><span class="selector-class">.FileNotFoundException</span>: jmxremote<span class="selector-class">.access</span> (没有那个文件或目录)</div><div class="line">	at java<span class="selector-class">.io</span><span class="selector-class">.FileInputStream</span><span class="selector-class">.open</span>(Native Method)</div><div class="line">	at java<span class="selector-class">.io</span><span class="selector-class">.FileInputStream</span>.&lt;init&gt;(FileInputStream<span class="selector-class">.java</span>:<span class="number">146</span>)</div><div class="line">	at java<span class="selector-class">.io</span><span class="selector-class">.FileInputStream</span>.&lt;init&gt;(FileInputStream<span class="selector-class">.java</span>:<span class="number">101</span>)</div><div class="line">	at com<span class="selector-class">.sun</span><span class="selector-class">.jmx</span><span class="selector-class">.remote</span><span class="selector-class">.security</span><span class="selector-class">.MBeanServerFileAccessController</span><span class="selector-class">.propertiesFromFile</span>(MBeanServerFileAccessController<span class="selector-class">.java</span>:<span class="number">294</span>)</div><div class="line">	at com<span class="selector-class">.sun</span><span class="selector-class">.jmx</span><span class="selector-class">.remote</span><span class="selector-class">.security</span><span class="selector-class">.MBeanServerFileAccessController</span>.&lt;init&gt;(MBeanServerFileAccessController<span class="selector-class">.java</span>:<span class="number">133</span>)</div><div class="line">	at javax<span class="selector-class">.management</span><span class="selector-class">.remote</span><span class="selector-class">.rmi</span><span class="selector-class">.RMIConnectorServer</span><span class="selector-class">.start</span>(RMIConnectorServer<span class="selector-class">.java</span>:<span class="number">371</span>)</div><div class="line">	... <span class="number">19</span> more</div></pre></td></tr></table></figure>
+<p>这里先kill -9 tomcat进程<br>只需要在/bin/目录下面启动服务。<code>./startup.sh</code><br>然后查看有下面的12345 12346 进程 和tomcat进程10001 说明就对了。</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[root@tomcat_A1 bin]# netstat -ntulp</div><div class="line">Active Internet connections (only servers)</div><div class="line">Proto Recv-Q Send-Q Local Address               Foreign Address             State       PID/Program name</div><div class="line">tcp        <span class="number">0</span>      <span class="number">0</span> <span class="number">10.46</span><span class="meta">.72</span><span class="meta">.172</span>:<span class="number">10050</span>          <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                   LISTEN      <span class="number">8483</span>/zabbix_agentd</div><div class="line">tcp        <span class="number">0</span>      <span class="number">0</span> <span class="number">127.0</span><span class="meta">.0</span><span class="meta">.1</span>:<span class="number">8006</span>              <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                   LISTEN      <span class="number">8942</span>/java</div><div class="line">tcp        <span class="number">0</span>      <span class="number">0</span> <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:<span class="number">4041</span>                <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                   LISTEN      <span class="number">8942</span>/java</div><div class="line">tcp        <span class="number">0</span>      <span class="number">0</span> <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:<span class="number">10001</span>               <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                   LISTEN      <span class="number">8942</span>/java</div><div class="line">tcp        <span class="number">0</span>      <span class="number">0</span> <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:<span class="number">22</span>                  <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                   LISTEN      <span class="number">1363</span>/sshd</div><div class="line">tcp        <span class="number">0</span>      <span class="number">0</span> <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:<span class="number">36440</span>               <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                   LISTEN      <span class="number">8942</span>/java</div><div class="line">tcp        <span class="number">0</span>      <span class="number">0</span> <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:<span class="number">12345</span>               <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                   LISTEN      <span class="number">8942</span>/java</div><div class="line">tcp        <span class="number">0</span>      <span class="number">0</span> <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:<span class="number">12346</span>               <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                   <span class="number">1374</span>/ntpd</div><div class="line">udp        <span class="number">0</span>      <span class="number">0</span> <span class="number">10.46</span><span class="meta">.72</span><span class="meta">.172</span>:<span class="number">123</span>            <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                               <span class="number">1374</span>/ntpd</div><div class="line">udp        <span class="number">0</span>      <span class="number">0</span> <span class="number">127.0</span><span class="meta">.0</span><span class="meta">.1</span>:<span class="number">123</span>               <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                               <span class="number">1374</span>/ntpd</div><div class="line">udp        <span class="number">0</span>      <span class="number">0</span> <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:<span class="number">123</span>                 <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                               <span class="number">1374</span>/ntpd</div></pre></td></tr></table></figure>
+<p>重启zabbix agent</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">service zabbix-agent restart</span></div></pre></td></tr></table></figure>
+<p>注：防火墙需要开放12345，12346端口</p>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">-A INPUT -i  eth0 -p tcp -m <span class="keyword">state</span> --state NEW -m tcp --dport <span class="number">12345</span> -j ACCEPT</div><div class="line">-A INPUT -i  eth0 -p tcp -m <span class="keyword">state</span> --state NEW -m tcp --dport <span class="number">12346</span> -j ACCEPT</div></pre></td></tr></table></figure>
+<p>###4、服务端测试是否可以获取数据</p>
+<p>命令行下测试需要cmdline-jmxclient-0.10.3.jar这个包，测试结果如下：</p>
+<p>这个包下载地址:<a href="http://oak0aohum.bkt.clouddn.com/cmdline-jmxclient-0.10.3.jar" target="_blank" rel="external">cmdline-jmxclient-0.10.3.jar</a></p>
+<p>在zabbix server上执行</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">java -jar /tmp/cmdline-jmxclient-<span class="number">0.10</span>.<span class="number">3</span><span class="selector-class">.jar</span> - <span class="number">192.168</span>.<span class="number">7.186</span>:<span class="number">12345</span> java<span class="selector-class">.lang</span>:type=Memory NonHeapMemoryUsage</div></pre></td></tr></table></figure>
+<p>如果有如下回显表示jmx配置正确，如不正确，请检查配置,看下端口启动是否正常，server.xml 配置。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="number">07</span><span class="regexp">/22/</span><span class="number">2016</span> <span class="number">14</span>:<span class="number">45</span>:<span class="number">28</span> +<span class="number">0800</span> org.archive.jmx.Client <span class="string">NonHeapMemoryUsage:</span></div><div class="line"><span class="string">committed:</span> <span class="number">80347136</span></div><div class="line"><span class="string">init:</span> <span class="number">24576000</span></div><div class="line"><span class="string">max:</span> <span class="number">136314880</span></div><div class="line"><span class="string">used:</span> <span class="number">46634984</span></div></pre></td></tr></table></figure>
+<p>写个脚本自动判断：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">vim context.sh</div><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line">java -jar /opt/tomcat/cmdline-jmxclient-0.10.3.jar - 10.46.72.172:12345 Catalina:<span class="built_in">type</span>=Manager,*| awk -F <span class="string">","</span> <span class="string">'&#123; print $1 &#125;'</span>|awk -F: <span class="string">'&#123; print $2 &#125;'</span>&gt;/tmp/tomcat/context.csv</div></pre></td></tr></table></figure>
+<h2 id="三、导入模板到zabbix，并关联到主机，添加监控"><a href="#三、导入模板到zabbix，并关联到主机，添加监控" class="headerlink" title="三、导入模板到zabbix，并关联到主机，添加监控"></a>三、导入模板到zabbix，并关联到主机，添加监控</h2><p>这样也可以选择系统自带的，我这里zabbix版本是3.0的，系统自带的可以选择：<br>选择配置：主机-模板-选择-模板-：<br>Template JMX Tomcat<br>Template JMX Generic</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat4.png" alt=""></figure></p>
+<p>从网上下载了一个不错的模板，导入后如下：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat2.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat3.png" alt=""></figure></p>
+<p>导入模板以后主机添加端口：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat6.png" alt=""></figure></p>
+<p>然后查看图形：<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat5.png" alt=""></figure></p>
+<p>就有了。</p>
+<h3 id="四、如何监控单主机多个tomcat"><a href="#四、如何监控单主机多个tomcat" class="headerlink" title="四、如何监控单主机多个tomcat"></a>四、如何监控单主机多个tomcat</h3><p>监控多个tomcat实例，网上的详细的配置文档很少，几乎没有。比较好的办法是使用自动发现，但刚使用zabbix，来不及研究，所以采用笨法，修改模板、监控项、图形来达到最终目的。<br>关键配置：<br>1、添加主机时添加多个jmx端口</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat7.png" alt=""></figure></p>
+<p>2、修改监控项、键值<br>在同一主机上，zabbix不允键值重复，但是监控的项目是一样的，不可能键值写的不重复，经过几番搜索，找到方法如下：<br>只要在箭头处添加1个空格就可以，也可以是多个。（注意位置不要错，在逗到后面）</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat8.png" alt=""></figure></p>
+<p>剩下的就是体力活了，克隆监控项、修改监控项、克隆图形、修改图形。。。<br>以下是两个tomcat实例的监控项：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat10.png" alt=""></figure></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat9.png" alt=""></figure></p>
+<p>多个tomcat在一台主机上面最后的监控效果如下：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat11.png" alt=""></figure></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat12.png" alt=""></figure></p>
+<p>一开始zabbix监控tomcat 一路顺畅，可是到测试正不正常时候，返回拒绝连接，第一时间想到就是配置有问题：</p>
+<p>我是参考这个解决了。</p>
+<p>具体参数内容请参考 <a href="https://tomcat.apache.org/tomcat-7.0-doc/config/listeners.html#Additional_Implementations" target="_blank" rel="external">apache tomcat 文档</a></p>
+<p>也非常感谢：张爱德大神 一路zabbix上面的帮我一起排坑：</p>
+<p>zabbix大神 他的博客blog：<a href="https://blog.cactifans.com" target="_blank" rel="external">https://blog.cactifans.com</a></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+
+	<span class="different-posts">📖 <a href="/page/8">more posts</a> 📖</span>
+
+
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

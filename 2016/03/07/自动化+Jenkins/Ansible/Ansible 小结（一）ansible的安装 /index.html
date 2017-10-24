@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Ansible 小结（一）ansible的安装 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>Ansible 小结（一）ansible的安装</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-03-07</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/automation/">automation</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Ansible/">Ansible</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>上一篇文章记录了解ansible,这篇大概记录下常规使用命令。</p>
+<p>这里以CentOS Linux release 7.2.1511 (Core)系统为准。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ansible_03.png" alt=""></figure></p>
+<h3 id="一、Ansible的安装"><a href="#一、Ansible的安装" class="headerlink" title="一、Ansible的安装"></a>一、Ansible的安装</h3><h4 id="Centos安装"><a href="#Centos安装" class="headerlink" title="Centos安装"></a>Centos安装</h4><p>1、yum源安装</p>
+<p>以centos为例，默认在源里没有ansible，不过在fedora epel源里有ansible，配置完epel 源后，可以直接通过yum 进行安装。这里以centos6.8为例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">centos 6</div><div class="line"><span class="comment"># yum install http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm</span></div><div class="line"></div><div class="line">centos 7</div><div class="line"><span class="comment"># yum install http://mirrors.sohu.com/fedora-epel/7/x86_64/e/epel-release-7-10.noarch.rpm</span></div><div class="line"><span class="comment"># yum install -y ansible</span></div></pre></td></tr></table></figure>
+<h4 id="Ubuntu安装"><a href="#Ubuntu安装" class="headerlink" title="Ubuntu安装"></a>Ubuntu安装</h4><p>2、apt-get安装</p>
+<p>在ubuntu及其衍生版中，可以通过增加ppa源进行apt-get安装，具体如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span><span class="bash"> sudo apt-get install software-properties-common</span></div><div class="line"><span class="meta">$</span><span class="bash"> sudo apt-add-repository ppa:ansible/ansible</span></div><div class="line"><span class="meta">$</span><span class="bash"> sudo apt-get update</span></div><div class="line"><span class="meta">$</span><span class="bash"> sudo apt-get install ansible</span></div></pre></td></tr></table></figure>
+<p>3、源码安装</p>
+<p>源码安装需要python2.6以上版本，其依赖模块paramiko、PyYAML、Jinja2、httplib2、simplejson、pycrypto模块，以上模块可以通过pip或easy_install 进行安装，不过本部分既然提到的是源码安装，主要针对的无法上外网的情况下，可以通过pypi 站点搜索以上包，下载后通过python setup.py install 进行安装。</p>
+<p>最后通过github或pypi上下载ansible源码包，通过python setup.py install 安装即可。由于安装过程相对简单，这里略过，主要介绍安装后，可能遇到的问题。</p>
+<p>a、安装PyYAML时，报错如下：</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># python setup.py install</div><div class="line">libyaml is <span class="keyword">not</span> found <span class="keyword">or</span> a compiler error: forcing --without-libyaml</div><div class="line">(<span class="keyword">if</span> libyaml is installed correctly, you may need to</div><div class="line"> specify the <span class="keyword">option</span> --include-dirs <span class="keyword">or</span> uncomment <span class="keyword">and</span></div><div class="line"> modify the <span class="keyword">parameter</span> include_dirs <span class="comment">in setup.cfg)</span></div><div class="line">running <span class="comment">install_lib</span></div><div class="line">running <span class="comment">install_egg_info</span></div><div class="line">Removing /usr/<span class="comment">lib64</span>/python2<span class="number">.6</span>/<span class="comment">site-packages</span>/PyYAML<span class="number">-3.11</span>-py2<span class="number">.6</span>.egg-info</div><div class="line">Writing /<span class="comment">usr</span>/lib64/<span class="comment">python2.6</span>/site-packages/<span class="comment">PyYAML-3.11-py2.6.egg-info</span></div></pre></td></tr></table></figure>
+<p>在centos6.8系统中，可以通过<code>yum -y install libyaml</code>包解决，或者从ISO文件中提供该包，通过rpm -ivh进行安装。</p>
+<p>###二、Ansible的配置与验证</p>
+<p>yum 安装使用默认示例配置文件后，编辑/etc/ansible/hosts文件，通过以下方式验证ansible是否可用：</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]# cat /etc/ansible/hosts</div><div class="line">[test]</div><div class="line"><span class="number">10.212</span><span class="number">.52</span><span class="number">.252</span> ansible_ssh_user=root ansible_ssh_pass=qwe123.com</div><div class="line"><span class="number">10.212</span><span class="number">.52</span><span class="number">.14</span> ansible_ssh_user=root ansible_ssh_pass=abc123</div><div class="line"><span class="number">10.212</span><span class="number">.52</span><span class="number">.16</span> ansible_ssh_user=root ansible_ssh_pass=<span class="number">91</span>it.org</div></pre></td></tr></table></figure>
+<p>以上的配置中，我配置了一个test组，该组下有三台主机，三台都使用root验证，三台的密码分别是361way.com、abc123、91it.org 。</p>
+<p>注：后面的用户和密码项是非必须的，在配置key认证的情况下，不使用密码也可以直接操作 。未使用key的，也可以在ansible通过 -k参数在操作前询问手动输入密码。</p>
+<p>配置文件就是一般下目录的hosts文件。</p>
+<p>在库存中，我们可以定义如下信息：</p>
+<ul>
+<li>主机地址</li>
+<li>主机分组</li>
+<li>连接属性（登录名，密码，秘钥，端口等）<br>1，主机地址和分组</li>
+</ul>
+<p>定义主机地址和名称比较简单：</p>
+<figure class="highlight fsharp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">[&lt;主机名&gt;]</span></div><div class="line">&lt;主机 IP&gt;</div></pre></td></tr></table></figure>
+<p>定义分组的语法类似，就是在名字后加上:children，成员可以是主机名，也可以是分组名：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[<span class="tag">&lt;<span class="name">分组名</span>&gt;</span>:children]</div><div class="line"><span class="tag">&lt;<span class="name">主机名</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">分组名</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>2，连接属性</p>
+<p>可以针对SSH连接指定一些参数：</p>
+<ul>
+<li><code>ansible_ssh_host</code>：主机名。</li>
+<li><code>ansible_ssh_port</code>：SSH端口，默认22。</li>
+<li><code>ansible_ssh_user</code>：登录用户。</li>
+<li><code>ansible_ssh_pass</code>：登陆密码。</li>
+<li><code>ansible_ssh_private_key_file</code>：私钥。</li>
+</ul>
+<p>通过私钥登陆的话，就不要指定登录密码了，主机名也可以忽略。当然，既然是使用私钥登陆，需要你确保已经在各个中主机的authorized_keys里添加了对应的公钥。</p>
+<p>3，演示</p>
+<p>完整的库存例子如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> -----------------</span></div><div class="line"><span class="meta">#</span><span class="bash"> 首先定义各个主机</span></div><div class="line"><span class="meta">#</span><span class="bash"> -----------------</span></div><div class="line"><span class="meta">#</span><span class="bash">============================01_version=============================<span class="comment">#</span></span></div><div class="line"></div><div class="line">[tomcat-account_01]</div><div class="line">  10.27.232.82</div><div class="line">[tomcat-point_01]</div><div class="line">  10.27.2.12</div><div class="line">[tomcat-system_01]</div><div class="line">   10.27.232.12</div><div class="line"> [tomcat-family_01]</div><div class="line">   10.27.230.63</div><div class="line"> [tomcat-mission_01]</div><div class="line">   10.47.59.12</div><div class="line"> [tomcat-card_01]</div><div class="line">   10.47.74.12</div><div class="line"> [tomcat-check_01]</div><div class="line">   10.47.107.153</div><div class="line">   </div><div class="line"><span class="meta">#</span><span class="bash"> -----------------</span></div><div class="line"><span class="meta">#</span><span class="bash"> 定义分组</span></div><div class="line"><span class="meta">#</span><span class="bash"></span></div><div class="line"><span class="meta">#</span><span class="bash"> 在这里我们定义了三个分组，分别名为：</span></div><div class="line"><span class="meta">#</span><span class="bash">   - cluster1</span></div><div class="line"><span class="meta">#</span><span class="bash">   - light</span></div><div class="line"><span class="meta">#</span><span class="bash">   - starwar</span></div><div class="line"><span class="meta">#</span><span class="bash"> -----------------</span></div><div class="line"></div><div class="line">[cluster1:children]</div><div class="line">tomcat-account_01</div><div class="line">tomcat-point_01</div><div class="line">tomcat-system_01</div><div class="line">tomcat-family_01</div><div class="line">tomcat-mission_01</div><div class="line"></div><div class="line">[light:children]</div><div class="line">tomcat-account_01</div><div class="line">tomcat-point_01</div><div class="line">tomcat-system_01</div><div class="line">tomcat-family_01</div><div class="line">tomcat-mission_01</div><div class="line"></div><div class="line">[starwar:children]</div><div class="line">tomcat-account_01</div><div class="line">tomcat-point_01</div><div class="line">tomcat-system_01</div><div class="line">tomcat-family_01</div><div class="line">tomcat-mission_01</div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"> -----------------</span></div><div class="line"><span class="meta">#</span><span class="bash"> 给分组定义变量</span></div><div class="line"><span class="meta">#</span><span class="bash"></span></div><div class="line"><span class="meta">#</span><span class="bash"> 这里我们给 starwar 组定义了变量 </span></div><div class="line"><span class="meta">#</span><span class="bash"> -----------------</span></div><div class="line">[cluster1:vars]</div><div class="line">ansible_ssh_port=7525</div><div class="line">ansible_ssh_user=lucas</div><div class="line">ansible_ssh_private_key_file=./ssh/id_rsa</div></pre></td></tr></table></figure>
+<p>这里设置分组的时候名字不能与单台机器名称一样。比如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[tomcat-account_01]</div><div class="line">  10.27.232.82</div><div class="line">[tomcat-account_01:children]</div><div class="line">tomcat-account_01</div></pre></td></tr></table></figure>
+<p>这里例子是错误的，会提示分组存在。</p>
+<p>为了安全和方便在hosts里面就不需要写用户名和密码。<br>做个免秘钥登陆。<br>这里我自己对控制的机器全部做了免秘钥登陆，所以这里只需要这么写：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="selector-attr">[redis1]</span></div><div class="line">192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.173</span></div><div class="line"></div><div class="line"><span class="selector-attr">[redis2]</span></div><div class="line">192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.174</span></div><div class="line"></div><div class="line"><span class="selector-attr">[tomcat_A1]</span></div><div class="line">192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.175</span></div><div class="line"></div><div class="line"><span class="selector-attr">[tomcat_B1]</span></div><div class="line">192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.176</span></div><div class="line"></div><div class="line"><span class="selector-attr">[tomcat_C1]</span></div><div class="line">192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.177</span></div><div class="line"></div><div class="line"><span class="selector-attr">[tomcat_D1]</span></div><div class="line">192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.178</span></div></pre></td></tr></table></figure>
+<p>这里是执行脚本。</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible tomcat_D1 -m <span class="keyword">shell</span><span class="bash"> <span class="_">-a</span> <span class="string">"sh +x  /root/update/shoppingmall.sh"</span></span></div></pre></td></tr></table></figure>
+<p>例子操作查看zk1分组上所有机器端口：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">[root@salt ansible]<span class="comment"># ansible zk1:children -m shell -a "netstat -ntulp"</span></div><div class="line">10.27.238.75 | SUCCESS | rc=0 &gt;&gt;</div><div class="line">Active Internet connections (only servers)</div><div class="line">Proto Recv-Q Send-Q Local Address               Foreign Address             State       PID/Program name</div><div class="line">tcp        0      0 0.0.0.0:2181                0.0.0.0:*                   LISTEN      12497/java</div><div class="line">tcp        0      0 0.0.0.0:56521               0.0.0.0:*                   LISTEN      12497/java</div><div class="line">tcp        0      0 0.0.0.0:22                  0.0.0.0:*                   LISTEN      1251/sshd</div><div class="line">tcp        0      0 0.0.0.0:4888                0.0.0.0:*                   LISTEN      12497/java</div><div class="line">tcp        0      0 127.0.0.1:15770             0.0.0.0:*                   LISTEN      1434/aegis_quartz</div><div class="line">udp        0      0 118.178.240.129:123         0.0.0.0:*                               1262/ntpd</div><div class="line">udp        0      0 10.27.238.75:123            0.0.0.0:*                               1262/ntpd</div><div class="line">udp        0      0 127.0.0.1:123               0.0.0.0:*                               1262/ntpd</div><div class="line">udp        0      0 0.0.0.0:123                 0.0.0.0:*                               1262/ntpd</div><div class="line"></div><div class="line">10.47.100.200 | SUCCESS | rc=0 &gt;&gt;</div><div class="line">Active Internet connections (only servers)</div><div class="line">Proto Recv-Q Send-Q Local Address               Foreign Address             State       PID/Program name</div><div class="line">tcp        0      0 0.0.0.0:58367               0.0.0.0:*                   LISTEN      11232/java</div><div class="line">tcp        0      0 10.47.100.200:10050         0.0.0.0:*                   LISTEN      646/zabbix_agentd</div><div class="line">tcp        0      0 0.0.0.0:2181                0.0.0.0:*                   LISTEN      11232/java</div><div class="line">tcp        0      0 0.0.0.0:22                  0.0.0.0:*                   LISTEN      1243/sshd</div><div class="line">tcp        0      0 0.0.0.0:4888                0.0.0.0:*                   LISTEN      11232/java</div><div class="line">tcp        0      0 127.0.0.1:15770             0.0.0.0:*                   LISTEN      1436/aegis_quartz</div><div class="line">udp        0      0 120.27.152.77:123           0.0.0.0:*                               1254/ntpd</div><div class="line">udp        0      0 10.47.100.200:123           0.0.0.0:*                               1254/ntpd</div><div class="line">udp        0      0 127.0.0.1:123               0.0.0.0:*                               1254/ntpd</div><div class="line">udp        0      0 0.0.0.0:123                 0.0.0.0:*                               1254/ntpd</div></pre></td></tr></table></figure>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/03/07/自动化+Jenkins/Ansible/Ansible 小结（一）ansible的安装 /" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

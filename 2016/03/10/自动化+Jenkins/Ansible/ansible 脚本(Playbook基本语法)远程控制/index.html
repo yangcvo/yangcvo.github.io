@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Ansible 脚本(Playbook基本语法)远程控制 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>Ansible 脚本(Playbook基本语法)远程控制</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-03-10</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/automation/">automation</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Ansible/">Ansible</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h1 id="ansible-脚本-Playbook基本语法-远程控制"><a href="#ansible-脚本-Playbook基本语法-远程控制" class="headerlink" title="ansible 脚本(Playbook基本语法)远程控制"></a>ansible 脚本(Playbook基本语法)远程控制</h1><p>Playbook基本语法</p>
+<blockquote>
+<p>本节列举了写第一个Playbook，你必须了解基本语法。<br>随着你面临的机器越多，配属的需求越复杂，你可能需要了解后面介绍的一些稍微复杂逻辑语句。</p>
+</blockquote>
+<ul>
+<li>执行Playbook语法</li>
+</ul>
+<p>这里先</p>
+<p>vim deploy.yml</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">deploy.yml文件</div><div class="line">---</div><div class="line">- hosts: tomcat_D1</div><div class="line">  vars:</div><div class="line">    http_port: 80</div><div class="line">    max_clients: 200</div><div class="line">  user: root</div><div class="line">  tasks:</div><div class="line">  - name: ensure apache is at the latest version</div><div class="line">    yum: name=httpd state=latest</div><div class="line">  - name: write the apache config file</div><div class="line">    template: src=/srv/httpd.j2 dest=/etc/httpd.conf</div><div class="line">    notify:</div><div class="line">    - restart apache</div><div class="line">  - name: start httpd </div><div class="line">    service: name=httpd state=started</div><div class="line">  handlers:</div><div class="line">    - name: restart apache</div><div class="line">      service: name=httpd state=restarted</div></pre></td></tr></table></figure>
+<h4 id="执行Playbook语法"><a href="#执行Playbook语法" class="headerlink" title="执行Playbook语法"></a>执行Playbook语法</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ansible-playbook deploy.yml</div></pre></td></tr></table></figure>
+<p>查看输出的细节 1</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible-playbook playbook<span class="selector-class">.yml</span> --list-hosts</div></pre></td></tr></table></figure>
+<p>查看该脚本影响哪些hosts</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible-playbook playbook<span class="selector-class">.yml</span> --list-hosts</div></pre></td></tr></table></figure>
+<p>并行执行脚本</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible-playbook playbook<span class="selector-class">.yml</span> -f <span class="number">10</span></div></pre></td></tr></table></figure>
+<h4 id="完整的playbook脚本示例"><a href="#完整的playbook脚本示例" class="headerlink" title="完整的playbook脚本示例"></a>完整的playbook脚本示例</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">最基本的playbook脚本分为三个部分:</div><div class="line">在什么机器上以什么身份执行</div><div class="line">hosts</div><div class="line">users</div><div class="line">...</div><div class="line">执行的任务是都有什么</div><div class="line">tasks</div><div class="line">善后的任务都有什么</div><div class="line">handlers</div></pre></td></tr></table></figure>
+<p>这里我写了个tomcat发布，yml文件：<br>参考：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">- hosts: tomcat-system_01</div><div class="line">  environment:</div><div class="line">    LC_ALL: zh_CN.UTF-8</div><div class="line">    LANG : zh_CN.UTF-8</div><div class="line">  tasks:</div><div class="line">  - name  : cpfile-system</div><div class="line">    copy  : src=/root/.jenkins/workspace/yjk_master/haozhuo/haozhuo-system/target/haozhuo-system.war dest=/root/java_war/haozhuo-system.war</div><div class="line">  - name  : restart</div><div class="line">    shell : /root/update/system.sh</div><div class="line">    async : 0</div><div class="line">  - name  : shutdown</div><div class="line">    shell : /srv/tomcat/tomcat_system/bin/shutdown.sh</div><div class="line">    async : 0</div><div class="line">  - name  : start</div><div class="line">    shell : <span class="built_in">chdir</span>=/srv/tomcat/tomcat_system/bin nohup ./startup.sh &amp;</div><div class="line">    async : 0</div></pre></td></tr></table></figure>
+<p>参考官网：<a href="https://ansible-book.gitbooks.io/ansible-first-book/content/playbookji_ben_yu_fa.html" target="_blank" rel="external">https://ansible-book.gitbooks.io/ansible-first-book/content/playbookji_ben_yu_fa.html</a></p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/03/10/自动化+Jenkins/Ansible/ansible 脚本(Playbook基本语法)远程控制/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

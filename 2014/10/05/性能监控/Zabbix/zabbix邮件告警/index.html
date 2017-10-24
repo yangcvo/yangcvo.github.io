@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>zabbix邮件告警 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>zabbix邮件告警</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2014-10-05</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="操作系统环境："><a href="#操作系统环境：" class="headerlink" title="操作系统环境："></a>操作系统环境：</h2><p>CentOS release 6.7 (Final)</p>
+<p>zabbix版本2.4.7</p>
+<p>关于操作系统CentOS6.0 以下版本都是通过mail命令调用sendmail的sm-client发送邮件，所以如果关闭sendmail按照很多网上的文档是发不出邮件的。</p>
+<p>centos 6.0以上版本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">默认已经安装好sendmail</div><div class="line">默认已经安装好postfix</div></pre></td></tr></table></figure>
+<p>sendmail和postfix只需要安装一个即可并开启服务即可。</p>
+<h3 id="实现目的："><a href="#实现目的：" class="headerlink" title="实现目的："></a>实现目的：</h3><p>在Zabbix服务端设置邮件报警，当被监控主机宕机或者达到触发器预设值时，会自动发送报警邮件到指定邮箱，定位哪里出现问题，可以及时的解决。</p>
+<h3 id="1-安装邮件发送工具mailx"><a href="#1-安装邮件发送工具mailx" class="headerlink" title="1.安装邮件发送工具mailx"></a>1.安装邮件发送工具mailx</h3><p>CentOS 6.x 编译安装mailx，直接yum安装的mailx版本太旧，使用外部邮件发送会有问题。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">yum <span class="keyword">install</span> mailx <span class="comment">#安装</span></div><div class="line"></div><div class="line">yum <span class="keyword">remove</span> mailx <span class="comment">#卸载系统自带的旧版mailx</span></div></pre></td></tr></table></figure>
+<p>这里我用编译安装的很简单几步就可以了。</p>
+<p>mail下载地址:<a href="http://www.linuxfromscratch.org/blfs/view/stable/basicnet/mailx.html" target="_blank" rel="external">Downloads</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[root@salt ~]<span class="comment"># curl -O http://ftp.debian.org/debian/pool/main/h/heirloom-mailx/heirloom-mailx_12.5.orig.tar.gz</span></div><div class="line">[root@salt ~]<span class="comment"># tar -zxvf heirloom-mailx_12.5.orig.tar.gz </span></div><div class="line">[root@salt ~]<span class="comment"># cd heirloom-mailx-12.5</span></div><div class="line">[root@salt heirloom-mailx-12.5]<span class="comment"># make</span></div><div class="line">[root@salt heirloom-mailx-12.5]<span class="comment"># make install UCBINSTALL=/usr/bin/install</span></div><div class="line">[root@salt heirloom-mailx-12.5]<span class="comment"># ln -s /usr/local/bin/mailx /bin/mail #创建mailx到mail的软连接</span></div><div class="line">[root@salt heirloom-mailx-12.5]<span class="comment"># ln -s /etc/nail.rc /etc/mail.rc #创建mailx配置文件软连接</span></div><div class="line">[root@salt heirloom-mailx-12.5]<span class="comment"># whereis mailx   #查看安装路径</span></div><div class="line">mailx: /bin/mailx /usr/<span class="built_in">local</span>/bin/mailx /usr/share/man/man1p/mailx.1p.gz /usr/share/man/man1/mailx.1.gz   </div><div class="line">[root@salt heirloom-mailx-12.5]<span class="comment"># mailx -V     #查看版本信息</span></div><div class="line">12.5 6/20/10</div></pre></td></tr></table></figure>
+<p>安装完以后我们来测试下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@salt]<span class="comment"># echo "zabbix test mail" |mail -s zabbix" it@hz-health.cn</span></div><div class="line">[root@salt]<span class="comment"># send-mail: warning: inet_protocols: IPv6 support is disabled: Address family not supported by protocol</span></div><div class="line">send-mail: warning: inet_protocols: configuring <span class="keyword">for</span> IPv4 support only</div><div class="line">postdrop: warning: inet_protocols: IPv6 support is disabled: Address family not supported by protocol</div><div class="line">postdrop: warning: inet_protocols: configuring <span class="keyword">for</span> IPv4 support only</div><div class="line">postdrop: warning: unable to look up public/pickup: No such file or directory</div></pre></td></tr></table></figure>
+<p>如果有出现这个报错，那么我们需要修改下配置文件。<br>查看当前inet_protocols</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># /usr/sbin/postconf | grep inet_protocols</span></div><div class="line">inet_protocols = all</div><div class="line">修改ipv4</div><div class="line"><span class="comment"># vi /etc/postfix/main.cf</span></div><div class="line">inet_protocols = all</div><div class="line">改为</div><div class="line">inet_protocols = ipv4</div><div class="line">重启postfix</div><div class="line">service postfix restart</div></pre></td></tr></table></figure>
+<p>然后在测试：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">[root@salt]#</span><span class="bash"> <span class="built_in">echo</span> <span class="string">"zabbix test mail"</span> |mail <span class="_">-s</span> <span class="string">"zabbix"</span> it@xxxx.cn</span></div></pre></td></tr></table></figure>
+<p>测试发送邮件，标题zabbix，邮件内容：zabbix test mail，发送到的邮箱：xxx.qq.com</p>
+<p>这时候，邮箱yyy@qq.com会收到来自xxx@qq.com的测试邮件。</p>
+<h3 id="2、创建邮件告警的python脚本"><a href="#2、创建邮件告警的python脚本" class="headerlink" title="2、创建邮件告警的python脚本"></a>2、创建邮件告警的python脚本</h3><p>zabbix_server添加脚本配置:</p>
+<ol>
+<li>zabbix安装路径：cd /usr/local/zabbix/share/zabbix/alertscripts</li>
+</ol>
+<p>编写脚本：<br><code>vim /usr/local/zabbix/share/zabbix/alertscripts/zabbix_sendmail.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/env python</span></div><div class="line"><span class="comment">#coding:utf-8</span></div><div class="line"><span class="keyword">import</span> smtplib</div><div class="line"><span class="keyword">from</span> email.mime.text <span class="keyword">import</span> MIMEText</div><div class="line"><span class="keyword">import</span> sys</div><div class="line">LOG_FILENAME=<span class="string">"/var/log/email_python.log"</span></div><div class="line">mail_host = <span class="string">'smtp.exmail.qq.com'</span>                  <span class="comment">#定义smtp服务器</span></div><div class="line">mail_user = <span class="string">'it@xxxx.cn'</span>               <span class="comment">#发件人邮箱</span></div><div class="line">mail_pass = <span class="string">'xxxxxxx'</span>                        <span class="comment">#发件人邮箱密码</span></div><div class="line">mail_port = <span class="number">465</span>                            <span class="comment">#smtp服务器的端口号，不同的邮箱服务器端口号不同</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">send_mail</span><span class="params">(to_list,subject,content)</span>:</span></div><div class="line">    me=<span class="string">"Zabbix Monitor"</span>+<span class="string">"&lt;"</span>+mail_user+<span class="string">"&gt;"</span>  <span class="comment">#定义发件人显示名称为Zabbix Monitor</span></div><div class="line">    msg=MIMEText(content,_subtype=<span class="string">'plain'</span>,_charset=<span class="string">'gb2312'</span>)</div><div class="line">    msg[<span class="string">'Subject'</span>]=subject                 <span class="comment">#定义邮件主题</span></div><div class="line">    msg[<span class="string">'From'</span>]=me                         <span class="comment">#发送方</span></div><div class="line">    msg[<span class="string">'to'</span>]=to_list                      <span class="comment">#接收方</span></div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        s=smtplib.SMTP_SSL()               <span class="comment">#创建一个smtp对象</span></div><div class="line">        s.connect(mail_host,mail_port)     <span class="comment">#通过connect方法连接smtp主机</span></div><div class="line">        s.login(mail_user,mail_pass)       <span class="comment">#邮箱账户登录认证</span></div><div class="line">        s.sendmail(me,to_list,msg.as_string()) <span class="comment">#发送邮件</span></div><div class="line">        s.close()                             <span class="comment">#断开smtp连接</span></div><div class="line">        <span class="keyword">return</span> <span class="keyword">True</span></div><div class="line">    <span class="keyword">except</span> Exception,e:</div><div class="line">        <span class="keyword">print</span> str(e)</div><div class="line">        <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    send_mail(sys.argv[<span class="number">1</span>],sys.argv[<span class="number">2</span>],sys.argv[<span class="number">3</span>])</div></pre></td></tr></table></figure>
+<p>2、脚本文件路径</p>
+<p>先确认下<code>zabbix_server.conf</code>文件中定义的告警脚本路径配置：</p>
+<p>如果注释了，添加一条绝对路径。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># AlertScriptsPath=$&#123;datadir&#125;/zabbix/alertscripts</span></div><div class="line"> AlertScriptsPath=/usr/<span class="built_in">local</span>/zabbix/share/zabbix/alertscripts</div></pre></td></tr></table></figure>
+<p>然后将准备好的python脚本存放到该路径下，并更改脚本文件的权限和属主属组</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">chown zabbix.zabbix   /usr/<span class="built_in">local</span>/zabbix/share/zabbix/alertscripts/zabbix_sendmail.py</div><div class="line">chmod +x   /usr/<span class="built_in">local</span>/zabbix/share/zabbix/alertscripts/zabbix_sendmail.py</div></pre></td></tr></table></figure>
+<p>注意：如果在zabbix_server.conf文件中没有设置Allow root=1，则表示zabbix是以zabbix用户启动而不是root，所以脚本的属主属组都应该设置为zabbix用户。设置为root用户启动的配置如下。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"><span class="comment">## Option: AllowRoot</span></span></div><div class="line"><span class="meta">#</span><span class="bash">   Allow the server to run as <span class="string">'root'</span>. If disabled and the server is started by <span class="string">'root'</span>, the server</span></div><div class="line"><span class="meta">#</span><span class="bash">   will try to switch to user <span class="string">'zabbix'</span> instead. Has no effect <span class="keyword">if</span> started under a regular user.</span></div><div class="line"><span class="meta">#</span><span class="bash">   0 - <span class="keyword">do</span> not allow</span></div><div class="line"><span class="meta">#</span><span class="bash">   1 - allow</span></div><div class="line"><span class="meta">#</span><span class="bash"></span></div><div class="line"><span class="meta">#</span><span class="bash"> Mandatory: no</span></div><div class="line"><span class="meta">#</span><span class="bash"> Default:</span></div><div class="line">AllowRoot=1</div></pre></td></tr></table></figure>
+<p>重启服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@salt alertscripts]<span class="comment"># /etc/init.d/zabbix_server restart</span></div><div class="line">Shutting down zabbix_server:                               [确定]</div><div class="line">Starting zabbix_server:                                    [确定]</div></pre></td></tr></table></figure>
+<p>3、测试脚本文件发送邮件是否成功，这一步很重要</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./zabbix_sendmail.py cheng@health.cn <span class="string">"subject"</span> <span class="string">"zabbix"</span></div></pre></td></tr></table></figure>
+<p>已经测试ok，可以收到邮件，说明写的python脚本没有问题。</p>
+<h3 id="zabbix-web端设置"><a href="#zabbix-web端设置" class="headerlink" title="zabbix-web端设置"></a>zabbix-web端设置</h3><ul>
+<li>首先web端的配置顺序如下：<br>创建用户媒介–&gt;创建用户组和用户–&gt;针对trigger（触发器）添加报警动作，设置邮件发送用户及媒介</li>
+</ul>
+<p>1.创建用户媒介</p>
+<ul>
+<li><p>创建用户媒介–&gt;创建用户组和用户–&gt;Media types–&gt;Createmediatype     </p>
+<ul>
+<li>Mediatype设置如下， Name项自定义（创建用户时会用到这个名字),我们使用脚本来发邮件，所以Type项请选择Script，Script项则是你zabbix server上的发送邮件的脚本名字</li>
+<li><p>（注：如脚本名字是snedmail.py,那此项就填sendmail，后缀不要)</p>
+</li>
+<li><p>zabbix会传给脚本三个参数：接收用户，邮件主题，邮件内容</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail1.png" alt=""></figure></p>
+<p>2.设置Zabbix用户报警邮箱地址</p>
+<ul>
+<li>组态-用户-Admin (Zabbix Administrator)<ul>
+<li>再到Media标签下，点击Add添加用户及该用户的报警方式，然后Type项选择你所创建的邮件报警名字（Media Type），在Send to后填入用户的报警邮箱，其他默认即可。</li>
+</ul>
+</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail2.png" alt=""></figure></p>
+<p>3.设置Zabbix触发报警的动作</p>
+<ul>
+<li>组态-动作-创建动作</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mion3.png" alt=""></figure></p>
+<figure class="highlight dust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="xml">名称：Action-Email</span></div><div class="line"></div><div class="line">默认接收人：故障<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">,服务器:</span><span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml">发生: </span><span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml">故障!</span></div><div class="line"></div><div class="line">默认信息：</div><div class="line"></div><div class="line">告警主机:<span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">告警时间:<span class="template-variable">&#123;EVENT.DATE&#125;</span><span class="xml"> </span><span class="template-variable">&#123;EVENT.TIME&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">告警等级:<span class="template-variable">&#123;TRIGGER.SEVERITY&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">告警信息: <span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">告警项目:<span class="template-variable">&#123;TRIGGER.KEY1&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">问题详情:<span class="template-variable">&#123;ITEM.NAME&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">当前状态:<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE1&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">事件ID:<span class="template-variable">&#123;EVENT.ID&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">恢复信息：打钩</div><div class="line"></div><div class="line">恢复主旨：恢复<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">, 服务器:</span><span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml">: </span><span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml">已恢复!</span></div><div class="line"></div><div class="line">恢复信息：</div><div class="line"></div><div class="line">告警主机:<span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">告警时间:<span class="template-variable">&#123;EVENT.DATE&#125;</span><span class="xml"> </span><span class="template-variable">&#123;EVENT.TIME&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">告警等级:<span class="template-variable">&#123;TRIGGER.SEVERITY&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">告警信息: <span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">告警项目:<span class="template-variable">&#123;TRIGGER.KEY1&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">问题详情:<span class="template-variable">&#123;ITEM.NAME&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">当前状态:<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE1&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">事件ID:<span class="template-variable">&#123;EVENT.ID&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">已启用：打钩</div></pre></td></tr></table></figure>
+<p>创建Operations</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail4.png" alt=""></figure></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail5.png" alt=""></figure></p>
+<p>到这里就基本配置完毕了。</p>
+<p>测试下关闭agent 1分钟左右可以收到邮件。 关闭防火墙和selinux 即可，不关闭防火墙开启10051端口和10050端口</p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>查看zabbix审计动态日志：<br>发送成功</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail7.png" alt=""></figure></p>
+<p>邮件已接收成功。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail8.png" alt=""></figure></p>
+<p>微信告警也已写详细文档。文档file已上传github上面了。</p>
+<p>zabbix-server2.4服务端编译安装 <a href="http://blog.yangcvo.me/2015/01/18/zabbix-server服务端编译安装/" target="_blank" rel="external">zabbix-server服务端编译安装</a></p>
+<p>zabbix2.4监控80端口状态 : <a href="http://blog.yangcvo.me/2016/07/20/zabbix监控80端口状态/" target="_blank" rel="external">zabbix监控80端口状态</a></p>
+<p>zabbix+Grafana安装使用监控结合 ：<a href="http://blog.yangcvo.me/2016/07/13/zabbix-Grafana安装使用结合/" target="_blank" rel="external">zabbix+Grafana安装使用监控结合</a></p>
+<p>zabbix监控MySQL-添加自定义监控项 : <a href="http://blog.yangcvo.me/2015/09/29/zabbix监控MySQL-添加自定义监控项/" target="_blank" rel="external">zabbix监控MySQL-添加自定义监控项</a></p>
+<p>zabbix的ICMP_Ping模版实现对客户端网络状态的监控 : <a href="http://blog.yangcvo.me/2015/11/18/zabbix的ICMP-Ping模版实现对客户端网络状态的监控/" target="_blank" rel="external">zabbix的ICMP_Ping模版实现对客户端网络状态的监控</a></p>
+<p>zabbix性能监控故障总结 <a href="http://blog.yangcvo.me/2016/02/07/zabbix-故障总结/" target="_blank" rel="external">zabbix性能监控故障总结</a></p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2014/10/05/性能监控/Zabbix/zabbix邮件告警/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

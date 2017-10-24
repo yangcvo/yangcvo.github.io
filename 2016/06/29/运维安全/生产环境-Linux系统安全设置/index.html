@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>生产环境-Linux系统安全统一配置 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>生产环境-Linux系统安全统一配置</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-06-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/运维安全/">运维安全</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Operation-safety/">Operation safety</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>今天整理下Linux系统在生产环境安全几点：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">01) 生产环境统一不要用root，统一添加普通用户，管理员操作通过sudo授权管理。</div><div class="line">02）更改默认的远程连接SSH服务端口及禁止root用户远程连接，这里关闭外围IP使用22端口，写防火墙规则，然后禁用root，这样统一使用普通用户统一管理。</div><div class="line">03）定时自动服务器时间，写到计划任务里面，如果机房管理服务器，最好搭建台NTP时间同步服务器。</div><div class="line">04）配置yum更新源，从国内更新源下载安装rpm包。</div><div class="line">05）关闭selinux 开启防火墙一定要熟悉配置防火墙规则。</div><div class="line">06）调整文件描述的数量，进程及文件的打开都会消耗文件描述符。</div><div class="line">07）定时自动服务的日志，定时自动清理/var/spool/clientmqueue/目录垃圾文件。防止inodes节点被占满。</div><div class="line">08）精准开机启动服务（crond,sshd,network,rsyslog）</div><div class="line">09) linux内核参数优化/etc/sysctl.conf 执行sysctl -p 生效。</div><div class="line">10）更改字符集，支持中文。</div><div class="line">11） 锁定关键系统文件。</div><div class="line"> chattr +i /etc/passwd  /etc/shadow /etc/group  /etc/gshahow /etc/inittab</div></pre></td></tr></table></figure>
+<p>1、帐号安全</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">1.1 锁定系统中的自建帐号</div><div class="line">查看帐号：</div><div class="line"><span class="comment">#cat /etc/passwd</span></div><div class="line"><span class="comment">#cat /etc/shadow</span></div><div class="line">查看账户、口令文件，与系统管理员确认不必要的账号。对于一些保留的系统伪帐户如：bin, sys，adm，uucp，lp, nuucp，hpdb, www, daemon等可根据需要锁定登陆。</div><div class="line"></div><div class="line">在修改之前先备份一下，省的出问题：</div><div class="line">备份方法：</div><div class="line"><span class="comment">#cp -p /etc/passwd /etc/passwd_bak</span></div><div class="line"><span class="comment">#cp -p /etc/shadow /etc/shadow_bak</span></div><div class="line">加固方法：</div><div class="line">使用命令passwd <span class="_">-l</span> &lt;用户名&gt;锁定不必要的账号。</div><div class="line">使用命令passwd -u &lt;用户名&gt;解锁需要恢复的账号。</div><div class="line">风险：需要与管理员确认此项操作不会影响到业务系统的登录</div></pre></td></tr></table></figure>
+<pre><code>1.2设置系统口令策略
+</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">    查看密码策略设置：cat /etc/login.defs|grep PASS</div><div class="line">    修改之前先备份一下：　cp -p /etc/login.defs /etc/login.defs_bak</div><div class="line">    修改配置文件：vi /etc/login.defs</div><div class="line">    文件内参数解释：</div><div class="line">    PASS_MAX_DAYS 90    <span class="comment">#新建用户的密码最长使用天数</span></div><div class="line">    PASS_MIN_DAYS 0        <span class="comment">#新建用户的密码最短使用天数</span></div><div class="line">    PASS_WARN_AGE 7    <span class="comment">#新建用户的密码到期提前提醒天数</span></div><div class="line">    PASS_MIN_LEN 0        <span class="comment">#最小密码长度0</span></div><div class="line">    PASS_MAX_LEN 9        <span class="comment">#最大密码长度9</span></div><div class="line">```   </div><div class="line">1.3禁用root之外的超级用户</div><div class="line">    </div><div class="line">```bash</div><div class="line">查看口令文件：cat /etc/passwd</div><div class="line">属性解释：</div><div class="line">login_name：用户名</div><div class="line">password：加密后的用户密码</div><div class="line">user_ID：用户ID，(1 ~ 6000) 若用户ID=0，则该用户拥有超级用户的权限。查看此处是否有多个ID=0。</div><div class="line">group_ID：用户组ID</div><div class="line">comment：用户全名或其它注释信息</div><div class="line">home_dir：用户根目录</div><div class="line"><span class="built_in">command</span>：用户登录后的执行命令</div><div class="line">加固方法与1.1的加固方法一样！</div><div class="line">```   </div><div class="line">1.4 限制能够su为root的用户</div><div class="line"></div><div class="line">```bash</div><div class="line">    修改 /etc/pam.d/su 文件 先备份：cp -p /etc/pam.d/su /etc/pam.d/su_bak</div><div class="line">    在头部添加：auth required /lib/security/pam_wheel.so group=wheel <span class="comment">#只有wheel组的可以su</span></div><div class="line">    将<span class="built_in">test</span>用户加入wheel组：usermod -G wheel <span class="built_in">test</span></div><div class="line">    排错方法：当系统验证出现问题时，首先应当检查/var/<span class="built_in">log</span>/messages或者/var/<span class="built_in">log</span>/secure中的输出信息，根据这些信息判断用户账号的有效性。如果是因为PAM验证故障，而引起root也无法登录，只能使用single user或者rescue模式进行排错。</div><div class="line">```    </div><div class="line">2、最小化服务</div><div class="line">2.1 停止或禁用与承载业务无关的服务</div><div class="line"></div><div class="line">```bash   </div><div class="line">    查看当前init级别 who -r 或者 runlevel</div><div class="line">    查看所有服务的状态 chkconfig –list</div><div class="line">    设置服务在个init级别下开机是否启动 chkconfig –level &lt;服务名&gt; on|off|reset</div><div class="line">    注意：要安装chkconfig，radhat上面自带的有！</div><div class="line">``` </div><div class="line"></div><div class="line">3、数据访问控制</div><div class="line"></div><div class="line">```bash   </div><div class="line">    修改<span class="built_in">umask</span>的值 改变新建文件的安全属性</div><div class="line">    备份：cp -p /etc/profile /etc/profile_bak</div><div class="line">    修改<span class="built_in">umask</span>=027</div><div class="line">    作用：通过设置<span class="built_in">umask</span>值，可以为新创建的文件和目录设置缺省权限</div><div class="line">    风险：会修改新建文件的默认权限，如果该服务器是WEB应用，则此项谨慎修改。</div><div class="line">    具体解释：请百度。。。。</div></pre></td></tr></table></figure>
+<p>4、网络访问控制<br>4.1 使用SSH进行管理</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">查看服务是否开启： ps -aef|grep sshd</div><div class="line">开启服务：service sshd start</div><div class="line">关闭服务：service sshd stop</div><div class="line">重启服务：service sshd restart</div><div class="line">```    </div><div class="line">4.2设置访问控制策略限制能够管理本机的IP地址</div><div class="line">  </div><div class="line">```bash </div><div class="line">先备份文件：cp -p /etc/ssh/sshd_config /etc/ssh/sshd_config_bak</div><div class="line">修改文件：</div><div class="line">添加：AllowUsers *@10.138.*.* <span class="comment">#仅允许10.138.0.0/16网段所有用户通过ssh访问</span></div><div class="line">保存后，重启ssh。</div></pre></td></tr></table></figure>
+<p>4.3 禁止root用户远程使用ssh</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">修改文件/etc/ssh/sshd_config 将PermitRootLogin修改为yes</div><div class="line">记得修改之前要备份</div></pre></td></tr></table></figure>
+<p>4.4 限定信任主机</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">修改/etc/hosts.allow，添加一下代码：</div><div class="line">sshd:192.168.0.100:allow //允许IP 192.168.0.100 登录</div><div class="line">sshd:192.168.10.:allow //允许IP 192.168.10. 网段登录</div><div class="line">修改/etc/hosts.deny，添加一下代码</div><div class="line">sshd:all:deny //禁止其他的所有IP登录</div></pre></td></tr></table></figure>
+<p>4.5防止误使用Ctrl+Alt+Del重启系统</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">修改/etc/init/control-alt-delete.conf 文件，将最后一行：</div><div class="line"><span class="built_in">exec</span> /sbin/shutdown -r now “Control-Alt-Delete pressed” 注释掉就可以了</div></pre></td></tr></table></figure>
+<p>5、用户鉴别<br>5.1设置帐户锁定登录失败锁定次数、锁定时间</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">修改文件/etc/pam.d/system-auth 添加一行：</div><div class="line">auth required pam_tally.so onerr=fail deny=6 unlock_time=300</div><div class="line"><span class="comment">#设置为密码连续错误6次锁定，锁定时间300秒</span></div><div class="line">用户锁定后，解锁：faillog -u &lt;用户名&gt; -r</div><div class="line">风险：需要PAM包的支持;对pam文件的修改应仔细检查，一旦出现错误会导致无法登陆;　　当系统验证出现问题时，首先应当检查/var/<span class="built_in">log</span>/messages或者/var/<span class="built_in">log</span>/secure中的输出信息，根据这些信息判断用户账号的有效性。</div></pre></td></tr></table></figure>
+<p>5.2 修改帐户TMOUT值，设置自动注销时间</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">修改/etc/profile文件</div><div class="line">在”HISTFILESIZE=”后面加入下面这行，添加：TMOUT=600 <span class="comment">#表示无操作600秒后自动退出</span></div><div class="line">``` </div><div class="line">5.3设置Bash保留历史命令的条数</div><div class="line">修改/etc/profile文件的HISTSIZE的值，自己设定</div><div class="line"></div><div class="line">6、审计策略</div><div class="line">6.1 配置系统日志策略配置文件</div><div class="line"> </div><div class="line">```bash </div><div class="line">查看syslog是否启动：ps -aef | grep syslog</div><div class="line">查看rsyslogd的配置，并确认日志文件是否存在：cat /etc/rsyslog.conf</div></pre></td></tr></table></figure>
+<p>6.2审计产生的数据分配合理的存储空间和存储时间<br>查看系统轮询配置：<code>cat /etc/logrotate.conf</code><br>一些属性:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">rotate 4 日志文件保存个数为4，当第5个产生后，删除最早的日志</div><div class="line">size 100k 每个日志的大小</div></pre></td></tr></table></figure>
+<p>7.1 Linux修改<code>/etc/motd</code>文件，威慑入侵者<br>1.）删除<code>/etc/redhat_release</code>  建议修改名字，如果贸然一些软件可能无法安装。<br><code>mv /etc/redhat_release</code>  /etc/新名字<br>2.）编辑<code>/etc/issue</code> #建议修改里面的关键字<br>3.）编写<code>/etc/motd</code>  #公告栏，如果有非授权用户闯入，可以给予文字警告，国外有因为这个事情打官司的，原因是进去提示<code>Welcome</code>呵呵<br>列出以下范文：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">***Wrrning***</div><div class="line">Without the owner<span class="string">'s prior written consent,       </span></div><div class="line">no decompiling or reverse-engineering shall be allowed</div><div class="line">*Notice:</div><div class="line">This is a private communication system.</div><div class="line">Unauthorized access or use may lead to prosecution.</div></pre></td></tr></table></figure>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/06/29/运维安全/生产环境-Linux系统安全设置/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>讲如何结合jenkins+ ansible构建发布系统 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>讲如何结合jenkins+ ansible构建发布系统</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-10-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/automation/">automation</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Jenkins/">Jenkins</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h1 id="jenkins-ansible，打造一个web构建发布系统"><a href="#jenkins-ansible，打造一个web构建发布系统" class="headerlink" title="jenkins+ansible，打造一个web构建发布系统"></a>jenkins+ansible，打造一个web构建发布系统</h1><p>自动化这块我们测试生产环境已经用起来了。</p>
+<p>这篇文章主要讲我们如何实现整个web发布系统，如何安装配置看我blog上面有。</p>
+<p>需要了解几款自动化工具： SaltStack,Ansible,Puppet,jenkins</p>
+<p>所以我们第1步做的就是：用Ansible + Jenkins搞定自动发布。Ansible是相对简单的批量管理工具，支持模板管理等高级功能。搞定了自动发布，开发的服务器需求已经明显下降，只要把代码提交到 Git主干，就会自动触发发布。</p>
+<p>Git使用的是 GitLab，后期同时为了安全我们做了一层LDAP代理，效果相当于“将军令”，操作机、Git和Jenkins用 OpenLDAP 做统一认证，后续用到的Redmine、Grafana、Zabbix等都接入了OpenLDAP认证，每个人都有个动态口令，每次验证都需要用到。</p>
+<h3 id="流程结构"><a href="#流程结构" class="headerlink" title="流程结构"></a>流程结构</h3><p> 简单绘制了下Jenkins的一个流程，如下图：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins4.png" alt=""></figure></p>
+<p> 拓扑图</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins5.png" alt=""></figure></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">    &gt; 该平台以jenkins 为中心，然后围绕他进行扩展。</div><div class="line"></div><div class="line">    &gt; 代码全局配置通过”文件管理平台” 进行管理。每次代码进行build时，pull一下配置。使配置为最新的。</div><div class="line"></div><div class="line">    &gt; 开发人员将代码push到gitlab，开发者之间相互review代码。然后murge到master分支。jenkins上的pull代码到workspace空间。</div><div class="line"></div><div class="line">     &gt; 安装一些依赖的第三方包。 </div><div class="line"></div><div class="line">     &gt; 代码和配置文件进行合并，通过redis存储的版本信息创建版本。</div><div class="line"></div><div class="line">     &gt; 把将要发布的版本推送到远端机器，reload服务实现上线。</div><div class="line"></div><div class="line">     &gt; 当发布的代码出现问题，回滚指定版本(默认回滚上一版本)，最多可回滚之前5个版本。</div><div class="line">``` </div><div class="line"></div><div class="line">ansible是新出现的自动化运维工具，基于Python开发，集合了众多运维工具（puppet、cfengine、chef、func、fabric）的优点，实现了批量系统配置、批量程序部署、批量运行命令等功能。ansible是基于模块工作的，本身没有批量部署的能力。真正具有批量部署的是ansible所运行的模块，ansible只是提供一种框架。主要包括：</div><div class="line"></div><div class="line">```bash</div><div class="line">(1)、连接插件connection plugins：负责和被监控端实现通信；</div><div class="line">(2)、host inventory：指定操作的主机，是一个配置文件里面定义监控的主机；</div><div class="line">(3)、各种模块核心模块、<span class="built_in">command</span>模块、自定义模块；</div><div class="line">(4)、借助于插件完成记录日志邮件等功能；</div><div class="line">(5)、playbook：剧本执行多个任务时，非必需可以让节点一次性运行多个任务。</div></pre></td></tr></table></figure>
+<p>这里之前用Jenkins使用起来。遇到个难题这里分析哪几点：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">github作为源代码仓库 </div><div class="line">jenkins做为打包服务器，Web控制服务器</div><div class="line">在jenkins的系统配置里，可以找到maven，git，Java相关的配置，只要勾选了，在开时执行job时，会自动下载。</div><div class="line">ansible把war包，发布到远程机器</div><div class="line">tomcat每台服务器环境都需要在ansible /etc/ansible/hosts配置好，这样可以让它自动化下发到对应机器。</div><div class="line">把jenkins生成的war包发布到远程服务器上。</div><div class="line">进入该项目的workspace目录下保存该playbook的仓库子目录下, 检查ansible版本, 并执行最终的部署命令.会不会发布出现乱码。</div></pre></td></tr></table></figure>
+<p><strong>监控：</strong></p>
+<p>由于原始的监控不满足快速增长的业务，我这边部署了开源监控系统 Zabbix，虽然运维能够很好的使用Zabbix，但其他部门同事总觉得易用性不高、而且很多定制化监控实现起来很麻烦。还是需要有运维开发同事帮忙辅助会更好。</p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/10/29/自动化+Jenkins/Jenkins/讲如何结合jenkins+ ansible构建发布系统/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

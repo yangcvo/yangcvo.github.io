@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>ZABBIX 3.0 自动发现  (九) | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>ZABBIX 3.0 自动发现  (九)</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-05-21</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>####自动化分类</p>
+<p><strong>所有的自动化都可以分为2种</strong> </p>
+<blockquote>
+<p>1.自动注册 </p>
+</blockquote>
+<ul>
+<li>zabbix-agnet自动添加 </li>
+</ul>
+<blockquote>
+<p>2.主动发现 </p>
+</blockquote>
+<ul>
+<li>自动发现 Discover</li>
+<li>zabbix api</li>
+</ul>
+<a id="more"></a>
+<h4 id="Zabbix自动发现-Discovery-功能使用"><a href="#Zabbix自动发现-Discovery-功能使用" class="headerlink" title="Zabbix自动发现(Discovery)功能使用"></a>Zabbix自动发现(Discovery)功能使用</h4><p>随着监控主机不断增多，有的时候需要添加一批机器，特别是刚用zabbix的运维人员需要将公司的所有服务器添加到zabbix，如果使用传统办法去单个添加设备、分组、项目、图像…..结果应该是让人吐的结果。<br>鉴于这个问题我们可以好好利用下Zabbix的一个发现(Discovery)模块，进而来实现<code>自动刚发现主机、自动将主机添加到主机组、自动加载模板、自动创建项目（item）、自动创建图像</code>，下面我们来看看这个模块如何使用。</p>
+<p>#####Hadoop集群自动发现：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix3.0-zidong.png" alt=""></figure></p>
+<h5 id="一、自动注册设置-zabbix-agent配置"><a href="#一、自动注册设置-zabbix-agent配置" class="headerlink" title="一、自动注册设置 zabbix-agent配置"></a>一、自动注册设置 zabbix-agent配置</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[root@wlj-datanode10 zabbix]<span class="comment"># cat zabbix_agentd.conf</span></div><div class="line">PidFile=/var/run/zabbix/zabbix_agentd.pid</div><div class="line">LogFile=/var/<span class="built_in">log</span>/zabbix/zabbix_agentd.log</div><div class="line">LogFileSize=0</div><div class="line">Server=10.155.74.153</div><div class="line"><span class="comment"># 主动模式下的zabbix服务端</span></div><div class="line">ServerActive=10.155.74.153</div><div class="line"><span class="comment"># 主机名(这个会自动加入到zabbix-server断的主机显示中)</span></div><div class="line">Hostname=wlj-datanode10.jollychic.com-169.44.23.133</div><div class="line">Timeout=10</div><div class="line">UnsafeUserParameters=1</div><div class="line">HostMetadata=bi  <span class="comment"># 作为server端的判断条件入口</span></div></pre></td></tr></table></figure>
+<p>我们先不重启，因为重启就生效了。我们需要设置一个规则，如果已经设置好规则可以重启。</p>
+<p>✨✨提示： zabbix-agent起来的时候回去找Server，这时候就会产生一个事件，然后我们可以基于这个事件来完成一个动作。 </p>
+<ul>
+<li>Configuration - Actions - Create action</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix3.0-zidong1.png" alt=""></figure></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">name:bi-data</div><div class="line">Default subject : Auto registration: &#123;HOST.HOST&#125;</div><div class="line">Default message :</div><div class="line"></div><div class="line">Host name: &#123;HOST.HOST&#125;</div><div class="line">Host IP: &#123;HOST.IP&#125;</div><div class="line">Agent port: &#123;HOST.PORT&#125;</div></pre></td></tr></table></figure>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix3.0-zidong2.png" alt=""></figure></p>
+<p>选择新的触发条件选择下拉框中的服务类型</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix3.0-zidong3.png" alt=""></figure></p>
+<ul>
+<li>选择发送告警对应的用户组-发送方式微信告警</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix3.0-zidong4.png" alt=""></figure></p>
+<ul>
+<li>选择自动发现服务器添加相应的分组</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix3.0-zidong6.png" alt=""></figure></p>
+<ul>
+<li>选择自动发现服务器添加相应监控模板</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix3.0-zidong7.png" alt=""></figure></p>
+<p>修改完之后我们在重启一下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[root@wlj-datanode3 ~]<span class="comment"># systemctl restart zabbix-agent.service</span></div></pre></td></tr></table></figure>
+<p>自动发现可以去扫描IP地址范围（需要手动设置）进行发现的动作 </p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix3.0-zidong8.png" alt=""></figure></p>
+<h4 id="监控告警接收："><a href="#监控告警接收：" class="headerlink" title="监控告警接收："></a>监控告警接收：</h4><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix3.0-zidong9.png" alt=""></figure></p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2017/05/21/性能监控/Zabbix/ZABBIX 3.0 自动发现  (九)/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

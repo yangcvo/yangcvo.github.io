@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Ansible小结（四）Ad-hoc与commands模块 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>Ansible小结（四）Ad-hoc与commands模块</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-03-09</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/automation/">automation</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Ansible/">Ansible</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h1 id="ansible小结（四）Ad-hoc与commands模块"><a href="#ansible小结（四）Ad-hoc与commands模块" class="headerlink" title="ansible小结（四）Ad-hoc与commands模块"></a>ansible小结（四）Ad-hoc与commands模块</h1><p>Ad-Hoc 是指ansible下临时执行的一条命令，并且不需要保存的命令，对于复杂的命令后面会说playbook。讲到Ad-hoc 就要提到模块，所有的命令执行都要依赖于事先写好的模块，默认安装好的ansible 里面已经自带了很多模块，如：command、raw、shell、file、cron等，具体可以通过ansible-doc -l 进行查看 。</p>
+<h3 id="1、Ad-hoc"><a href="#1、Ad-hoc" class="headerlink" title="1、Ad-hoc"></a>1、Ad-hoc</h3><p>1、直接执行</p>
+<p>这里还是先来一个上几篇幅经常用到的一个例子：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_C1 -a "uptime" -k</span></div><div class="line">SSH <span class="symbol">password:</span></div><div class="line"><span class="meta">192.168.1.177 | SUCCESS | rc=0 &gt;</span>&gt;</div><div class="line"> <span class="number">10</span><span class="symbol">:</span><span class="number">37</span><span class="symbol">:</span><span class="number">10</span> up <span class="number">24</span> days, <span class="number">16</span><span class="symbol">:</span><span class="number">48</span>,  <span class="number">4</span> users,  load <span class="symbol">average:</span> <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span></div></pre></td></tr></table></figure>
+<p>一个ad-hoc命令的执行，需要按以下格式进行执行：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible 主机或组  -m 模块名 -<span class="selector-tag">a</span> <span class="string">'模块参数'</span>  ansible参数</div></pre></td></tr></table></figure>
+<p><strong>主机和组，是在/etc/ansible/hosts 里进行指定的部分，当然动态Inventory 使用的是脚本从外部应用里获取的主机.</strong></p>
+<ul>
+<li><p>模块名，可以通过<code>ansible-doc -l</code>查看目前安装的模块，默认不指定时，使用的是command模块，具体可以查看<code>/etc/ansible/ansible.cfg</code> 的<code>“#module_name = command ”</code> 部分，默认模块可以在该配置文件中进行修改；</p>
+</li>
+<li><p>模块参数，可以通过 <code>“ansible-doc</code> 模块名” 查看具体的用法及后面的参数；</p>
+</li>
+<li><p>ansible参数，可以通过ansible命令的帮忙信息里查看到，这里有很多参数可以供选择，如是否需要输入密码、是否sudo等。</p>
+</li>
+</ul>
+<h4 id="2、后台执行例子"><a href="#2、后台执行例子" class="headerlink" title="2、后台执行例子"></a>2、后台执行例子</h4><p>当命令执行时间比较长时，也可以放到后台执行，这里会用到-B、-P参数，如下：</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ansible all -B <span class="number">3600</span> -a <span class="string">"/usr/bin/long_running_operation --do-stuff"</span> \\后台执行命令 <span class="number">3600</span>s，-B 表示后台执行的时间</div><div class="line">ansible all -m async_status -a <span class="string">"jid=123456789"</span>  \\检查任务的状态</div><div class="line">ansible all -B <span class="number">1800</span> -P <span class="number">60</span> -a <span class="string">"/usr/bin/long_running_operation --do-stuff"</span> \\后台执行命令最大时间是 <span class="number">1800</span>s 即 <span class="number">30</span> 分钟，-P 每 <span class="number">60</span>s 检查下状态默认 <span class="number">15</span>s</div></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># ansible  -B 60 -P 1  tomcat_B1 -a  "uptime"</span></div><div class="line"><span class="meta">192.168.1.176 | SUCCESS | rc=0 &gt;</span>&gt;</div><div class="line"> <span class="number">11</span><span class="symbol">:</span><span class="number">23</span><span class="symbol">:</span><span class="number">00</span> up <span class="number">24</span> days, <span class="number">17</span><span class="symbol">:</span><span class="number">34</span>,  <span class="number">1</span> user,  load <span class="symbol">average:</span> <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span></div></pre></td></tr></table></figure>
+<h2 id="二、commands模块"><a href="#二、commands模块" class="headerlink" title="二、commands模块"></a>二、commands模块</h2><p>上面已经提到，ansbile自身已经自带了很多模块，可以通过ansible-doc -l 进行查看。这里就结合<code>command、shell、raw、script</code>模块了解下其用法。</p>
+<p>上面四个模块都属于commands 类。</p>
+<ul>
+<li><code>command</code>模块，该模块通过<code>-a</code>跟上要执行的命令可以直接执行，不过命令里如果有带有如下字符部分则执行不成功 “ so variables like $HOME and operations like “&lt;”, “&gt;”, “|”, and “&amp;” will not work (use the shell module if you need these features).”；**</li>
+<li><code>shell</code>模块，用法其本和<code>command</code>一样，不过的是其是通过/bin/sh进行执行，所以shell 模块可以执行任何命令，就像在本机执行一样，“ It is almost exactly like the command module but runs the command through a shell (/bin/sh) on the remote node.”；</li>
+<li><code>raw</code>模块，用法和shell 模块一样 ，其也可以执行任意命令，就像在本机执行一样，“Executes a low-down and dirty SSH command, not going through the module subsystem. There is no change handler support for this module. This module does not require python on the remote system”</li>
+<li><code>script</code>模块，其是将管理端的shell 在被管理主机上执行，其原理是先将shell 复制到远程主机，再在远程主机上执行，原理类似于raw模块，“This module does not require python on the remote system, much like the raw module.” 。</li>
+</ul>
+<blockquote>
+<p>注：raw模块和comand、shell 模块不同的是其没有chdir、creates、removes参数，chdir参数的作用就是先切到chdir指定的目录后，再执行后面的命令，这在后面很多模块里都会有该参数 。</p>
+</blockquote>
+<p>###command模块包含如下选项： </p>
+<ul>
+<li>creates：一个文件名，当该文件存在，则该命令不执行 </li>
+<li>free_form：要执行的linux指令 </li>
+<li>chdir：在执行指令之前，先切换到该指定的目录 </li>
+<li>removes：一个文件名，当该文件不存在，则该选项不执行</li>
+<li>executable：切换shell来执行指令，该执行路径必须是一个绝对路径</li>
+</ul>
+<p><strong>command模块、raw模块、shell模块示例：</strong></p>
+<h4 id="command例子："><a href="#command例子：" class="headerlink" title="command例子："></a>command例子：</h4><figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_B1 -m command -a "ps -ef|grep tomcat"</span></div><div class="line"><span class="number">192.168</span><span class="number">.1</span><span class="number">.176</span> | FAILED | rc=<span class="number">1</span> &gt;&gt;</div><div class="line">ERROR: Unsupported SysV option.</div><div class="line">********* simple selection *********  ********* selection <span class="keyword">by</span> <span class="built_in">list</span> *********</div><div class="line">-A all processes                      -C <span class="keyword">by</span> command <span class="built_in">name</span></div><div class="line">-N negate selection                   -G <span class="keyword">by</span> <span class="built_in">real</span> group ID (supports names)</div><div class="line">-a all w/ tty except session leaders  -U <span class="keyword">by</span> <span class="built_in">real</span> user ID (supports names)</div><div class="line">-d all except session leaders         -g <span class="keyword">by</span> session OR <span class="keyword">by</span> effective group <span class="built_in">name</span></div><div class="line">-e all processes                      -p <span class="keyword">by</span> process ID</div><div class="line">                                      -q <span class="keyword">by</span> process ID (unsorted &amp; quick)</div><div class="line">T  all processes <span class="keyword">on</span> this terminal     -s processes <span class="keyword">in</span> <span class="keyword">the</span> sessions <span class="keyword">given</span></div><div class="line">a  all w/ tty, including other users  -t <span class="keyword">by</span> tty</div><div class="line">g  OBSOLETE <span class="comment">-- DO NOT USE             -u by effective user ID (supports names)</span></div><div class="line">r  only <span class="built_in">running</span> processes             U  processes <span class="keyword">for</span> specified users</div><div class="line">x  processes w/o controlling ttys     t  <span class="keyword">by</span> tty</div><div class="line">*********** output format **********  *********** long options ***********</div><div class="line">-o,o user-defined  -f full            <span class="comment">--Group --User --pid --cols --ppid</span></div><div class="line">-j,j job control   s  signal          <span class="comment">--group --user --sid --rows --info</span></div><div class="line">-O,O preloaded -o  v  virtual memory  <span class="comment">--cumulative --format --deselect</span></div><div class="line">-l,l long          u  user-oriented   <span class="comment">--sort --tty --forest --version</span></div><div class="line">-F   extra full    X  registers       <span class="comment">--heading --no-heading --context</span></div><div class="line">                                      <span class="comment">--quick-pid</span></div><div class="line">                    ********* misc options *********</div><div class="line">-V,V  show <span class="built_in">version</span>      L  <span class="built_in">list</span> format codes  f  ASCII art forest</div><div class="line">-m,m,-L,-T,H  threads   S  children <span class="keyword">in</span> sum    -y change -l format</div><div class="line">-M,Z  security data     c  <span class="literal">true</span> command <span class="built_in">name</span>  -c scheduling <span class="built_in">class</span></div><div class="line">-w,w  wide output       n  numeric WCHAN,UID  -H process hierarchy</div></pre></td></tr></table></figure>
+<p><strong>上面的执行结果可以看到，我这里加了管道，<code>command模块</code>执行时出错，而使用<code>raw模块</code>和<code>shell模块</code>都正常。</strong></p>
+<h4 id="shell例子："><a href="#shell例子：" class="headerlink" title="shell例子："></a>shell例子：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_B1 -m shell -a "ps -ef|grep tomcat"</span></div><div class="line">192.168.1.176 | SUCCESS | rc=0 &gt;&gt;</div><div class="line">root      1529     1  0 Aug11 ?        00:00:00 jsvc.exec -java-home /srv/jdk1.7.0_67 -user tomcat -pidfile /srv/tomcat/tomcat_manager/logs/catalina-daemon.pid -wait 10 -outfile /srv/tomcat/tomcat_manager/logs/catalina-daemon.out -errfile &amp;1 -classpath /srv/tomcat/tomcat_manager/bin/bootstrap.jar:/srv/tomcat/</div></pre></td></tr></table></figure>
+<h4 id="使用chdir的示例："><a href="#使用chdir的示例：" class="headerlink" title="使用chdir的示例："></a>使用chdir的示例：</h4><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_B1 -m command -a "chdir=/tmp/ touch 1.txt"</span></div><div class="line"><span class="meta">192.168.1.176 | SUCCESS | rc=0 &gt;</span>&gt;</div><div class="line"></div><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_B1 -m shell -a "chdir=/tmp/ touch 2.txt"</span></div><div class="line"><span class="meta">192.168.1.176 | SUCCESS | rc=0 &gt;</span>&gt;</div><div class="line"></div><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_B1 -m raw -a "chdir=/tmp/ touch 3.txt"</span></div><div class="line"><span class="meta">192.168.1.176 | SUCCESS | rc=0 &gt;</span>&gt;</div></pre></td></tr></table></figure>
+<p>从上面执行结果来看，三个命令都执行成功了。不过通过在远程主机上查看，前两个文件被成功创建：</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_B1 -m command -a "chdir=/tmp/ ls -lh"</span></div><div class="line">192.168.1.176 | SUCCESS | rc=0 &gt;&gt;</div><div class="line">total 188K</div><div class="line">-rw-r--r--.<span class="number"> 1 </span>root   root     <span class="number"> 0 </span>Sep <span class="number"> 5 </span>22:52 1.txt</div><div class="line">-rw-r--r--.<span class="number"> 1 </span>root   root     <span class="number"> 0 </span>Sep <span class="number"> 5 </span>22:51 2.txt</div></pre></td></tr></table></figure>
+<p>使用<code>raw模块</code>的执行的结果文件也被正常创建了，不过不是在chdir 指定的目录，而是在当前执行用户的家目录。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_B1 -m raw -a "ls ~/4.txt"</span></div><div class="line"><span class="meta">192.168.1.176 | SUCCESS | rc=0 &gt;</span>&gt;</div><div class="line"><span class="regexp">/root/</span><span class="number">4</span>.txt</div></pre></td></tr></table></figure>
+<h4 id="creates与removes示例："><a href="#creates与removes示例：" class="headerlink" title="creates与removes示例："></a>creates与removes示例：</h4><p>这里我在测试主机上创建/tmp/server.txt文件，执行结果如下：</p>
+<ul>
+<li>creates：一个文件名，当该文件存在，则该命令不执行 </li>
+</ul>
+<figure class="highlight nimrod"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_B1  -a "creates=/tmp/1.txt uptime"</span></div><div class="line"> [<span class="type">WARNING</span>]: <span class="type">Failure</span> <span class="keyword">using</span> <span class="keyword">method</span> (v2_runner_on_ok) <span class="keyword">in</span> callback plugin (&lt;ansible.plugins.callback.minimal.<span class="type">CallbackModule</span> <span class="keyword">object</span> at <span class="number">0x2093e90</span>&gt;): coercing to</div><div class="line"><span class="type">Unicode</span>: need <span class="built_in">string</span> <span class="keyword">or</span> buffer, <span class="built_in">bool</span> found</div><div class="line"></div><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_B1  -a "removes=/tmp/1.txt uptime"</span></div><div class="line"><span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">176</span> | <span class="type">SUCCESS</span> | rc=<span class="number">0</span> &gt;&gt;</div><div class="line"> <span class="number">22</span>:<span class="number">59</span>:<span class="number">04</span> up <span class="number">25</span> days,  <span class="number">5</span>:<span class="number">10</span>,  <span class="number">1</span> user,  load average: <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span></div></pre></td></tr></table></figure>
+<h4 id="script模块示例："><a href="#script模块示例：" class="headerlink" title="script模块示例："></a>script模块示例：</h4><figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[root@361way ~]# cat script.sh</div><div class="line">#!/bin/bash</div><div class="line">df -hl</div><div class="line">ifconfig</div><div class="line">ps auxf|grep snmp</div><div class="line">[root@361way ~]# ansible 10.212.52.252 -m script -a 'scrip.sh'</div><div class="line">10.212.52.252 | FAILED =&gt; file or module does not exist: /root/scrip.sh</div><div class="line">[root@361way ~]# ansible 10.212.52.252 -m script -a 'script.sh'</div><div class="line">10.212.52.252 | success &gt;&gt; &#123;</div><div class="line">    "changed": true,</div><div class="line">    "rc": 0,</div><div class="line">    "stderr": "OpenSSH_5.3p1, OpenSSL 1.0.1e-fips 11 Feb 2013<span class="symbol">\n</span>debug1: Reading configuration data /etc/ssh/ssh_config<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Applying options for *<span class="symbol">\r</span><span class="symbol">\n</span>debug1: auto-mux: Trying existing master<span class="symbol">\r</span><span class="symbol">\n</span>Control socket connect(/root/.ansible/cp/ansible-ssh-10.212.52.252-22-root): Connection refused<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Connecting to 10.212.52.252 [10.212.52.252] port 22.<span class="symbol">\r</span><span class="symbol">\n</span>debug1: fd 3 clearing O_NONBLOCK<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Connection established.<span class="symbol">\r</span><span class="symbol">\n</span>debug1: permanently_set_uid: 0/0<span class="symbol">\r</span><span class="symbol">\n</span>debug1: identity file /root/.ssh/identity type -1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: identity file /root/.ssh/identity-cert type -1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: identity file /root/.ssh/id_rsa type -1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: identity file /root/.ssh/id_rsa-cert type -1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: identity file /root/.ssh/id_dsa type -1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: identity file /root/.ssh/id_dsa-cert type -1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: identity file /root/.ssh/id_ecdsa type -1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: identity file /root/.ssh/id_ecdsa-cert type -1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Remote protocol version 2.0, remote software version OpenSSH_6.2<span class="symbol">\r</span><span class="symbol">\n</span>debug1: match: OpenSSH_6.2 pat OpenSSH*<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Enabling compatibility mode for protocol 2.0<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Local version string SSH-2.0-OpenSSH_5.3<span class="symbol">\r</span><span class="symbol">\n</span>debug1: SSH2_MSG_KEXINIT sent<span class="symbol">\r</span><span class="symbol">\n</span>debug1: SSH2_MSG_KEXINIT received<span class="symbol">\r</span><span class="symbol">\n</span>debug1: kex: server-&gt;client aes128-ctr hmac-md5 zlib@openssh.com<span class="symbol">\r</span><span class="symbol">\n</span>debug1: kex: client-&gt;server aes128-ctr hmac-md5 zlib@openssh.com<span class="symbol">\r</span><span class="symbol">\n</span>debug1: SSH2_MSG_KEX_DH_GEX_REQUEST(1024&lt;1024&lt;8192) sent<span class="symbol">\r</span><span class="symbol">\n</span>debug1: expecting SSH2_MSG_KEX_DH_GEX_GROUP<span class="symbol">\r</span><span class="symbol">\n</span>debug1: SSH2_MSG_KEX_DH_GEX_INIT sent<span class="symbol">\r</span><span class="symbol">\n</span>debug1: expecting SSH2_MSG_KEX_DH_GEX_REPLY<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Host '10.212.52.252' is known and matches the RSA host key.<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Found key in /root/.ssh/known_hosts:1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: ssh_rsa_verify: signature correct<span class="symbol">\r</span><span class="symbol">\n</span>debug1: SSH2_MSG_NEWKEYS sent<span class="symbol">\r</span><span class="symbol">\n</span>debug1: expecting SSH2_MSG_NEWKEYS<span class="symbol">\r</span><span class="symbol">\n</span>debug1: SSH2_MSG_NEWKEYS received<span class="symbol">\r</span><span class="symbol">\n</span>debug1: SSH2_MSG_SERVICE_REQUEST sent<span class="symbol">\r</span><span class="symbol">\n</span>debug1: SSH2_MSG_SERVICE_ACCEPT received<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Authentications that can continue: publickey,password,keyboard-interactive<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Next authentication method: keyboard-interactive<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Enabling compression at level 6.<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Authentication succeeded (keyboard-interactive).<span class="symbol">\r</span><span class="symbol">\n</span>debug1: setting up multiplex master socket<span class="symbol">\r</span><span class="symbol">\n</span>ControlSocket /root/.ansible/cp/ansible-ssh-10.212.52.252-22-root already exists, disabling multiplexing<span class="symbol">\r</span><span class="symbol">\n</span>debug1: channel 0: new [client-session]<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Requesting no-more-sessions@openssh.com<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Entering interactive session.<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Sending environment.<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Sending env LANG = en_US.UTF-8<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Sending command: LANG=C LC_CTYPE=C /root/.ansible/tmp/ansible-tmp-1431924855.88-242473611260231/script.sh <span class="symbol">\r</span><span class="symbol">\n</span>debug1: client_input_channel_req: channel 0 rtype exit-status reply 0<span class="symbol">\r</span><span class="symbol">\n</span>debug1: client_input_channel_req: channel 0 rtype eow@openssh.com reply 0<span class="symbol">\r</span><span class="symbol">\n</span>debug1: channel 0: free: client-session, nchannels 1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: fd 1 clearing O_NONBLOCK<span class="symbol">\r</span><span class="symbol">\n</span>debug1: fd 2 clearing O_NONBLOCK<span class="symbol">\r</span><span class="symbol">\n</span>Connection to 10.212.52.252 closed.<span class="symbol">\r</span><span class="symbol">\n</span>Transferred: sent 1928, received 3920 bytes, in 0.1 seconds<span class="symbol">\r</span><span class="symbol">\n</span>Bytes per second: sent 37017.0, received 75262.7<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Exit status 0<span class="symbol">\r</span><span class="symbol">\n</span>debug1: compress outgoing: raw data 537, compressed 375, factor 0.70<span class="symbol">\r</span><span class="symbol">\n</span>debug1: compress incoming: raw data 1837, compressed 1019, factor 0.55<span class="symbol">\r</span><span class="symbol">\n</span>",</div><div class="line">    "stdout": "Filesystem      Size  Used Avail Use<span class="variable">% Mounted on\r\n/dev/sda2       9.9G  872M  8.5G  10%</span> /<span class="symbol">\r</span><span class="symbol">\n</span>udev            3.9G  128K  3.9G   1<span class="variable">% /dev\r\ntmpfs           3.9G   76K  3.9G   1%</span> /dev/shm<span class="symbol">\r</span><span class="symbol">\n</span>/dev/sda3       5.0G  219M  4.5G   5<span class="variable">% /boot\r\n/dev/sda8        40G   15G   23G  40%</span> /home<span class="symbol">\r</span><span class="symbol">\n</span>/dev/sda9       9.9G  5.2G  4.3G  55<span class="variable">% /opt\r\n/dev/sda6       5.0G  2.7G  2.1G  57%</span> /tmp<span class="symbol">\r</span><span class="symbol">\n</span>/dev/sda5       9.9G  3.4G  6.0G  36<span class="variable">% /usr\r\n/dev/sda7       9.9G  823M  8.6G   9%</span> /var<span class="symbol">\r</span><span class="symbol">\n</span>eth0      Link encap:Ethernet  HWaddr 00:50:56:A8:65:7E  <span class="symbol">\r</span><span class="symbol">\n</span>          inet addr:10.212.52.252  Bcast:10.212.52.255  Mask:255.255.255.0<span class="symbol">\r</span><span class="symbol">\n</span>          inet6 addr: fe80::250:56ff:fea8:657e/64 Scope:Link<span class="symbol">\r</span><span class="symbol">\n</span>          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1<span class="symbol">\r</span><span class="symbol">\n</span>          RX packets:24112135 errors:0 dropped:792372 overruns:0 frame:0<span class="symbol">\r</span><span class="symbol">\n</span>          TX packets:10697339 errors:0 dropped:0 overruns:0 carrier:0<span class="symbol">\r</span><span class="symbol">\n</span>          collisions:0 txqueuelen:1000 <span class="symbol">\r</span><span class="symbol">\n</span>          RX bytes:17137233328 (16343.3 Mb)  TX bytes:13390377826 (12770.0 Mb)<span class="symbol">\r</span><span class="symbol">\n</span><span class="symbol">\r</span><span class="symbol">\n</span>lo        Link encap:Local Loopback  <span class="symbol">\r</span><span class="symbol">\n</span>          inet addr:127.0.0.1  Mask:255.0.0.0<span class="symbol">\r</span><span class="symbol">\n</span>          inet6 addr: ::1/128 Scope:Host<span class="symbol">\r</span><span class="symbol">\n</span>          UP LOOPBACK RUNNING  MTU:16436  Metric:1<span class="symbol">\r</span><span class="symbol">\n</span>          RX packets:3407332 errors:0 dropped:0 overruns:0 frame:0<span class="symbol">\r</span><span class="symbol">\n</span>          TX packets:3407332 errors:0 dropped:0 overruns:0 carrier:0<span class="symbol">\r</span><span class="symbol">\n</span>          collisions:0 txqueuelen:0 <span class="symbol">\r</span><span class="symbol">\n</span>          RX bytes:262675450 (250.5 Mb)  TX bytes:262675450 (250.5 Mb)<span class="symbol">\r</span><span class="symbol">\n</span><span class="symbol">\r</span><span class="symbol">\n</span>root     25332  0.0  0.0   4260   568 pts/2    S+   12:54   0:00          <span class="symbol">\\</span>_ grep snmp<span class="symbol">\r</span><span class="symbol">\n</span>root     24364  0.0  0.0  70416  6696 ?        SNl  May15   0:22 /usr/sbin/snmpd -r -A -LF i /var/log/net-snmpd.log -p /var/run/snmpd.pid<span class="symbol">\r</span><span class="symbol">\n</span>"</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出结果很多，看起来也很乱，不过查下stdout部分，这个部分是实际上执行后的结果。这里可以配合管道一起使用，可以如下使用：</p>
+<p><code>`
+[root@361way ~]# ansible 10.212.52.252 -m script -a &#39;script.sh&#39; |egrep &#39;&gt;&gt;|stdout&#39;</code></p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/03/09/自动化+Jenkins/Ansible/Ansible小结（四）Ad-hoc与commands模块 /" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>自动化运维工具-Saltstack的详细介绍安装与使用以及语法开发操作 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>自动化运维工具-Saltstack的详细介绍安装与使用以及语法开发操作</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2015-09-10</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Automation/">Automation</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Saltstack/">Saltstack</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="引言-自动化运维"><a href="#引言-自动化运维" class="headerlink" title="引言:自动化运维"></a>引言:自动化运维</h2><h3 id="1-saltstack-的基本介绍"><a href="#1-saltstack-的基本介绍" class="headerlink" title="1:saltstack 的基本介绍"></a>1:saltstack 的基本介绍</h3><h4 id="2-salt-的安装"><a href="#2-salt-的安装" class="headerlink" title="2:salt 的安装"></a>2:salt 的安装</h4><ul>
+<li>服务端 <ul>
+<li>安装</li>
+<li>配置文件 </li>
+<li>运行 </li>
+<li>注意事项</li>
+</ul>
+</li>
+<li>客户端 <ul>
+<li>安装</li>
+<li>配置文件</li>
+<li>运行</li>
+<li>注意事项</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-salt-的使用"><a href="#3-salt-的使用" class="headerlink" title="3:salt 的使用:"></a>3:salt 的使用:</h4><ul>
+<li>基础知识<ul>
+<li>targeting </li>
+<li>nodegroup </li>
+<li>grains </li>
+<li>pillar</li>
+</ul>
+</li>
+<li>状态管理 <ul>
+<li>state</li>
+<li>state 语法</li>
+<li>state 的逻辑关系 </li>
+<li>highstate</li>
+<li>salt schedule </li>
+</ul>
+</li>
+<li>实时管理 <ul>
+<li>cmd.run</li>
+<li>module </li>
+</ul>
+</li>
+<li>无 master<h4 id="4-salt-开发"><a href="#4-salt-开发" class="headerlink" title="4:salt 开发"></a>4:salt 开发</h4></li>
+<li>saltclient 管理 salt<ul>
+<li>salt api</li>
+</ul>
+</li>
+</ul>
+<h3 id="引言-自动化运维-运维的工作主要在2方面"><a href="#引言-自动化运维-运维的工作主要在2方面" class="headerlink" title="引言:自动化运维 运维的工作主要在2方面:"></a>引言:自动化运维 运维的工作主要在2方面:</h3><ol>
+<li>状态的管理</li>
+<li>系统性能调优 这里主要简介下运维状态的管理:<br>对于运维来说,基于状态的配置管理已经向自动化迈进了一大步,以状态为核心的运维,<br>让状态本身有了可管理性;在运维过程中我们会发现,同样的一个配置,我们会在不同的时间, 不同的地点一次在一次的配置,这个时候,配置管理就有了重复性;有的甚至是原封不动的重 复,而另外一些则是按照一定的规律在发展,这些按照一定规律发展的配置,就是可预测的.综 上我认识的,我们运维工作的本身是可管理,可重复,可预测的.基于这样的理念,我们就可以更 高一步的推进我们的运维自动化,甚至到智能化.</li>
+</ol>
+<p>看到这里,我理想中的运维自动化的配置管理平台应该有如下功能: </p>
+<ol>
+<li>对状态的配置及管理(最基本的) </li>
+<li>可以及时的对系统状态进行调整并能看到结果(可以方便的实时升级系统状态)</li>
+<li>可以对其本身做方便的第三方管理(借助其 API,直接给状态制定好其发展方向)</li>
+</ol>
+<h5 id="加分项"><a href="#加分项" class="headerlink" title="加分项:"></a>加分项:</h5><ol>
+<li>开发语言单一</li>
+<li>架构简单,灵活 </li>
+<li>有不差的安全性 </li>
+<li>没有商业版<br>下面是现有比较有代表性的自动化配置管理工具: 附:以下仅基于开源版本进行介绍</li>
+</ol>
+<h4 id="理念-优缺点"><a href="#理念-优缺点" class="headerlink" title="理念 优缺点"></a>理念 优缺点</h4><p>puppet 从运维的角度去做配置管理(运维人员做给运维用的) 架构简单,系统比较成<br>熟/不便于第三方管理</p>
+<p>chef 从研发的角度去做配置管理(研发人员做给运维用的) 较便于第三方管理,对<br>自身(节点,变量,cookbook)的管理较方便,有自己的 dashboard,cookbook 支持版本管理,自从 cookbook 的版本管理/架构复杂,开发语言较多,(安全问题)</p>
+<ul>
+<li>以上 2 者都比较侧重于状态的管理,对单个或者多个状态的临时调整或者管理较差 2 个都有商业版,让我这个用开源版的很自卑</li>
+</ul>
+<p>这里我们也能看到,2 个配置功能都没能达到我理想中的状态,那就暂用 chef 吧,直到有 一天,了解到了 saltstack 看到了这句话:“ 系统配置的自动化不仅可预测,可重复, 还具有可 管理性”(<a href="http://wiki.saltstack.cn/reproduction/dive-into-saltstack),这尼玛才是运维自动化的未" target="_blank" rel="external">http://wiki.saltstack.cn/reproduction/dive-into-saltstack),这尼玛才是运维自动化的未</a> 来啊,于是毫无节操的开始学习 salt,而且发现越学越喜欢;在我使用 puppet 及 chef 的时 候都没有使用 salt 的感觉,太爽了。所以我这里仅仅介绍几本的语法不涉及实际用例,salt 的安装非常方便,所以你在看本文档的时候希望你能真正的动手去做一下,然后你就会爱上 salt 了</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">附:如果你会 python,salt 基本是不需要怎么学的,而我正好了解一点 py,不过这最多占我选择 salt 的 20%。</div></pre></td></tr></table></figure>
+<h3 id="1-saltstack-的基本介绍-1"><a href="#1-saltstack-的基本介绍-1" class="headerlink" title="1:saltstack 的基本介绍"></a>1:saltstack 的基本介绍</h3><p>salt 是一个新的基础平台管理工具。很短的时间即可运行并使用起来, 扩展性足以支撑<br>管理上万台服务器,数秒钟即可完成数据传递. 经常被描述为 Func 加强版+Puppet 精简版。</p>
+<p>salt 的整个架构都是基于消息来实现.所以能够提供横强的拓展性,灵活性,实时性;不夸 了,看实际的 slat 是什么样的不过 salt 还是一个很年轻的东西,还有很多地方不够完善,做的不够好,不过我相信这 些都只是时间问题。</p>
+<ul>
+<li>注:以下文档仅仅为基本内容,相关知识点的深入学习,请看相应文档连接 ##2:salt 的安装</li>
+</ul>
+<p>安装有很多途径,作为一个 centos 的用户,我选择 rpm 首先添加 RPM 源:<br>rpm -ivh <a href="http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm" target="_blank" rel="external">http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm</a></p>
+<h5 id="附-实际生产中我是自建源"><a href="#附-实际生产中我是自建源" class="headerlink" title="附:实际生产中我是自建源"></a>附:实际生产中我是自建源</h5><p>epel 中关于 salt 的包:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">salt-api.noarch : A web api <span class="keyword">for</span> to access salt the parallel remote execution system salt-master.noarch : Management component <span class="keyword">for</span> salt, a parallel remote execution</div><div class="line">system</div><div class="line">salt-minion.noarch : Client component <span class="keyword">for</span> salt, a parallel remote execution system salt.noarch : A parallel remote execution system</div><div class="line">salt-cloud.noarch : Generic cloud provisioning tool</div></pre></td></tr></table></figure>
+<h4 id="1-服务端-1-安装"><a href="#1-服务端-1-安装" class="headerlink" title="1:服务端 1:安装"></a>1:服务端 1:安装</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">yum install salt-master 2:配置文件</div><div class="line">/etc/salt/master</div><div class="line">配置文件选项介绍: http://docs.saltstack.com/ref/configuration/master.html</div><div class="line">最基本字段:</div><div class="line">interface: 服务端监听 IP</div><div class="line">3:运行 调试模式:</div><div class="line">salt-master <span class="_">-l</span> debug 后台运行:</div><div class="line">salt-master <span class="_">-d</span></div><div class="line">作为 centos 管理员,我选择:</div><div class="line">/etc/init.d/salt-master start </div><div class="line"></div><div class="line">4:注意事项:</div><div class="line">1:监听端口</div><div class="line">4505(publish_port):salt 的消息发布系统 4506(ret_port):salt 客户端与服务端通信的端口</div><div class="line">所以确保客户端能跟服务端的这2个端口通信</div></pre></td></tr></table></figure>
+<h4 id="安装客户端"><a href="#安装客户端" class="headerlink" title="安装客户端"></a>安装客户端</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">yum install salt-minion 2:配置文件</div><div class="line">/etc/salt/minion</div><div class="line">配置文件选项介绍: http://docs.saltstack.com/ref/configuration/minion.html 最基本字段:</div><div class="line">master: 服务端主机名</div><div class="line">id: 客户端主机名(在服务端看到的客户端的名字)</div><div class="line">3:运行 调试模式:</div><div class="line">salt-minion <span class="_">-l</span> debug 后台运行:</div><div class="line">salt-minion <span class="_">-d</span></div><div class="line">作为 centos 管理员,我选择:</div><div class="line">/etc/init.d/salt-minion start </div><div class="line"></div><div class="line">4:注意事项:</div><div class="line">1:minion 默认和主机名 salt 的主机通信 </div><div class="line"></div><div class="line">2:关于配置文件</div><div class="line">salt 的配置文件均为 yaml 风格</div><div class="line"><span class="variable">$key</span>: <span class="variable">$value</span> <span class="comment">#注意冒号后有一个空格 3:基础知识</span></div><div class="line">1:salt minion 和 master 的认证过程:</div><div class="line">(1) minion 在第一次启动时,会在/etc/salt/pki/minion/下自动生成</div><div class="line">minion.pem(private key), minion.pub(public key),然后将 minion.pub 发送给 master</div><div class="line">(2) master 在接收到 minion 的 public key 后,通过 salt-key 命令 accept minion public key,这样在 master 的/etc/salt/pki/master/minions 下的将会存放以 minion id 命名的</div><div class="line">public key, 然后 master 就能对 minion 发送指令了</div><div class="line">如下: </div><div class="line">启动服务端:</div><div class="line">/etc/init.d/salt-minion restart</div><div class="line">启动客户端:</div><div class="line">/etc/init.d/salt-minion restart </div><div class="line"></div><div class="line">服务端查看key:</div><div class="line">salt-key</div><div class="line">Accepted Keys:</div><div class="line">Unaccepted Keys: minion1</div><div class="line">Rejected Keys:</div><div class="line">服务端接受 key salt-key <span class="_">-a</span> minion1</div><div class="line"></div><div class="line">测试:</div><div class="line">salt <span class="string">'minion1'</span> test.ping minion1:</div><div class="line">True</div><div class="line">附:salt 更多命令及手册 salt <span class="string">'*'</span> sys.doc</div></pre></td></tr></table></figure>
+<h3 id="3-salt-的使用-1-基础知识"><a href="#3-salt-的使用-1-基础知识" class="headerlink" title="3:salt 的使用: 1:基础知识"></a>3:salt 的使用: 1:基础知识</h3><p>1:targeting</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">salt <span class="string">'*'</span> test.ping</div><div class="line">引号中以实现很强大的 minion 的过滤与匹配技术 文档:http://docs.saltstack.com/topics/targeting /compound.html</div><div class="line">常用命令:</div><div class="line">salt <span class="string">'shell 正则'</span> 命令</div><div class="line">salt -E <span class="string">'prel 正则'</span></div><div class="line">salt -N <span class="variable">$group</span> 命令</div><div class="line">salt -L <span class="string">'server_id1,server_id2,server_id3'</span> 命令</div><div class="line">示例:</div><div class="line">salt -C <span class="string">'webserv* and G@os:Debian or E@web-dc1-srv.*'</span> test.ping</div></pre></td></tr></table></figure>
+<p>2:nodegroup<br>对 minion 进行分组</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">文档: http://docs.saltstack.com/topics/targeting/nodegroups.html 在 master 的配置文件中按如下格式定义:</div><div class="line">nodegroups:</div><div class="line">group1: <span class="string">'L@foo.domain.com,bar.domain.com,baz.domain.com or</span></div><div class="line">bl*.domain.com'</div><div class="line">group2: <span class="string">'G@os:Debian and foo.domain.com'</span> 在 state 或者 pillar 中引用的时候如下:</div><div class="line">base: group1:</div><div class="line">- match: nodegroup - webserver</div></pre></td></tr></table></figure>
+<p>3:grains<br>minion 基本信息的管理 文档:<a href="http://docs.saltstack.com/topics/targeting" target="_blank" rel="external">http://docs.saltstack.com/topics/targeting</a> /grains.html 基本使用:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">salt <span class="string">'*'</span> grains.ls 查看 grains 分类</div><div class="line">salt <span class="string">'*'</span> grains.items 查看 grains 所有信息</div><div class="line">salt <span class="string">'*'</span> grains.item osrelease 查看 grains 某个信息</div><div class="line">示例:</div><div class="line">salt <span class="string">'*'</span> grains.item osrelease minoin1:</div><div class="line">osrelease: 6.2</div></pre></td></tr></table></figure>
+<h3 id="minion-的变量"><a href="#minion-的变量" class="headerlink" title="minion 的变量"></a>minion 的变量</h3><p>在用 salt 进行管理客户端的时候或者写 state 的时候都可以引用 grains 的变量 4:pillar</p>
+<p>salt 敏感信息的管理,只有匹配到的节点才能看到和使用 文档:<a href="http://docs.saltstack.com/topics/tutorials/pillar.html" target="_blank" rel="external">http://docs.saltstack.com/topics/tutorials/pillar.html</a> 默认:pillar 数据定义文件存储路径:/srv/pillar 入口文件:/srv/pillar/top.sls</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">格式: base:</div><div class="line"><span class="string">"targeting"</span>:</div><div class="line">- <span class="variable">$pillar</span></div><div class="line"><span class="variable">$pillar</span>.sls 基本:</div><div class="line"><span class="variable">$key</span>: <span class="variable">$value</span> state 引用方式:</div><div class="line">&#123;&#123; pillar[<span class="string">'$key'</span>] &#125;&#125;</div><div class="line">复杂:</div><div class="line">users:</div><div class="line">thatch: 1000 shouse: 1001 utahdave: 1002 redbeard: 1003</div><div class="line">state 引用方式:</div><div class="line">&#123;% <span class="keyword">for</span> user, uid <span class="keyword">in</span> pillar.get(<span class="string">'users'</span>, &#123;&#125;).items() %&#125;</div><div class="line">&#123;&#123;user&#125;&#125;: user.present:</div><div class="line">- uid: &#123;&#123;uid&#125;&#125; &#123;% endfor %&#125;</div><div class="line">查看节点的 pillar 数据: salt <span class="string">'client2'</span> pillar.data</div><div class="line">同步 pillar:</div><div class="line">salt <span class="string">'*'</span> saltutil.refresh_pillar</div><div class="line">附:这里我们可以看到,pallar 中也可以使用 jinja(后面会提到)做一些处理 5:minion</div><div class="line">即为 salt 的客户端</div><div class="line">2:状态管理 1:state</div><div class="line">salt 基于 minion 进行状态的管理 1:state 语法</div><div class="line">文档:http://docs.saltstack.com/ref/states/all/index.html</div><div class="line"><span class="comment">#名字为pillar.sls的文件来存放对匹配到的</span></div><div class="line">&#123;% <span class="keyword">if</span> grains[<span class="string">'os_family'</span>] == <span class="string">'RedHat'</span> %&#125; - name: vim-enhanced</div><div class="line">&#123;% <span class="keyword">elif</span> grains[<span class="string">'os'</span>] == <span class="string">'Debian'</span> %&#125;</div><div class="line">- name: vim-nox</div><div class="line">&#123;% <span class="keyword">elif</span> grains[<span class="string">'os'</span>] == <span class="string">'Ubuntu'</span> %&#125; - name: vim-nox</div><div class="line">&#123;% endif %&#125;</div><div class="line">- installed</div><div class="line">如果是 redhard 系列的就安装 vim-enhanced,如果系统是 Debian 或 者 Ubuntu 就安装 vim-nox</div><div class="line">以有多个</div><div class="line">附:state 默认使用 jinja(http://jinja.pocoo.org/)的模板语法, 文档地址: http://jinja.pocoo.org /docs/templates/</div></pre></td></tr></table></figure>
+<p>2:state 的逻辑关系: 文档:<a href="http://docs.saltstack.com/ref/states/ordering.html" target="_blank" rel="external">http://docs.saltstack.com/ref/states/ordering.html</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">require:依赖某个 state,在运行此 state 前,先运行依赖的 state,依赖可</div><div class="line">httpd: pkg:</div><div class="line">- installed file.managed:</div><div class="line">- name: /etc/httpd/conf/httpd.conf </div><div class="line">- <span class="built_in">source</span>: salt://httpd/httpd.conf</div><div class="line">- require:</div><div class="line">- pkg: httpd</div></pre></td></tr></table></figure>
+<p>watch:在某个 state 变化时运行此模块 redis:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">pkg:</div><div class="line">- latest</div><div class="line">file.managed:</div><div class="line">- <span class="built_in">source</span>: salt://redis/redis.conf</div><div class="line">- name: /etc/redis.conf</div><div class="line">- require:</div><div class="line">- pkg: redis service.running: </div><div class="line">- <span class="built_in">enable</span>: True</div><div class="line"><span class="comment">#state 的名字</span></div></pre></td></tr></table></figure>
+<p>$state: #要管理的模块类型 - $State states #该模块的状态</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">- watch:</div><div class="line">- file: /etc/redis.conf </div><div class="line">- pkg: redis</div></pre></td></tr></table></figure>
+<p>附:watch 除具备 require 功能外,还增了关注状态的功能</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">order:</div><div class="line">优先级比 require 和 watch 低</div><div class="line">有 order 指定的 state 比没有 order 指定的优先级高 vim:</div><div class="line">pkg.installed: - order: 1</div><div class="line">想让某个 state 最后一个运行,可以用 last 3:state 与 minion</div><div class="line"></div><div class="line">将临时给 minoin 加个 state</div><div class="line">salt <span class="string">'minion1'</span> state.sls <span class="string">'vim'</span> <span class="comment">#给 minion1 加一个 vim 的 state 执行该命令后可以立即看到输出结果</span></div><div class="line"></div><div class="line">2:highstate</div><div class="line">给 minion 永久下添加状态</div><div class="line">文档: http://docs.saltstack.com/ref/states/highstate.html 默认配置文件:/srv/salt/top.sls</div><div class="line">语法:</div><div class="line"><span class="string">'*'</span>:</div><div class="line">- core</div><div class="line">- wsproxy </div><div class="line">- /srv/salt/目录结构:</div><div class="line">.</div><div class="line">├── core.sls ├── top.sls └── wsproxy</div><div class="line">├── init.sls ├── websocket.py └── websockify</div><div class="line">应用:</div><div class="line">salt <span class="string">"minion1"</span> state.highstate</div><div class="line"></div><div class="line">测试模式:</div><div class="line">salt <span class="string">"minion1"</span> state.highstate -v <span class="built_in">test</span>=True 3:salt schedule</div><div class="line">默认的 state 只有在服务端调用的时候才执行,很多时候我们希望 minon 自觉 的去保持在某个状态</div><div class="line"></div><div class="line">文档:http://docs.saltstack.com/topics/<span class="built_in">jobs</span>/schedule.html</div><div class="line">cat /srv/pillar/top.sls base:</div><div class="line"><span class="string">"*"</span>:</div><div class="line">- schedule</div><div class="line">cat /srv/pillar/schedule.sls schedule:</div><div class="line">highstate:</div><div class="line"><span class="keyword">function</span>: state.highstate minutes: 30</div><div class="line"></div><div class="line">如上配置:</div><div class="line">minion 会没 30 分钟从 master 拉去一次配置,进行自我配置</div><div class="line"></div><div class="line">3:实时管理 有时候我们需要临时的查看一台或多台机器上的某个文件,或者执行某个命令</div><div class="line">1:cmd.run</div><div class="line">用法 salt <span class="string">'$targeting'</span> cmd.run <span class="string">'$cmd'</span></div><div class="line">示例:salt <span class="string">'*'</span> cmd.run <span class="string">'hostname'</span> 执行下这样的命令,马上就感受到效果了,速度还贼快</div><div class="line">2:module</div><div class="line">同时,salt 也将一些常用的命令做了集成 文档:http://docs.saltstack.com/ref/modules/all/index.html 这里几乎涵盖了我们所有的常用命令</div><div class="line">比如:</div><div class="line">查看所有节点磁盘使用情况</div><div class="line">salt <span class="string">'*'</span> disk.usage 文档:http://docs.saltstack.com/topics/tutorials/quickstart.html</div><div class="line">4:无 master</div><div class="line">主要应该在测试和 salt 单机管理的时候</div></pre></td></tr></table></figure>
+<h3 id="4-salt-开发-1"><a href="#4-salt-开发-1" class="headerlink" title="4:salt 开发"></a>4:salt 开发</h3><p>1:saltclient 管理 salt<br>只有才 master 才可以salt 全部用 python,这里也用 python<br>文档:<a href="http://docs.saltstack.com/ref/python-api.html" target="_blank" rel="external">http://docs.saltstack.com/ref/python-api.html</a> </p>
+<p>示例:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">import salt.client</div><div class="line">client = salt.client.LocalClient()</div><div class="line">ret = client.cmd(<span class="string">'*'</span>, <span class="string">'cmd.run'</span>, [<span class="string">'ls -l'</span>])</div><div class="line"><span class="built_in">print</span> ret</div></pre></td></tr></table></figure>
+<p>2:salt api<br>salt api 我现在还没用,不过我也没搞定,如果你搞定了,我会非常感谢你能分享<br>下的。</p>
+<p>####参考文档:</p>
+<p>1:salt 中文 wiki:<a href="http://wiki.saltstack.cn/" target="_blank" rel="external">http://wiki.saltstack.cn/</a> 很不错的文章:<a href="http://wiki.saltstack.cn/reproduction/dive-into-saltstack" target="_blank" rel="external">http://wiki.saltstack.cn/reproduction/dive-into-saltstack</a><br>2:salt 官网 <a href="http://saltstack.com/" target="_blank" rel="external">http://saltstack.com/</a> 官网文档:<a href="http://docs.saltstack.com/" target="_blank" rel="external">http://docs.saltstack.com/</a></p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2015/09/10/自动化+Jenkins/saltstack/自动化运维工具-Saltstack的详细介绍安装与使用以及语法开发操作/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

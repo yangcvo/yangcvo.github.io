@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>KVM monitoring through Zabbix | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>KVM monitoring through Zabbix</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-07-21</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="KVM-monitoring-through-Zabbix"><a href="#KVM-monitoring-through-Zabbix" class="headerlink" title="KVM monitoring through Zabbix"></a>KVM monitoring through Zabbix</h3><p>Monitor your KVM resources through Zabbix</p>
+<p>Zabbix 监控 KVM</p>
+<h4 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h4><p>python2, libvirt-python (tested with 0.9.12.3, 0.10.2 and 1.1.3.x)</p>
+<pre><code>pip install libvirt-python 
+</code></pre><h4 id="KVM-Server-设定程序"><a href="#KVM-Server-设定程序" class="headerlink" title="KVM Server 设定程序"></a>KVM Server 设定程序</h4><figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">cd</span> /usr/local/bin/</div><div class="line">wget http<span class="variable">s:</span>//github.<span class="keyword">com</span>/bushvin/zabbix-kvm-<span class="keyword">res</span>/raw/master/bin/zabbix-kvm-<span class="keyword">res</span>.<span class="keyword">py</span></div><div class="line">chmod <span class="keyword">a</span>+<span class="keyword">x</span> zabbix-kvm-<span class="keyword">res</span>.<span class="keyword">py</span></div><div class="line"><span class="keyword">cd</span> /etc/zabbix/zabbix_agentd.d</div><div class="line">wget http<span class="variable">s:</span>//github.<span class="keyword">com</span>/bushvin/zabbix-kvm-<span class="keyword">res</span>/raw/master/zabbix_agentd.<span class="keyword">conf</span>/UserParameters</div><div class="line">service zabbix-agent restart</div></pre></td></tr></table></figure>
+<h4 id="Zabbix-Server-设定程序"><a href="#Zabbix-Server-设定程序" class="headerlink" title="Zabbix Server 设定程序"></a>Zabbix Server 设定程序</h4><p>至<a href="https://github.com/bushvin/zabbix-kvm-res下载zabbix_kvm.xml" target="_blank" rel="external">https://github.com/bushvin/zabbix-kvm-res下载zabbix_kvm.xml</a><br>将<code>zabbix_kvm.xml 汇入至Zabbix Server → Configuration → Templates → Import</code></p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/07/21/性能监控/Zabbix/Zabbix 监控 KVM集群/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

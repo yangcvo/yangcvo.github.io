@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>自动化运维工具--SaltStack-分组（使用记录,groups） | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>自动化运维工具--SaltStack-分组（使用记录,groups）</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2015-11-01</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Automation/">Automation</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Saltstack/">Saltstack</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h1 id="自动化运维工具–SaltStack-分组（使用记录-groups）"><a href="#自动化运维工具–SaltStack-分组（使用记录-groups）" class="headerlink" title="自动化运维工具–SaltStack-分组（使用记录,groups）"></a>自动化运维工具–SaltStack-分组（使用记录,groups）</h1><p>在使用 SaltStack 对主机进行批量管理的时候，因为不同的服务器组所做的业务功能不同，因此为了更加方便的管理，为了便于管理功能业务相似的minion,Saltstack提供了分组的模式，因为线上机器多，不可能每次都是“*”或者“ip主机名” 这样不现实的。</p>
+<p>所以我们现在都是提供分组，哪里的机器分哪个组这样你操作起来就方便而且容易排查，因此就自己在分组使用的过程中有以下一点记录下。</p>
+<p>官方文档：<a href="http://docs.saltstack.com/topics/targeting/nodegroups.html" target="_blank" rel="external">http://docs.saltstack.com/topics/targeting/nodegroups.html</a></p>
+<p>参考 SaltStack 的官方文档 4.4 Compound matchers 和 4.3. Node groups 知道，对目标服务器分组有以下七种方式，这七种方式的标示符分别为：</p>
+<ul>
+<li>G – 针对 Grains 做单个匹配，例如：G@os:Ubuntu</li>
+<li>E – 针对 minion 针对正则表达式做匹配，例如：E@web\d+.(dev|qa|prod).loc</li>
+<li>P – 针对 Grains 做正则表达式匹配，例如：P@os:(RedHat|Fedora|CentOS)</li>
+<li>L – 针对 minion 做列表匹配，例如：L@minion1.example.com,minion3.domain.com or bl*.domain.com</li>
+<li>I – 针对 Pillar 做单个匹配，例如：I@pdata:foobar</li>
+<li>S – 针对子网或是 IP 做匹配，例如：S@192.168.1.0/24 or S@192.168.1.100</li>
+<li>R – 针对客户端范围做匹配，例如： R@%foo.bar</li>
+</ul>
+<p>然后我自己在做分组的时候，尝试了下 L 是否可以使用正则表达式</p>
+<p>配置：</p>
+<p>编辑配置文件 vi /etc/salt/master 这里大约706-714行：<br>原文：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">#####         Node Groups           #####</span></div><div class="line"><span class="comment">##########################################</span></div><div class="line"><span class="comment"># Node groups allow for logical groupings of minion nodes. A group consists of a group</span></div><div class="line"><span class="comment"># name and a compound target.</span></div><div class="line"><span class="comment">#nodegroups:</span></div><div class="line"><span class="comment">#  group1: 'L@foo.domain.com,bar.domain.com,baz.domain.com and bl*.domain.com'</span></div><div class="line"><span class="comment">#  group2: 'G@os:Debian and foo.domain.com'</span></div></pre></td></tr></table></figure>
+<p> 绿色的是指定组名：可以定义自己好记的组名，应用服务器是需要同样配置的，可以放在同一个分组。<br>修改配置：<br>注意：这里组名前面：需要空格，每个用户key名称，都逗号隔开。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#nodegroups:</span></div><div class="line"><span class="comment">#  group1: 'L@foo.domain.com,bar.domain.com,baz.domain.com and bl*.domain.com'</span></div><div class="line"><span class="comment">#  group2: 'G@os:Debian and foo.domain.com'</span></div><div class="line">ihaozhuo1: <span class="string">''</span>L@d_104_article_1,d_108_account_1,d_109_comm_1,d_110_consumer_1‘</div><div class="line">ihaozhuo2: <span class="string">'L@api'</span></div></pre></td></tr></table></figure>
+<p>我们来测试下：</p>
+<p>-N 是指定分组名称：</p>
+<p>执行命令 sudo salt -N “ihaozhuo1” test.ping结果为：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="string">[root@jumper</span> <span class="string">~]#</span> <span class="string">salt</span>  <span class="bullet">-N</span> <span class="string">'ihaozhuo1'</span> <span class="string">test.ping</span></div><div class="line"><span class="attr">d_104_article_1:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">d_108_account_1:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">d_109_comm_1:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">d_110_consumer_1:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="string">[root@jumper</span> <span class="string">~]#</span> <span class="string">salt</span>  <span class="bullet">-N</span> <span class="string">'ihaozhuo2'</span> <span class="string">test.ping</span></div><div class="line"><span class="attr">api:</span></div><div class="line">    <span class="literal">True</span></div></pre></td></tr></table></figure>
+<p>分组分好几台一起，是可以获取的。匹配指定的key</p>
+<p>修改配置尝试一：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="section">#nodegroups:</span></div><div class="line"><span class="section">#  group1: 'L@foo.domain.com,bar.domain.com,baz.domain.com and bl*.domain.com'</span></div><div class="line"><span class="section">#  group2: 'G@os:Debian and foo.domain.com'</span></div><div class="line">ihaozhuo1: ‘ L@JF1-TEST1-001,JF1-TEST1-002 or JF-TEST1-0[<span class="string">0-9</span>][<span class="symbol">0-9</span>]'</div></pre></td></tr></table></figure>
+<p>执行命令 sudo salt -N TEST1 test.ping结果为：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="attr">JF1-TEST1-002:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">JF1-TEST1-001:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">JF1-TEST1-003:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">JF1-TEST1-004:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">JF1-TEST1-006:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">JF1-TEST1-005:</span></div><div class="line">    <span class="literal">True</span></div></pre></td></tr></table></figure>
+<p>匹配了所有指定的key.</p>
+<p>使用 L 列表的方式，必须把 minion 列出来，或者是列出几台后，在后面接 or 或者 and 表达式， or 或者 and 后面接的表达式后面可以使用正则表达式。</p>
+<p>注：想使用正则表达式，最好的方式就是使用<code>E</code></p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2015/11/01/自动化+Jenkins/saltstack/自动化运维工具--SaltStack-分组（使用记录,groups） /" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

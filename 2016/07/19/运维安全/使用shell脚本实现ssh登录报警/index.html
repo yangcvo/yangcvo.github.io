@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>使用shell脚本实现ssh登录报警 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>使用shell脚本实现ssh登录报警</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-07-19</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/运维笔记/">运维笔记</a>
+			</span><br />
+		
+		
+	</div>
+
+	
+
+	
+		<p>如果你服务器被入侵了，该怎么做才能让自己第一时间知晓？对大部分的人来说，这个的确很不好定位，其实也可以简单些个变量环境，这样下次登录以后可以看到登录的记录，可是这样的话会被黑客发现，所以我们这里按脚本自动发送。</p>
+<p>在逛一些博客上面看到一篇这文章，所以觉得不错，这里整理了下，发给大家。<br>其实这种脚本可以放到对应的堡垒机或者跳板机机器上面因为对一台做管理，下面做了设置，就很方便了。</p>
+<h3 id="1、首先来配置发件环境，这里介绍CentOS"><a href="#1、首先来配置发件环境，这里介绍CentOS" class="headerlink" title="1、首先来配置发件环境，这里介绍CentOS"></a>1、首先来配置发件环境，这里介绍CentOS</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">yum install perl-IO-Socket-SSL perl-Net-SSLeay -y</div><div class="line">wget http://oak0aohum.bkt.clouddn.com/sendEmail-v1.56.tar.gz -O /tmp/sendEmail-v1.56.tar.gz</div><div class="line"><span class="built_in">cd</span> /tmp</div><div class="line">tar xf sendEmail-v1.56.tar.gz</div><div class="line">mv sendEmail-v1.56/sendEmail /usr/<span class="built_in">local</span>/bin/</div><div class="line">chmod +x /usr/<span class="built_in">local</span>/bin/sendEmail &amp;&amp; <span class="built_in">cd</span></div><div class="line">wget http://oak0aohum.bkt.clouddn.com/jq  -O /usr/<span class="built_in">local</span>/bin/jq</div><div class="line">chmod +x /usr/<span class="built_in">local</span>/bin/jq</div></pre></td></tr></table></figure>
+<h3 id="2、然后配置报警邮件"><a href="#2、然后配置报警邮件" class="headerlink" title="2、然后配置报警邮件"></a>2、然后配置报警邮件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">wget http://oak0aohum.bkt.clouddn.com/WarringLoging.sh  -O /etc/WarringLoging.sh</div><div class="line">chmod +x /etc/WarringLoging.sh</div><div class="line">yum install -y screen 安装screen </div><div class="line"><span class="comment">#echo "screen -fa -d -m -S WL /etc/WarringLoging.sh" &gt;&gt; /etc/profile #第一种方法，新开终端复制终端都会报警</span></div><div class="line"><span class="comment">#echo -e "#!/bin/bash\nbash /etc/WarringLoging.sh" &gt;&gt; /etc/ssh/sshrc #第二种方法，只有ssh登录才会报警</span></div><div class="line"><span class="comment">#上面两种方法任选一个都可以</span></div></pre></td></tr></table></figure>
+<h3 id="3、最后编辑收发邮件的信息"><a href="#3、最后编辑收发邮件的信息" class="headerlink" title="3、最后编辑收发邮件的信息"></a>3、最后编辑收发邮件的信息</h3><p>vim /etc/WarringLoging.sh</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"> <span class="comment">#!/bin/bash</span></div><div class="line"><span class="comment">#########################################################################</span></div><div class="line"><span class="comment"># File Name: WarringLoging.sh</span></div><div class="line"><span class="comment"># Author: yangc</span></div><div class="line"><span class="comment"># Email: yangcvo@gmail.com</span></div><div class="line"><span class="comment"># Version:</span></div><div class="line"><span class="comment"># Created Time: Wed 22 Jul 2015 01:41:09 AM CST</span></div><div class="line"><span class="comment">#########################################################################</span></div><div class="line"></div><div class="line"><span class="built_in">eval</span> `curl <span class="_">-s</span> <span class="string">"http://ip.taobao.com/service/getIpInfo.php?ip=<span class="variable">$&#123;SSH_CLIENT%% *&#125;</span>"</span> | jq . | awk -F<span class="string">':|[ ]+|"'</span> <span class="string">'$3~/^(country|area|region|city|isp)$/&#123;print $3"="$7&#125;'</span>`</div><div class="line"></div><div class="line">EMAIL=`<span class="built_in">which</span> sendEmail`</div><div class="line">FEMAIL=<span class="string">"it@health.com"</span> <span class="comment">#发件邮箱</span></div><div class="line">MAILP=<span class="string">"MzU0ODZjOWI0MWU3"</span> <span class="comment">#发件邮箱密码</span></div><div class="line">MAILSMTP=<span class="string">"smtp.exmail.qq.com"</span> <span class="comment">#发件邮箱的SMTP</span></div><div class="line">MAILT=<span class="string">"chengyangyang@health.com"</span> <span class="comment">#收件邮箱</span></div><div class="line">MAILmessage=<span class="string">"登入者IP地址：<span class="variable">$&#123;SSH_CLIENT%% *&#125;</span>\n\</span></div><div class="line">IP归属地：<span class="variable">$&#123;country&#125;</span>_<span class="variable">$&#123;area&#125;</span>_<span class="variable">$&#123;region&#125;</span>_<span class="variable">$&#123;city&#125;</span>_<span class="variable">$&#123;isp&#125;</span>\n\</div><div class="line">被登录服务器IP：<span class="variable">$(curl -s ip.cn| grep -Eo '([0-9]&#123;1,3&#125;[\.])</span>&#123;3&#125;[0-9]&#123;1,3&#125;')"</div><div class="line"></div><div class="line"><span class="variable">$EMAIL</span> -q <span class="_">-f</span> <span class="variable">$FEMAIL</span> -t <span class="variable">$MAILT</span> -u <span class="string">"您服务器有人登录SSH"</span> -m <span class="string">"<span class="variable">$MAILmessage</span>"</span> <span class="_">-s</span> <span class="variable">$MAILSMTP</span> -o message-charset=utf-8 -xu <span class="variable">$FEMAIL</span> -xp <span class="variable">$MAILP</span></div></pre></td></tr></table></figure>
+<p> 下载脚本地址：<a href="http://oak0aohum.bkt.clouddn.com/WarringLoging.sh" target="_blank" rel="external">WarringLoging.sh</a></p>
+<p>给予执行权限：chmod +x /etc/WarringLoging.sh</p>
+<p>其实这里脚本下面可以自定义：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="_">-f</span> 表示from，发件人地址</div><div class="line">-t 表示to，收件人地址</div><div class="line"><span class="_">-s</span> mail服务器域名</div><div class="line">-u 主题</div><div class="line">-xu 用户名（@之前的）</div><div class="line">-xp 用户密码</div><div class="line">-m 纯文本信息</div><div class="line">-o message-file=/root/.. 发送文件中的内容</div><div class="line"><span class="_">-a</span> 发送附件 （-m,-o,<span class="_">-a</span>可以同时使用）</div></pre></td></tr></table></figure>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ssh-shell.png" alt=""></figure></p>
+<p>邮件发送实现效果。</p>
+<p>iPhone手机提醒效果：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ssh-shell2.png" alt=""></figure></p>
+<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
+<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/07/19/运维安全/使用shell脚本实现ssh登录报警/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

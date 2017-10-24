@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>zabbix监控MySQL-添加自定义监控项 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>zabbix监控MySQL-添加自定义监控项</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2014-09-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="zabbix监控MySQL"><a href="#zabbix监控MySQL" class="headerlink" title="zabbix监控MySQL"></a>zabbix监控MySQL</h2><p>前面一些简单的已在上一篇文章大概讲了zabbix原理和使用安装方法等等。<br>在Zabbix的监控系统中通常是由Zabbix Server与Zabbix Agent一起配合实现监控。在Zabbix Agent内置了很多监控基础的监控项。<a href="https://www.zabbix.com/documentation/2.0/manual/config/items/itemtypes/zabbix_agent" target="_blank" rel="external">参见</a></p>
+<p>这些监控项都是CPU, 文件系统, 网络，磁盘等基础的监控项，对于自己开发服务的监控，Zabbix提供了良好框架为用户实现监控和报警，下面将以为MySQL添加监控为例，介绍如何添加自定义监控。</p>
+<h3 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">MySQL 是分开安装的 ：192.168.1.201</div><div class="line">zabbix server 端 ：192.168.1.220</div></pre></td></tr></table></figure>
+<h3 id="角色：Zabbix-Agent-Zabbix-Server-MySQL-模板"><a href="#角色：Zabbix-Agent-Zabbix-Server-MySQL-模板" class="headerlink" title="角色：Zabbix Agent, Zabbix Server, MySQL, 模板"></a>角色：Zabbix Agent, Zabbix Server, MySQL, 模板</h3><h3 id="第一步，监控规划"><a href="#第一步，监控规划" class="headerlink" title="第一步，监控规划"></a>第一步，监控规划</h3><p>在创建监控项之前要尽量考虑清楚要监控什么，怎么监控，监控数据如何存储，监控数据如何展现，如何处理报警等。要进行监控的系统规划需要对Zabbix很了解，这里只是提出监控的需求。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">需求一：监控MySQL的状态，当状态发生异常，发出报警；</div><div class="line">需求二：监控MySQL的操作，并用图表展现；</div><div class="line">第二步，使用自定义脚本监控扩展Agent。</div></pre></td></tr></table></figure>
+<p>Zabbix Server与Agent之间监控数据的采集主要是通过Zabbix Server主动向Agent询问某个Key的值，Agent会根据Key去调用相应的函数去获取这个值并返回给Server端。Zabbix 2.4.7的Agent本并没有内置MySQL的监控功能（但是Server端提供了相应的Template配置），所以我们需要使用Zabbix的User Parameters功能，为MySQL添加监控脚本。</p>
+<h3 id="Trapper工作原理"><a href="#Trapper工作原理" class="headerlink" title="Trapper工作原理:"></a>Trapper工作原理:</h3><p>被监控主机根据用户设定的时间间隔定期将数据push到Zabbix Server.这里主要介绍Agent.</p>
+<h3 id="Agent工作原理"><a href="#Agent工作原理" class="headerlink" title="Agent工作原理:"></a>Agent工作原理:</h3><ul>
+<li>Agent 安装在被监控主机上，定期主动的监控本机的资源和应用,然后将数据进行处理发送给ZabbixServer. Agent工作方式又分为Passive Check 和 Active Check。</li>
+<li>Passive Check: Zabbix Server 发起数据索取请求，Agent响应对应的数据.</li>
+<li>Active Check: Agent首先从Zabbix Server 检索监控项列表,然后定期将对应的数据主动的发送到.Zabbix ServerZabbix Agent 本身预定义了一些监控类型,而对于没有预定义的需要管理员自行定义.因此，Zabbix提供了”UserParameter”参数,以方便用户根据自己的需求自定义想要获取的数据.</li>
+</ul>
+<h3 id="“UserParameter”-语法"><a href="#“UserParameter”-语法" class="headerlink" title="“UserParameter” 语法:"></a>“UserParameter” 语法:</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">UserParameter=&lt;key&gt;,&lt;<span class="built_in">command</span>&gt;</div></pre></td></tr></table></figure>
+<p><key> 用户自定义一个key; <command>为命令，该命令用来获取用户想要监控的数据,也就是key的值;<br>定好UserParameter参数后，在为主机或者模板配置监控项的时候，在”key”中输入上面自定义的key的<br>名字就可以了.</key></p>
+<p>假如我要获取Mysql Server的版本，我可以这样定义”UserParameter”:<br>打开 Zabbix Agent安装路径下的 ../etc/zabbix_agentd.conf 配置文件，翻页到最后页面，键入如下<br>行:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">UserParameter=mysql.version,mysql -V</div></pre></td></tr></table></figure>
+<p>这里我们自定义的key名就是<code>&quot;mysql.version&quot;</code>,命令<code>&quot;mysql -V&quot;</code>用来获取Mysql 版本号,其实就是key对<br>应的值.</p>
+<p>UserParameter参数实现的原理通俗来讲，就是我们先要熟悉Mysql命令，通过Mysql的命令获取想要的<br>数据，然后赋值给自定义的key，最后通过Zabbix Server获取这个值通过图像等方式展示出来.</p>
+<p>下面利用Agent来实现对mysql性能的监控。</p>
+<h3 id="agent端："><a href="#agent端：" class="headerlink" title="agent端："></a>agent端：</h3><p>1.利用UserParameter参数自定义Agent Key。<br>对于需求一 ，我们采用mysqladmin这个工具来实现，命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@mysql ~]<span class="comment"># mysqladmin -h 192.168.1.201 -uroot -ppassword ping</span></div><div class="line">mysqld is alive</div></pre></td></tr></table></figure>
+<p>如果MySQL状态正常，会显示mysqld is alive，否则会提示连接不上。对于服务器端，mysqld is alive这样的句子不好理解，服务器端最好只接收1和0，1表示服务可用，0表示服务不可用。那么再改进一下这个命令，如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@mysql ~]<span class="comment"># mysqladmin -h 192.168.1.201 -uroot -ppassword ping |  grep -c alive</span></div><div class="line">1</div></pre></td></tr></table></figure>
+<p>用户名和密码放在命令中对于以后的维护不好，所以我们在/var/lib/zabbix/下创建一个包含MySQL用户名和密码的配置文件“.my.cnf”，如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[client]</div><div class="line">user=root</div><div class="line">host=192.168.1.201</div><div class="line">password=xxxx</div></pre></td></tr></table></figure>
+<p>有了这个文件后的命令变更为</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">HOME=/etc mysqladmin ping | grep -c alive</div><div class="line">[root@mysql ~]<span class="comment">#   HOME=/var/lib/zabbix/ mysqladmin ping | grep -c alive</span></div><div class="line">1</div></pre></td></tr></table></figure>
+<p>做完这一步后需要做的就是，将这个监控命令添加到Zabbix Agent中，并与一个Key对应，这样Zabbox Server就能通过这个Key获取MySQL的状态了。我们使用mysql.ping作为MySQL状态的Key。</p>
+<p>首先在去除/etc/zabbix/zabbix_agentd.conf中</p>
+<p>“Include=/etc/zabbix_agentd.conf.d/”这一行的注释符。</p>
+<p>其次，在etc/zabbix/zabbix_agentd.conf.d/目录下创建userparameter_mysql.conf文件。在文件中添加如下命令：</p>
+<pre><code>UserParameter=mysql.ping,HOME=/var/lib/zabbix mysqladmin ping | grep -c alive
+</code></pre><p>这个命令中”UserParameter”表示这是一个用户自定义的脚本；“=”号后是脚本的内容；“mysql.ping”是Key，“，”号后的命令会在Zabbix Server向Agent发起获取“mysql.ping”这个key的请求时被调用，并将返回值返回给Server。<br>保存并退出后可以使用下面的命令测试是否正常工作。</p>
+<pre><code>[root@mysql ~]# /usr/sbin/zabbix_agentd -t mysql.ping
+  mysql.ping                                    [t|1]
+</code></pre><p>这里zabbix_agentd使用方法可参考：</p>
+<pre><code>http://www.ttlsa.com/zabbix/zabbix-command-zabbix_agentd/
+</code></pre><p>同时，在Server端也可以使用使用zabbix_get命令来测试从Server端获取指定的Client端的数据，如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ zabbix_get <span class="_">-s</span> 192.168.1.201 -p 10050 -k mysql.ping</div><div class="line">1</div></pre></td></tr></table></figure>
+<p>这里如果是跟我一开始有错误的。<a href="https://www.zabbix.com/documentation/3.0/manual/config/items/userparameters/extending_agent" target="_blank" rel="external">zabbix</a></p>
+<p>可能跟你安装版本不统一有问题。</p>
+<p>这里zabbix_get使用方法可参考: <a href="http://www.ttlsa.com/zabbix/zabbix-zabbix_get-get-items/" target="_blank" rel="external">zabbix_agent</a></p>
+<p>我这里参考官网方法：</p>
+<pre><code>https://www.zabbix.com/documentation/3.0/manual/config/items/userparameters/extending_agent
+</code></pre><p>我在我这里查看MySQL状态zabbix_agentd.conf:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">UserParameter=mysql.questions,mysqladmin -uroot status | cut <span class="_">-f</span>4 <span class="_">-d</span><span class="string">":"</span> | cut <span class="_">-f</span>1 <span class="_">-d</span><span class="string">"S"</span></div></pre></td></tr></table></figure>
+<h3 id="MySQL机器上面查看是有数据的："><a href="#MySQL机器上面查看是有数据的：" class="headerlink" title="MySQL机器上面查看是有数据的："></a>MySQL机器上面查看是有数据的：</h3><pre><code>[root@mysql scripts]# zabbix_agentd -t mysql.questions
+ mysql.questions                               [t| 22273707]
+</code></pre><h3 id="zabbix-server端："><a href="#zabbix-server端：" class="headerlink" title="zabbix server端："></a>zabbix server端：</h3><pre><code>[root@LAN_zabbix ~]# /usr/local/zabbix/bin/zabbix_get -s 192.168.1.201 -p10050 -k &apos;mysql.questions&apos;
+ZBX_NOTSUPPORTED: Unsupported item key.
+</code></pre><p>提示ZBX_NOTSUPPORTED: Unsupported item key.</p>
+<p>如果直接查看定义的系统cpu</p>
+<pre><code>[root@LAN_zabbix ~]# /usr/local/zabbix/bin/zabbix_get -s 192.168.1.201 -p   10050 -k system.cpu.load[all,avg1]
+0.350000
+</code></pre><p>这样是有数据的。</p>
+<p>所以可以判断上面那个提示ZBX_NOTSUPPORTED: Unsupported item key.</p>
+<h3 id="服务端测试可能报各类错误："><a href="#服务端测试可能报各类错误：" class="headerlink" title="服务端测试可能报各类错误："></a>服务端测试可能报各类错误：</h3><ol>
+<li>ZBX_NOTSUPPORTED: Unsupported item key</li>
+</ol>
+<p>确认key名字配对了，并且客户端要重启</p>
+<p>2.[root@zabbix zabbix]# zabbix_get -s 192.168.9.251 -k mysql.Innodb_log_buffer_size<br>sh: mysql: command not found<br>加全路径：/mysql/bin/mysql</p>
+<p>我试着修改了/etc/zabbix/zabbix_agentd.d/userparameter_mysql.conf 这个文件里”HOME=/var/lib/zabbix mysql -N”，把mysql的路径补全，即改为HOME=/etc/zabbix /usr/bin/mysql -N。我是改了这个就可以了</p>
+<pre><code>server端： /usr/local/zabbix/bin/zabbix_get -s 192.168.1.201  /usr/bin/mysqladmin -k  mysql.questions
+sh: mysqladmin: 未找到命令
+</code></pre><p>加了绝对路径，我几乎要绝望了。为什么这么坑,后来我看了下，是我seLinux没有关闭。关闭就可以了。</p>
+<ul>
+<li>我参考这篇文章操作的：<a href="http://canghai.coding.io/2015/07/29/monitoring-mysql-with-zabbix/" target="_blank" rel="external">monitoring-mysql-with-zabbix</a></li>
+</ul>
+<p>如果有一下回显，表示工作正常</p>
+<pre><code>[root@zabbix ~]#  /usr/local/bin/zabbix_get -s 192.168.1.201 -k   mysql.status[GlobalStatus,Uptime]
+ 12364726
+</code></pre><p>然后下载安装MySQL监控的模板在我github上面：</p>
+<p>导入模版：<a href="https://github.com/yangcvo/zabbix.2.4/" target="_blank" rel="external">MySQL监控的模板</a></p>
+<p>并关联到主机</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-monitoring.jpg" alt=""></figure></p>
+<p>PS：可自行添加对应key可监控项目，模版自带了几种，脚本包括800多项目，<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mintor.jpg" alt=""></figure><br>然后在添加各自项目的图行：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-moin1.jpg" alt=""></figure></p>
+<p>zabbix监控mysql性能<br>通过获取mysql状态值将这些状态值传递给服务器并绘制成图片，这样可以观察mysql的工作情况，通常需要获得状态变量有以下</p>
+<pre><code>Com_update：mysql执行的更新个数
+Com_select：mysql执行的查询个数
+Com_insert：mysql执行插入的个数
+Com_delete：执行删除的个数
+Com_rollback：执行回滚的操作个数
+Bytes_received:接受的字节数
+Bytes_sent：发送的字节数
+Slow_queries：慢查询语句的个数
+</code></pre><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mion2.png" alt=""></figure></p>
+<p>查看图像都是有数据：<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mion3.png" alt=""></figure></p>
+<p>   2)我这里是测试环境用root账号，线上服务器安全期间可以给mysql用户授权readonly权限。</p>
+<p>   3)根据实际的需求，除了监控上述监控项之外，还可以监控mysql processlist,Innodb等。</p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2014/09/29/性能监控/Zabbix/zabbix监控MySQL-添加自定义监控项/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

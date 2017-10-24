@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>自动化运维工具--saltstack远程启动tomcat日志乱码 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>自动化运维工具--saltstack远程启动tomcat日志乱码</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2015-11-20</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Automation/">Automation</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Saltstack/">Saltstack</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h1 id="自动化运维工具–saltstack远程启动tomcat日志乱码"><a href="#自动化运维工具–saltstack远程启动tomcat日志乱码" class="headerlink" title="自动化运维工具–saltstack远程启动tomcat日志乱码"></a>自动化运维工具–saltstack远程启动tomcat日志乱码</h1><p>最近在线上发布tomcat，想做到自动部署，可是出现了问题，就是日志输出会有乱码，用户名的getMyUserInfo 是一堆乱码，salt原理系统字符集没太深入的研究，后来在墙外看到一篇文章很实用，就做了下自己的总结。</p>
+<p>开始我是salt执行远程脚本。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">salt <span class="string">'tomcat_A1'</span> cmd.run <span class="string">'/etc/init.d/tomcat-account start'</span></div></pre></td></tr></table></figure>
+<p>直接这样去执行，发现会出现乱码。</p>
+<p>这是日志输出结果，我用curl去调我的userinfoid： 调用之前我这边先删除了指定的用户信息redis的缓存，然后在用curl在另外一台机器上面调用看看。</p>
+<p>tomcat_A1 机器日志：乱码：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">1</div><div class="line">nickname1:?????????</div><div class="line">11111</div><div class="line">nickname1:?????????</div><div class="line">333333</div><div class="line">3</div><div class="line">4</div><div class="line">?????????</div></pre></td></tr></table></figure>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/tomcat_error2.jpg" alt=""></figure></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/tomcat_error3.png" alt=""></figure></p>
+<p>在minion设置字符集增加LCALL=<code>”zhUS.UTF-8″：</code></p>
+<p>cat /etc/sysconfig/i18n</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">LANG=<span class="string">"en_US.UTF-8"</span></div><div class="line">LC_ALL=<span class="string">"zh_US.UTF-8"</span></div><div class="line">SYSFONT=<span class="string">"latarcyrheb-sun16"</span></div></pre></td></tr></table></figure>
+<p>cmd.run 调用时需要加入env=’{“LCALL”:“zhCN.UTF-8”}’：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">salt <span class="string">'tomcat_A1'</span> cmd.run <span class="string">'/etc/init.d/tomcat-account sop'</span> env=<span class="string">'&#123;"LC_ALL": "zh_CN.UTF-8"&#125;'</span></div><div class="line"><span class="comment">###先关闭tomcat</span></div><div class="line">salt <span class="string">'tomcat_A1'</span> cmd.run <span class="string">'/etc/init.d/tomcat-account start'</span> env=<span class="string">'&#123;"LC_ALL": "zh_CN.UTF-8"&#125;'</span></div><div class="line"><span class="comment">###在启动tomcat</span></div></pre></td></tr></table></figure>
+<p>在调用查看 日志就恢复正常了。数据库的用户名id也正常了，如果你写发布脚本把tomcat启动写在执行脚本里面的话，如果添加了不行，就拆分开，就可以了。</p>
+<p>这是一次血的教训啊，对字符集不是很多，完全摸不着头脑，还好多普及了下，终于弄好了。</p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2015/11/20/自动化+Jenkins/saltstack/自动化运维工具--saltstack远程启动tomcat日志乱码 /" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

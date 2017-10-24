@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>运维自动化总结-记录帮助公司自动化架构演变过程 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>运维自动化总结-记录帮助公司自动化架构演变过程</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-03-14</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/automation/">automation</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Automation-Deploy/">Automation Deploy</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="运维自动化个人总结-记录自己自动化运维技术提升👍"><a href="#运维自动化个人总结-记录自己自动化运维技术提升👍" class="headerlink" title="运维自动化个人总结-记录自己自动化运维技术提升👍"></a>运维自动化个人总结-记录自己自动化运维技术提升👍</h3><h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>个人2014年开始玩自动化的也是刚从业<code>自动化运维</code>岗位第一份工作，在一家上市公司做<code>IDC+APM+CDN</code>做云加速的应该很多玩cdn的都听说这家公司－<code>mmtrix.com</code>。</p>
+<p>一开始开始深度学习的是SaltStack所以掌握的比较深更加熟练，其实也是一个好朋友推荐我看了一本书<code>python入门到精通</code> 里面有详细讲到salt安装和使用部署自动化各种操作，的确很方便。后面在测试环境我自己管理几十台服务器－学习使用<code>Ansible</code>去操作，因为salt跟ansible最大的区别，除了ansible快速上手和不需要复杂的安装，主要在内网方面比salt更稳定架构也比salt好。</p>
+<p>在线上我们都是用salt去操作的，可是当时公司还没有运维开发的人员，所以后来salt在终端操作出了很多错：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">第一：人员操作失误一次，可能会导致所有的服务器都会受影响。</div><div class="line">第二：命令太多服务权限需要一一统一分配登陆终端操作。</div></pre></td></tr></table></figure>
+<p>那时候服务器有500多台那时候运维操作起来还是挺费力的。 </p>
+<h3 id="经历："><a href="#经历：" class="headerlink" title="经历："></a>经历：</h3><p>2016年初3月份去参加360的一次运维大会，王浩宇360的运维开发人员分享了一片文章：<code>大规模集群上的多业务线环境部署.</code></p>
+<p>讲的非常好，用的是Puppet去实现3000多台的服务器部署，指定部署安装包等等。非常方便。</p>
+<p>这里也在Infoq上面有他的分享作品我这里粘贴出来了：<a href="http://www.infoq.com/cn/articles/multi-service-line-environment-deployment" target="_blank" rel="external">大规模集群上的多业务线环境部署</a></p>
+<h4 id="个人现在运维自动化演变过程经验："><a href="#个人现在运维自动化演变过程经验：" class="headerlink" title="个人现在运维自动化演变过程经验："></a>个人现在运维自动化演变过程经验：</h4><p>我现在在一家上市公司旗下控股医疗大数据子公司负责运维部门，负责IT网络安全办公：主要做的应用运维和网络运维，兼大数据运维。</p>
+<p>第一个版本公司整体服务架构：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/yjkjiagoutu.png" alt=""></figure></p>
+<h4 id="2016年2月份脚本形式自动化发布："><a href="#2016年2月份脚本形式自动化发布：" class="headerlink" title="2016年2月份脚本形式自动化发布："></a>2016年2月份脚本形式自动化发布：</h4><p>16年2月份这里的Tomcat自动化 发布我一开始使用shell脚本去实现自动化发布和回滚。 </p>
+<h4 id="2016年4月份salt自动化远程控制脚本发布："><a href="#2016年4月份salt自动化远程控制脚本发布：" class="headerlink" title="2016年4月份salt自动化远程控制脚本发布："></a>2016年4月份salt自动化远程控制脚本发布：</h4><p>16年4月份这里的tomcat服务增多，发现脚本发布手工操作太繁琐，而且出现问题几率大，效率不高。每次一次大版本改动发布会出现很多问题。</p>
+<p>这里跟随服务模块增多，现在服务器90多台，统一salt自动化调用每台对应脚本发布回滚。</p>
+<p>这里贴上我写的salt结合调用脚本命令，写在发布机器上面。这样就不需要进入机器每台执行对应发布脚本。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"><span class="comment">#author chengyangyang</span></div><div class="line"><span class="comment">#2016年5月25日</span></div><div class="line"><span class="comment">#this script is only for CentOS 6</span></div><div class="line"><span class="comment">#check the OS</span></div><div class="line"><span class="comment">#This script is used for the project release, which needs to be run by the root user</span></div><div class="line">platform=`uname -i`</div><div class="line"><span class="keyword">if</span> [ <span class="variable">$platform</span> != <span class="string">"x86_64"</span> ];<span class="keyword">then</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"this script is only for 64bit Operating System !"</span></div><div class="line"><span class="built_in">exit</span> 1</div><div class="line"><span class="keyword">fi</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"the platform is ok"</span></div><div class="line">version=`cat /etc/redhat-release |awk <span class="string">'&#123;print substr($3,1,1)&#125;'</span>`</div><div class="line"><span class="keyword">if</span> [ <span class="variable">$version</span> != 6 ];<span class="keyword">then</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"this script is only for CentOS 6 !"</span></div><div class="line"><span class="built_in">exit</span> 1</div><div class="line"><span class="keyword">fi</span></div><div class="line">cat &lt;&lt; EOF</div><div class="line">+----------------------------------------+</div><div class="line">|   your system is CentOS 6 x86_64       |</div><div class="line">|   start Update release tomcat.......   |</div><div class="line">+----------------------------------------+</div><div class="line">EOF</div><div class="line"></div><div class="line"><span class="comment">#To determine whether the root permissions</span></div><div class="line"></div><div class="line"><span class="keyword">if</span> [ <span class="string">"<span class="variable">$UID</span>"</span> != <span class="string">'0'</span> ]</div><div class="line"><span class="keyword">then</span></div><div class="line">  <span class="built_in">echo</span> <span class="string">'Permission denied, please switch the root tomcat.'</span></div><div class="line">  <span class="built_in">exit</span> 60</div><div class="line"><span class="keyword">fi</span></div><div class="line"></div><div class="line">salt <span class="string">"node"</span> cmd.run <span class="string">"curl -O  http://10.47.100.90/ihaozhuo/war/haozhuo-tomcat.war"</span></div><div class="line">[ $? <span class="_">-ne</span> 0 ] &amp;&amp; <span class="built_in">exit</span> 1</div><div class="line">salt <span class="string">"node"</span> cmd.run <span class="string">"md5sum haozhuo-tomcat.war"</span></div><div class="line">[ $? <span class="_">-ne</span> 0 ] &amp;&amp; <span class="built_in">exit</span> 1</div><div class="line">salt <span class="string">"node"</span> cmd.run <span class="string">"mv haozhuo-tomcat.war java_war/"</span></div><div class="line">[ $? <span class="_">-ne</span> 0 ] &amp;&amp; <span class="built_in">exit</span> 1</div><div class="line">salt <span class="string">"node"</span> cmd.run <span class="string">"sh /root/update/tomcat.sh"</span></div><div class="line">[ $? <span class="_">-ne</span> 0 ] &amp;&amp; <span class="built_in">exit</span> 1</div><div class="line">salt <span class="string">'node'</span> cmd.run <span class="string">'/etc/init.d/tomcat-tomcat stop'</span> env=<span class="string">'&#123;"LC_ALL": "zh_CN.UTF-8"&#125;'</span></div><div class="line">salt <span class="string">'node'</span> cmd.run <span class="string">'/etc/init.d/tomcat-tomcat start'</span> env=<span class="string">'&#123;"LC_ALL": "zh_CN.UTF-8"&#125;'</span></div><div class="line">[ $? <span class="_">-ne</span> 0 ] &amp;&amp; <span class="built_in">exit</span> 1</div></pre></td></tr></table></figure>
+<h4 id="2016年5月份去除了salt替换更新Ansible-Jenkins-Maven＋Nginx搞定自动发布，构建程序的持续集成平台"><a href="#2016年5月份去除了salt替换更新Ansible-Jenkins-Maven＋Nginx搞定自动发布，构建程序的持续集成平台" class="headerlink" title="2016年5月份去除了salt替换更新Ansible + Jenkins+Maven＋Nginx搞定自动发布，构建程序的持续集成平台"></a>2016年5月份去除了salt替换更新Ansible + Jenkins+Maven＋Nginx搞定自动发布，构建程序的持续集成平台</h4><h4 id="Ansible-vs-SaltStack-对比？"><a href="#Ansible-vs-SaltStack-对比？" class="headerlink" title="Ansible vs SaltStack 对比？"></a>Ansible vs SaltStack 对比？</h4><h6 id="1-自身运维"><a href="#1-自身运维" class="headerlink" title="1. 自身运维"></a>1. 自身运维</h6><p><code>SaltStack</code>需要在<code>Master和Minion</code>主机启动守护进程，自身需要检测守护进程的运行状态，增加运维成本。Ansible和远端主机之间的通信是通过标准SSH进行，远程主机上只需要运行SSH进程就可以进行运维操作，SSH是机房主机中一般都安装和启动的进程，所以在Ansible进行运维的时候只需要关注Ansible主机的运行状态。Ansible对机房运维不会增加过多的运维成本。从工具本身的运维角度来说，<code>Ansible</code>要比SaltStack简单很多。</p>
+<h6 id="2-使用语法"><a href="#2-使用语法" class="headerlink" title="2. 使用语法"></a>2. 使用语法</h6><p><code>Ansible</code>的<code>Playbook</code>语法要比SaltStack的State语法具有更好的可读性。在使用的过程中发现<code>Ansible</code>在实现loop的更加的简洁，也可以使用相对路径。</p>
+<p>同样Ansible的Notify模块和Handler模块实现的功能和SaltStack的watch和module.wait的模块实现功能也类似，也比SaltStack要简洁明了。</p>
+<p>总之，<code>Ansible的安全性能比SaltStack好</code>，自身运维简单，使用语法可读性更强，虽然在响应速度方面不如SaltStack，但是在大部分应用场景下Ansible的响应速度能满足需求。因此，在金融行业的自动化运维系统，Ansible工具是最好的选择。</p>
+<p>对应模块 account.yml 在Jenkins自动化写上变量对应.yml前缀名称。<br>这里依然调用脚本去跑。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">- hosts: tomcat-account_01</div><div class="line">  environment:</div><div class="line">    LC_ALL: zh_CN.UTF-8</div><div class="line">    LANG : zh_CN.UTF-8</div><div class="line">  tasks:</div><div class="line">  - name  : cpfile-account</div><div class="line">    copy  : src=/root/.jenkins/workspace/yjk_master/haozhuo/haozhuo-account/target/haozhuo-account.war dest=/root/java_war/haozhuo-account.war</div><div class="line">  - name  : restart</div><div class="line">    shell : /root/update/account.sh</div><div class="line">    async : 0</div><div class="line">  - name  : shutdown</div><div class="line">    shell : /srv/tomcat/tomcat_account/bin/shutdown.sh</div><div class="line">    async : 0</div><div class="line">  - name  : start</div><div class="line">    shell : <span class="built_in">chdir</span>=/srv/tomcat/tomcat_account/bin nohup ./startup.sh &amp;</div><div class="line">    async : 0</div></pre></td></tr></table></figure>
+<h4 id="2016年6月份在ansible改进yml代码语法。去除了每台服务器新增发布脚本，这个过程太过于复杂，统一一台发布机处理即可。"><a href="#2016年6月份在ansible改进yml代码语法。去除了每台服务器新增发布脚本，这个过程太过于复杂，统一一台发布机处理即可。" class="headerlink" title="2016年6月份在ansible改进yml代码语法。去除了每台服务器新增发布脚本，这个过程太过于复杂，统一一台发布机处理即可。"></a>2016年6月份在ansible改进yml代码语法。去除了每台服务器新增发布脚本，这个过程太过于复杂，统一一台发布机处理即可。</h4><p>这里我贴出yml代码 Jenkins直接调用相应模块发布，自然会去执行对应yml代码。每台服务器不需要放发布回滚脚本。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">- hosts: all</div><div class="line"></div><div class="line">  environment:</div><div class="line">     LC_ALL: zh_CN.UTF-8</div><div class="line">     LANG : zh_CN.UTF-8</div><div class="line"></div><div class="line">  vars:</div><div class="line"><span class="comment">#jenkins-打包目录</span></div><div class="line">    TESTWAR: /root/java_war/haozhuo-family.war</div><div class="line"><span class="comment">#生产环境中项目的tomcat所在的位置</span></div><div class="line">    OLDHOME: /srv/tomcat/tomcat_family/webapps/ROOT</div><div class="line"><span class="comment">#生产环境中老版本项目所在webapps备份目录的位置</span></div><div class="line">    backupwebapps: /srv/tomcat/tomcat_family/warbackup</div><div class="line"><span class="comment">#从jenkins-打包环境获取的新版本war包所在的位置</span></div><div class="line">    NEWWAR: /root/java_war/</div><div class="line"><span class="comment">#生产环境中项目war包的名字</span></div><div class="line">    WARNAME: haozhuo-family.war</div><div class="line"><span class="comment">#kill服务type路径</span></div><div class="line">    DOWNFILE: /srv/tomcat/tomcat_family</div><div class="line"></div><div class="line">  tasks:</div><div class="line">  - name: copy-war-file</div><div class="line">    copy: src=&#123;&#123; TESTWAR &#125;&#125; dest=&#123;&#123; NEWWAR &#125;&#125;</div><div class="line">  - name: mkdir-bakwar-file</div><div class="line">    file: path=&#123;&#123; backupwebapps &#125;&#125; state=directory owner=tomcat group=tomcat mode=755</div><div class="line">  - name: bakwar-file</div><div class="line">    shell: <span class="string">"cp -r &#123;&#123; OLDHOME &#125;&#125; &#123;&#123; backupwebapps &#125;&#125;"</span></div><div class="line">  - name: unzip war.</div><div class="line">    unarchive: src=&#123;&#123; NEWWAR &#125;&#125;/&#123;&#123; WARNAME &#125;&#125; dest=&#123;&#123; OLDHOME &#125;&#125;</div><div class="line">  - name: stop-tomcat-service</div><div class="line">    shell: <span class="string">"ps -ef |grep &#123;&#123; DOWNFILE &#125;&#125; |grep -v grep |awk '&#123;print <span class="variable">$2</span>&#125;' |xargs kill -9"</span></div><div class="line">    ignore_errors: yes</div><div class="line">    async: 0</div><div class="line">  - name: start-tomcat-service-nohup</div><div class="line">    shell: <span class="built_in">chdir</span>=&#123;&#123; DOWNFILE &#125;&#125;/bin nohup ./startup.sh &amp;</div></pre></td></tr></table></figure>
+<h6 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h6><p>在金融领域中，安全是最重要的考虑因素，在众多自动化运维工具种，Ansible的安全性能最好，是目前最适合金融领域的自动化运维工具。本文通过将Ansible微服务化，集成到自动化运维平台中，实现自动化运维平台高并发执行运维操作场景和实时收集执行结果。</p>
+<h4 id="2016年7月份Jenkins上面实现持续集成"><a href="#2016年7月份Jenkins上面实现持续集成" class="headerlink" title="2016年7月份Jenkins上面实现持续集成"></a>2016年7月份Jenkins上面实现持续集成</h4><p>这里Jenkins打通gitlab自动发布，审计代码。 这里结合<code>openVPN+谷歌二次动态认证</code>效果给予开发他们开放环境。<br>架构图 ：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/yjkjiagoutu2.png" alt=""></figure></p>
+<h4 id="2016年9月份公司架构演变从传统架构更换dubbo架构。"><a href="#2016年9月份公司架构演变从传统架构更换dubbo架构。" class="headerlink" title="2016年9月份公司架构演变从传统架构更换dubbo架构。"></a>2016年9月份公司架构演变从传统架构更换dubbo架构。</h4><p>公司应用服务架构图这里贴出来：<a href="http://shiyanjun.cn/archives/325.html" target="_blank" rel="external">Dubbo架构设计详解</a></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jiagoutu2.png" alt=""></figure><br>系统架构图这里我后期在更新贴出来。</p>
+<h4 id="2017年3月份-公司服务器150台服务自动化发布。"><a href="#2017年3月份-公司服务器150台服务自动化发布。" class="headerlink" title="2017年3月份 公司服务器150台服务自动化发布。"></a>2017年3月份 公司服务器150台服务自动化发布。</h4><p>后面运维开发开发了一套基于salt自动化一套web版的管理平台。对我们后面的做部署初始化的确减轻了很多。<br>现在开始公司用的是ansible基python开发出来一套自动化部署的。发布部署测试一体系：<br>刚开发出来的截了一张图：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zidonhua1.png" alt=""></figure></p>
+<h2 id="个人总结："><a href="#个人总结：" class="headerlink" title="个人总结："></a>个人总结：</h2><h4 id="系统标准化："><a href="#系统标准化：" class="headerlink" title="系统标准化："></a>系统标准化：</h4><p>要想自动化，首先第一就是标准化。比如软件的<code>安装位置、版本、脚本，注册</code>到init.d下面，这些应该是标准的，所有服务器都统一的。或者说你使用salt就是为了达到这样的标准化做自动化运维要经历的标准化–&gt;&gt;自动化—-&gt;&gt;服务化—-&gt;&gt;数据化。</p>
+<h4 id="个人意见："><a href="#个人意见：" class="headerlink" title="个人意见："></a>个人意见：</h4><ol>
+<li>只有标准了，才能自动，至少你相同的业务都应该是一样的。</li>
+<li>自动化，这个自动化讲的是工具，所有的操作是工具再做，不是人。也有小公司说我们半自动，的确是有的，就写写脚本然后靠工具去管理。</li>
+<li>服务化，你平台搞的很牛逼了，直接给业务提供接口。DNS、负载均衡、分布式存储、你都封装好了，上层不需要关心，你相当于为上层服务提供服务。各种API都写好了。</li>
+<li>数据化，或者说可视化，运维平台做的很牛逼，直接对业务负责，以业务为导向，今天订单量减少了，通过你的运维平台，直接定位问题，不需要各种查找，因为订单量的减少，肯定有相关的监控指标发生变化。</li>
+</ol>
+<p>那么在工具自动化建设的开始，你需要有一个理论支持，比如ITIL。不能瞎搞。没有流程的自动化运维就是耍流氓如果上线没有走上线流程，动不动，开发自己登录服务器执行了git pull。那还自动化什么呢。</p>
+<p>我个人的概念就是生产就是咱们运维的地盘。谁都不能动。开发想动，你可以提供接口，或者提供平台让开发点点鼠标就可以了。</p>
+<h4 id="题外话："><a href="#题外话：" class="headerlink" title="题外话："></a>题外话：</h4><p>说个很蛋疼的事情，之前刚来这边负责美年大新的运维团队，技术团队开发人员都可以随便要权限，然后解决问题运维不用参与都是开发去操作。所以后来把公司运维整改：运维之间权限这些都是避免了。统一管理，统一分配，不同部门，不同岗位，不同权限。 这里我写过一篇文章：<code>中小公司员工统一用户认证方案</code></p>
+<p>这个是自动化里面最常见的部署自动化，对于ITIL的流程就是发布与部署管理。<br><code>构建---打包---测试---发布</code>都需要是自动的；所以这块需要测试的支持。需要有自动化测试。没有就卡到测试了。<br>最简单的就是发布流程和开发流程分开。</p>
+<p>自动化运维减轻了很多的事情，也让更多的运维小伙伴可以研究更多的知识。<br>这篇文章也是自己对这两年多运维的这一方面的自动化运维的总结。</p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2017/03/14/运维笔记/运维自动化总结-记录帮助公司自动化架构演变过程/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>
