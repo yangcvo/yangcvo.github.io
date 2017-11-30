@@ -127,54 +127,6 @@
 
 	<article>
 	
-		<h1><a href="/2016/03/07/自动化+Jenkins/Ansible/ Ansible 学习入门 /">Ansible 学习入门</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-03-07</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/automation/">automation</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Ansible/">Ansible</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h1 id="Ansible介绍"><a href="#Ansible介绍" class="headerlink" title="Ansible介绍"></a>Ansible介绍</h1><hr>
-<p><strong>学习ansible这里我自己做了简单的介绍总结：</strong></p>
-<p>Ansible是一个自动化工具。它可以配置系统,部署软件,编排更高级的任务,比如连续部署或零停机时间滚动更新。</p>
-<p>Ansible的目标是最简单和最易用。它也有一个强烈关注安全性和可靠性,以最少的移动部件,使用OpenSSH运输(加速插座模式和拉模式选择),和设计语言,人类可审核性的——甚至是那些不熟悉程序。</p>
-<p>我们认为简单是所有大小的环境和相关的设计对于忙碌的所有类型的用户——这是否意味着开发人员、系统管理员,发布工程师,经理,无处不在。Ansible适合管理小设置少量的实例以及与许多成千上万的企业环境。</p>
-<p>Ansible管理机器以最好的方式。没有一个问题如何升级远程守护进程或无法管理系统的问题因为守护进程是卸载。OpenSSH是最同行评议的开源组件,使用该工具的安全风险大大降低。Ansible是分散的,它依赖于现有的操作系统凭证来控制访问远程机器,如果需要使用Kerberos,它可以很容易地连接LDAP和其他管理系统的集中式身份验证。</p>
-<p>Ansible是一个彻底的简单自动化引擎,自动化云配置,配置管理、应用程序部署,intra-service编排,以及许多其他的需求。</p>
-<p>被设计为多层部署自第一天,Ansible模型你的IT基础设施,描述如何推动你所有的系统,而不仅仅是管理一个系统。</p>
-<p>它使用没有代理,没有额外的自定义安全基础设施,所以很容易部署,最重要的是,它使用一个非常简单的语言(YAML Ansible Playbooks的形式),让你描述你的自动化工作的方式方法简明英语。</p>
-<p>我们利用Ansible主要是作为内网服务器的一些管理，因为他用ssh来管理配置，内网同学还是很快速的，外网主要是利用Saltstack，利用消息队列远程通信，我感觉是比Ansible好的。</p>
-<p><strong>为什么选择ansible</strong></p>
-<p>Ansible大家都知道，和salt/puppet等一样，是一款配置管理工具。为什么选择它，就是因为它简单，不需要安装agent，只要服务器能用ssh访问，就可以使用它去管理大家如果要问，和我用rsync直接同步或写个for循环执行rpm或yum有什么区别.</p>
-<p>我想最大的区别应该就是“并发”<br><strong>当然，大企业会自己去开发自己的持续部署平台，而大部分的还是中小型企业</strong></p>
-<p>其实部署每个环节都可以用rpm安装发布。</p>
-<p>我们的某个应用直接构建成rpm，是直接放到我们另一个内部服务器中，提供http接口，然后执行的就是yum模块进行安装。</p>
-<p>也有人问我salt有没有用过。其实我们最初是使用salt的，后来因为网络的原因，选择了没有agent的ansible。在阿里云上面还是salt去服务管理。</p>
-<p> 参考官网<a href="https://www.ansible.com/quick-start-video" target="_blank" rel="external">入门学习视频</a></p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
 		<h1><a href="/2016/03/07/自动化+Jenkins/Ansible/ansible小结（二）ansible架构 /">Ansible小结（二）ansible架构</a></h1>
 	
 	<div class="article__infos">
@@ -217,6 +169,54 @@
 <h4 id="6、ansible-pull"><a href="#6、ansible-pull" class="headerlink" title="6、ansible-pull"></a>6、ansible-pull</h4><p>该指令使用需要谈到ansible的另一种模式－－－pull 模式，这和我们平常经常用的push模式刚好相反，其适用于以下场景：你有数量巨大的机器需要配置，即使使用非常高的线程还是要花费很多时间；你要在一个没有网络连接的机器上运行Anisble，比如在启动之后安装。这部分也会单独做一节来讲。</p>
 <h4 id="7、ansible-vault"><a href="#7、ansible-vault" class="headerlink" title="7、ansible-vault"></a>7、ansible-vault</h4><p>ansible-vault主要应用于配置文件中含有敏感信息，又不希望他能被人看到，vault可以帮你加密/解密这个配置文件，属高级用法。主要对于playbooks里比如涉及到配置密码或其他变量时，可以通过该指令加密，这样我们通过cat看到的会是一个密码串类的文件，编辑的时候需要输入事先设定的密码才能打开。这种playbook文件在执行时，需要加上 –ask-vault-pass参数，同样需要输入密码后才能正常执行。具体该部分可以参查官方博客。</p>
 <h4 id="注：上面七个指令，用的最多的只有两个ansible-和ansible-playbook-，这两个一定要掌握，其他五个属于拓展或高级部分。"><a href="#注：上面七个指令，用的最多的只有两个ansible-和ansible-playbook-，这两个一定要掌握，其他五个属于拓展或高级部分。" class="headerlink" title="注：上面七个指令，用的最多的只有两个ansible 和ansible-playbook ，这两个一定要掌握，其他五个属于拓展或高级部分。"></a>注：上面七个指令，用的最多的只有两个ansible 和ansible-playbook ，这两个一定要掌握，其他五个属于拓展或高级部分。</h4>
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2016/03/07/自动化+Jenkins/Ansible/ Ansible 学习入门 /">Ansible 学习入门</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-03-07</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/automation/">automation</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Ansible/">Ansible</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h1 id="Ansible介绍"><a href="#Ansible介绍" class="headerlink" title="Ansible介绍"></a>Ansible介绍</h1><hr>
+<p><strong>学习ansible这里我自己做了简单的介绍总结：</strong></p>
+<p>Ansible是一个自动化工具。它可以配置系统,部署软件,编排更高级的任务,比如连续部署或零停机时间滚动更新。</p>
+<p>Ansible的目标是最简单和最易用。它也有一个强烈关注安全性和可靠性,以最少的移动部件,使用OpenSSH运输(加速插座模式和拉模式选择),和设计语言,人类可审核性的——甚至是那些不熟悉程序。</p>
+<p>我们认为简单是所有大小的环境和相关的设计对于忙碌的所有类型的用户——这是否意味着开发人员、系统管理员,发布工程师,经理,无处不在。Ansible适合管理小设置少量的实例以及与许多成千上万的企业环境。</p>
+<p>Ansible管理机器以最好的方式。没有一个问题如何升级远程守护进程或无法管理系统的问题因为守护进程是卸载。OpenSSH是最同行评议的开源组件,使用该工具的安全风险大大降低。Ansible是分散的,它依赖于现有的操作系统凭证来控制访问远程机器,如果需要使用Kerberos,它可以很容易地连接LDAP和其他管理系统的集中式身份验证。</p>
+<p>Ansible是一个彻底的简单自动化引擎,自动化云配置,配置管理、应用程序部署,intra-service编排,以及许多其他的需求。</p>
+<p>被设计为多层部署自第一天,Ansible模型你的IT基础设施,描述如何推动你所有的系统,而不仅仅是管理一个系统。</p>
+<p>它使用没有代理,没有额外的自定义安全基础设施,所以很容易部署,最重要的是,它使用一个非常简单的语言(YAML Ansible Playbooks的形式),让你描述你的自动化工作的方式方法简明英语。</p>
+<p>我们利用Ansible主要是作为内网服务器的一些管理，因为他用ssh来管理配置，内网同学还是很快速的，外网主要是利用Saltstack，利用消息队列远程通信，我感觉是比Ansible好的。</p>
+<p><strong>为什么选择ansible</strong></p>
+<p>Ansible大家都知道，和salt/puppet等一样，是一款配置管理工具。为什么选择它，就是因为它简单，不需要安装agent，只要服务器能用ssh访问，就可以使用它去管理大家如果要问，和我用rsync直接同步或写个for循环执行rpm或yum有什么区别.</p>
+<p>我想最大的区别应该就是“并发”<br><strong>当然，大企业会自己去开发自己的持续部署平台，而大部分的还是中小型企业</strong></p>
+<p>其实部署每个环节都可以用rpm安装发布。</p>
+<p>我们的某个应用直接构建成rpm，是直接放到我们另一个内部服务器中，提供http接口，然后执行的就是yum模块进行安装。</p>
+<p>也有人问我salt有没有用过。其实我们最初是使用salt的，后来因为网络的原因，选择了没有agent的ansible。在阿里云上面还是salt去服务管理。</p>
+<p> 参考官网<a href="https://www.ansible.com/quick-start-video" target="_blank" rel="external">入门学习视频</a></p>
+
 	
 
 	
