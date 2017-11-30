@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>KafKa不懂就学就问就解答笔记 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>KafKa不懂就学就问就解答笔记</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-10-11</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Bigdata-Hadoop/">Bigdata Hadoop</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="kafka不懂就学笔记"><a href="#kafka不懂就学笔记" class="headerlink" title="kafka不懂就学笔记"></a>kafka不懂就学笔记</h2><h5 id="1-部署生产环境，打算部署三个broker实例，但zookeeper部署一个可以吗"><a href="#1-部署生产环境，打算部署三个broker实例，但zookeeper部署一个可以吗" class="headerlink" title="1. 部署生产环境，打算部署三个broker实例，但zookeeper部署一个可以吗?"></a>1. 部署生产环境，打算部署三个broker实例，但zookeeper部署一个可以吗?</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">答案：可以是可以，但为了容错还是部署zookeeper集群比较好。broker和zookeeper的对应比例倒是没什么，都是独立集群。</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<p><figure class="figure"><img src="https://www.confluent.io/wp-content/uploads/2016/09/Event-sourced-based-architecture.jpeg" alt=""></figure></p>
+<h5 id="2-kafka集群为什么需要zookeeper来配合？"><a href="#2-kafka集群为什么需要zookeeper来配合？" class="headerlink" title="2. kafka集群为什么需要zookeeper来配合？"></a>2. kafka集群为什么需要zookeeper来配合？</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">答案：zookeeper 是作为性能协调工具的角色存在。存储着你Kafka服务的一些些元数据（partitions、offset等等）。zookeeper集群的作用在于保证Zookeeper服务的高可用。因此你可以根据你的需要来选择是否构建zookeeper集群。</div></pre></td></tr></table></figure>
+<h5 id="3-查看kafka-topic-消费记录报错WARN-Session-0x0-for-server-null-unexpected-error-closing-socket-connection-and-attempting-reconnect-org-apache-zookeeper-ClientCnxn"><a href="#3-查看kafka-topic-消费记录报错WARN-Session-0x0-for-server-null-unexpected-error-closing-socket-connection-and-attempting-reconnect-org-apache-zookeeper-ClientCnxn" class="headerlink" title="3. 查看kafka topic 消费记录报错WARN Session 0x0 for server null, unexpected error, closing socket connection and attempting reconnect (org.apache.zookeeper.ClientCnxn)"></a>3. 查看kafka topic 消费记录报错WARN Session 0x0 for server null, unexpected error, closing socket connection and attempting reconnect (org.apache.zookeeper.ClientCnxn)</h5><p>java.net.ConnectException: Connection timed out</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">问题：</div><div class="line">1.是kafka连不上zookeeper了。请检查 zk 集群是否正常能Telnet，kafka集群是否正常。</div><div class="line">2.检查server.properties 中zookeeper.connect是否配置正确，如果都没有问题，重新启动服务。</div></pre></td></tr></table></figure>
+<h5 id="4-kafka-支持压缩传输吗？"><a href="#4-kafka-支持压缩传输吗？" class="headerlink" title="4. kafka 支持压缩传输吗？"></a>4. kafka 支持压缩传输吗？</h5><h5 id="5-Kafka-如何在开启数据压缩的情况下-consumer维护自己的offset"><a href="#5-Kafka-如何在开启数据压缩的情况下-consumer维护自己的offset" class="headerlink" title="5. Kafka 如何在开启数据压缩的情况下, consumer维护自己的offset?"></a>5. Kafka 如何在开启数据压缩的情况下, consumer维护自己的offset?</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">问题：</div><div class="line">kafka这边数据传输消费跨aws机房较慢。会有网络瓶颈,我们kafka在国外的一dalasi机房，消费端在dalasi。</div><div class="line"></div><div class="line">官网解答：</div><div class="line">Offset management on the consumer</div><div class="line"></div><div class="line">The data received by a consumer <span class="keyword">for</span> a topic might contain both compressed as well as uncompressed messages. The consumer iterator transparently decompresses compressed data and only returns an uncompressed message. The offset maintenance <span class="keyword">in</span> the consumer gets a little tricky. In the zookeeper consumer, the consumed offset is updated each time a message is returned. This consumed offset should be a valid fetch offset <span class="keyword">for</span> correct failure recovery. Since data is stored <span class="keyword">in</span> compressed format on the broker, valid fetch offsets are the compressed message boundaries. Hence, <span class="keyword">for</span> compressed data, the consumed offset will be advanced one compressed message at a time. This has the side effect of possible duplicates <span class="keyword">in</span> the event of a consumer failure. For uncompressed data, consumed offset will be advanced one message at a time.</div><div class="line"></div><div class="line">这段话不是很理解: producer将100条message压缩成1条发给broker后, broker是如何存储的，并且consumer是如何取出这压缩后的数据, 并维护offset的?</div><div class="line"></div><div class="line"><span class="comment">### 消息压缩（message compression）</span></div><div class="line"></div><div class="line">考虑到网络带宽的瓶颈，Kafka提供了消息组压缩特性。Kafka通过递归消息集来支持高效压缩。高效压缩需要多个消息同时压缩，而不是对每个消息单独压缩。一批消息压缩在一起发送给broker。压缩消息集降低了网络的负载，但是解压缩也带来了一些额外的开销。消息集的解压缩是由broker处理消息offset时完成的。</div><div class="line"></div><div class="line">每个消息可通过一个不可比较的、递增的逻辑offset访问，这个逻辑offset在每个分区内是唯一的。接收到压缩数据后，lead broker将消息集解压缩，为每个消息分配offset。offset分配完成后，leader再次将消息集压缩并写入磁盘。</div><div class="line"></div><div class="line">在Kafka中，数据的压缩由producer完成，可使用GZIP或Snappy压缩协议。同时需要在producer端配置相关的参数：</div><div class="line"></div><div class="line">compression.codec：指定压缩格式，默认为none，可选的值还有gzip和snappy。</div><div class="line">compressed.topics：设置对指定的topic开启压缩，默认为null。当compression.codec不为none时，对指定的topic开启压缩；如果compressed.topics为null则对所有topic开启压缩。</div><div class="line">消息集ByteBufferMessageSet可能既包含压缩数据也包含非压缩数据，为了区分开来，消息头中添加了压缩属性字节。在该字节中，最低位的两位表示压缩格式，如果都是0表示非压缩数据。</div></pre></td></tr></table></figure>
+<h3 id="Communicative-learning"><a href="#Communicative-learning" class="headerlink" title="Communicative learning:"></a>Communicative learning:</h3><p>🐧  Linux shell_ senior operation and maintenance faction: QQ group <code>459096184</code> circle (system operation and maintenance - application operation and maintenance - automation operation and maintenance - virtualization technology research, welcome to join)<br>🐧  BigData-Exchange School:QQ group <code>521621407</code> circles (big data Yun Wei) (Hadoop developer) (big data research enthusiasts) welcome to join</p>
+<p>Bidata have internal WeChat exchange group, learn from each other, join QQ group has links.</p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2017/10/11/Bigdata-hadoop/Kafka/KafKa不懂就学就问就解答笔记/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>
