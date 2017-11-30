@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>ZABBIX monitoring Flume | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>ZABBIX monitoring Flume</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-09-21</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="ZABBIX-monitoring-Flume"><a href="#ZABBIX-monitoring-Flume" class="headerlink" title="ZABBIX monitoring Flume"></a>ZABBIX monitoring Flume</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Flume本身提供了http, ganglia的监控服务，而我们目前主要使用zabbix做监控。因此，我们为Flume添加了zabbix监控模块，和sa的监控服务无缝融合。</div><div class="line">另一方面，净化Flume的metrics。只将我们需要的metrics发送给zabbix，避免 zabbix server造成压力。目前我们最为关心的是Flume能否及时把应用端发送过来的日志写到Hdfs上， 对应关注的metrics为：</div><div class="line">Source : 接收的event数和处理的event数</div><div class="line">Channel : Channel中拥堵的event数</div><div class="line">Sink : 已经处理的event数</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<h5 id="zabbix安装-amp-JVM性能监控"><a href="#zabbix安装-amp-JVM性能监控" class="headerlink" title="zabbix安装&amp;JVM性能监控"></a>zabbix安装&amp;JVM性能监控</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">zabbix安装</div><div class="line">http://my.oschina.net/yunnet/blog/173161</div><div class="line"></div><div class="line">JDK1.8</div><div class="line">[jollybi@countly1 conf]$ java -version</div><div class="line">java version <span class="string">"1.8.0_65"</span></div><div class="line">Java(TM) SE Runtime Environment (build 1.8.0_65-b17)</div><div class="line">Java HotSpot(TM) 64-Bit Server VM (build 25.65-b01, mixed mode)</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">#JVM性能监控</span></div><div class="line">Young GC  counts</div><div class="line"></div><div class="line">/usr/<span class="built_in">local</span>/jdk/bin/jstat  -gcutil 87007 | tail -1 | awk <span class="string">'&#123;print  $6&#125;'</span></div><div class="line">95.16</div><div class="line"></div><div class="line">Full GC counts</div><div class="line">/usr/<span class="built_in">local</span>/jdk/bin/jstat  -gcutil 87007 | tail -1 | awk <span class="string">'&#123;print  $8&#125;'</span></div><div class="line">436.252</div><div class="line"></div><div class="line">JVM total  memory usage</div><div class="line">/usr/<span class="built_in">local</span>/jdk/bin/jmap -histo $(pgrep java)|grep Total | sed -n <span class="string">'$p'</span> | awk <span class="string">'&#123;print  $3&#125;'</span></div><div class="line"></div><div class="line"></div><div class="line">JVM total  instances usage</div><div class="line"> /usr/<span class="built_in">local</span>/jdk/bin/jmap -histo $(pgrep java)|grep Total | sed -n <span class="string">'$p'</span> | awk <span class="string">'&#123;print  $2&#125;'</span></div></pre></td></tr></table></figure>
+<h5 id="flume应用参数监控"><a href="#flume应用参数监控" class="headerlink" title="flume应用参数监控"></a>flume应用参数监控</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">启动时加上JSON repoting参数,这样就可以通过http://localhost:34545/metrics访问</div><div class="line">bin/flume-ng agent --conf conf --conf-file conf/flume-conf-test.properties --name agent -Dflume.root.logger=INFO,console -Dflume.monitoring.type=http -Dflume.monitoring.port=34545 &amp;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">[root@localhost apache-flume-1.8.0-bin]<span class="comment"># curl http://localhost:34545/metrics 2&gt;/dev/null|sed -e  's/\([,]\)\s*/\1\n/g' -e 's/[&#123;&#125;]/\n/g' -e 's/[",]//g'</span></div><div class="line"></div><div class="line">SOURCE.source1:</div><div class="line">EventReceivedCount:4871</div><div class="line">AppendBatchAcceptedCount:52</div><div class="line">Type:SOURCE</div><div class="line">EventAcceptedCount:4871</div><div class="line">AppendReceivedCount:0</div><div class="line">StartTime:1511251310062</div><div class="line">OpenConnectionCount:0</div><div class="line">AppendAcceptedCount:0</div><div class="line">AppendBatchReceivedCount:52</div><div class="line">StopTime:0</div><div class="line"></div><div class="line">SINK.sink1:</div><div class="line">ConnectionCreatedCount:0</div><div class="line">BatchCompleteCount:0</div><div class="line">BatchEmptyCount:43</div><div class="line">EventDrainAttemptCount:0</div><div class="line">StartTime:1511251311047</div><div class="line">BatchUnderflowCount:1</div><div class="line">ConnectionFailedCount:0</div><div class="line">ConnectionClosedCount:0</div><div class="line">Type:SINK</div><div class="line">RollbackCount:0</div><div class="line">EventDrainSuccessCount:4871</div><div class="line">KafkaEventSendTimer:24748</div><div class="line">StopTime:0</div><div class="line"></div><div class="line">CHANNEL.channel1:</div><div class="line">ChannelCapacity:1000</div><div class="line">ChannelFillPercentage:0.0</div><div class="line">Type:CHANNEL</div><div class="line">ChannelSize:0</div><div class="line">EventTakeSuccessCount:4871</div><div class="line">EventTakeAttemptCount:4915</div><div class="line">StartTime:1511251309391</div><div class="line">EventPutAttemptCount:4871</div><div class="line">EventPutSuccessCount:4871</div><div class="line">StopTime:0</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">/opt/jdk1.8.0_101/bin/jstat</div></pre></td></tr></table></figure>
+<h5 id="配置监控flume的脚本文件"><a href="#配置监控flume的脚本文件" class="headerlink" title="配置监控flume的脚本文件"></a>配置监控flume的脚本文件</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">vim /etc/zabbix/monitor_flume.sh</div><div class="line">event=EventDrainSuccessCount</div><div class="line"><span class="comment">#curl  http://localhost:34545/metrics 2&gt;/dev/null|sed -e 's/\([,]\)\s*/\1\n/g' -e  's/[&#123;&#125;]/\n/g' -e 's/[",]//g' |grep $1|awk -F: '&#123;print $2&#125;'</span></div><div class="line"><span class="keyword">function</span> EventDrainSuccessCount  &#123;</div><div class="line">curl  http://localhost:34545/metrics 2&gt;/dev/null|sed <span class="_">-e</span> <span class="string">'s/\([,]\)\s*/\1\n/g'</span> <span class="_">-e</span>  <span class="string">'s/[&#123;&#125;]/\n/g'</span> <span class="_">-e</span> <span class="string">'s/[",]//g'</span> |grep <span class="variable">$event</span>|awk -F: <span class="string">'&#123;print $2&#125;'</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">function</span> StartTime  &#123;</div><div class="line">curl  http://localhost:34545/metrics 2&gt;/dev/null|sed <span class="_">-e</span> <span class="string">'s/\([,]\)\s*/\1\n/g'</span> <span class="_">-e</span>  <span class="string">'s/[&#123;&#125;]/\n/g'</span> <span class="_">-e</span> <span class="string">'s/[",]//g'</span> |grep StartTim |awk -F: <span class="string">'&#123;print $2&#125;'</span> |sed -n <span class="string">"2p"</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">function</span> Total &#123;</div><div class="line">curl  http://localhost:34545/metrics 2&gt;/dev/null|sed <span class="_">-e</span> <span class="string">'s/\([,]\)\s*/\1\n/g'</span> <span class="_">-e</span>  <span class="string">'s/[&#123;&#125;]/\n/g'</span> <span class="_">-e</span> <span class="string">'s/[",]//g'</span> |grep Total|awk -F: <span class="string">'&#123;print $2&#125;'</span></div><div class="line">&#125;</div><div class="line"><span class="comment">#Run the requested function</span></div><div class="line"><span class="variable">$1</span></div></pre></td></tr></table></figure>
+<h5 id="在zabbix-agent配置文件进行部署"><a href="#在zabbix-agent配置文件进行部署" class="headerlink" title="在zabbix agent配置文件进行部署"></a>在zabbix agent配置文件进行部署</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">vim zabbix_flume_jdk.conf</div><div class="line">UserParameter=ygc.counts,sudo /opt/jdk1.8.0_101/bin/jstat -gcutil $(pgrep java|head -1)|tail -1|awk  <span class="string">'&#123;print $6&#125;'</span></div><div class="line">UserParameter=fgc.counts,sudo /opt/jdk1.8.0_101/bin/jstat  -gcutil $(pgrep java|head -1)|tail -1|awk  <span class="string">'&#123;print $8&#125;'</span></div><div class="line">UserParameter=jvm.memory.usage,sudo /opt/jdk1.8.0_101/bin/jmap -histo $(pgrep java|sed -n <span class="string">'$p'</span>)|grep Total | sed -n <span class="string">'$p'</span> |awk  <span class="string">'&#123;print $3&#125;'</span></div><div class="line">UserParameter=jvm.instances.usage,sudo /opt/jdk1.8.0_101/bin/jmap -histo $(pgrep java|sed -n <span class="string">'$p'</span>)|grep Total | sed -n <span class="string">'$p'</span> |awk  <span class="string">'&#123;print $2&#125;'</span></div><div class="line">UserParameter=flume.monitor[*],sudo /bin/bash /etc/zabbix/monitor_flume.sh <span class="variable">$1</span></div></pre></td></tr></table></figure>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ZABBIX-monitoring-Flume.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ZABBIX-monitoring-Flume1.png" alt=""></figure></p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2017/09/21/性能监控/Zabbix/ZABBIX monitoring Flume/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>
