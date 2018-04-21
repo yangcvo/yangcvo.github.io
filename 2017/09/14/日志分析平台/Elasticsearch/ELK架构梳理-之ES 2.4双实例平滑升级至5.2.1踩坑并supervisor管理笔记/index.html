@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>ELK架构梳理-之ES2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>ELK架构梳理-之ES2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-09-14</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/logstash/">logstash</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="ELK架构梳理-之ES-2-4双实例平滑升级至5-2-1踩坑并supervisor管理笔记"><a href="#ELK架构梳理-之ES-2-4双实例平滑升级至5-2-1踩坑并supervisor管理笔记" class="headerlink" title="ELK架构梳理-之ES 2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记"></a>ELK架构梳理-之ES 2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记</h3><h4 id="ELK架构梳理："><a href="#ELK架构梳理：" class="headerlink" title="ELK架构梳理："></a>ELK架构梳理：</h4><p>实时日志分析作为掌握业务情况、故障分析排查的一个重要手段，目前使用最多最成熟的莫过于ELK方案，整体方案也有各种架构组合，像<code>rsyslog-&gt;ES-&gt;kibana、rsyslog-&gt;Redis-&gt;Logstash-&gt;ES-&gt;kibana、rsyslog-&gt;kafka-&gt;Logstash-&gt;ES-&gt;kibana</code>等等，复杂点的有spark的引用。</p>
+<p>每种方案适合不同的应用场景，没有优劣之分，我目前用的是<code>rsyslog-&gt;kafka-&gt;Logstash-&gt;ES-&gt;kibana和rsyslog-&gt;rsyslog中继-&gt;kafka-&gt;Logstash-&gt;ES-&gt;kibana</code>方案，共5台ES（12核、64G、机械盘）每天索引10多亿条日志，包含<code>nginx、uwsgi、redis、php</code>开发日志等，运行比较健壮，每条索引日志精简后在10个字段左右，每天Primary Shard的索引量大概在600个G，考虑到性能问题，我们没要复制分片，同时着重做了ES集群的调优，日志保留7天。</p>
+<p>从整体架构进行抽象总结，其实就是采集-&gt;清洗-&gt;索引-&gt;展现四个环节，再去考虑各环节中缓存、队列的使用，每个环节点用不同的软件来实现。下面介绍一下我目前方案集群的搭建和配置。</p>
+<h4 id="ES集群方案平滑："><a href="#ES集群方案平滑：" class="headerlink" title="ES集群方案平滑："></a>ES集群方案平滑：</h4><p>ES老集群用的2.4.1版本，跑的比较好就一直没动，最近看资料ES5.X已经稳定，并且性能有较大提升，心里就发痒了，但由于业务要保持高可用的属性，就得想一个平滑升级的方案，最后想到了多实例过度的办法，5.X版本网上介绍配置变化较大，也做好了踩坑准备，确定好要升级后，立刻动手。</p>
+<p>一、对应升级改造方案</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="number">1</span>. 使用端口<span class="number">9220</span>和<span class="number">9330</span> 安装并配置好新的ES5<span class="meta">.2</span><span class="meta">.1</span>实例</div><div class="line"><span class="number">2</span>. 关掉logstash并将ES2<span class="meta">.4</span><span class="meta">.1</span>实例堆栈调小重启（kafka保留<span class="number">3</span>个小时日志所以不会丢失</div><div class="line"><span class="number">3</span>. 启动ES5<span class="meta">.2</span><span class="meta">.1</span>并将logstash开启指向ES5<span class="meta">.2</span><span class="meta">.1</span></div><div class="line"><span class="number">4</span>. 安装新版kibana实例做好指向，老数据用http://host/old访问——&gt;ES5<span class="meta">.2</span><span class="meta">.1</span>配置调优。</div></pre></td></tr></table></figure>
+<p>二、升级后统一用<a href="github：https://github.com/mlazarov/supervisord-monitor">supervisord-monitor管理</a><br>三、周末跑了一天ES的cpu、IO、heap内存使用率，es磁盘情况，集群健康监测和thread_pool的监控数据（需要了解的添加QQ群）<br>四、升级过程——编写了ES5.2.1的安装脚本如下</p>
+<h4 id="集群脚本化部署："><a href="#集群脚本化部署：" class="headerlink" title="集群脚本化部署："></a>集群脚本化部署：</h4><p>之前用的rpm包，后考虑直接使用tar包安装，对于需要系统做的调优操作，直接编写自动化安装脚本，一键将所有系统参数配置后，将环境搭建好。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#/bin/sh</span></div><div class="line">id elasticsearch || useradd elasticsearch <span class="_">-s</span> /sbin/nologin   <span class="comment">#添加用户</span></div><div class="line">grep <span class="string">"* - nofile 512000"</span> /etc/security/limits.conf || <span class="built_in">echo</span>  <span class="string">"* - nofile 512000"</span>  &gt;&gt; /etc/security/limits.conf  <span class="comment">#修改文件描述符数量</span></div><div class="line">grep <span class="string">"elasticsearch - nproc unlimited"</span> /etc/security/limits.conf || <span class="built_in">echo</span> <span class="string">"elasticsearch - nproc unlimited"</span>   &gt;&gt; /etc/security/limits.conf  <span class="comment">#修改最大打开进程数数量</span></div><div class="line">grep <span class="string">"fs.file-max = 1024000"</span> /etc/sysctl.conf || <span class="built_in">echo</span> <span class="string">"fs.file-max = 1024000"</span>  &gt;&gt; /etc/sysctl.conf  <span class="comment">#修改系统文件描述符</span></div><div class="line">grep <span class="string">"vm.max_map_count = 262144"</span> /etc/sysctl.conf || <span class="built_in">echo</span> <span class="string">"vm.max_map_count = 262144"</span>  &gt;&gt;  /etc/sysctl.conf  <span class="comment">#修改程序最大管理的vm</span></div><div class="line">sysctl -p</div><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/src</div><div class="line">[ ! <span class="_">-f</span> /usr/<span class="built_in">local</span>/src/elasticsearch-5.2.1.zip ] &amp;&amp; wget </div><div class="line">https://artifacts.elastic.co/dow ... ticsearch-5.2.1.zip</div><div class="line">[ ! <span class="_">-d</span> /usr/<span class="built_in">local</span>/src/elasticsearch-5.2.1 ] &amp;&amp; unzip elasticsearch-5.2.1.zip</div><div class="line">mv elasticsearch-5.2.1 /usr/<span class="built_in">local</span>/</div><div class="line">chown -R elasticsearch:elasticsearch /usr/<span class="built_in">local</span>/elasticsearch-5.2.1  <span class="comment">#修改拥有者所有组</span></div><div class="line">sed -i <span class="string">'s/-XX:+UseConcMarkSweepGC/-XX:+UseG1GC/'</span> /usr/<span class="built_in">local</span>/elasticsearch-5.2.1/config/jvm.options    <span class="comment">#GC方式修改为G1</span></div><div class="line">sed -i <span class="string">'s/-XX:CMSInitiatingOccupancyFraction=75/-XX:MaxGCPauseMillis=200/'</span> /usr/<span class="built_in">local</span>/elasticsearch-5.2.1/config/jvm.options</div><div class="line">sed -i <span class="string">'s/-XX:+UseCMSInitiatingOccupancyOnly/#-XX:+UseCMSInitiatingOccupancyOnly/'</span> /usr/<span class="built_in">local</span>/elasticsearch-5.2.1/config/jvm.options</div></pre></td></tr></table></figure>
+<h4 id="五、升级过程——配置文件、索引相关的更新调优"><a href="#五、升级过程——配置文件、索引相关的更新调优" class="headerlink" title="五、升级过程——配置文件、索引相关的更新调优"></a>五、升级过程——配置文件、索引相关的更新调优</h4><p>   升级期间着实踩了不少坑，老版ES索引配置可以直接写到配置文件里，新版是不行的，必须使用api去设置，另外ES2.X版本的进程数调优，在ES5.X我发现调整与否没有影响。配置文件如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">cluster.name: yz-5search</div><div class="line">path.data:  /data1/LogData5/</div><div class="line">path.logs:  /data1/LogData5/logs</div><div class="line">bootstrap.memory_lock: <span class="literal">false</span>   <span class="comment">#centos6内核不支持，必须要关闭</span></div><div class="line">bootstrap.system_call_filter: <span class="literal">false</span></div><div class="line">network.host: 10.39.40.94</div><div class="line">http.port: 9220</div><div class="line">transport.tcp.port: 9330</div><div class="line">discovery.zen.ping.unicast.hosts: [<span class="string">"10.39.40.94:9330"</span>,<span class="string">"10.39.40.95:9330"</span>,<span class="string">"10.39.40.96:9330"</span>,<span class="string">"10.39.40.97:9330"</span>]</div><div class="line">discovery.zen.minimum_master_nodes: 2</div><div class="line">http.cors.enabled: <span class="literal">true</span></div><div class="line">http.cors.allow-origin: <span class="string">"*"</span></div></pre></td></tr></table></figure>
+<p>为了加快索引效率，编写index的模板配置（index配置不允许写到配置文件了），将参数put到es的里，当然模板也可以通过前端logstash指定（要改logtash觉得麻烦），template脚本如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#/bin/sh</span></div><div class="line"><span class="comment">#index template</span></div><div class="line">curl -XPUT <span class="string">'http://10.39.40.94:9220/_template/cms_logs?pretty'</span> <span class="_">-d</span> <span class="string">'&#123;</span></div><div class="line">     "order": 6,                                    #优先级</div><div class="line">      "template": "logstash-cms*",                  #正则匹配索引</div><div class="line">      "settings": &#123;</div><div class="line">             "index.refresh_interval" : "60s",  #索引刷新时间</div><div class="line">             "index.number_of_replicas" : "0",  #副本数设置为0</div><div class="line">             "index.number_of_shards" : "8",    #分片数设置为8，共4台服务器</div><div class="line">             "index.translog.flush_threshold_size" : "768m",  #translog触发flush的阀值</div><div class="line">             "index.store.throttle.max_bytes_per_sec" : "500m", #存储的阀值</div><div class="line">             "index.translog.durability": "async",              #设置translog异步刷新到硬盘，更注重性能</div><div class="line">             "index.merge.scheduler.max_thread_count": "1",     #机械盘设置为1</div><div class="line">             "index.routing.allocation.total_shards_per_node": "2"  #每个节点上两个分片</div><div class="line">      &#125;</div><div class="line">&#125;'</div></pre></td></tr></table></figure>
+<p>备：如果是更改，将PUT改为POST</p>
+<p>日志保留7天，清除的脚本如下，写入计划任务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line">DATE=`date +%Y.%m.%d.%I`</div><div class="line">DATA2=`date +%Y.%m.%d <span class="_">-d</span><span class="string">'-7 day'</span>`</div><div class="line">curl -XDELETE <span class="string">"http://10.39.40.97:9220/logstash-*-<span class="variable">$&#123;DATA2&#125;</span>*?pretty"</span></div></pre></td></tr></table></figure>
+<p>   由于单个索引达到了35G甚至40G以上，于是在logstash层面对建索引数量进行修改，把每天12个索引修改为每天24个索引：</p>
+<p>logstash的修改如下：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="attr">index</span> =&gt; <span class="string">"logstash-cms-front-nginx-%&#123;+YYYY.MM.dd.hh&#125;"</span>  修改为</div><div class="line"><span class="attr">index</span> =&gt; <span class="string">"logstash-cms-front-nginx-%&#123;+YYYY.MM.dd.HH&#125;"</span></div></pre></td></tr></table></figure>
+<p><em>*更新自动化搭建es集群，架构梳理详解-与实现es监控服务</em></p>
+<p>参考： Logstash分享,online生产环境的使用,online日志规范。</p>
+<p><strong>☺待整理续写~~</strong> </p>
+<h3 id="Communicative-learning"><a href="#Communicative-learning" class="headerlink" title="Communicative learning:"></a>Communicative learning:</h3><p>🐧  Linux shell_ senior operation and maintenance faction: QQ group <code>459096184</code> circle (system operation and maintenance - application operation and maintenance - automation operation and maintenance - virtualization technology research, welcome to join)<br>🐧  BigData-Exchange School:QQ group <code>521621407</code> circles (big data Yun Wei) (Hadoop developer) (big data research enthusiasts) welcome to join</p>
+<p>Bidata have internal WeChat exchange group, learn from each other, join QQ group has links.</p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2017/09/14/日志分析平台/Elasticsearch/ELK架构梳理-之ES 2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2018 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

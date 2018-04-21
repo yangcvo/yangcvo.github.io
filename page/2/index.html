@@ -43,10 +43,116 @@
 
 	<article>
 	
-		<h1><a href="/2017/07/11/Bigdata-hadoop/Kafka/KafKa扩容群集(Topic.partitions迁移)/">KafKa扩容群集(Topic.partitions迁移)</a></h1>
+		<h1><a href="/2017/09/14/日志分析平台/Elasticsearch/ELK架构梳理-之ES 2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记/">ELK架构梳理-之ES2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记</a></h1>
 	
 	<div class="article__infos">
-		<span class="article__date">2017-07-11</span><br />
+		<span class="article__date">2017-09-14</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/logstash/">logstash</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="ELK架构梳理-之ES-2-4双实例平滑升级至5-2-1踩坑并supervisor管理笔记"><a href="#ELK架构梳理-之ES-2-4双实例平滑升级至5-2-1踩坑并supervisor管理笔记" class="headerlink" title="ELK架构梳理-之ES 2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记"></a>ELK架构梳理-之ES 2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记</h3><h4 id="ELK架构梳理："><a href="#ELK架构梳理：" class="headerlink" title="ELK架构梳理："></a>ELK架构梳理：</h4><p>实时日志分析作为掌握业务情况、故障分析排查的一个重要手段，目前使用最多最成熟的莫过于ELK方案，整体方案也有各种架构组合，像<code>rsyslog-&gt;ES-&gt;kibana、rsyslog-&gt;Redis-&gt;Logstash-&gt;ES-&gt;kibana、rsyslog-&gt;kafka-&gt;Logstash-&gt;ES-&gt;kibana</code>等等，复杂点的有spark的引用。</p>
+<p>每种方案适合不同的应用场景，没有优劣之分，我目前用的是<code>rsyslog-&gt;kafka-&gt;Logstash-&gt;ES-&gt;kibana和rsyslog-&gt;rsyslog中继-&gt;kafka-&gt;Logstash-&gt;ES-&gt;kibana</code>方案，共5台ES（12核、64G、机械盘）每天索引10多亿条日志，包含<code>nginx、uwsgi、redis、php</code>开发日志等，运行比较健壮，每条索引日志精简后在10个字段左右，每天Primary Shard的索引量大概在600个G，考虑到性能问题，我们没要复制分片，同时着重做了ES集群的调优，日志保留7天。</p>
+<p>从整体架构进行抽象总结，其实就是采集-&gt;清洗-&gt;索引-&gt;展现四个环节，再去考虑各环节中缓存、队列的使用，每个环节点用不同的软件来实现。下面介绍一下我目前方案集群的搭建和配置。</p>
+<h4 id="ES集群方案平滑："><a href="#ES集群方案平滑：" class="headerlink" title="ES集群方案平滑："></a>ES集群方案平滑：</h4><p>ES老集群用的2.4.1版本，跑的比较好就一直没动，最近看资料ES5.X已经稳定，并且性能有较大提升，心里就发痒了，但由于业务要保持高可用的属性，就得想一个平滑升级的方案，最后想到了多实例过度的办法，5.X版本网上介绍配置变化较大，也做好了踩坑准备，确定好要升级后，立刻动手。</p>
+<p>一、对应升级改造方案</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="number">1</span>. 使用端口<span class="number">9220</span>和<span class="number">9330</span> 安装并配置好新的ES5<span class="meta">.2</span><span class="meta">.1</span>实例</div><div class="line"><span class="number">2</span>. 关掉logstash并将ES2<span class="meta">.4</span><span class="meta">.1</span>实例堆栈调小重启（kafka保留<span class="number">3</span>个小时日志所以不会丢失</div><div class="line"><span class="number">3</span>. 启动ES5<span class="meta">.2</span><span class="meta">.1</span>并将logstash开启指向ES5<span class="meta">.2</span><span class="meta">.1</span></div><div class="line"><span class="number">4</span>. 安装新版kibana实例做好指向，老数据用http://host/old访问——&gt;ES5<span class="meta">.2</span><span class="meta">.1</span>配置调优。</div></pre></td></tr></table></figure>
+<p>二、升级后统一用<a href="github：https://github.com/mlazarov/supervisord-monitor">supervisord-monitor管理</a><br>三、周末跑了一天ES的cpu、IO、heap内存使用率，es磁盘情况，集群健康监测和thread_pool的监控数据（需要了解的添加QQ群）<br>四、升级过程——编写了ES5.2.1的安装脚本如下</p>
+<h4 id="集群脚本化部署："><a href="#集群脚本化部署：" class="headerlink" title="集群脚本化部署："></a>集群脚本化部署：</h4><p>之前用的rpm包，后考虑直接使用tar包安装，对于需要系统做的调优操作，直接编写自动化安装脚本，一键将所有系统参数配置后，将环境搭建好。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#/bin/sh</span></div><div class="line">id elasticsearch || useradd elasticsearch <span class="_">-s</span> /sbin/nologin   <span class="comment">#添加用户</span></div><div class="line">grep <span class="string">"* - nofile 512000"</span> /etc/security/limits.conf || <span class="built_in">echo</span>  <span class="string">"* - nofile 512000"</span>  &gt;&gt; /etc/security/limits.conf  <span class="comment">#修改文件描述符数量</span></div><div class="line">grep <span class="string">"elasticsearch - nproc unlimited"</span> /etc/security/limits.conf || <span class="built_in">echo</span> <span class="string">"elasticsearch - nproc unlimited"</span>   &gt;&gt; /etc/security/limits.conf  <span class="comment">#修改最大打开进程数数量</span></div><div class="line">grep <span class="string">"fs.file-max = 1024000"</span> /etc/sysctl.conf || <span class="built_in">echo</span> <span class="string">"fs.file-max = 1024000"</span>  &gt;&gt; /etc/sysctl.conf  <span class="comment">#修改系统文件描述符</span></div><div class="line">grep <span class="string">"vm.max_map_count = 262144"</span> /etc/sysctl.conf || <span class="built_in">echo</span> <span class="string">"vm.max_map_count = 262144"</span>  &gt;&gt;  /etc/sysctl.conf  <span class="comment">#修改程序最大管理的vm</span></div><div class="line">sysctl -p</div><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/src</div><div class="line">[ ! <span class="_">-f</span> /usr/<span class="built_in">local</span>/src/elasticsearch-5.2.1.zip ] &amp;&amp; wget </div><div class="line">https://artifacts.elastic.co/dow ... ticsearch-5.2.1.zip</div><div class="line">[ ! <span class="_">-d</span> /usr/<span class="built_in">local</span>/src/elasticsearch-5.2.1 ] &amp;&amp; unzip elasticsearch-5.2.1.zip</div><div class="line">mv elasticsearch-5.2.1 /usr/<span class="built_in">local</span>/</div><div class="line">chown -R elasticsearch:elasticsearch /usr/<span class="built_in">local</span>/elasticsearch-5.2.1  <span class="comment">#修改拥有者所有组</span></div><div class="line">sed -i <span class="string">'s/-XX:+UseConcMarkSweepGC/-XX:+UseG1GC/'</span> /usr/<span class="built_in">local</span>/elasticsearch-5.2.1/config/jvm.options    <span class="comment">#GC方式修改为G1</span></div><div class="line">sed -i <span class="string">'s/-XX:CMSInitiatingOccupancyFraction=75/-XX:MaxGCPauseMillis=200/'</span> /usr/<span class="built_in">local</span>/elasticsearch-5.2.1/config/jvm.options</div><div class="line">sed -i <span class="string">'s/-XX:+UseCMSInitiatingOccupancyOnly/#-XX:+UseCMSInitiatingOccupancyOnly/'</span> /usr/<span class="built_in">local</span>/elasticsearch-5.2.1/config/jvm.options</div></pre></td></tr></table></figure>
+<h4 id="五、升级过程——配置文件、索引相关的更新调优"><a href="#五、升级过程——配置文件、索引相关的更新调优" class="headerlink" title="五、升级过程——配置文件、索引相关的更新调优"></a>五、升级过程——配置文件、索引相关的更新调优</h4><p>   升级期间着实踩了不少坑，老版ES索引配置可以直接写到配置文件里，新版是不行的，必须使用api去设置，另外ES2.X版本的进程数调优，在ES5.X我发现调整与否没有影响。配置文件如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">cluster.name: yz-5search</div><div class="line">path.data:  /data1/LogData5/</div><div class="line">path.logs:  /data1/LogData5/logs</div><div class="line">bootstrap.memory_lock: <span class="literal">false</span>   <span class="comment">#centos6内核不支持，必须要关闭</span></div><div class="line">bootstrap.system_call_filter: <span class="literal">false</span></div><div class="line">network.host: 10.39.40.94</div><div class="line">http.port: 9220</div><div class="line">transport.tcp.port: 9330</div><div class="line">discovery.zen.ping.unicast.hosts: [<span class="string">"10.39.40.94:9330"</span>,<span class="string">"10.39.40.95:9330"</span>,<span class="string">"10.39.40.96:9330"</span>,<span class="string">"10.39.40.97:9330"</span>]</div><div class="line">discovery.zen.minimum_master_nodes: 2</div><div class="line">http.cors.enabled: <span class="literal">true</span></div><div class="line">http.cors.allow-origin: <span class="string">"*"</span></div></pre></td></tr></table></figure>
+<p>为了加快索引效率，编写index的模板配置（index配置不允许写到配置文件了），将参数put到es的里，当然模板也可以通过前端logstash指定（要改logtash觉得麻烦），template脚本如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#/bin/sh</span></div><div class="line"><span class="comment">#index template</span></div><div class="line">curl -XPUT <span class="string">'http://10.39.40.94:9220/_template/cms_logs?pretty'</span> <span class="_">-d</span> <span class="string">'&#123;</span></div><div class="line">     "order": 6,                                    #优先级</div><div class="line">      "template": "logstash-cms*",                  #正则匹配索引</div><div class="line">      "settings": &#123;</div><div class="line">             "index.refresh_interval" : "60s",  #索引刷新时间</div><div class="line">             "index.number_of_replicas" : "0",  #副本数设置为0</div><div class="line">             "index.number_of_shards" : "8",    #分片数设置为8，共4台服务器</div><div class="line">             "index.translog.flush_threshold_size" : "768m",  #translog触发flush的阀值</div><div class="line">             "index.store.throttle.max_bytes_per_sec" : "500m", #存储的阀值</div><div class="line">             "index.translog.durability": "async",              #设置translog异步刷新到硬盘，更注重性能</div><div class="line">             "index.merge.scheduler.max_thread_count": "1",     #机械盘设置为1</div><div class="line">             "index.routing.allocation.total_shards_per_node": "2"  #每个节点上两个分片</div><div class="line">      &#125;</div><div class="line">&#125;'</div></pre></td></tr></table></figure>
+<p>备：如果是更改，将PUT改为POST</p>
+<p>日志保留7天，清除的脚本如下，写入计划任务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line">DATE=`date +%Y.%m.%d.%I`</div><div class="line">DATA2=`date +%Y.%m.%d <span class="_">-d</span><span class="string">'-7 day'</span>`</div><div class="line">curl -XDELETE <span class="string">"http://10.39.40.97:9220/logstash-*-<span class="variable">$&#123;DATA2&#125;</span>*?pretty"</span></div></pre></td></tr></table></figure>
+<p>   由于单个索引达到了35G甚至40G以上，于是在logstash层面对建索引数量进行修改，把每天12个索引修改为每天24个索引：</p>
+<p>logstash的修改如下：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="attr">index</span> =&gt; <span class="string">"logstash-cms-front-nginx-%&#123;+YYYY.MM.dd.hh&#125;"</span>  修改为</div><div class="line"><span class="attr">index</span> =&gt; <span class="string">"logstash-cms-front-nginx-%&#123;+YYYY.MM.dd.HH&#125;"</span></div></pre></td></tr></table></figure>
+<p><em>*更新自动化搭建es集群，架构梳理详解-与实现es监控服务</em></p>
+<p>参考： Logstash分享,online生产环境的使用,online日志规范。</p>
+<p><strong>☺待整理续写~~</strong> </p>
+<h3 id="Communicative-learning"><a href="#Communicative-learning" class="headerlink" title="Communicative learning:"></a>Communicative learning:</h3><p>🐧  Linux shell_ senior operation and maintenance faction: QQ group <code>459096184</code> circle (system operation and maintenance - application operation and maintenance - automation operation and maintenance - virtualization technology research, welcome to join)<br>🐧  BigData-Exchange School:QQ group <code>521621407</code> circles (big data Yun Wei) (Hadoop developer) (big data research enthusiasts) welcome to join</p>
+<p>Bidata have internal WeChat exchange group, learn from each other, join QQ group has links.</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/09/13/日志分析平台/Elasticsearch/Logstash分享,online生产环境的使用,online日志规范。/">Logstash分享,online生产环境的使用,online日志规范。</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-09-13</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/logstash/">logstash</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="Logstash分享-online生产环境的使用-online日志规范。"><a href="#Logstash分享-online生产环境的使用-online日志规范。" class="headerlink" title="Logstash分享,online生产环境的使用,online日志规范。"></a>Logstash分享,online生产环境的使用,online日志规范。</h3><p>写这篇文章，主要分享几点: 因为学所有学，既然学何不深度去了解~</p>
+<ol>
+<li>什么是Logstash？</li>
+<li>logstash运行在什么环境下对应的版本是多少？</li>
+<li>logstash工作原理？</li>
+<li>online日志现在是如何规范？</li>
+<li>如何写logstash收集conf文件？ </li>
+</ol>
+<h4 id="1-什么是Logstash？"><a href="#1-什么是Logstash？" class="headerlink" title="1. 什么是Logstash？"></a>1. 什么是Logstash？</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Logstash 是有管道输送能力的开源数据收集引擎。它可以动态地从分散的数据源收集数据，并且标准化数据输送到你选择的目的地。它是一款日志而不仅限于日志的搜集处理框架，将分散多样的数据搜集自定义处理并输出到指定位置。</div></pre></td></tr></table></figure>
+<h4 id="2-logstash运行在什么环境下对应的版本是多少？"><a href="#2-logstash运行在什么环境下对应的版本是多少？" class="headerlink" title="2. logstash运行在什么环境下对应的版本是多少？"></a>2. logstash运行在什么环境下对应的版本是多少？</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">logstash更新比较快，跟es一样，2.4以上直接升级到5.0 </div><div class="line"></div><div class="line">5.0x以下版本运行环境 需要JDK1.7以上版本.</div><div class="line">5.0x版本运行环境 需要JDK1.8以上版本。</div><div class="line"></div><div class="line">安装方法很多：yum,rpm,tar.gz源码， 支持Docker镜像运行。</div></pre></td></tr></table></figure>
+<h4 id="3-logstash工作原理？"><a href="#3-logstash工作原理？" class="headerlink" title="3. logstash工作原理？"></a>3. logstash工作原理？</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Logstash使用管道方式进行日志的搜集处理和输出。有点类似linux系统的管道命令 xxx | ccc | ddd，xxx执行完了会执行ccc，然后执行ddd。</div><div class="line"></div><div class="line">logstash收集日志基本流程: input--&gt;codec--&gt;filter--&gt;codec--&gt;output </div><div class="line">1.input:从哪里收集日志。 </div><div class="line">2.filter:发出去前进行过滤  （不是必须的）</div><div class="line">3.output:输出至Elasticsearch或Redis消息队列 </div><div class="line">4.codec:输出至前台，方便边实践边测试 </div><div class="line">5.数据量不大日志按照月来进行收集</div></pre></td></tr></table></figure>
+<p><figure class="figure"><img src="https://www.elastic.co/guide/en/logstash/current/static/images/basic_logstash_pipeline.png" alt=""></figure></p>
+<h4 id="4-日志现在收集规范："><a href="#4-日志现在收集规范：" class="headerlink" title="4.日志现在收集规范："></a>4.日志现在收集规范：</h4><p>是记录用户访问行为和服务运行状态的信息，是应用软件基本的输出单元，做到日志输出位置、命名、格式规范，可以大大方便后续应用服务监控和数据分析。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">1. 日志目录结构</div><div class="line">2. 日志类型</div><div class="line">3. 日志要求配置</div><div class="line">4. 日志级别</div><div class="line">5. 日志分割与周期</div><div class="line">6. 日志保留要求</div><div class="line"></div><div class="line">现在我们online 日志规范架构：</div><div class="line"></div><div class="line"><span class="comment">###之前应用日志规范：</span></div><div class="line"></div><div class="line">一个Tomcat服务logs目录下面的日志：定期对catalina.out几个G按两个小时进行压缩一次，保留7天，每天备份到<span class="built_in">log</span>-server服务器。</div><div class="line"></div><div class="line">logstash收集catalina.out所有日志。</div><div class="line"></div><div class="line"><span class="comment">###现在应用日志规范:</span></div><div class="line"></div><div class="line">一个Tomcat服务logs目录下面的日志：定期对catalina.out每天1M多日志进行压缩一次，保留7天，每天备份到<span class="built_in">log</span>-server服务器。</div><div class="line"></div><div class="line">logstash收集每台应用输出应用日志：error.log &amp; info.log</div><div class="line"></div><div class="line">好处分别为四个： </div><div class="line">1.对索引的要求细分和kibana查询日志速度无疑会变更快。</div><div class="line">2.查询日志快速定位。</div><div class="line">3.不会对catalina.out日志进行大级别日志写入，那里只存放系统日志，例如：发布日志，请求第三方地址日志。</div><div class="line">4.日志开发可以在Java代码<span class="built_in">log</span>4j文件大小指定压缩，每天定时清空，不需要我们写脚本处理。多个脚本定时在运行，特别乱。</div></pre></td></tr></table></figure>
+<h4 id="5-如何写logstash收集conf文件？"><a href="#5-如何写logstash收集conf文件？" class="headerlink" title="5.如何写logstash收集conf文件？"></a>5.如何写logstash收集conf文件？</h4><p>下面是我写好的online logstash收集代码，根据之前日志收集方式，现在修过几个地方：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"> input &#123;</div><div class="line">       stdin&#123;&#125;  <span class="comment">#可以标准输入读数据 （可以放可以不放）</span></div><div class="line">	file &#123;</div><div class="line">	  <span class="built_in">type</span> =&gt; <span class="string">"tms-task-info"</span></div><div class="line">	  path =&gt; [<span class="string">"/data/tms-task_new/logs/info.log"</span>]</div><div class="line">	  start_position =&gt; <span class="string">"beginning"</span> <span class="comment">#从文件开始处读写</span></div><div class="line">     &#125;</div><div class="line">	file &#123;</div><div class="line">	  <span class="built_in">type</span> =&gt; <span class="string">"tms-task-error"</span></div><div class="line">	  path =&gt; [<span class="string">"/data/tms-task_new/logs/error.log"</span>]</div><div class="line">	  start_position =&gt; <span class="string">"beginning"</span> <span class="comment">#从文件开始处读写</span></div><div class="line">     &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">filter &#123; <span class="comment">#过滤方式</span></div><div class="line"></div><div class="line">        multiline &#123;</div><div class="line">                        pattern =&gt; <span class="string">"^\d+-\d+-\d+"</span></div><div class="line">                        negate =&gt; <span class="literal">true</span></div><div class="line">                        what =&gt; <span class="string">"previous"</span></div><div class="line">                &#125;</div><div class="line"></div><div class="line">       &#125;</div><div class="line">output &#123;</div><div class="line">	<span class="keyword">if</span> [<span class="built_in">type</span>] == <span class="string">"tms-task-info"</span> &#123;</div><div class="line">	  elasticsearch &#123;</div><div class="line">          hosts =&gt; [<span class="string">"10.155.90.141:9200"</span>,<span class="string">"10.155.90.176:9200"</span>]</div><div class="line">   	  index =&gt; <span class="string">"log-tms-task-info-%&#123;+YYYY.MM.dd&#125;"</span></div><div class="line">	   document_type =&gt; <span class="string">"log"</span></div><div class="line">   	   template_overwrite =&gt; <span class="literal">true</span></div><div class="line"> 	 &#125;</div><div class="line">&#125;</div><div class="line">	 <span class="keyword">if</span> [<span class="built_in">type</span>] == <span class="string">"tms-task-error"</span> &#123;</div><div class="line">          elasticsearch &#123;</div><div class="line">          hosts =&gt; [<span class="string">"10.155.90.141:9200"</span>,<span class="string">"10.155.90.176:9200"</span>]</div><div class="line">          index =&gt; <span class="string">"log-tms-task-error-%&#123;+YYYY.MM.dd&#125;"</span></div><div class="line">          document_type =&gt; <span class="string">"log"</span></div><div class="line">          template_overwrite =&gt; <span class="literal">true</span></div><div class="line">	       	 &#125;</div><div class="line">	&#125;</div><div class="line">stdout&#123;</div><div class="line">    codec=&gt;rubydebug  <span class="comment">#控制台输出 (不建议配置，测试阶段可以调试使用)</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">有一些比较有用的配置项，可以用来指定 FileWatch 库的行为：</div><div class="line"></div><div class="line">discover_interval</div><div class="line">logstash 每隔多久去检查一次被监听的 path 下是否有新文件。默认值是 15 秒。</div><div class="line"></div><div class="line">exclude</div><div class="line">不想被监听的文件可以排除出去，这里跟 path 一样支持 glob 展开。</div><div class="line"></div><div class="line">sincedb_path</div><div class="line">如果你不想用默认的 <span class="variable">$HOME</span>/.sincedb(Windows 平台上在 C:\Windows\System32\config\systemprofile\.sincedb)，可以通过这个配置定义 sincedb 文件到其他位置。</div><div class="line"></div><div class="line">sincedb_write_interval</div><div class="line">logstash 每隔多久写一次 sincedb 文件，默认是 15 秒。</div><div class="line"></div><div class="line">stat_interval</div><div class="line">logstash 每隔多久检查一次被监听文件状态（是否有更新），默认是 1 秒。</div><div class="line"></div><div class="line">start_position</div><div class="line">logstash 从什么位置开始读取文件数据，默认是结束位置，也就是说 logstash 进程会以类似 tail -F 的形式运行。如果你是要导入原有数据，把这个设定改成 <span class="string">"beginning"</span>，logstash 进程就从头开始读取，有点类似 cat，但是读到最后一行不会终止，而是继续变成 tail -F。</div></pre></td></tr></table></figure>
+<p>配置详解：参考中文文档<a href="https://doc.yonyoucloud.com/doc/logstash-best-practice-cn/input/file.html" target="_blank" rel="external">logstash-best-practice-cn</a><br>官网详细说明：<a href="https://www.elastic.co/guide/en/logstash/current/multiple-input-output-plugins.html" target="_blank" rel="external">multiple-input-output-plugins</a></p>
+<h3 id="Communicative-learning"><a href="#Communicative-learning" class="headerlink" title="Communicative learning:"></a>Communicative learning:</h3><p>🐧  Linux shell_ senior operation and maintenance faction: QQ group <code>459096184</code> circle (system operation and maintenance - application operation and maintenance - automation operation and maintenance - virtualization technology research, welcome to join)<br>🐧  BigData-Exchange School:QQ group <code>521621407</code> circles (big data Yun Wei) (Hadoop developer) (big data research enthusiasts) welcome to join</p>
+<p>Bidata have internal WeChat exchange group, learn from each other, join QQ group has links.</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/09/11/Bigdata-hadoop/Kafka/KafKa不懂就学就问就解答笔记/">KafKa不懂就学就问就解答笔记</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-09-11</span><br />
 		
 			<span class="article__category">
 				<a class="article-category-link" href="/categories/Bigdata-Hadoop/">Bigdata Hadoop</a>
@@ -62,9 +168,9 @@
 	
 
 	
-		<h4 id="kafka的扩容难点："><a href="#kafka的扩容难点：" class="headerlink" title="kafka的扩容难点："></a>kafka的扩容难点：</h4><p>1）主要在于增加机器之后，数据需要rebalance到新增的空闲节点，即把partitions迁移到空闲机器上。<br>kafka提供<code>bin/kafka-reassign-partitions.sh</code>工具，完成parttition的迁移。</p>
-<p>2）kafka的集群的数据量加大，数据rebalance的时间较长。解决办法是把<code>log.retention.hours=1</code>设置一小时（生产参数24小时）。<br>修改参数之后，重启kakfa节点，kafka会主动purge 1小时之前的log数据。<br>以下是kafka_0.8.1.1版本kafkka集群扩容操作记录，从3台物理机扩容到4台物理，partition数量由24个增加到28个。</p>
-		<p><a class="article__read-more-link" href="/2017/07/11/Bigdata-hadoop/Kafka/KafKa扩容群集(Topic.partitions迁移)/">...read more</a></p>
+		<h4 id="1-部署生产环境，打算部署三个broker实例，但zookeeper部署一个可以吗"><a href="#1-部署生产环境，打算部署三个broker实例，但zookeeper部署一个可以吗" class="headerlink" title="1. 部署生产环境，打算部署三个broker实例，但zookeeper部署一个可以吗?"></a>1. 部署生产环境，打算部署三个broker实例，但zookeeper部署一个可以吗?</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">答案：可以是可以，但为了容错还是部署zookeeper集群比较好。broker和zookeeper的对应比例倒是没什么，都是独立集群。</div></pre></td></tr></table></figure>
+<p><img src="https://www.confluent.io/wp-content/uploads/2016/09/Event-sourced-based-architecture.jpeg" alt=""></p>
+		<p><a class="article__read-more-link" href="/2017/09/11/Bigdata-hadoop/Kafka/KafKa不懂就学就问就解答笔记/">...read more</a></p>
 	
 
 	
@@ -76,195 +182,10 @@
 
 	<article>
 	
-		<h1><a href="/2017/07/04/Bigdata-hadoop/Kafka/kafka性能优化–JVM参数配置优化/">Kafka性能优化–JVM参数配置优化</a></h1>
+		<h1><a href="/2017/08/27/Bigdata-hadoop/zookeeper/Bigdata-Zookeeper集群日志配置详解和清理自定义启动内存 /">Bigdata-Zookeeper集群日志配置详解和清理自定义启动内存</a></h1>
 	
 	<div class="article__infos">
-		<span class="article__date">2017-07-04</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Bigdata-Hadoop/">Bigdata Hadoop</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<p><img src="https://cdn2.hubspot.net/hubfs/540072/Kafka_Connect_graphic.png" alt="img-w650"></p>
-<h3 id="Kafka集群稳定"><a href="#Kafka集群稳定" class="headerlink" title="Kafka集群稳定"></a>Kafka集群稳定</h3><p>GC调优<br>　　调GC是门手艺活，幸亏Java 7引进了G1 垃圾回收，使得GC调优变的没那么难。G1主要有两个配置选项来调优：MaxGCPauseMillis 和 InitiatingHeapOccupancyPercent，具体参数设置可以参考Google，这里不赘述。</p>
-<p>　　Kafka broker能够有效的利用堆内存和对象回收，所以这些值可以调小点。对于 64Gb内存，Kafka运行堆内存5Gb，MaxGCPauseMillis 和 InitiatingHeapOccupancyPercent 分别设置为 20毫秒和 35。Kafka的启动脚本使用的不是 G1回收，需要在环境变量中加入。<br>
-		<p><a class="article__read-more-link" href="/2017/07/04/Bigdata-hadoop/Kafka/kafka性能优化–JVM参数配置优化/">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/06/29/Bigdata-hadoop/Kafka/如何手动更新Kafka中某个Topic的偏移量/">Bigdata-如何手动更新Kafka中某个Topic的偏移量</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-06-29</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/大数据/">大数据</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h3 id="如何手动更新Kafka中某个Topic的偏移量"><a href="#如何手动更新Kafka中某个Topic的偏移量" class="headerlink" title="如何手动更新Kafka中某个Topic的偏移量"></a>如何手动更新Kafka中某个Topic的偏移量</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-streams-poc-old-solution.jpg" alt=""></p>
-<p>我们都知道，Kafka topic的偏移量一般都是存储在Zookeeper中，具体的路径为<code>/consumers/[groupId]/offsets/[topic]/[partitionId]</code>，比如iteblog主题分区10的偏移量获取如下：<br>在有些场景下，这个工具不满足我们的需求，我们需要的是能够手动设置分区的偏移量为任何有意义的值，而不仅仅是earliest或者latest。那咋办？</p>
-		<p><a class="article__read-more-link" href="/2017/06/29/Bigdata-hadoop/Kafka/如何手动更新Kafka中某个Topic的偏移量/">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/06/05/Monitoring/Zabbix-Monitoring Kafka Consumer | kafka的监控和告警/">Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-06-05</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Kafka/">Kafka</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a> <a class="article__tag-link" href="/tags/Zabbix/">Zabbix</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/Zabbix-Monitoring-Kafka.png" alt=""></p>
-<h3 id="Zabbix-Monitoring-Kafka集群-Consumer-kafka的监控和告警"><a href="#Zabbix-Monitoring-Kafka集群-Consumer-kafka的监控和告警" class="headerlink" title="Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警"></a>Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警</h3><p>前面一篇讲了我们监控kafka集群Brokers服务状态监控。生产环境监控，可以在Zabbix中对Kafka进行监控，一种是监控JMX端口，另外一种是直接写脚本，使用bin/kafka-run-class.sh里提供的相关方法类。</p>
-<p>根据我们的业务场景，最为主要的的是监控消费者Lag的情况。所有我直接写脚本了。<br>我们对某一个Topic的30个分区，每个分区，当前Consumer的Lag情况。<br>当然还可以生成汇总图，在此不做多展示。在Zabbix中配置对应的Triggers，当Lag超过阀值，实现报警。</p>
-		<p><a class="article__read-more-link" href="/2017/06/05/Monitoring/Zabbix-Monitoring Kafka Consumer | kafka的监控和告警/">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/06/01/Monitoring/Zabbix监控Kafka集群 Brokers服务/">Zabbix监控Kafka集群 Brokers服务</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-06-01</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Kafka/">Kafka</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a> <a class="article__tag-link" href="/tags/Zabbix/">Zabbix</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h3 id="Zabbix监控Kafka集群-Brokers服务"><a href="#Zabbix监控Kafka集群-Brokers服务" class="headerlink" title="Zabbix监控Kafka集群 Brokers服务"></a>Zabbix监控Kafka集群 Brokers服务</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-datadog.png" alt=""></p>
-<h4 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h4><p>Monitoring Kafka with Datadog</p>
-<p>This post is the final part of a 3-part series on how to monitor Kafka. Part 1 explores the key metrics available from Kafka, and Part 2 is about collecting those metrics on an ad hoc basis.</p>
-<p>To implement ongoing, meaningful monitoring, you will need a dedicated system that allows you to store, visualize, and correlate your Kafka metrics with the rest of your infrastructure.</p>
-<p>Kafka deployments often rely on additional software packages not included in the Kafka codebase itself, in particular Apache ZooKeeper. A comprehensive monitoring implementation includes all the layers of your deployment, including host-level metrics when appropriate, and not just the metrics emitted by Kafka itself.</p>
-		<p><a class="article__read-more-link" href="/2017/06/01/Monitoring/Zabbix监控Kafka集群 Brokers服务/">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/05/28/Bigdata-hadoop/Kafka/开源的Kafka集群管理器(Kafka Manager)/">Bigdata-开源的Kafka集群管理器(Kafka Manager)</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-05-28</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/大数据/">大数据</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h2 id="Kafka-Manager"><a href="#Kafka-Manager" class="headerlink" title="Kafka Manager"></a>Kafka Manager</h2><p>A tool for managing <a href="http://kafka.apache.org/" target="_blank" rel="external">Apache Kafka.</a></p>
-<h4 id="It-supports-the-following"><a href="#It-supports-the-following" class="headerlink" title="It supports the following:"></a>It supports the following:</h4><ul>
-<li>管理多个群集</li>
-<li>容易检查集群状态（主题，消费者，偏移量，经纪人，副本分发，分区分配）</li>
-<li>运行首选副本选举</li>
-<li>使用选项生成分区分配，以选择要使用的代理</li>
-<li>运行分区的重新分配（基于生成的分配）</li>
-<li>创建可选主题配置的主题（0.8.1.1具有不同于0.8.2+的配置）</li>
-<li>删除主题（仅支持0.8.2+，并记住在代理配 置中设置delete.topic.enable = true）</li>
-<li>主题列表现在表示标记为删除的主题（仅支持0.8.2+）</li>
-<li>批量生成多个主题的分区分配，并选择要使用的代理</li>
-<li>批量运行多个主题的分区重新分配</li>
-<li>将分区添加到现有主题</li>
-<li>更新现有主题的配置</li>
-<li>可选地，启用JMX轮询代理级和主题级度量。</li>
-<li>可选地筛选出在zookeeper中没有ids / owner /＆offset /目录的消费者。</li>
-</ul>
-		<p><a class="article__read-more-link" href="/2017/05/28/Bigdata-hadoop/Kafka/开源的Kafka集群管理器(Kafka Manager)/">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2017/05/27/Bigdata-hadoop/zookeeper/Bigdata-ZooKeeper的配置详解优化/">Bigdata-ZooKeeper的配置详解优化</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-05-27</span><br />
+		<span class="article__date">2017-08-27</span><br />
 		
 			<span class="article__category">
 				<a class="article-category-link" href="/categories/Bigdata/">Bigdata</a>
@@ -280,9 +201,10 @@
 	
 
 	
-		<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p><code>ZooKeeper</code>的功能特性通过 <code>ZooKeeper</code> 配置文件来进行控制管理（ <code>zoo.cfg</code> 配置文件）。 ZooKeeper 这样的设计其实是有它自身的原因的。通过前面对 <code>ZooKeeper</code> 的配置可以看出，对 <code>ZooKeeper</code>集群进行配置的时候，它的配置文档是完全相同的（对于集群伪分布模式来说，只有很少的部分是不同的）。这样的配置方使得在部署 <code>ZooKeeper</code> 服务的时候非常地方便。另外，如果服务器使用不同的配置文件，必须要确保不同配置文件中的服务器列表相匹配。</p>
-<p>在设置 <code>ZooKeeper</code> 配置文档的时候，某些参数是可选的，但是某些参数是必须的。这些必须的参数就构成了<code>ZooKeeper</code> 配置文档的最低配置要求。</p>
-		<p><a class="article__read-more-link" href="/2017/05/27/Bigdata-hadoop/zookeeper/Bigdata-ZooKeeper的配置详解优化/">...read more</a></p>
+		<h4 id="Zookeeper集群日志配置详解和清理自定义启动内存"><a href="#Zookeeper集群日志配置详解和清理自定义启动内存" class="headerlink" title="Zookeeper集群日志配置详解和清理自定义启动内存"></a>Zookeeper集群日志配置详解和清理自定义启动内存</h4><h3 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h3><p>搭建zookeeper和kafka集群运行大数据处理数据消费，公司dubbo使用zookeeper做服务端的服务发现管理及配置中心，在使用时都出现过由于zk的日志大小过大塞满磁盘的情况 ，遇到了Zookeeper日志问题输出路径的问题, 发现zookeeper设置log4j.properties不能解决日志路径问题, 发现解决方案如下。</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zookeeper_cartoon.jpg" alt=""></p>
+<h3 id="zookeeper日志说明"><a href="#zookeeper日志说明" class="headerlink" title="zookeeper日志说明"></a>zookeeper日志说明</h3><p>ZooKeeper使用<code>SLF4J(the Simple Logging Facade for Java)</code>作为日志的抽象层，默认使用<code>Log4J</code>来做实际的日志工作。使用2层日志抽象看起来真是够呛，这里简要的说明如何来配置<code>Log4J</code>。尽管Log4J非常灵活且强大，但它也有一些复杂，可以用一整本书来描述它，这里只是简要的介绍一下基本的用法。</p>
+		<p><a class="article__read-more-link" href="/2017/08/27/Bigdata-hadoop/zookeeper/Bigdata-Zookeeper集群日志配置详解和清理自定义启动内存 /">...read more</a></p>
 	
 
 	
@@ -294,10 +216,10 @@
 
 	<article>
 	
-		<h1><a href="/2017/05/26/Bigdata-hadoop/zookeeper/Bigdata-ZooKeeper集群快速搭建配置与扩容/">Bigdata-ZooKeeper集群快速搭建配置与扩容</a></h1>
+		<h1><a href="/2017/08/04/Bigdata-hadoop/Kafka/Monitor Kafka with Prometheus +Grafana/">Monitor Kafka with Prometheus +Grafana</a></h1>
 	
 	<div class="article__infos">
-		<span class="article__date">2017-05-26</span><br />
+		<span class="article__date">2017-08-04</span><br />
 		
 			<span class="article__category">
 				<a class="article-category-link" href="/categories/Bigdata-Hadoop/">Bigdata Hadoop</a>
@@ -305,7 +227,7 @@
 		
 		
 			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/ZooKeeper/">ZooKeeper</a>
+			  	<a class="article__tag-link" href="/tags/Grafana/">Grafana</a> <a class="article__tag-link" href="/tags/Kafka/">Kafka</a> <a class="article__tag-link" href="/tags/Prometheus/">Prometheus</a>
 			</span>
 		
 	</div>
@@ -313,8 +235,121 @@
 	
 
 	
-		<h3 id="ZooKeeper集群快速搭建"><a href="#ZooKeeper集群快速搭建" class="headerlink" title="ZooKeeper集群快速搭建"></a>ZooKeeper集群快速搭建</h3><p>之前搞过了hadoop和spark，hue，现在使用kafka集群结合zookeeper集群做数据消费处理，本文是<code>ZooKeeper</code>的快速搭建,旨在帮助大家以最快的速度完成一个<code>ZK</code>集群的搭建,以便开展其它工作。</p>
-		<p><a class="article__read-more-link" href="/2017/05/26/Bigdata-hadoop/zookeeper/Bigdata-ZooKeeper集群快速搭建配置与扩容/">...read more</a></p>
+		<h3 id="Monitoring-Kafka-with-Prometheus"><a href="#Monitoring-Kafka-with-Prometheus" class="headerlink" title="Monitoring Kafka with Prometheus"></a>Monitoring Kafka with Prometheus</h3><p>We’ve previously looked at how to monitor Cassandra with <a href="https://www.robustperception.io/monitoring-cassandra-with-prometheus/" target="_blank" rel="external">Prometheus</a>. Let’s see the process for getting metrics from another popular Java application, <a href="https://kafka.apache.org/" target="_blank" rel="external">Kafka.</a></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-overview.png" alt=""></p>
+		<p><a class="article__read-more-link" href="/2017/08/04/Bigdata-hadoop/Kafka/Monitor Kafka with Prometheus +Grafana/">...read more</a></p>
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/08/01/Bigdata-hadoop/Kafka/Kafka-node模块实现调用js发送数据/">Bigdata-Kafka-node模块实现调用js发送数据</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-08-01</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/streams-interactive-queries-02.png" alt=""></p>
+<p>mongodb写到kafka 指定topic消费。为了保证数据稳定可靠性。<br>配合大数据在countly 使用开源<code>Kafka-node</code>是一个Node.js客户端 写js程序让countly三台集群分别数据到kafka 做新的topic主题备份。</p>
+		<p><a class="article__read-more-link" href="/2017/08/01/Bigdata-hadoop/Kafka/Kafka-node模块实现调用js发送数据/">...read more</a></p>
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/07/29/Bigdata-hadoop/RabbitMQ/Zabbix 3.0 监控推送rabbitmq队列/">Zabbix 3.0 监控推送rabbitmq队列-消息堆积</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-07-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Bigdata-Hadoop/">Bigdata Hadoop</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Bigdata-Hadoop/">Bigdata Hadoop</a> <a class="article__tag-link" href="/tags/Rabbitmq/">Rabbitmq</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h4 id="Zabbix-3-0-监控推送rabbitmq队列"><a href="#Zabbix-3-0-监控推送rabbitmq队列" class="headerlink" title="Zabbix 3.0 监控推送rabbitmq队列"></a>Zabbix 3.0 监控推送rabbitmq队列</h4><p>对于RabbitMQ的监控，除了服务器基本信息<code>（硬盘、CPU、内存、IO等）</code>以及MQ的进程和端口，我们也可以通过请求url访问管理API监控其集群和队列的情况。在java api 3.6.0以后，channel接口为我们提供了如下接口：</p>
+<ul>
+<li>messageCount：查询队列未消费的消息数，可以监控消息堆积的情况。 </li>
+<li>consumerCount：队列的消费者个数，可以对消费者进行监控 </li>
+</ul>
+<p>1.监控告警需求问题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">message.bi队列  积压&gt; 300 或者 消费者数&lt;=2</div><div class="line">message.push.cart队列  积压 &gt;10000 或者消费者数&lt;5</div><div class="line">message.user.related队列 积压&gt;2000 或者 消费者数&lt;=2</div><div class="line">message.cart队列 积压&gt;10000 或者 消费者数&lt;=2</div></pre></td></tr></table></figure>
+<p>2.编写Python脚本监控获取消费者数监控，队列。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">vim rabbitmq-monitor.py</div><div class="line"><span class="comment">#!/bin/env python</span></div><div class="line"><span class="comment"># -*- coding: UTF-8 -*-</span></div><div class="line">import sys, urllib2, base64, json, re,time</div><div class="line">ip = <span class="string">"169.23.73.22"</span></div><div class="line">keys = (<span class="string">'messages_ready'</span>,)</div><div class="line">def GetRabbitmqData():</div><div class="line">        request = urllib2.Request(<span class="string">"http://%s:15672/api/queues"</span> % ip)</div><div class="line">        base64string = base64.b64encode(<span class="string">'guest:guest'</span>)</div><div class="line">        request.add_header(<span class="string">"Authorization"</span>, <span class="string">"Basic %s"</span> % base64string)</div><div class="line">        result = urllib2.urlopen(request)</div><div class="line">        data = json.loads(result.read())</div><div class="line">        <span class="built_in">return</span> data</div><div class="line"></div><div class="line"></div><div class="line">data=GetRabbitmqData()</div><div class="line"><span class="comment">#print data</span></div><div class="line"><span class="keyword">for</span> queue <span class="keyword">in</span> data:</div><div class="line">    try:</div><div class="line">        <span class="built_in">print</span> <span class="string">"消费者数量:"</span>,queue[<span class="string">'consumers'</span>],<span class="string">"队列:"</span>,queue[<span class="string">'name'</span>],<span class="string">"消息积压数:"</span>,int(queue[keys[0]])</div><div class="line">    except:</div><div class="line">        pass</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">[root@message-center-mq zabbix]<span class="comment"># python rabbitmq-monitor.py</span></div><div class="line">消费者数量: 0 队列: 79d02dde-2007-4a49-b94b-0d4bee67b19c 消息积压数: 0</div><div class="line">消费者数量: 0 队列: aliveness-test 消息积压数: 0</div><div class="line">消费者数量: 0 队列: cartService.orderCancel.update 消息积压数: 0</div><div class="line">消费者数量: 0 队列: cartService.virtualOrderCancel.update 消息积压数: 0</div><div class="line">消费者数量: 0 队列: e9de65bd-be59-4c1c-b4a8-7312f382ac59 消息积压数: 0</div><div class="line">消费者数量: 3 队列: message.bi 消息积压数: 0</div><div class="line">消费者数量: 3 队列: message.cart 消息积压数: 0</div><div class="line">消费者数量: 3 队列: message.console 消息积压数: 0</div><div class="line">消费者数量: 3 队列: message.logistics 消息积压数: 0</div><div class="line">消费者数量: 3 队列: message.order.info 消息积压数: 0</div><div class="line">消费者数量: 30 队列: message.push.cart 消息积压数: 0</div><div class="line">消费者数量: 3 队列: message.style 消息积压数: 0</div><div class="line">消费者数量: 3 队列: message.user.related 消息积压数: 0</div><div class="line">消费者数量: 0 队列: payment.virtual.notify.success 消息积压数: 0</div><div class="line">消费者数量: 1 队列: 61b73745-4c74-475b-803e-bf2d48d2fa50 消息积压数: 0</div><div class="line">消费者数量: 1 队列: a984d00a-8bbe-43c1-aa20-c1dc788ddd97 消息积压数: 0</div><div class="line">消费者数量: 1 队列: e569e8a1-b7c9-4736-8bf8-13d76ecf7577 消息积压数: 0</div><div class="line">消费者数量: 3 队列: push.station.task.status 消息积压数: 0</div></pre></td></tr></table></figure>
+<p>编写zabbix-agentd 监控：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@message-center-mq zabbix]<span class="comment"># vim zabbix_agentd.conf</span></div><div class="line">UserParameter=rabbitmq.consumer.bi,python /etc/zabbix/rabbitmq-monitor.py | grep message.bi |awk -F<span class="string">'[ :]'</span> <span class="string">'&#123;print $3&#125;'</span></div><div class="line">UserParameter=rabbitmq.overstock.bi,python /etc/zabbix/rabbitmq-monitor.py | grep message.bi |awk -F<span class="string">'[ :]'</span> <span class="string">'&#123;print $NF&#125;'</span></div><div class="line">UserParameter=rabbitmq.consumer.push.cart,python /etc/zabbix/rabbitmq-monitor.py | grep message.push.cart |awk -F<span class="string">'[ :]'</span> <span class="string">'&#123;print $3&#125;'</span></div><div class="line">UserParameter=rabbitmq.overstock.push.cart,python /etc/zabbix/rabbitmq-monitor.py | grep message.push.cart |awk -F<span class="string">'[ :]'</span> <span class="string">'&#123;print $NF&#125;'</span></div><div class="line">UserParameter=rabbitmq.consumer.user.related,python /etc/zabbix/rabbitmq-monitor.py | grep message.user.related |awk -F<span class="string">'[ :]'</span> <span class="string">'&#123;print $3&#125;'</span></div><div class="line">UserParameter=rabbitmq.overstock.user.related,python /etc/zabbix/rabbitmq-monitor.py | grep message.user.related |awk -F<span class="string">'[ :]'</span> <span class="string">'&#123;print $NF&#125;'</span></div><div class="line">UserParameter=rabbitmq.consumer.cart,python /etc/zabbix/rabbitmq-monitor.py | grep message.cart |awk -F<span class="string">'[ :]'</span> <span class="string">'&#123;print $3&#125;'</span></div><div class="line">UserParameter=rabbitmq.overstock.cart,python /etc/zabbix/rabbitmq-monitor.py | grep message.cart |awk -F<span class="string">'[ :]'</span> <span class="string">'&#123;print $NF&#125;'</span></div></pre></td></tr></table></figure>
+<p>监控模板下载：在我github上面.</p>
+<p>weixin监控效果图：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/rabbitmq.png" alt=""></figure></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/07/29/Bigdata-hadoop/countly/Cloudera Manager5及CDH5安装指导/">Bigdata-Cloudera Manager5及CDH5安装指导</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-07-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Bigdata-Hadoop/">Bigdata Hadoop</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Bigdata-Hadoop/">Bigdata Hadoop</a> <a class="article__tag-link" href="/tags/Countly/">Countly</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/Bigdata-Cloudera-Manager.png" alt=""></p>
+<h3 id="问题导读："><a href="#问题导读：" class="headerlink" title="问题导读："></a>问题导读：</h3><p>1.什么是cloudera CM 、CDH?<br>2.CDH、CM有哪些版本？<br>3.CDH、CM有哪些安装方式？<br>4.CDH如何开发？</p>
+		<p><a class="article__read-more-link" href="/2017/07/29/Bigdata-hadoop/countly/Cloudera Manager5及CDH5安装指导/">...read more</a></p>
 	
 
 	
@@ -357,7 +392,7 @@
 	    
 
 		<div class="footer-credit">
-			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+			<span>© 2018 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
 		</div>
 
 	</div>

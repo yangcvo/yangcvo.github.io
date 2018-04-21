@@ -43,18 +43,18 @@
 
 	<article>
 	
-		<h1><a href="/2014/04/19/性能监控/Somekeping/用最简单易懂的方式安装smokeping/">用最简单的方式安装smokeping</a></h1>
+		<h1><a href="/2015/09/10/自动化+Jenkins/saltstack/自动化运维工具-Saltstack的详细介绍安装与使用以及语法开发操作/">自动化运维工具-Saltstack的详细介绍安装与使用以及语法开发操作</a></h1>
 	
 	<div class="article__infos">
-		<span class="article__date">2014-04-19</span><br />
+		<span class="article__date">2015-09-10</span><br />
 		
 			<span class="article__category">
-				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+				<a class="article-category-link" href="/categories/Automation/">Automation</a>
 			</span><br />
 		
 		
 			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/IDC监控/">IDC监控</a> <a class="article__tag-link" href="/tags/Performance-monitoring/">Performance monitoring</a> <a class="article__tag-link" href="/tags/Smokeping/">Smokeping</a>
+			  	<a class="article__tag-link" href="/tags/Saltstack/">Saltstack</a>
 			</span>
 		
 	</div>
@@ -62,122 +62,683 @@
 	
 
 	
-		<p>smokeping这个监控还是很强大的，用这个监控是在第一家公司做IDC起家后面转型CDN云计算云加速。<br>这个也是我学的最早的一款监控，在这里我用编译安装方式。也有脚本安装不过需要了解过somkeping安装过程会比较看的懂脚本。</p>
-<p>适用于宽带运营商维护和IDC机房维护可以检测本地网络的到上级运营商出口这段路由各个节点的稳定性            可以检测本地网络到各主要门户网站的<code>延时，丢包率，稳定性</code><br>可以检测本地网络到各地游戏服务器的<code>延时，丢包率，稳定性</code></p>
-<p>smokeping缺点：不能在前台Web页面添加要检测的节点，必须在后台smokeping的配置文件中添加 </p>
-<h3 id="安装前的准备："><a href="#安装前的准备：" class="headerlink" title="安装前的准备："></a>安装前的准备：</h3><ol>
-<li>操作系统：选择centOS6.5最小化版， 里面的RPM包基本上都是最新的。   </li>
-<li>注1: centOS 5.6版本在安装rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm包是会遇到依赖性问题，要求安装rpmlib包，但centOS5.6版本中的rpmlib版本较低，无法直接安装   </li>
-<li>注2：在安装centOS6.5时，要注意设置系统的IP地址，如下图,点击【configure network】按钮，选择【system eth0】, 点击 【IPv4Seting】,设置IP地址    </li>
-<li>注3: 选择安装包时，点选【Basic Server】, 要安装621个基本包 注4: 其他安装步骤，按照正常的安装流程操作即可 </li>
-</ol>
-<h3 id="二-安装过程"><a href="#二-安装过程" class="headerlink" title="二. 安装过程"></a>二. 安装过程</h3><p>修改时区</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">\cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</div></pre></td></tr></table></figure>
-<p>同步时间</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ntpdate time.nist.gov</div></pre></td></tr></table></figure>
-<p>写入BIOS</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hwclock -w</div></pre></td></tr></table></figure>
-<p>关闭防火墙</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">service iptables stop</div></pre></td></tr></table></figure>
-<h3 id="1-安装第三方软件源"><a href="#1-安装第三方软件源" class="headerlink" title="1. 安装第三方软件源"></a>1. 安装第三方软件源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">64位系统 </div><div class="line">rpm  -Uvh http://apt.sw.be/redhat/el6/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm</div><div class="line">32位系统</div><div class="line">rpm  -Uvh http://apt.sw.be/redhat/el6/en/i386/rpmforge/RPMS/rpmforge-release-0.5.3-1.el6.rf.i686.rpm</div></pre></td></tr></table></figure>
-<p>注：安装这个源后，接下来要安装的大量的依赖包就不会报错</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">rpm -Uvh  http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm </div><div class="line">sed -i <span class="string">'s/^#baseurl/baseurl/g'</span> /etc/yum.repos.d/epel.repo</div><div class="line">sed -i <span class="string">'s/mirrorlist/#mirrorlist/g'</span> /etc/yum.repos.d/epel.repo</div></pre></td></tr></table></figure>
-<h3 id="2-安装rrdtool与依赖库"><a href="#2-安装rrdtool与依赖库" class="headerlink" title="2. 安装rrdtool与依赖库"></a>2. 安装rrdtool与依赖库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum -y install perl perl-Net-Telnet perl-Net-DNS perl-LDAP perl-libwww-perl perl-RadiusPerl perl-IO-Socket-SSL perl-Socket6 perl-CGI-SpeedyCGI perl-FCGI perl-CGI-SpeedCGI perl-Time-HiRes perl-ExtUtils-MakeMaker perl-RRD-Simple rrdtool rrdtool-perl curl fping echoping  httpd httpd-devel gcc make  wget libxml2-devel libpng-devel glib pango pango-devel freetype freetype-devel fontconfig cairo cairo-devel libart_lgpl libart_lgpl-devel mod_fastcgi screen wqy-zenhei-fonts.noarch wqy-zenhei-fonts-common.noarch lrzsz nginx</div></pre></td></tr></table></figure>
-<p>注：<code>perl-CGI-SpeedyCGI，perl-CGI-SpeedCGI</code>这两个包在安装过程中会提示找不到，但没关系<br>注：用yum安装大量的依赖包还是很方便的，而百度上有些关于安装smokeping的文档要求使用wget下载后再用<code>make,make install</code>方式安装，虽然make方式不复杂，但通过make编译再安装几十个包就显得有点繁锁了。</p>
-<h3 id="3-下载与安装smokeping"><a href="#3-下载与安装smokeping" class="headerlink" title="3.下载与安装smokeping"></a>3.下载与安装smokeping</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">wget http://oss.oetiker.ch/smokeping/pub/smokeping-2.6.8.tar.gz</div><div class="line">wget http://oss.oetiker.ch/smokeping/pub/smokeping-2.6.11.tar.gz    </div><div class="line">tar zxvf smokeping-2.6.8.tar.gz</div><div class="line"><span class="built_in">cd</span> smokeping-2.6.8</div><div class="line">./configure --prefix=/usr/<span class="built_in">local</span>/smokeping</div></pre></td></tr></table></figure>
-<p>出现问题是因为需要安装perl的模块，所以运行下面内容即可</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">如果只出现 Config::Grammar<span class="string">' ... Failed</span></div><div class="line">解决 'Config::Grammar<span class="string">' ... Failed</span></div><div class="line">wget http://search.cpan.org/CPAN/authors/id/D/DS/DSCHWEI/Config-Grammar-1.10.tar.gz</div><div class="line">tar zxvf Config-Grammar-1.10.tar.gz</div><div class="line">cd Config-Grammar-1.10</div><div class="line">perl Makefile.PL</div><div class="line">make &amp;&amp; make install</div></pre></td></tr></table></figure>
-<p>如果出现很多个failed，就用下面的方法</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">./setup/build-perl-modules.sh /usr/<span class="built_in">local</span>/smokeping/thirdparty  这个是为前面failed做安装  </div><div class="line">./co nfigure --prefix=/usr/<span class="built_in">local</span>/smokeping   </div><div class="line">                                                                      </div><div class="line">如果还出现问题可以看下这里面的参考。http://bbs.51cto.com/thread-1106181-1.html</div><div class="line">/usr/bin/gmake install</div><div class="line"></div><div class="line">安装下yum install cpan     perl -MCPAN <span class="_">-e</span> <span class="string">'install CGI'</span>           perl -MCPAN <span class="_">-e</span> <span class="string">'install CGI::Fast '</span>  这个安装好了然后再执行这一步。</div></pre></td></tr></table></figure>
-<p>如果上面提示CGI 没有安装成功。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">wgethttp://www.cpan.org/authors/id/M/MA/MARKSTOS/</div><div class="line">CGI.pm-3.65.tar.gz</div><div class="line">tar zxvf CGI.pm-3.65.tar.gz</div><div class="line"><span class="built_in">cd</span> CGI.pm-3.65</div><div class="line">perl Makefile.PL</div><div class="line">make &amp;&amp; make install</div><div class="line">然后再执行下 ./configure --prefix=/usr/<span class="built_in">local</span>/smokeping</div></pre></td></tr></table></figure>
-<p>现在smokeping安装完成</p>
-<h3 id="4-配置smokeping"><a href="#4-配置smokeping" class="headerlink" title="4. 配置smokeping"></a>4. 配置smokeping</h3><h2 id="第一种-使用nginx"><a href="#第一种-使用nginx" class="headerlink" title="第一种 使用nginx"></a>第一种 使用nginx</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">1.安装nginx</div><div class="line">rpm -Uvh  http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm</div><div class="line">yum install -y nginx</div><div class="line">https://metacpan.org/pod/release/MSTROUT/ExtUtils-MakeMaker-6.59/lib/ExtUtils/MakeMaker.pm  下载Make 让他直接执行</div></pre></td></tr></table></figure>
-<p>2.安装基础IO </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /root</div><div class="line">wget  http://220.194.199.196/download/IO-All-0.46.tar.gz</div><div class="line">tar xvzf IO-All-0.46.tar.gz</div><div class="line"><span class="built_in">cd</span> IO-All-0.46</div><div class="line">perl Makefile.PL       <span class="comment">#  这里出现这个问题 把那个文件删了就行了。</span></div><div class="line">make &amp;&amp; make install</div></pre></td></tr></table></figure>
-<p>3.配置nginx的sock<br>创建fcgi sock 文件，配置nginx fcgi使用</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#wget http://autonagios.googlecode.com/svn/trunk/autonagios-20100103/files/nginx-fcgi.txt  -O /etc/nginx-fcgi</span></div><div class="line">wget http://117.27.153.133/nginx-fcgi.txt -O /etc/nginx-fcgi </div><div class="line">chmod a+x /etc/nginx-fcgi</div><div class="line">/etc/nginx-fcgi <span class="_">-l</span> /var/<span class="built_in">log</span>/nginx-fcgi.log -pid /var/run/nginx-fcgi.pid -S /var/run/nginx-fcgi.sock</div><div class="line">chmod 777 /var/run/nginx-fcgi.sock</div></pre></td></tr></table></figure>
-<p>4.增加smokeping使用的data、var、和cache目录</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/smokeping</div><div class="line">mkdir data var cache</div><div class="line">mv htdocs/smokeping.fcgi.dist htdocs/smokeping.fcgi</div><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/smokeping/etc</div><div class="line">mv config.dist config</div><div class="line">chmod 600 /usr/<span class="built_in">local</span>/smokeping/etc/smokeping_secrets.dist</div></pre></td></tr></table></figure>
-<p>5.上传监控节点conf文件到smokeping的etc目录<br>6.修改smokpeing配置脚本</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">vi config</div><div class="line">在如下位置修改</div><div class="line"></div><div class="line">*** Database ***</div><div class="line">step     = 300</div><div class="line">pings    = 20</div><div class="line">修改为</div><div class="line">*** Database ***</div><div class="line">step     = 60</div><div class="line">pings    = 20</div><div class="line"></div><div class="line">在如下位置添加一句话</div><div class="line">*** Presentation ***</div><div class="line">template = /usr/<span class="built_in">local</span>/smokeping/etc/basepage.html.dist</div><div class="line">charset=utf-8</div></pre></td></tr></table></figure>
-<p>在第一个加号位置下将监控节点文件引入，如下例子</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">+ testnetwork</div><div class="line">menu=测试网络状况</div><div class="line">title= 测试网络状况</div><div class="line">@include CT-IP.conf</div><div class="line">@include CN-IP.conf</div><div class="line">@include CT_IDC.conf</div><div class="line">@include CNC-IDC.conf</div></pre></td></tr></table></figure>
-<p>保存退出</p>
-<p>7.增加data、var、cache目录的软连接</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ln <span class="_">-s</span> /usr/<span class="built_in">local</span>/smokeping/data/ /usr/share/nginx/html/data</div><div class="line">ln <span class="_">-s</span>  /usr/<span class="built_in">local</span>/smokeping/cache/ /usr/share/nginx/html/cache</div><div class="line">ln <span class="_">-s</span> /usr/<span class="built_in">local</span>/smokeping/htdocs/cropper/ /usr/share/nginx/html/cropper</div></pre></td></tr></table></figure>
-<p>8.修改nginx 配置文件<br>查看下nginx的版本，使用nginx -v 查看，如下例子：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"> nginx -v</div><div class="line">nginx version: nginx/1.0.15</div></pre></td></tr></table></figure>
-<p>修改nginx配置</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">vi</span> /etc/nginx/conf.d/default.conf</div><div class="line">--增加fcgi 指向</div><div class="line">    location  <span class="regexp">~ .*\.fcgi$</span> &#123;</div><div class="line">        <span class="attribute">root</span> /usr/local/smokeping/htdocs/;</div><div class="line">        <span class="attribute">gzip</span> <span class="literal">off</span>;</div><div class="line">        <span class="attribute">fastcgi_pass</span>  unix:/var/run/nginx-fcgi.sock;</div><div class="line">        <span class="attribute">fastcgi_index</span> smokeping.fcgi;</div><div class="line">        <span class="attribute">include</span> fastcgi.conf;                 <span class="comment">#1.0.x 与0.8.x 用这个</span></div><div class="line">        <span class="comment">#include fastcgi_params;            #1.4.x版本用 fastcgi_params</span></div><div class="line">        <span class="comment">#fastcgi_param   SCRIPT_FILENAME /opt/smokeping/htdocs$fastcgi_script_name; #1.4.x版本必加</span></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>保存退出</p>
-<h2 id="第二种-使用apache"><a href="#第二种-使用apache" class="headerlink" title="第二种 使用apache"></a>第二种 使用apache</h2><p>(1) 创建cache、data、var目录</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/smokeping</div><div class="line">mkdir htdocs/cache data var</div></pre></td></tr></table></figure>
-<p>(2) 在创建日志</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">touch /var/<span class="built_in">log</span>/smokeping.log</div></pre></td></tr></table></figure>
-<p>(3) 上传监控节点的conf文件到smokeping的etc目录下<br>修改smokeping目录的用户和组权限</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">chown apache:apache -R /usr/<span class="built_in">local</span>/smokeping</div><div class="line">chown apache:apache /var/<span class="built_in">log</span>/smokeping.log</div></pre></td></tr></table></figure>
-<p>(4) 修改配置文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/smokeping/htdocs/</div><div class="line">mv smokeping.fcgi.dist smokeping.fcgi</div><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/smokeping/etc</div><div class="line">mv config.dist config</div><div class="line">vi config</div><div class="line"></div><div class="line">修改改行设置</div><div class="line">imgcache = /usr/<span class="built_in">local</span>/smokeping/cache</div><div class="line">imgcache = /usr/<span class="built_in">local</span>/smokeping/htdocs/cache</div><div class="line"></div><div class="line"> *** Database ***</div><div class="line">step  = 300</div><div class="line">pings  = 60</div><div class="line">然后修改step，从300改为60，这是检测的时间, pings 从20 改为60, 即60秒ping 60次</div><div class="line"></div><div class="line">在如下位置添加一句话</div><div class="line">*** Presentation ***</div><div class="line">template = /usr/<span class="built_in">local</span>/smokeping/etc/basepage.html.dist</div><div class="line">charset=utf-8</div><div class="line"></div><div class="line">在第一个加号位置下将监控节点文件引入，如下例子</div><div class="line">+ testnetwork</div><div class="line">menu=测试网络状况</div><div class="line">title= 测试网络状况</div><div class="line">@include CT-IP.conf</div><div class="line">@include CN-IP.conf</div><div class="line">@include CT_IDC.conf</div><div class="line">@include CNC-IDC.conf</div></pre></td></tr></table></figure>
-<p>保存退出 </p>
-<p> (5) 配置完成之后修改密码文件权限</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chmod 600 /usr/<span class="built_in">local</span>/smokeping/etc/smokeping_secrets.dist</div></pre></td></tr></table></figure>
-<ol>
-<li>修改apache的配置</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">vim /etc/httpd/conf/httpd.conf</div><div class="line">在DocumentRoot <span class="string">"/var/www/html"</span> 这一行之下添加如下内容：</div><div class="line"></div><div class="line">Alias /cache <span class="string">"/usr/local/smokeping/htdocs/cache"</span></div><div class="line">Alias /cropper <span class="string">"/usr/local/smokeping/htdocs/cropper"</span></div><div class="line">Alias /smokeping <span class="string">"/usr/local/smokeping/htdocs"</span></div><div class="line">&lt;Directory <span class="string">"/usr/local/smokeping/htdocs"</span>&gt;</div><div class="line">  AllowOverride None</div><div class="line">  AddHandler cgi-script .fcgi .cgi</div><div class="line">  Options ExecCGI</div><div class="line">  &lt;IfModule dir_module&gt;</div><div class="line">     DirectoryIndex smokeping.fcgi</div><div class="line">  &lt;/IfModule&gt;</div><div class="line">  Order allow,deny</div><div class="line">  Allow from all </div><div class="line">&lt;/Directory&gt;</div></pre></td></tr></table></figure>
-<ol>
-<li>设置开机启动httpd, smokeping,并关闭iptables.</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">echo</span> <span class="string">"/usr/local/smokeping/bin/smokeping --logfile=/var/log/smokeping.log 2&gt;&amp;1 &amp;"</span> &gt;&gt; /etc/rc.local</div><div class="line">chkconfig httpd on      <span class="comment">#开机启动httpd进程</span></div><div class="line">chkconfig iptables off  <span class="comment">#开机不启动iptables服务</span></div><div class="line">chkconfig nginx on</div></pre></td></tr></table></figure>
-<ol>
-<li>启动http或者nginx以及smokeping</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">service httpd start service nginx start</div><div class="line">/usr/<span class="built_in">local</span>/smokeping/bin/smokeping --debug-daemon</div><div class="line">chown apache:apache -R /usr/<span class="built_in">local</span>/smokeping</div></pre></td></tr></table></figure>
-<ol>
-<li>打开检测主机的Web页面.</li>
-</ol>
-<p>使用httpd做web，在Web浏览器里输入<code>http://您的监控主机IP/smokeping</code>      这里启动不了，看下什么原因。是不是CT-IDC.conf 没有上传到etc下面</p>
-<p>打开这里出现500  说明配置正确防火墙看下。<code>serenfroce 0</code> 有没有关闭。</p>
-<p>使用nginx做web，在Web浏览器里输入 <a href="http://您的监控主机IP/smokeping.fcgi" target="_blank" rel="external">http://您的监控主机IP/smokeping.fcgi</a>    这里启动不了，看下什么原因。是不是CT-IDC.conf 没有上传到etc下面</p>
-<p>如果遇到500错误：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">Internal Server Error</div><div class="line">The server encountered an internal error or misconfiguration and was unable to complete your request.</div><div class="line">Please contact the server administrator, root@localhost and inform them of the time the error occurred, and anything you might have <span class="keyword">done</span> that may have caused the error.</div><div class="line">More information about this error may be available <span class="keyword">in</span> the server error log.</div><div class="line">--------------------------------------------------------------------------------</div><div class="line">Apache/2.2.15 (CentOS) Server at 192.168.2.101 Port 80</div><div class="line"></div><div class="line">说明没有关闭SElinux 选项，关闭就正常了</div><div class="line">vi /etc/sysconfig/selinux</div><div class="line">SELINUX=permissive</div><div class="line">[root@localhost ~]<span class="comment"># getenforce     #查看SElinux 的命令</span></div><div class="line">Permissive                      <span class="comment">#返回的结果是Permissive, 表示已经关闭SElinux了</span></div></pre></td></tr></table></figure>
-<ol>
-<li>在Web页面增加验证用户名和密码(可选步骤)</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">(1)修改httpd.conf里的内容</div><div class="line">&lt;Directory <span class="string">"/usr/local/smokeping"</span>&gt;</div><div class="line">AllowOverride None</div><div class="line">Options All</div><div class="line">AddHandler cgi-script .fcgi .cgi</div><div class="line">AllowOverride AuthConfig</div><div class="line">Order allow,deny</div><div class="line">Allow from all</div><div class="line">AuthName <span class="string">"Smokeping"</span></div><div class="line">AuthType Basic</div><div class="line">AuthUserFile /usr/<span class="built_in">local</span>/smokeping/htdocs/htpasswd</div><div class="line">Require valid-user</div><div class="line">DirectoryIndex smokeping.fcgi</div><div class="line">&lt;/Directory&gt;</div></pre></td></tr></table></figure>
-<p>注：上面的内容部分已经添加，这里仅添加红色字体内容即可。</p>
-<p>(2) 设置登录账户与密码<br>进入cd /usr/local/smokeping/htdocs目录， 执行命令：htpasswd -c /usr/local/smokeping/htdocs/htpasswd admin<br>这个是设置登录账户为admin，密码在后面输入，然后重启httpd就可以实现密码验证登录<br>重新登录web页面，会要求输入用户名和密码.</p>
-<ol>
-<li>一定要同步好时间</li>
-</ol>
-<p>在ESXI4的虚拟机中，定期执行<code>ntpdate 210.72.145.44</code>    #或者与本地的时间服务器同步<br>在vmware workstation中，安装vmware-tools， 虚拟机的时间会自动与其宿主机时间同步</p>
-<p>注： 如果vmware workstation中的虚拟机不安装vmware-tools，则虚拟机时间会与宿主机时间相隔整整8个小时(虚拟机时间早于宿主机时间)<br> vmware-tools的安装不在此叙述</p>
-<ol>
-<li><p>特别说明: 修改/usr/local/smokeping/etc/config 文件的配置参数，必须重启动smokeping程序</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">(1)如果重启动smokeping程序失败，根据报错提示删除/usr/<span class="built_in">local</span>/smokeping/data子文件夹的rrd文件</div><div class="line">(2)中文问题：如果需要在网页里展示中文，修改/usr/<span class="built_in">local</span>/smokeping/etc的config文件</div><div class="line">*** Presentation ***</div><div class="line">charset = utf-8 //注：在这里添加</div><div class="line">然后在menu与titile里修改中文，重启即可</div></pre></td></tr></table></figure>
-<p>有一个要注意的地方就是，你输入的中文必须在utf-8的字符编码下输入的中文字符，不然会出现乱码。<br> 如果在xshel下，选择file-properities-terminal<br>如果还是不显示就看看你系统里是否安装了中文字体，或者在安装一个</p>
+		<h2 id="引言-自动化运维"><a href="#引言-自动化运维" class="headerlink" title="引言:自动化运维"></a>引言:自动化运维</h2><h3 id="1-saltstack-的基本介绍"><a href="#1-saltstack-的基本介绍" class="headerlink" title="1:saltstack 的基本介绍"></a>1:saltstack 的基本介绍</h3><h4 id="2-salt-的安装"><a href="#2-salt-的安装" class="headerlink" title="2:salt 的安装"></a>2:salt 的安装</h4><ul>
+<li>服务端 <ul>
+<li>安装</li>
+<li>配置文件 </li>
+<li>运行 </li>
+<li>注意事项</li>
+</ul>
 </li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@smokeping data]<span class="comment"># ps -ef |grep smoke   #查找smokeping进程</span></div><div class="line">root      8740     1  0 09:08 ?        00:00:00 /usr/<span class="built_in">local</span>/smokeping/bin/smokeping [FPing]</div><div class="line">root     35552 35529  0 09:33 pts/2    00:00:00 grep smoke</div><div class="line">[root@smokeping data]<span class="comment"># kill 8740     #杀掉smokeping进程</span></div><div class="line">[root@smokeping data]<span class="comment"># ps -ef |grep smoke</span></div><div class="line">root     35554 35529  4 09:33 pts/2    00:00:00 grep smoke</div><div class="line">smokeping进程已经被杀掉</div><div class="line">[root@smokeping data]<span class="comment">#screen                    #如果通过SSH远程登录到监控主机，最后执行screen，在虚拟窗口中启动smokeping</span></div><div class="line">/usr/<span class="built_in">local</span>/smokeping/bin/smokeping --logfile=/var/<span class="built_in">log</span>/smokeping.log 2&gt;&amp;1 &amp;</div></pre></td></tr></table></figure>
-<p>三. 添加需要监控的网站和节点(在/usr/local/smokeping/etc/config中添加)</p>
-<ul>
-<li><p>smokeping就这点不好，添加节点不能在前台Web页面添加，一定要在后台的配置文件中添加,希望以后的版本中能改进一下  *</p>
-</li>
-<li><p>修改/usr/local/smokeping/etc/config 后，必须重启smokeping 程序，配置才会生效  *  </p>
-</li>
-<li><p>smokeping 会根据配置文件config 在/usr/local/smokeping/data 之下添加moniter文件夹，其下包含website子文件夹 *</p>
-</li>
-<li><p>用vmware workstation的虚拟机测试有一点好处，workstation下的虚拟网卡可以设置出入的丢包率，适合smokeping做丢包测试, 经过测试smokeping检测出的丢包率与vmware worksation虚拟网卡设置的丢包率基本相同,也就是说smokeping 能够反应网络的真实状况 *<br> 添加监控节点示例：注意+是第一层，++是第二层，+++ 是第三层</p>
+<li>客户端 <ul>
+<li>安装</li>
+<li>配置文件</li>
+<li>运行</li>
+<li>注意事项</li>
+</ul>
 </li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">+ moniter                       </div><div class="line">menu = moniter</div><div class="line">++ website</div><div class="line">menu = website</div><div class="line">title = moniter website</div><div class="line"><span class="comment">#host = /moniter/website/baidu /moniter/website/sina /moniter/website/taobao /moniter/website/QQ</span></div><div class="line"></div><div class="line">+++ baidu</div><div class="line">menu = baidu</div><div class="line">title = baidu.com</div><div class="line">alerts = someloss</div><div class="line">host = www.baidu.com</div><div class="line"></div><div class="line">+++ sina</div><div class="line">menu = sina</div><div class="line">title = sina.com.cn</div><div class="line">alerts = someloss</div><div class="line">host = www.sina.com.cn</div><div class="line"></div><div class="line">+++ taobao</div><div class="line">menu = taobao</div><div class="line">title = taobao.com</div><div class="line">alerts = someloss</div><div class="line">host = www.taobao.com</div><div class="line"></div><div class="line">+++ QQ</div><div class="line">menu = QQ</div><div class="line">title = QQ</div><div class="line">alerts = someloss</div><div class="line">host = www.qq.com.cn</div><div class="line"></div><div class="line">+++ sohu</div><div class="line">menu = sohu</div><div class="line">title = sohu</div><div class="line">alerts = someloss</div><div class="line">host = www.sohu.com</div></pre></td></tr></table></figure>
-<p>效果图：当前菜单下主机延时，丢包图</p>
-<p>效果图：当前菜单下某主机延时，丢包详细图</p>
-<p>13.图例说明</p>
-<p>绿块表示不丢包，其他颜色的块表示不同程序的丢包。<br>图形越平稳，表示网络越稳定，如果图形峰值和低谷很多，则表示网络时延不稳定，忽高忽低。</p>
-<p>这里apache 如果要你做个URL的文件下载测试 </p>
-<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dd <span class="keyword">if</span>=<span class="regexp">/dev/</span><span class="keyword">null</span> bs=<span class="number">1</span>M <span class="keyword">count</span>=<span class="number">1</span> of=<span class="regexp">/var/</span>www<span class="regexp">/html/i</span>ndex.html</div></pre></td></tr></table></figure>
+<h4 id="3-salt-的使用"><a href="#3-salt-的使用" class="headerlink" title="3:salt 的使用:"></a>3:salt 的使用:</h4><ul>
+<li>基础知识<ul>
+<li>targeting </li>
+<li>nodegroup </li>
+<li>grains </li>
+<li>pillar</li>
+</ul>
+</li>
+<li>状态管理 <ul>
+<li>state</li>
+<li>state 语法</li>
+<li>state 的逻辑关系 </li>
+<li>highstate</li>
+<li>salt schedule </li>
+</ul>
+</li>
+<li>实时管理 <ul>
+<li>cmd.run</li>
+<li>module </li>
+</ul>
+</li>
+<li>无 master<h4 id="4-salt-开发"><a href="#4-salt-开发" class="headerlink" title="4:salt 开发"></a>4:salt 开发</h4></li>
+<li>saltclient 管理 salt<ul>
+<li>salt api</li>
+</ul>
+</li>
+</ul>
+<h3 id="引言-自动化运维-运维的工作主要在2方面"><a href="#引言-自动化运维-运维的工作主要在2方面" class="headerlink" title="引言:自动化运维 运维的工作主要在2方面:"></a>引言:自动化运维 运维的工作主要在2方面:</h3><ol>
+<li>状态的管理</li>
+<li>系统性能调优 这里主要简介下运维状态的管理:<br>对于运维来说,基于状态的配置管理已经向自动化迈进了一大步,以状态为核心的运维,<br>让状态本身有了可管理性;在运维过程中我们会发现,同样的一个配置,我们会在不同的时间, 不同的地点一次在一次的配置,这个时候,配置管理就有了重复性;有的甚至是原封不动的重 复,而另外一些则是按照一定的规律在发展,这些按照一定规律发展的配置,就是可预测的.综 上我认识的,我们运维工作的本身是可管理,可重复,可预测的.基于这样的理念,我们就可以更 高一步的推进我们的运维自动化,甚至到智能化.</li>
+</ol>
+<p>看到这里,我理想中的运维自动化的配置管理平台应该有如下功能: </p>
+<ol>
+<li>对状态的配置及管理(最基本的) </li>
+<li>可以及时的对系统状态进行调整并能看到结果(可以方便的实时升级系统状态)</li>
+<li>可以对其本身做方便的第三方管理(借助其 API,直接给状态制定好其发展方向)</li>
+</ol>
+<h5 id="加分项"><a href="#加分项" class="headerlink" title="加分项:"></a>加分项:</h5><ol>
+<li>开发语言单一</li>
+<li>架构简单,灵活 </li>
+<li>有不差的安全性 </li>
+<li>没有商业版<br>下面是现有比较有代表性的自动化配置管理工具: 附:以下仅基于开源版本进行介绍</li>
+</ol>
+<h4 id="理念-优缺点"><a href="#理念-优缺点" class="headerlink" title="理念 优缺点"></a>理念 优缺点</h4><p>puppet 从运维的角度去做配置管理(运维人员做给运维用的) 架构简单,系统比较成<br>熟/不便于第三方管理</p>
+<p>chef 从研发的角度去做配置管理(研发人员做给运维用的) 较便于第三方管理,对<br>自身(节点,变量,cookbook)的管理较方便,有自己的 dashboard,cookbook 支持版本管理,自从 cookbook 的版本管理/架构复杂,开发语言较多,(安全问题)</p>
+<ul>
+<li>以上 2 者都比较侧重于状态的管理,对单个或者多个状态的临时调整或者管理较差 2 个都有商业版,让我这个用开源版的很自卑</li>
+</ul>
+<p>这里我们也能看到,2 个配置功能都没能达到我理想中的状态,那就暂用 chef 吧,直到有 一天,了解到了 saltstack 看到了这句话:“ 系统配置的自动化不仅可预测,可重复, 还具有可 管理性”(<a href="http://wiki.saltstack.cn/reproduction/dive-into-saltstack),这尼玛才是运维自动化的未" target="_blank" rel="external">http://wiki.saltstack.cn/reproduction/dive-into-saltstack),这尼玛才是运维自动化的未</a> 来啊,于是毫无节操的开始学习 salt,而且发现越学越喜欢;在我使用 puppet 及 chef 的时 候都没有使用 salt 的感觉,太爽了。所以我这里仅仅介绍几本的语法不涉及实际用例,salt 的安装非常方便,所以你在看本文档的时候希望你能真正的动手去做一下,然后你就会爱上 salt 了</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">附:如果你会 python,salt 基本是不需要怎么学的,而我正好了解一点 py,不过这最多占我选择 salt 的 20%。</div></pre></td></tr></table></figure>
+<h3 id="1-saltstack-的基本介绍-1"><a href="#1-saltstack-的基本介绍-1" class="headerlink" title="1:saltstack 的基本介绍"></a>1:saltstack 的基本介绍</h3><p>salt 是一个新的基础平台管理工具。很短的时间即可运行并使用起来, 扩展性足以支撑<br>管理上万台服务器,数秒钟即可完成数据传递. 经常被描述为 Func 加强版+Puppet 精简版。</p>
+<p>salt 的整个架构都是基于消息来实现.所以能够提供横强的拓展性,灵活性,实时性;不夸 了,看实际的 slat 是什么样的不过 salt 还是一个很年轻的东西,还有很多地方不够完善,做的不够好,不过我相信这 些都只是时间问题。</p>
+<ul>
+<li>注:以下文档仅仅为基本内容,相关知识点的深入学习,请看相应文档连接 ##2:salt 的安装</li>
+</ul>
+<p>安装有很多途径,作为一个 centos 的用户,我选择 rpm 首先添加 RPM 源:<br>rpm -ivh <a href="http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm" target="_blank" rel="external">http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm</a></p>
+<h5 id="附-实际生产中我是自建源"><a href="#附-实际生产中我是自建源" class="headerlink" title="附:实际生产中我是自建源"></a>附:实际生产中我是自建源</h5><p>epel 中关于 salt 的包:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">salt-api.noarch : A web api <span class="keyword">for</span> to access salt the parallel remote execution system salt-master.noarch : Management component <span class="keyword">for</span> salt, a parallel remote execution</div><div class="line">system</div><div class="line">salt-minion.noarch : Client component <span class="keyword">for</span> salt, a parallel remote execution system salt.noarch : A parallel remote execution system</div><div class="line">salt-cloud.noarch : Generic cloud provisioning tool</div></pre></td></tr></table></figure>
+<h4 id="1-服务端-1-安装"><a href="#1-服务端-1-安装" class="headerlink" title="1:服务端 1:安装"></a>1:服务端 1:安装</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">yum install salt-master 2:配置文件</div><div class="line">/etc/salt/master</div><div class="line">配置文件选项介绍: http://docs.saltstack.com/ref/configuration/master.html</div><div class="line">最基本字段:</div><div class="line">interface: 服务端监听 IP</div><div class="line">3:运行 调试模式:</div><div class="line">salt-master <span class="_">-l</span> debug 后台运行:</div><div class="line">salt-master <span class="_">-d</span></div><div class="line">作为 centos 管理员,我选择:</div><div class="line">/etc/init.d/salt-master start </div><div class="line"></div><div class="line">4:注意事项:</div><div class="line">1:监听端口</div><div class="line">4505(publish_port):salt 的消息发布系统 4506(ret_port):salt 客户端与服务端通信的端口</div><div class="line">所以确保客户端能跟服务端的这2个端口通信</div></pre></td></tr></table></figure>
+<h4 id="安装客户端"><a href="#安装客户端" class="headerlink" title="安装客户端"></a>安装客户端</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">yum install salt-minion 2:配置文件</div><div class="line">/etc/salt/minion</div><div class="line">配置文件选项介绍: http://docs.saltstack.com/ref/configuration/minion.html 最基本字段:</div><div class="line">master: 服务端主机名</div><div class="line">id: 客户端主机名(在服务端看到的客户端的名字)</div><div class="line">3:运行 调试模式:</div><div class="line">salt-minion <span class="_">-l</span> debug 后台运行:</div><div class="line">salt-minion <span class="_">-d</span></div><div class="line">作为 centos 管理员,我选择:</div><div class="line">/etc/init.d/salt-minion start </div><div class="line"></div><div class="line">4:注意事项:</div><div class="line">1:minion 默认和主机名 salt 的主机通信 </div><div class="line"></div><div class="line">2:关于配置文件</div><div class="line">salt 的配置文件均为 yaml 风格</div><div class="line"><span class="variable">$key</span>: <span class="variable">$value</span> <span class="comment">#注意冒号后有一个空格 3:基础知识</span></div><div class="line">1:salt minion 和 master 的认证过程:</div><div class="line">(1) minion 在第一次启动时,会在/etc/salt/pki/minion/下自动生成</div><div class="line">minion.pem(private key), minion.pub(public key),然后将 minion.pub 发送给 master</div><div class="line">(2) master 在接收到 minion 的 public key 后,通过 salt-key 命令 accept minion public key,这样在 master 的/etc/salt/pki/master/minions 下的将会存放以 minion id 命名的</div><div class="line">public key, 然后 master 就能对 minion 发送指令了</div><div class="line">如下: </div><div class="line">启动服务端:</div><div class="line">/etc/init.d/salt-minion restart</div><div class="line">启动客户端:</div><div class="line">/etc/init.d/salt-minion restart </div><div class="line"></div><div class="line">服务端查看key:</div><div class="line">salt-key</div><div class="line">Accepted Keys:</div><div class="line">Unaccepted Keys: minion1</div><div class="line">Rejected Keys:</div><div class="line">服务端接受 key salt-key <span class="_">-a</span> minion1</div><div class="line"></div><div class="line">测试:</div><div class="line">salt <span class="string">'minion1'</span> test.ping minion1:</div><div class="line">True</div><div class="line">附:salt 更多命令及手册 salt <span class="string">'*'</span> sys.doc</div></pre></td></tr></table></figure>
+<h3 id="3-salt-的使用-1-基础知识"><a href="#3-salt-的使用-1-基础知识" class="headerlink" title="3:salt 的使用: 1:基础知识"></a>3:salt 的使用: 1:基础知识</h3><p>1:targeting</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">salt <span class="string">'*'</span> test.ping</div><div class="line">引号中以实现很强大的 minion 的过滤与匹配技术 文档:http://docs.saltstack.com/topics/targeting /compound.html</div><div class="line">常用命令:</div><div class="line">salt <span class="string">'shell 正则'</span> 命令</div><div class="line">salt -E <span class="string">'prel 正则'</span></div><div class="line">salt -N <span class="variable">$group</span> 命令</div><div class="line">salt -L <span class="string">'server_id1,server_id2,server_id3'</span> 命令</div><div class="line">示例:</div><div class="line">salt -C <span class="string">'webserv* and G@os:Debian or E@web-dc1-srv.*'</span> test.ping</div></pre></td></tr></table></figure>
+<p>2:nodegroup<br>对 minion 进行分组</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">文档: http://docs.saltstack.com/topics/targeting/nodegroups.html 在 master 的配置文件中按如下格式定义:</div><div class="line">nodegroups:</div><div class="line">group1: <span class="string">'L@foo.domain.com,bar.domain.com,baz.domain.com or</span></div><div class="line">bl*.domain.com'</div><div class="line">group2: <span class="string">'G@os:Debian and foo.domain.com'</span> 在 state 或者 pillar 中引用的时候如下:</div><div class="line">base: group1:</div><div class="line">- match: nodegroup - webserver</div></pre></td></tr></table></figure>
+<p>3:grains<br>minion 基本信息的管理 文档:<a href="http://docs.saltstack.com/topics/targeting" target="_blank" rel="external">http://docs.saltstack.com/topics/targeting</a> /grains.html 基本使用:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">salt <span class="string">'*'</span> grains.ls 查看 grains 分类</div><div class="line">salt <span class="string">'*'</span> grains.items 查看 grains 所有信息</div><div class="line">salt <span class="string">'*'</span> grains.item osrelease 查看 grains 某个信息</div><div class="line">示例:</div><div class="line">salt <span class="string">'*'</span> grains.item osrelease minoin1:</div><div class="line">osrelease: 6.2</div></pre></td></tr></table></figure>
+<h3 id="minion-的变量"><a href="#minion-的变量" class="headerlink" title="minion 的变量"></a>minion 的变量</h3><p>在用 salt 进行管理客户端的时候或者写 state 的时候都可以引用 grains 的变量 4:pillar</p>
+<p>salt 敏感信息的管理,只有匹配到的节点才能看到和使用 文档:<a href="http://docs.saltstack.com/topics/tutorials/pillar.html" target="_blank" rel="external">http://docs.saltstack.com/topics/tutorials/pillar.html</a> 默认:pillar 数据定义文件存储路径:/srv/pillar 入口文件:/srv/pillar/top.sls</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">格式: base:</div><div class="line"><span class="string">"targeting"</span>:</div><div class="line">- <span class="variable">$pillar</span></div><div class="line"><span class="variable">$pillar</span>.sls 基本:</div><div class="line"><span class="variable">$key</span>: <span class="variable">$value</span> state 引用方式:</div><div class="line">&#123;&#123; pillar[<span class="string">'$key'</span>] &#125;&#125;</div><div class="line">复杂:</div><div class="line">users:</div><div class="line">thatch: 1000 shouse: 1001 utahdave: 1002 redbeard: 1003</div><div class="line">state 引用方式:</div><div class="line">&#123;% <span class="keyword">for</span> user, uid <span class="keyword">in</span> pillar.get(<span class="string">'users'</span>, &#123;&#125;).items() %&#125;</div><div class="line">&#123;&#123;user&#125;&#125;: user.present:</div><div class="line">- uid: &#123;&#123;uid&#125;&#125; &#123;% endfor %&#125;</div><div class="line">查看节点的 pillar 数据: salt <span class="string">'client2'</span> pillar.data</div><div class="line">同步 pillar:</div><div class="line">salt <span class="string">'*'</span> saltutil.refresh_pillar</div><div class="line">附:这里我们可以看到,pallar 中也可以使用 jinja(后面会提到)做一些处理 5:minion</div><div class="line">即为 salt 的客户端</div><div class="line">2:状态管理 1:state</div><div class="line">salt 基于 minion 进行状态的管理 1:state 语法</div><div class="line">文档:http://docs.saltstack.com/ref/states/all/index.html</div><div class="line"><span class="comment">#名字为pillar.sls的文件来存放对匹配到的</span></div><div class="line">&#123;% <span class="keyword">if</span> grains[<span class="string">'os_family'</span>] == <span class="string">'RedHat'</span> %&#125; - name: vim-enhanced</div><div class="line">&#123;% <span class="keyword">elif</span> grains[<span class="string">'os'</span>] == <span class="string">'Debian'</span> %&#125;</div><div class="line">- name: vim-nox</div><div class="line">&#123;% <span class="keyword">elif</span> grains[<span class="string">'os'</span>] == <span class="string">'Ubuntu'</span> %&#125; - name: vim-nox</div><div class="line">&#123;% endif %&#125;</div><div class="line">- installed</div><div class="line">如果是 redhard 系列的就安装 vim-enhanced,如果系统是 Debian 或 者 Ubuntu 就安装 vim-nox</div><div class="line">以有多个</div><div class="line">附:state 默认使用 jinja(http://jinja.pocoo.org/)的模板语法, 文档地址: http://jinja.pocoo.org /docs/templates/</div></pre></td></tr></table></figure>
+<p>2:state 的逻辑关系: 文档:<a href="http://docs.saltstack.com/ref/states/ordering.html" target="_blank" rel="external">http://docs.saltstack.com/ref/states/ordering.html</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">require:依赖某个 state,在运行此 state 前,先运行依赖的 state,依赖可</div><div class="line">httpd: pkg:</div><div class="line">- installed file.managed:</div><div class="line">- name: /etc/httpd/conf/httpd.conf </div><div class="line">- <span class="built_in">source</span>: salt://httpd/httpd.conf</div><div class="line">- require:</div><div class="line">- pkg: httpd</div></pre></td></tr></table></figure>
+<p>watch:在某个 state 变化时运行此模块 redis:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">pkg:</div><div class="line">- latest</div><div class="line">file.managed:</div><div class="line">- <span class="built_in">source</span>: salt://redis/redis.conf</div><div class="line">- name: /etc/redis.conf</div><div class="line">- require:</div><div class="line">- pkg: redis service.running: </div><div class="line">- <span class="built_in">enable</span>: True</div><div class="line"><span class="comment">#state 的名字</span></div></pre></td></tr></table></figure>
+<p>$state: #要管理的模块类型 - $State states #该模块的状态</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">- watch:</div><div class="line">- file: /etc/redis.conf </div><div class="line">- pkg: redis</div></pre></td></tr></table></figure>
+<p>附:watch 除具备 require 功能外,还增了关注状态的功能</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">order:</div><div class="line">优先级比 require 和 watch 低</div><div class="line">有 order 指定的 state 比没有 order 指定的优先级高 vim:</div><div class="line">pkg.installed: - order: 1</div><div class="line">想让某个 state 最后一个运行,可以用 last 3:state 与 minion</div><div class="line"></div><div class="line">将临时给 minoin 加个 state</div><div class="line">salt <span class="string">'minion1'</span> state.sls <span class="string">'vim'</span> <span class="comment">#给 minion1 加一个 vim 的 state 执行该命令后可以立即看到输出结果</span></div><div class="line"></div><div class="line">2:highstate</div><div class="line">给 minion 永久下添加状态</div><div class="line">文档: http://docs.saltstack.com/ref/states/highstate.html 默认配置文件:/srv/salt/top.sls</div><div class="line">语法:</div><div class="line"><span class="string">'*'</span>:</div><div class="line">- core</div><div class="line">- wsproxy </div><div class="line">- /srv/salt/目录结构:</div><div class="line">.</div><div class="line">├── core.sls ├── top.sls └── wsproxy</div><div class="line">├── init.sls ├── websocket.py └── websockify</div><div class="line">应用:</div><div class="line">salt <span class="string">"minion1"</span> state.highstate</div><div class="line"></div><div class="line">测试模式:</div><div class="line">salt <span class="string">"minion1"</span> state.highstate -v <span class="built_in">test</span>=True 3:salt schedule</div><div class="line">默认的 state 只有在服务端调用的时候才执行,很多时候我们希望 minon 自觉 的去保持在某个状态</div><div class="line"></div><div class="line">文档:http://docs.saltstack.com/topics/<span class="built_in">jobs</span>/schedule.html</div><div class="line">cat /srv/pillar/top.sls base:</div><div class="line"><span class="string">"*"</span>:</div><div class="line">- schedule</div><div class="line">cat /srv/pillar/schedule.sls schedule:</div><div class="line">highstate:</div><div class="line"><span class="keyword">function</span>: state.highstate minutes: 30</div><div class="line"></div><div class="line">如上配置:</div><div class="line">minion 会没 30 分钟从 master 拉去一次配置,进行自我配置</div><div class="line"></div><div class="line">3:实时管理 有时候我们需要临时的查看一台或多台机器上的某个文件,或者执行某个命令</div><div class="line">1:cmd.run</div><div class="line">用法 salt <span class="string">'$targeting'</span> cmd.run <span class="string">'$cmd'</span></div><div class="line">示例:salt <span class="string">'*'</span> cmd.run <span class="string">'hostname'</span> 执行下这样的命令,马上就感受到效果了,速度还贼快</div><div class="line">2:module</div><div class="line">同时,salt 也将一些常用的命令做了集成 文档:http://docs.saltstack.com/ref/modules/all/index.html 这里几乎涵盖了我们所有的常用命令</div><div class="line">比如:</div><div class="line">查看所有节点磁盘使用情况</div><div class="line">salt <span class="string">'*'</span> disk.usage 文档:http://docs.saltstack.com/topics/tutorials/quickstart.html</div><div class="line">4:无 master</div><div class="line">主要应该在测试和 salt 单机管理的时候</div></pre></td></tr></table></figure>
+<h3 id="4-salt-开发-1"><a href="#4-salt-开发-1" class="headerlink" title="4:salt 开发"></a>4:salt 开发</h3><p>1:saltclient 管理 salt<br>只有才 master 才可以salt 全部用 python,这里也用 python<br>文档:<a href="http://docs.saltstack.com/ref/python-api.html" target="_blank" rel="external">http://docs.saltstack.com/ref/python-api.html</a> </p>
+<p>示例:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">import salt.client</div><div class="line">client = salt.client.LocalClient()</div><div class="line">ret = client.cmd(<span class="string">'*'</span>, <span class="string">'cmd.run'</span>, [<span class="string">'ls -l'</span>])</div><div class="line"><span class="built_in">print</span> ret</div></pre></td></tr></table></figure>
+<p>2:salt api<br>salt api 我现在还没用,不过我也没搞定,如果你搞定了,我会非常感谢你能分享<br>下的。</p>
+<p>####参考文档:</p>
+<p>1:salt 中文 wiki:<a href="http://wiki.saltstack.cn/" target="_blank" rel="external">http://wiki.saltstack.cn/</a> 很不错的文章:<a href="http://wiki.saltstack.cn/reproduction/dive-into-saltstack" target="_blank" rel="external">http://wiki.saltstack.cn/reproduction/dive-into-saltstack</a><br>2:salt 官网 <a href="http://saltstack.com/" target="_blank" rel="external">http://saltstack.com/</a> 官网文档:<a href="http://docs.saltstack.com/" target="_blank" rel="external">http://docs.saltstack.com/</a></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2015/07/23/运维笔记/CDN加速助力高并发网站架构/">CDN加速助力高并发网站架构</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2015-07-23</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Framework/">Framework</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/CDN/">CDN</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="CDN加速助力高并发网站架构"><a href="#CDN加速助力高并发网站架构" class="headerlink" title="CDN加速助力高并发网站架构"></a>CDN加速助力高并发网站架构</h2><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/CDN1.png" alt=""></figure></p>
+<h2 id="架构说明："><a href="#架构说明：" class="headerlink" title="架构说明："></a>架构说明：</h2><p>用户通过互联网访问网站需要经过的节点如下：</p>
+<h4 id="一、要通过域名解析"><a href="#一、要通过域名解析" class="headerlink" title="一、要通过域名解析"></a>一、要通过域名解析</h4><p>在域名解析处有两种方式<br>1、自建，自建需要在域名解析前架设防火墙。</p>
+<p>2、使用现有的域名解析提供商，需要设置成CNAME,其实就是另一个域名解析，进行跳转。在刚开始的时候建议先用CNAME方式，部署不影响用户现有方式，容易被用户接受，而且不用暂时不用担心第一级dns的问题。</p>
+<p>总之，如果要建设idc加速，防止ddos攻击之类的服务，域名解析服务一定要提供，不管是直接提供dns服务还是间接通过cname转发。<br>里面的主要技术，是通过用户请求的ip来得到离用户最近的服务器的地址，并通过它来提供服务。如果要进行安全防护，比如sql注入检查，js跨站脚本等可以在这一层进行处理。</p>
+<h4 id="二、提供虚拟机"><a href="#二、提供虚拟机" class="headerlink" title="二、提供虚拟机"></a>二、提供虚拟机</h4><p>虚拟机现在主流有两种方式，一是虚拟主机，主要的软件有开源的openvz，商用的Virtuozzo等,另一类是虚拟机如vmware、xen、kvm等，这类提供虚拟操作系统，可以是异构的。他们两个的对比主要是虚拟主机的利用率比较高，可以一台主流pcserver可以虚拟几十个到上百个虚拟主机，但只能是同一类操作系统。虚拟机的运行效率相对低很多，一般主流pcserver也就十几个左右。他的有点是异构操作系统，备份管理比较方便。当然在建设的时候可以先用虚拟机，然后在虚拟机上建设虚拟主机。</p>
+<p>如果要提供对外服务，ip地址是比不可少的，对于一个用户来说，一个域名需要几个点，就需要几个ip。</p>
+<h4 id="三、LVS集群"><a href="#三、LVS集群" class="headerlink" title="三、LVS集群"></a>三、LVS集群</h4><p>由于要提供加速等服务，用户直接使用的openvz虚拟主机的性能和效率一般不大，又要提供高可用性，所以需要通过虚拟主机访问lvs集群的数据，通过lvs集群来提供服务。</p>
+<h4 id="四、Squid"><a href="#四、Squid" class="headerlink" title="四、Squid"></a>四、Squid</h4><p>Squid是缓存，尤其是对静态页面和文件有很好加速效果。sina、sohu等都用它来做缓存加速。</p>
+<h4 id="五、Nginx​"><a href="#五、Nginx​" class="headerlink" title="五、Nginx​"></a>五、Nginx​</h4><p>Nginx主要提供反向代理功能，当通过修改或者更新了页面，由nginx来负责更新缓存。还有就是动态网站，也是由nginx来提供服务。</p>
+<p>Nginx和sqid都可以提供静态缓存功能，两者还要结合起来发挥最大效果。如果要进行安全防护，比如sql注入检查，js跨站脚本等可以在这一层进行处理。<br>防DDOS</p>
+<h4 id="六、自动化工具-Docker运行"><a href="#六、自动化工具-Docker运行" class="headerlink" title="六、自动化工具+Docker运行"></a>六、自动化工具+Docker运行</h4><p>Saltstask 自动化工具批量初始化脚本更新监控脚本，增删改查添加缓存机制。上百台服务器节省我们操作时间，物理机运行Docker程序。</p>
+<h2 id="防ddos的主要内容由两个方面："><a href="#防ddos的主要内容由两个方面：" class="headerlink" title="防ddos的主要内容由两个方面："></a>防ddos的主要内容由两个方面：</h2><h4 id="一、带宽"><a href="#一、带宽" class="headerlink" title="一、带宽"></a>一、带宽</h4><p>这个是很重要的地方，据我现在从网上得到的资料，现在主流的idc机房一般最大提供独立百兆端口，而且价格不菲。在这种情况下可以机柜租用。这个还需要调研是否可以提供更大的带宽。</p>
+<h4 id="二、防火墙设备"><a href="#二、防火墙设备" class="headerlink" title="二、防火墙设备"></a>二、防火墙设备</h4><p>需要在接入口部署防火墙，需要根据idc接口端口来确定容量，有的idc机房也提供此服务。</p>
+<h4 id="三、流量牵引设备"><a href="#三、流量牵引设备" class="headerlink" title="三、流量牵引设备"></a>三、流量牵引设备</h4><p>这个一般idc机房会提供此服务，这个根据需要是否需要购买。</p>
+<h4 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h4><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
+<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2015/04/01/运维安全/使用AIDE做Linux高级入侵检测文件监控/">使用AIDE做Linux高级入侵检测文件监控</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2015-04-01</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/运维安全/">运维安全</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Operation-safety/">Operation safety</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="1、aide介绍"><a href="#1、aide介绍" class="headerlink" title="1、aide介绍"></a>1、aide介绍</h2><blockquote>
+<p>AIDE(Adevanced Intrusion Detection Environment,高级入侵检测环境)是个入侵检测工具，主要用途是检查文本的完整性。</p>
+<p>AIDE能够构造一个指定文档的数据库，他使用aide.conf作为其配置文档。AIDE数据库能够保存文档的各种属性，包括：权限(permission)、索引节点序号(inode number)、所属用户(user)、所属用户组(group)、文档大小、最后修改时间(mtime)、创建时间(ctime)、最后访问时间(atime)、增加的大小连同连接数。AIDE还能够使用下列算法：sha1、md5、rmd160、tiger，以密文形式建立每个文档的校验码或散列号。</p>
+<p>常见的入侵检测软件： tripwire–操作比较复杂,aide–用以代替tripwire,比较简单.</p>
+</blockquote>
+<h3 id="系统环境："><a href="#系统环境：" class="headerlink" title="系统环境："></a>系统环境：</h3><p>　　RHEL 6.2 [2.6.32-220.el6.i686]</p>
+<p>　　软件环境：</p>
+<h3 id="2、aide安装-配置使用"><a href="#2、aide安装-配置使用" class="headerlink" title="2、aide安装 配置使用"></a>2、aide安装 配置使用</h3><p>yum rpm二进制安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum -y install aide</div></pre></td></tr></table></figure>
+<blockquote>
+<p>我的配置文件</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div><div class="line">223</div><div class="line">224</div><div class="line">225</div><div class="line">226</div><div class="line">227</div></pre></td><td class="code"><pre><div class="line">mv /etc/aide.conf /etc/aide.conf.bak</div><div class="line">vim /etc/aide.conf</div><div class="line"> </div><div class="line"></div><div class="line"><span class="comment"># Example configuration file for AIDE.</span></div><div class="line">@@define DBDIR /var/lib/aide <span class="comment">#基准数据库目录</span></div><div class="line">@@define LOGDIR /var/<span class="built_in">log</span>/aide <span class="comment">#日志目录</span></div><div class="line"> </div><div class="line"></div><div class="line"><span class="comment"># The location of the database to be read.</span></div><div class="line">database=file:@@&#123;DBDIR&#125;/aide.db.gz <span class="comment">#基础数据库文件</span></div><div class="line"> </div><div class="line"><span class="comment"># The location of the database to be written.    #database_out=sql:host:port:database:login_name:passwd:table</span></div><div class="line"><span class="comment">#database_out=file:aide.db.new</span></div><div class="line">database_out=file:@@&#123;DBDIR&#125;/aide.db.new.gz <span class="comment">#更新数据库文件</span></div><div class="line"> </div><div class="line"><span class="comment"># Whether to gzip the output to database</span></div><div class="line">gzip_dbout=yes</div><div class="line"> </div><div class="line"><span class="comment"># Default.</span></div><div class="line">verbose=5</div><div class="line"> </div><div class="line">report_url=file:@@&#123;LOGDIR&#125;/aide.log</div><div class="line">report_url=stdout</div><div class="line"><span class="comment">#report_url=stderr</span></div><div class="line"><span class="comment">#NOT IMPLEMENTED report_url=mailto:root@foo.com</span></div><div class="line"><span class="comment">#NOT IMPLEMENTED report_url=syslog:LOG_AUTH</span></div><div class="line"> </div><div class="line"><span class="comment"># These are the default rules.</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment">#p:      permissions</span></div><div class="line"><span class="comment">#i:      inode:</span></div><div class="line"><span class="comment">#n:      number of links</span></div><div class="line"><span class="comment">#u:      user</span></div><div class="line"><span class="comment">#g:      group</span></div><div class="line"><span class="comment">#s:      size</span></div><div class="line"><span class="comment">#b:      block count</span></div><div class="line"><span class="comment">#m:      mtime</span></div><div class="line"><span class="comment">#a:      atime</span></div><div class="line"><span class="comment">#c:      ctime</span></div><div class="line"><span class="comment">#S:      check for growing size</span></div><div class="line"><span class="comment">#acl:           Access Control Lists</span></div><div class="line"><span class="comment">#selinux        SELinux security context</span></div><div class="line"><span class="comment">#xattrs:        Extended file attributes</span></div><div class="line"><span class="comment">#md5:    md5 checksum</span></div><div class="line"><span class="comment">#sha1:   sha1 checksum</span></div><div class="line"><span class="comment">#sha256:        sha256 checksum</span></div><div class="line"><span class="comment">#sha512:        sha512 checksum</span></div><div class="line"><span class="comment">#rmd160: rmd160 checksum</span></div><div class="line"><span class="comment">#tiger:  tiger checksum</span></div><div class="line"> </div><div class="line"><span class="comment">#haval:  haval checksum (MHASH only)</span></div><div class="line"><span class="comment">#gost:   gost checksum (MHASH only)</span></div><div class="line"><span class="comment">#crc32:  crc32 checksum (MHASH only)</span></div><div class="line"><span class="comment">#whirlpool:     whirlpool checksum (MHASH only)</span></div><div class="line"> </div><div class="line"> <span class="comment">#R:              p+i+n+u+g+s+m+c+acl+selinux+xattrs+md5</span></div><div class="line"><span class="comment">#L:             p+i+n+u+g+acl+selinux+xattrs</span></div><div class="line"><span class="comment">#E:             Empty group</span></div><div class="line"><span class="comment">#&gt;:             Growing logfile       p+u+g+i+n+S+acl+selinux+xattrs</span></div><div class="line">R = p+i+n+u+g+s+m+c+acl+selinux+xattrs+md5</div><div class="line">L = p+i+n+u+g+acl+selinux+xattrs</div><div class="line">&gt; = p+u+g+i+n+S+acl+selinux+xattrs</div><div class="line"> </div><div class="line"> </div><div class="line"><span class="comment"># You can create custom rules like this.</span></div><div class="line"><span class="comment"># With MHASH...</span></div><div class="line"><span class="comment"># ALLXTRAHASHES =      sha1+rmd160+sha256+sha512+whirlpool+tiger+haval+gost+crc32</span></div><div class="line">ALLXTRAHASHES = sha1+rmd160+sha256+sha512+tiger</div><div class="line"><span class="comment"># Everything but access time (Ie. all changes)</span></div><div class="line">EVERYTHING = R+ALLXTRAHASHES</div><div class="line"> </div><div class="line"><span class="comment"># Sane, with multiple hashes</span></div><div class="line"><span class="comment"># NORMAL = R+rmd160+sha256+whirlpool</span></div><div class="line">NORMAL = R+rmd160+sha256</div><div class="line"> </div><div class="line"><span class="comment"># For directories, don't bother doing hashes</span></div><div class="line">DIR = p+i+n+u+g+acl+selinux+xattrs</div><div class="line"> </div><div class="line"> <span class="comment"># Access control only</span></div><div class="line"> PERMS = p+i+u+g+acl+selinux</div><div class="line"> </div><div class="line"> <span class="comment"># Logfile are special, in that they often change</span></div><div class="line"> LOG = &gt;</div><div class="line"> </div><div class="line"> <span class="comment"># Just do md5 and sha256 hashes</span></div><div class="line"> LSPP = R+sha256</div><div class="line"> </div><div class="line"> <span class="comment"># Some files get updated automatically, so the     inode/ctime/mtime change</span></div><div class="line"> <span class="comment"># but we want to know when the data inside them   changes</span></div><div class="line"> DATAONLY =     p+n+u+g+s+acl+selinux+xattrs+md5+sha256+rmd160+tiger</div><div class="line"> </div><div class="line"> <span class="comment"># Next decide what directories/files you want in the database.</span></div><div class="line"> </div><div class="line">/boot   NORMAL</div><div class="line">/bin    NORMAL</div><div class="line">/sbin   NORMAL</div><div class="line">/lib    NORMAL</div><div class="line">/lib64  NORMAL</div><div class="line">/opt    NORMAL</div><div class="line">/usr    NORMAL</div><div class="line">/root   NORMAL</div><div class="line"><span class="comment"># These are too volatile</span></div><div class="line">!/usr/src</div><div class="line">!/usr/tmp</div><div class="line">!/usr/share <span class="comment">#通过文件路径前面加感叹号 ! 排除这个路径的监控,请自定义</span></div><div class="line"> <span class="comment"># Check only permissions, inode, user and group for /etc, but</span></div><div class="line"><span class="comment"># cover some important files closely.</span></div><div class="line">/etc    PERMS</div><div class="line">!/etc/mtab</div><div class="line"> <span class="comment"># Ignore backup files</span></div><div class="line">!/etc/.*~</div><div class="line">/etc/exports  NORMAL</div><div class="line">/etc/fstab    NORMAL</div><div class="line">/etc/passwd   NORMAL</div><div class="line">/etc/group    NORMAL</div><div class="line">/etc/gshadow  NORMAL</div><div class="line">/etc/shadow   NORMAL</div><div class="line">/etc/security/opasswd   NORMAL</div><div class="line"> </div><div class="line">/etc/hosts.allow   NORMAL</div><div class="line">/etc/hosts.deny    NORMAL</div><div class="line"> </div><div class="line">/etc/sudoers NORMAL</div><div class="line">/etc/skel NORMAL</div><div class="line"> </div><div class="line">/etc/logrotate.d NORMAL</div><div class="line"> </div><div class="line">/etc/resolv.conf DATAONLY</div><div class="line"> </div><div class="line">/etc/nscd.conf NORMAL</div><div class="line">/etc/securetty NORMAL</div><div class="line"> </div><div class="line"><span class="comment"># Shell/X starting files</span></div><div class="line">/etc/profile NORMAL</div><div class="line">/etc/bashrc NORMAL</div><div class="line">/etc/bash_completion.d/ NORMAL</div><div class="line">/etc/login.defs NORMAL</div><div class="line">/etc/zprofile NORMAL</div><div class="line">/etc/zshrc NORMAL</div><div class="line">/etc/zlogin NORMAL</div><div class="line">/etc/zlogout NORMAL</div><div class="line">/etc/profile.d/ NORMAL</div><div class="line">/etc/X11/ NORMAL</div><div class="line">  </div><div class="line"><span class="comment"># Pkg manager</span></div><div class="line">/etc/yum.conf NORMAL</div><div class="line">/etc/yumex.conf NORMAL</div><div class="line">/etc/yumex.profiles.conf NORMAL</div><div class="line">/etc/yum/ NORMAL</div><div class="line"> /etc/yum.repos.d/ NORMAL</div><div class="line"> </div><div class="line"> /var/<span class="built_in">log</span>   LOG</div><div class="line"> /var/run/utmp LOG</div><div class="line"> </div><div class="line"> <span class="comment"># This gets new/removes-old filenames daily</span></div><div class="line">!/var/<span class="built_in">log</span>/sa</div><div class="line"> <span class="comment"># As we are checking it, we've truncated     yesterdays size to zero.</span></div><div class="line"> !/var/<span class="built_in">log</span>/aide.log</div><div class="line"> </div><div class="line"><span class="comment"># LSPP rules...</span></div><div class="line"><span class="comment"># AIDE produces an audit record, so this becomes       # /var/log/audit/ LSPP</span></div><div class="line">/etc/audit/ LSPP</div><div class="line">/etc/libaudit.conf LSPP</div><div class="line">/usr/sbin/stunnel LSPP</div><div class="line">/var/spool/at LSPP</div><div class="line">/etc/at.allow LSPP</div><div class="line">/etc/at.deny LSPP</div><div class="line">/etc/cron.allow LSPP</div><div class="line">/etc/cron.deny LSPP</div><div class="line">/etc/cron.d/ LSPP</div><div class="line">/etc/cron.daily/ LSPP</div><div class="line">/etc/cron.hourly/ LSPP</div><div class="line">/etc/cron.monthly/ LSPP</div><div class="line">/etc/cron.weekly/ LSPP</div><div class="line">/etc/crontab LSPP</div><div class="line">/var/spool/cron/root LSPP</div><div class="line"> </div><div class="line">/etc/login.defs LSPP</div><div class="line">/etc/securetty LSPP</div><div class="line">/var/<span class="built_in">log</span>/faillog LSPP</div><div class="line">/var/<span class="built_in">log</span>/lastlog LSPP</div><div class="line"> </div><div class="line">/etc/hosts LSPP</div><div class="line">/etc/sysconfig LSPP</div><div class="line"> </div><div class="line">/etc/inittab LSPP</div><div class="line">/etc/grub/ LSPP</div><div class="line">/etc/rc.d LSPP</div><div class="line"> </div><div class="line">/etc/ld.so.conf LSPP</div><div class="line"> </div><div class="line"> /etc/localtime LSPP</div><div class="line"> </div><div class="line">/etc/sysctl.conf LSPP</div><div class="line"> </div><div class="line">/etc/modprobe.conf LSPP</div><div class="line"> </div><div class="line">/etc/pam.d LSPP</div><div class="line">/etc/security LSPP</div><div class="line">/etc/aliases LSPP</div><div class="line">/etc/postfix LSPP</div><div class="line"> </div><div class="line">/etc/ssh/sshd_config LSPP</div><div class="line"> /etc/ssh/ssh_config LSPP</div><div class="line"> </div><div class="line">/etc/stunnel LSPP</div><div class="line"> </div><div class="line">/etc/vsftpd.ftpusers LSPP</div><div class="line"> /etc/vsftpd LSPP</div><div class="line"> </div><div class="line">/etc/issue LSPP</div><div class="line">/etc/issue.net LSPP</div><div class="line">  </div><div class="line">/etc/cups LSPP</div><div class="line"> </div><div class="line"><span class="comment"># With AIDE's default verbosity level of 5, these would give lots of</span></div><div class="line"><span class="comment"># warnings upon tree traversal. It might change with  future version.</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment">#=/lost\+found    DIR</span></div><div class="line"><span class="comment">#=/home           DIR</span></div><div class="line"> </div><div class="line"><span class="comment"># Ditto /var/log/sa reason...</span></div><div class="line">!/var/<span class="built_in">log</span>/and-httpd</div><div class="line"> </div><div class="line"><span class="comment"># Admins dot files constantly change, just check perms</span></div><div class="line">/root/\..* PERMS</div></pre></td></tr></table></figure>
+<h4 id="下一步："><a href="#下一步：" class="headerlink" title="下一步："></a>下一步：</h4><p> 初始化监控数据库(这需要一些时间)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">  /usr/sbin/aide -c /etc/aide.conf --init</div><div class="line">``` </div><div class="line">把当前初始化的数据库作为开始的基础数据库</div><div class="line"></div><div class="line">``` bash</div><div class="line">     cp /var/lib/aide/aide.db.new.gz       /var/lib/aide/aide.db.gz</div></pre></td></tr></table></figure>
+<p>如果是正常的改动 更新改动到基础数据库</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">aide --update</div><div class="line"><span class="built_in">cd</span> /var/lib/aide/</div></pre></td></tr></table></figure>
+<p>覆盖替换旧的数据库</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mv aide.db.new.gz aide.db.gz</div></pre></td></tr></table></figure>
+<p>在终端中查看检测结果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">aide --check</div></pre></td></tr></table></figure>
+<p>检查文件改动 保存到文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">    aide --check --report=file:/tmp/aide-report-`date +%Y%m%d`.txt</div><div class="line">``` </div><div class="line">定时任务执行aide检测报告和自动邮件发送aide检测报告(如果没有mail, yum install mail,还需要有本地邮件服务支持, yum install sendmail;/etc/init.d/sendmail start)</div><div class="line">  </div><div class="line">``` bash</div><div class="line">    crontab <span class="_">-e</span></div><div class="line">    00 02 * * * /usr/sbin/aide -C -V4 | /bin/mail <span class="_">-s</span> <span class="string">"AIDE REPORT <span class="variable">$(date +%Y%m%d)</span>"</span>  root@localhost</div></pre></td></tr></table></figure>
+<h3 id="5、参考"><a href="#5、参考" class="headerlink" title="5、参考"></a>5、参考</h3><ul>
+<li><p>官网 :<a href="http://aide.sourceforge.net/" target="_blank" rel="external">http://aide.sourceforge.net/</a></p>
+</li>
+<li><p>AIDE –Linux高级入侵检测 <a href="http://gupt12.blog.51cto.com/7651206/1263183" target="_blank" rel="external">http://gupt12.blog.51cto.com/7651206/1263183</a></p>
+</li>
+<li><p>参考：<a href="http://www.iamle.com/archives/1664.html" target="_blank" rel="external">http://www.iamle.com/archives/1664.html</a></p>
+</li>
+</ul>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2014/10/21/性能监控/cacti/了解Cacti监控安装与配置/">了解Cacti监控安装与配置.md</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2014-10-21</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Cacti-monitoring/">Cacti monitoring</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="什么是Cacti"><a href="#什么是Cacti" class="headerlink" title="什么是Cacti?"></a>什么是Cacti?</h3><p>Cacti， 在英文中的意思是仙人掌的意思，Cacti是一套基于PHP,MySQL,SNMP及RRDTool开发的网络流量监测图形分析工具。它通过snmpget来获取数据，使用 RRDtool绘画图形，而且你完全可以不需要了解RRDtool复杂的参数。它提供了非常强大的数据和用户管理功能，可以指定每一个用户能查看树状结构、host以及任何一张图，还可以与LDAP结合进行用户验证，同时也能自己增加模板，功能非常强大完善。Cacti 的发展是基于让 RRDTool 使用者更方便使用该软件，除了基本的 Snmp 流量跟系统资讯监控外，Cacti 也可外挂 Scripts 及加上 Templates 来作出各式各样的监控图。</p>
+<p>Cacti是用php语言实现的一个软件，它的主要功能是用snmp服务获取数据，然后用rrdtool储存和更新数据，当用户需要查看数据的时候用rrdtool生成图表呈现给用户。因此，snmp和rrdtool是cacti的关键。Snmp关系着数据的收集，rrdtool关系着数据存储和图表的生成。</p>
+<p>Mysql配合PHP程序存储一些变量数据并对变量数据进行调用，如：主机名、主机ip、snmp团体名、端口号、模板信息等变量。</p>
+<p>snmp抓到数据不是存储在mysql中，而是存在rrdtool生成的rrd文件中（在cacti根目录的rra文件夹下）。rrdtool对数据的更新和存储就是对rrd文件的处理，rrd文件是大小固定的档案文件（Round Robin Archive），它能够存储的数据笔数在创建时就已经定义。关于RRDTool的知识请参阅RRDTool教学。</p>
+<h3 id="什么是SNMP？"><a href="#什么是SNMP？" class="headerlink" title="什么是SNMP？"></a>什么是SNMP？</h3><p>snmp(Simple Network Management Protocal, 简单网络管理协议)在架构体系的监控子系统中将扮演重要角色。大体上，其基本原理是，在每一个被监控的主机或节点上 (如交换机)都运行了一个 agent，用来收集这个节点的所有相关的信息，同时监听 snmp 的 port，也就是 UDP 161，并从这个端口接收来自监控主机的指令(查询和设置)。</p>
+<p>如果安装 net-snmp，被监控主机需要安装 <code>net-snmp(包含了 snmpd 这个 agent)</code>，而监控端需要安装 net-snmp-utils，若接受被监控端通过trap-communicate发来的信息的话，则需要安装net-snmp，并启用trap服务。如果自行编译，需要 beecrypt(libbeecrypt)和 elf(libraryelf)的库。</p>
+<h3 id="什么是RRDtools？"><a href="#什么是RRDtools？" class="headerlink" title="什么是RRDtools？"></a>什么是RRDtools？</h3><p>RRDtool是指Round Robin Database 工具（环状数据库）。Round robin是一种处理定量数据、以及当前元素指针的技术。想象一个周边标有点的圆环－－这些点就是时间存储的位置。从圆心画一条到圆周的某个点的箭头－－这就是指针。就像我们在一个圆环上一样，没有起点和终点，你可以一直往下走下去。过来一段时间，所有可用的位置都会被用过，该循环过程会自动重用原来的位置。这样，数据集不会增大，并且不需要维护。RRDtool处理RRD数据库。它用向RRD数据库存储数据、从RRD数据库中提取数据。</p>
+<p>Cacti是基于nginx，rrdtool，mysql，php，snmp来运行的.</p>
+<blockquote>
+<p>1.安装操作系统centos6.0以上版本</p>
+<p>2.配置好网络IP和DNS</p>
+<p>3.修改系统时区和时间，使用上海时区</p>
+</blockquote>
+<p>备份原有的时区文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cp /etc/localtime /etc/localtime.bak</div></pre></td></tr></table></figure>
+<p>用上海时区文件替换系统时区文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</div></pre></td></tr></table></figure>
+<p>修改/etc/sysconfig/clock文件，修改为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ZONE=<span class="string">"Asia/Shanghai"</span></div><div class="line">UTC=<span class="literal">false</span></div><div class="line">ARC=<span class="literal">false</span></div></pre></td></tr></table></figure>
+<p>同步时间</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ntpdate <span class="selector-tag">time</span><span class="selector-class">.nist</span><span class="selector-class">.gov</span></div></pre></td></tr></table></figure>
+<p>4.安装epel源</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rpm -Uvh http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm</div></pre></td></tr></table></figure>
+<p>5.安装基础支持软件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install -y openssh-clients telnet wget nginx php-cgi php-cli spawn-fcgi mysql-servermysql rrdtoolnet-snmp net-snmp-utils net-snmp-devel php-mysql php-snmp</div></pre></td></tr></table></figure>
+<p>6.配置PHP管理器</p>
+<p>（1）cd /etc/sysconfig 进入sysconfig文件夹</p>
+<p>（2）vi spawn-fcgi 在文件改位置添加如下命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#SOCKET=/var/run/php-fcgi.sock</span></div><div class="line"><span class="comment">#OPTIONS="-u apache -g apache -s $SOCKET -S -M 0600 -C 32 -F 1 -P /var/run/spawn-fcgi.pid -- /usr/bin/php-cgi"</span></div><div class="line"> SOCKET=/var/run/php-fcgi.sock</div><div class="line"> OPTIONS=<span class="string">"-u nginx -g nginx -s <span class="variable">$SOCKET</span> -S -M 0600 -C 32 -F 1 -P /var/run/spawn-fcgi.pid -- /usr/bin/php-cgi"</span></div></pre></td></tr></table></figure>
+<p>（3）/etc/init.d/spawn-fcgi restart 重启php管理器</p>
+<p>（4）chkconfig spawn-fcgi on 设置开机启动服务</p>
+<p>7.补充创建/var/lib/php下 session 目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mkdir -p /var/lib/php/session</div><div class="line">chown -R nginx.nginx /var/lib/php/session</div><div class="line">chmod 777 /var/lib/php/session</div></pre></td></tr></table></figure>
+<p>8.修改PHP文件配置</p>
+<p>vi /etc/php.ini</p>
+<p>（1）修改PHP时区为Asia/ShangHai，在文件如下位置添加该句命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">;;;;;;;;;;;;;;;;;;;</div><div class="line">; Module Settings ;</div><div class="line">;;;;;;;;;;;;;;;;;;;</div><div class="line">[Date]</div><div class="line">; Defines the default timezone used by the date <span class="built_in">functions</span></div><div class="line">; http://www.php.net/manual/en/datetime.configuration.php<span class="comment">#ini.date.timezone</span></div><div class="line">;date.timezone =</div><div class="line">date.timezone = Asia/Shanghai</div></pre></td></tr></table></figure>
+<p>（2）修改PHP调用内存限制，在文件如下位置修改如下添加：</p>
+<p><code>date.timezone = Asia/Shanghai   memory_limit = 512M</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">;;;;;;;;;;;;;;;;;;;</div><div class="line">; Resource Limits ;</div><div class="line">;;;;;;;;;;;;;;;;;;;</div><div class="line">; Maximum execution time of each script, <span class="keyword">in</span> seconds</div><div class="line">; http://www.php.net/manual/en/info.configuration.php<span class="comment">#ini.max-execution-time</span></div><div class="line">max_execution_time = 30</div><div class="line">; Maximum amount of time each script may spend parsing request data. It<span class="string">'s a good</span></div><div class="line">; idea to limit this time on productions servers in order to eliminate unexpectedly</div><div class="line">; long running scripts.</div><div class="line">; Default Value: -1 (Unlimited)</div><div class="line">; Development Value: 60 (60 seconds)</div><div class="line">; Production Value: 60 (60 seconds)</div><div class="line">; http://www.php.net/manual/en/info.configuration.php#ini.max-input-time</div><div class="line">max_input_time = 60</div><div class="line">; Maximum input variable nesting level</div><div class="line">; http://www.php.net/manual/en/info.configuration.php#ini.max-input-nesting-level</div><div class="line">;max_input_nesting_level = 64</div><div class="line">; Maximum amount of memory a script may consume (128MB)</div><div class="line">; http://www.php.net/manual/en/ini.core.php#ini.memory-limit</div><div class="line">#memory_limit = 128M</div><div class="line">memory_limit = 512M</div></pre></td></tr></table></figure>
+<p>10.修改nginx配置文件增加对cacti的支持（对应自己的nginx安装目录）<br>vi /usr/local/nginx/conf.d/nginx.conf在文件末尾大括号内添加如下配置<br>          server {<br>          listen 8080;<br>          server_name 127.0.0.1;<br>          root html;<br>          index index.html index.php;</p>
+<pre><code>   location ~ \.php$ {
+   root html;
+   fastcgi_buffer_size 128k;
+   fastcgi_buffers 8 128k;
+   fastcgi_pass unix:/var/run/php-fcgi.sock;
+   fastcgi_index index.php;
+   fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+  #fastcgi_param SCRIPT_FILENAME /usr/local/nginx/html/$fastcgi_script_name;
+  include fastcgi_params;
+  }
+       }
+chkconfig nginx on 设置nginx开机启动
+service nginx restart重启nginx服务
+</code></pre><p>11.安装catic</p>
+<p>catic是无需编译安装的，直接下载其源包解压即可使用<br>（1）下载cacti</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /tmp</div><div class="line">wget http://www.cacti.net/downloads/cacti-0.8.8b.tar.gz</div></pre></td></tr></table></figure>
+<p>（2）解压cacti</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">tar zxvf cacti-0.8.8b.tar.gz</div><div class="line">mv cacti-0.8.8b /usr/<span class="built_in">local</span>/nginx/html <span class="comment">#将解压出的cacti文件夹移动到nginx的</span></div></pre></td></tr></table></figure>
+<p>web目录下（对应自己安装的nginx）</p>
+<p>（3）修改cacti的使用者和组权限为nginx用户和nginx组</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/nginx/html</div><div class="line">chown -R nginx:nginx cacti/</div></pre></td></tr></table></figure>
+<p>12.创建数据库，存储cacti数据</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">启动mysql</div><div class="line">/etc/init.d/mysqld start</div><div class="line">chkconfig mysqld on</div></pre></td></tr></table></figure>
+<p>（1）使用root账户登录mysql</p>
+<pre><code>mysql -uroot
+</code></pre><p>（2）创建cacti数据库表</p>
+<pre><code>create database cacti;
+</code></pre><p>（3）建立用户cacti，密码cacti123(可自行定义)</p>
+<pre><code>mysql&gt; insert into mysql.user(host,user,password) values (&apos;localhost&apos;,&apos;cacti&apos;,password(&apos;cacti123&apos;));
+</code></pre><p>（4）重载mysql授权表</p>
+<pre><code>mysql&gt; flush privileges;
+</code></pre><p>（5） 把数据库cacti授权于用户cacti</p>
+<pre><code>mysql&gt; grant all on cacti.* to cacti@&apos;localhost&apos; identified by &apos;cacti123&apos;;
+mysql&gt; quit
+</code></pre><p>（6）将cacti数据库与mysql中的数据对应起来</p>
+<pre><code>cd /usr/local/nginx/html/cacti
+mysql -ucacti -pcacti123 cacti&lt;cacti.sql
+</code></pre><h3 id="13-修改CACTI配置文件"><a href="#13-修改CACTI配置文件" class="headerlink" title="13.修改CACTI配置文件"></a>13.修改CACTI配置文件</h3><p> (1) 切换至cacti下的include目录（对应自己安装的nginx）</p>
+<pre><code>cd /usr/local/nginx/html/cacti/include/
+</code></pre><p> (2)编辑config.php文件，修改如下位置的配置</p>
+<pre><code>vi config.php
+</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">/* make sure these values refect your actual database/host/user/password */</div><div class="line"><span class="variable">$database_type</span> = <span class="string">"mysql"</span>;</div><div class="line"><span class="variable">$database_default</span> = <span class="string">"cacti"</span>;<span class="comment">#mysql数据库里所创建的表名</span></div><div class="line"><span class="variable">$database_hostname</span> = <span class="string">"127.0.0.1"</span>;</div><div class="line"><span class="variable">$database_username</span> = <span class="string">"cacti"</span>;<span class="comment">#mysql数据库里为cacti数据表所创建的用户名</span></div><div class="line"><span class="variable">$database_password</span> = <span class="string">"cacti123"</span>;<span class="comment">#mysql数据库里为cacti数据表所创建的密码</span></div><div class="line"><span class="variable">$database_port</span> = <span class="string">"3306"</span>;</div><div class="line"><span class="variable">$database_ssl</span> = <span class="literal">false</span>;</div></pre></td></tr></table></figure>
+<p>14.配置cacti的循环任务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">crontab <span class="_">-e</span></div><div class="line">*/5 * * * * php /usr/<span class="built_in">local</span>/nginx/html/cacti/poller.php &gt; /dev/null 2&gt;&amp;1<span class="comment">#请对应自己的nginx安装目录</span></div></pre></td></tr></table></figure>
+<p>:wq 保存退出</p>
+<p>可直接先运行一遍php /usr/local/nginx/html/cacti/poller.php 好让cacti产生图片</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">php /usr/share/nginx/html/cacti/poller.php</div></pre></td></tr></table></figure>
+<p>15.安装完成</p>
+<pre><code>使用浏览器打开如下地址http://本机IP/cacti/install
+</code></pre><p>会显示安装向导，点击NEXT即可，到下面如下界面是，注意查看所有的文件路径是否都为绿色，不是绿色请找到自己安装的目录，一一对应点击Finsh即可到达cacti的登陆界面</p>
+<p>输入用户名密码,<code>cacti</code>默认的用户名和密码都为<code>admin</code>，输入一次后会提示在一次输入，这个时候是让你设置新的admin密码.然后就能进入cacti的图形界面了.</p>
+<p>点击左上角graphs，就能查看本机所监控的所有设备默认存在一个localhost，监控本机的内存使用，活动用户等信息.</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/cacti.png" alt=""></figure></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2014/10/06/性能监控/Zabbix/zabbix监控80端口状态/">zabbix监控80端口状态</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2014-10-06</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="目的：监控web主机80端口是否在供提服务。如果不在发出报警。"><a href="#目的：监控web主机80端口是否在供提服务。如果不在发出报警。" class="headerlink" title="目的：监控web主机80端口是否在供提服务。如果不在发出报警。"></a>目的：监控web主机80端口是否在供提服务。如果不在发出报警。</h3><p>zabbix监控web端上面的80端口，或者其他的端口都是可以实现的。</p>
+<p>在这里可以添加自带的模板-组态-模板-Template App HTTP Service </p>
+<p>有自带的HTTP service is running 服务是否正常启动。</p>
+<p>这个是监测http的80端口，后期比如nginx，gitlab,或者其他服务的80端口。可以对单台设置。</p>
+<p>也可以创建模板正对性的监控集群的同一个端口。</p>
+<h3 id="配置："><a href="#配置：" class="headerlink" title="配置："></a>配置：</h3><p> 1、添加监控项(Items)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"> 打开zabbix web管理界面：</div><div class="line">选择<span class="string">"Configuration"</span>-&gt;<span class="string">"Hosts"</span>-这里选择需要监控的机器-<span class="string">"Items"</span></div></pre></td></tr></table></figure>
+<p>选择Create-item</p>
+<p>创建项目，这个对这台监控的服务器创建对应的监控项目。</p>
+<p>在这里”name”为”web01.haozhuo 80”，设置”key”点击”Select”按钮弹出下图<br>选择”net.tcp.port[<ip>,port]”,然后修改为web01的ip地址端口为80。”net.tcp.port[192.168.0.2,80]”</ip></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-web1.png" alt=""></figure></p>
+<p>保存<br>   2、添加触发器（Triggers）<br>选择Configuration”-&gt;”Hosts”-这里选择需要监控的机器-“Triggers”</p>
+<p>选择Create-Trigger</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-web2.png" alt=""></figure><br>保存</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-web3.png" alt=""></figure><br>然后选择添加图形。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-web4.png" alt=""></figure></p>
+<p>zabbix-server2.4服务端编译安装 <a href="http://blog.yangcvo.me/2015/01/18/zabbix-server服务端编译安装/" target="_blank" rel="external">zabbix-server服务端编译安装</a></p>
+<p>zabbix2.4监控80端口状态 : <a href="http://blog.yangcvo.me/2016/07/20/zabbix监控80端口状态/" target="_blank" rel="external">zabbix监控80端口状态</a></p>
+<p>zabbix+Grafana安装使用监控结合 ：<a href="http://blog.yangcvo.me/2016/07/13/zabbix-Grafana安装使用结合/" target="_blank" rel="external">zabbix+Grafana安装使用监控结合</a></p>
+<p>zabbix监控MySQL-添加自定义监控项 : <a href="http://blog.yangcvo.me/2015/09/29/zabbix监控MySQL-添加自定义监控项/" target="_blank" rel="external">zabbix监控MySQL-添加自定义监控项</a></p>
+<p>zabbix的ICMP_Ping模版实现对客户端网络状态的监控 : <a href="http://blog.yangcvo.me/2015/11/18/zabbix的ICMP-Ping模版实现对客户端网络状态的监控/" target="_blank" rel="external">zabbix的ICMP_Ping模版实现对客户端网络状态的监控</a></p>
+<p>zabbix性能监控故障总结 <a href="http://blog.yangcvo.me/2016/02/07/zabbix-故障总结/" target="_blank" rel="external">zabbix性能监控故障总结</a></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2014/10/05/性能监控/Zabbix/zabbix邮件告警/">zabbix邮件告警</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2014-10-05</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="操作系统环境："><a href="#操作系统环境：" class="headerlink" title="操作系统环境："></a>操作系统环境：</h2><p>CentOS release 6.7 (Final)</p>
+<p>zabbix版本2.4.7</p>
+<p>关于操作系统CentOS6.0 以下版本都是通过mail命令调用sendmail的sm-client发送邮件，所以如果关闭sendmail按照很多网上的文档是发不出邮件的。</p>
+<p>centos 6.0以上版本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">默认已经安装好sendmail</div><div class="line">默认已经安装好postfix</div></pre></td></tr></table></figure>
+<p>sendmail和postfix只需要安装一个即可并开启服务即可。</p>
+<h3 id="实现目的："><a href="#实现目的：" class="headerlink" title="实现目的："></a>实现目的：</h3><p>在Zabbix服务端设置邮件报警，当被监控主机宕机或者达到触发器预设值时，会自动发送报警邮件到指定邮箱，定位哪里出现问题，可以及时的解决。</p>
+<h3 id="1-安装邮件发送工具mailx"><a href="#1-安装邮件发送工具mailx" class="headerlink" title="1.安装邮件发送工具mailx"></a>1.安装邮件发送工具mailx</h3><p>CentOS 6.x 编译安装mailx，直接yum安装的mailx版本太旧，使用外部邮件发送会有问题。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">yum <span class="keyword">install</span> mailx <span class="comment">#安装</span></div><div class="line"></div><div class="line">yum <span class="keyword">remove</span> mailx <span class="comment">#卸载系统自带的旧版mailx</span></div></pre></td></tr></table></figure>
+<p>这里我用编译安装的很简单几步就可以了。</p>
+<p>mail下载地址:<a href="http://www.linuxfromscratch.org/blfs/view/stable/basicnet/mailx.html" target="_blank" rel="external">Downloads</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[root@salt ~]<span class="comment"># curl -O http://ftp.debian.org/debian/pool/main/h/heirloom-mailx/heirloom-mailx_12.5.orig.tar.gz</span></div><div class="line">[root@salt ~]<span class="comment"># tar -zxvf heirloom-mailx_12.5.orig.tar.gz </span></div><div class="line">[root@salt ~]<span class="comment"># cd heirloom-mailx-12.5</span></div><div class="line">[root@salt heirloom-mailx-12.5]<span class="comment"># make</span></div><div class="line">[root@salt heirloom-mailx-12.5]<span class="comment"># make install UCBINSTALL=/usr/bin/install</span></div><div class="line">[root@salt heirloom-mailx-12.5]<span class="comment"># ln -s /usr/local/bin/mailx /bin/mail #创建mailx到mail的软连接</span></div><div class="line">[root@salt heirloom-mailx-12.5]<span class="comment"># ln -s /etc/nail.rc /etc/mail.rc #创建mailx配置文件软连接</span></div><div class="line">[root@salt heirloom-mailx-12.5]<span class="comment"># whereis mailx   #查看安装路径</span></div><div class="line">mailx: /bin/mailx /usr/<span class="built_in">local</span>/bin/mailx /usr/share/man/man1p/mailx.1p.gz /usr/share/man/man1/mailx.1.gz   </div><div class="line">[root@salt heirloom-mailx-12.5]<span class="comment"># mailx -V     #查看版本信息</span></div><div class="line">12.5 6/20/10</div></pre></td></tr></table></figure>
+<p>安装完以后我们来测试下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@salt]<span class="comment"># echo "zabbix test mail" |mail -s zabbix" it@hz-health.cn</span></div><div class="line">[root@salt]<span class="comment"># send-mail: warning: inet_protocols: IPv6 support is disabled: Address family not supported by protocol</span></div><div class="line">send-mail: warning: inet_protocols: configuring <span class="keyword">for</span> IPv4 support only</div><div class="line">postdrop: warning: inet_protocols: IPv6 support is disabled: Address family not supported by protocol</div><div class="line">postdrop: warning: inet_protocols: configuring <span class="keyword">for</span> IPv4 support only</div><div class="line">postdrop: warning: unable to look up public/pickup: No such file or directory</div></pre></td></tr></table></figure>
+<p>如果有出现这个报错，那么我们需要修改下配置文件。<br>查看当前inet_protocols</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># /usr/sbin/postconf | grep inet_protocols</span></div><div class="line">inet_protocols = all</div><div class="line">修改ipv4</div><div class="line"><span class="comment"># vi /etc/postfix/main.cf</span></div><div class="line">inet_protocols = all</div><div class="line">改为</div><div class="line">inet_protocols = ipv4</div><div class="line">重启postfix</div><div class="line">service postfix restart</div></pre></td></tr></table></figure>
+<p>然后在测试：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">[root@salt]#</span><span class="bash"> <span class="built_in">echo</span> <span class="string">"zabbix test mail"</span> |mail <span class="_">-s</span> <span class="string">"zabbix"</span> it@xxxx.cn</span></div></pre></td></tr></table></figure>
+<p>测试发送邮件，标题zabbix，邮件内容：zabbix test mail，发送到的邮箱：xxx.qq.com</p>
+<p>这时候，邮箱yyy@qq.com会收到来自xxx@qq.com的测试邮件。</p>
+<h3 id="2、创建邮件告警的python脚本"><a href="#2、创建邮件告警的python脚本" class="headerlink" title="2、创建邮件告警的python脚本"></a>2、创建邮件告警的python脚本</h3><p>zabbix_server添加脚本配置:</p>
+<ol>
+<li>zabbix安装路径：cd /usr/local/zabbix/share/zabbix/alertscripts</li>
+</ol>
+<p>编写脚本：<br><code>vim /usr/local/zabbix/share/zabbix/alertscripts/zabbix_sendmail.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/env python</span></div><div class="line"><span class="comment">#coding:utf-8</span></div><div class="line"><span class="keyword">import</span> smtplib</div><div class="line"><span class="keyword">from</span> email.mime.text <span class="keyword">import</span> MIMEText</div><div class="line"><span class="keyword">import</span> sys</div><div class="line">LOG_FILENAME=<span class="string">"/var/log/email_python.log"</span></div><div class="line">mail_host = <span class="string">'smtp.exmail.qq.com'</span>                  <span class="comment">#定义smtp服务器</span></div><div class="line">mail_user = <span class="string">'it@xxxx.cn'</span>               <span class="comment">#发件人邮箱</span></div><div class="line">mail_pass = <span class="string">'xxxxxxx'</span>                        <span class="comment">#发件人邮箱密码</span></div><div class="line">mail_port = <span class="number">465</span>                            <span class="comment">#smtp服务器的端口号，不同的邮箱服务器端口号不同</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">send_mail</span><span class="params">(to_list,subject,content)</span>:</span></div><div class="line">    me=<span class="string">"Zabbix Monitor"</span>+<span class="string">"&lt;"</span>+mail_user+<span class="string">"&gt;"</span>  <span class="comment">#定义发件人显示名称为Zabbix Monitor</span></div><div class="line">    msg=MIMEText(content,_subtype=<span class="string">'plain'</span>,_charset=<span class="string">'gb2312'</span>)</div><div class="line">    msg[<span class="string">'Subject'</span>]=subject                 <span class="comment">#定义邮件主题</span></div><div class="line">    msg[<span class="string">'From'</span>]=me                         <span class="comment">#发送方</span></div><div class="line">    msg[<span class="string">'to'</span>]=to_list                      <span class="comment">#接收方</span></div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        s=smtplib.SMTP_SSL()               <span class="comment">#创建一个smtp对象</span></div><div class="line">        s.connect(mail_host,mail_port)     <span class="comment">#通过connect方法连接smtp主机</span></div><div class="line">        s.login(mail_user,mail_pass)       <span class="comment">#邮箱账户登录认证</span></div><div class="line">        s.sendmail(me,to_list,msg.as_string()) <span class="comment">#发送邮件</span></div><div class="line">        s.close()                             <span class="comment">#断开smtp连接</span></div><div class="line">        <span class="keyword">return</span> <span class="keyword">True</span></div><div class="line">    <span class="keyword">except</span> Exception,e:</div><div class="line">        <span class="keyword">print</span> str(e)</div><div class="line">        <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    send_mail(sys.argv[<span class="number">1</span>],sys.argv[<span class="number">2</span>],sys.argv[<span class="number">3</span>])</div></pre></td></tr></table></figure>
+<p>2、脚本文件路径</p>
+<p>先确认下<code>zabbix_server.conf</code>文件中定义的告警脚本路径配置：</p>
+<p>如果注释了，添加一条绝对路径。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># AlertScriptsPath=$&#123;datadir&#125;/zabbix/alertscripts</span></div><div class="line"> AlertScriptsPath=/usr/<span class="built_in">local</span>/zabbix/share/zabbix/alertscripts</div></pre></td></tr></table></figure>
+<p>然后将准备好的python脚本存放到该路径下，并更改脚本文件的权限和属主属组</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">chown zabbix.zabbix   /usr/<span class="built_in">local</span>/zabbix/share/zabbix/alertscripts/zabbix_sendmail.py</div><div class="line">chmod +x   /usr/<span class="built_in">local</span>/zabbix/share/zabbix/alertscripts/zabbix_sendmail.py</div></pre></td></tr></table></figure>
+<p>注意：如果在zabbix_server.conf文件中没有设置Allow root=1，则表示zabbix是以zabbix用户启动而不是root，所以脚本的属主属组都应该设置为zabbix用户。设置为root用户启动的配置如下。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"><span class="comment">## Option: AllowRoot</span></span></div><div class="line"><span class="meta">#</span><span class="bash">   Allow the server to run as <span class="string">'root'</span>. If disabled and the server is started by <span class="string">'root'</span>, the server</span></div><div class="line"><span class="meta">#</span><span class="bash">   will try to switch to user <span class="string">'zabbix'</span> instead. Has no effect <span class="keyword">if</span> started under a regular user.</span></div><div class="line"><span class="meta">#</span><span class="bash">   0 - <span class="keyword">do</span> not allow</span></div><div class="line"><span class="meta">#</span><span class="bash">   1 - allow</span></div><div class="line"><span class="meta">#</span><span class="bash"></span></div><div class="line"><span class="meta">#</span><span class="bash"> Mandatory: no</span></div><div class="line"><span class="meta">#</span><span class="bash"> Default:</span></div><div class="line">AllowRoot=1</div></pre></td></tr></table></figure>
+<p>重启服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@salt alertscripts]<span class="comment"># /etc/init.d/zabbix_server restart</span></div><div class="line">Shutting down zabbix_server:                               [确定]</div><div class="line">Starting zabbix_server:                                    [确定]</div></pre></td></tr></table></figure>
+<p>3、测试脚本文件发送邮件是否成功，这一步很重要</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./zabbix_sendmail.py cheng@health.cn <span class="string">"subject"</span> <span class="string">"zabbix"</span></div></pre></td></tr></table></figure>
+<p>已经测试ok，可以收到邮件，说明写的python脚本没有问题。</p>
+<h3 id="zabbix-web端设置"><a href="#zabbix-web端设置" class="headerlink" title="zabbix-web端设置"></a>zabbix-web端设置</h3><ul>
+<li>首先web端的配置顺序如下：<br>创建用户媒介–&gt;创建用户组和用户–&gt;针对trigger（触发器）添加报警动作，设置邮件发送用户及媒介</li>
+</ul>
+<p>1.创建用户媒介</p>
+<ul>
+<li><p>创建用户媒介–&gt;创建用户组和用户–&gt;Media types–&gt;Createmediatype     </p>
+<ul>
+<li>Mediatype设置如下， Name项自定义（创建用户时会用到这个名字),我们使用脚本来发邮件，所以Type项请选择Script，Script项则是你zabbix server上的发送邮件的脚本名字</li>
+<li><p>（注：如脚本名字是snedmail.py,那此项就填sendmail，后缀不要)</p>
+</li>
+<li><p>zabbix会传给脚本三个参数：接收用户，邮件主题，邮件内容</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail1.png" alt=""></figure></p>
+<p>2.设置Zabbix用户报警邮箱地址</p>
+<ul>
+<li>组态-用户-Admin (Zabbix Administrator)<ul>
+<li>再到Media标签下，点击Add添加用户及该用户的报警方式，然后Type项选择你所创建的邮件报警名字（Media Type），在Send to后填入用户的报警邮箱，其他默认即可。</li>
+</ul>
+</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail2.png" alt=""></figure></p>
+<p>3.设置Zabbix触发报警的动作</p>
+<ul>
+<li>组态-动作-创建动作</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mion3.png" alt=""></figure></p>
+<figure class="highlight dust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="xml">名称：Action-Email</span></div><div class="line"></div><div class="line">默认接收人：故障<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">,服务器:</span><span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml">发生: </span><span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml">故障!</span></div><div class="line"></div><div class="line">默认信息：</div><div class="line"></div><div class="line">告警主机:<span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">告警时间:<span class="template-variable">&#123;EVENT.DATE&#125;</span><span class="xml"> </span><span class="template-variable">&#123;EVENT.TIME&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">告警等级:<span class="template-variable">&#123;TRIGGER.SEVERITY&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">告警信息: <span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">告警项目:<span class="template-variable">&#123;TRIGGER.KEY1&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">问题详情:<span class="template-variable">&#123;ITEM.NAME&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">当前状态:<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE1&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">事件ID:<span class="template-variable">&#123;EVENT.ID&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">恢复信息：打钩</div><div class="line"></div><div class="line">恢复主旨：恢复<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">, 服务器:</span><span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml">: </span><span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml">已恢复!</span></div><div class="line"></div><div class="line">恢复信息：</div><div class="line"></div><div class="line">告警主机:<span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">告警时间:<span class="template-variable">&#123;EVENT.DATE&#125;</span><span class="xml"> </span><span class="template-variable">&#123;EVENT.TIME&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">告警等级:<span class="template-variable">&#123;TRIGGER.SEVERITY&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">告警信息: <span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">告警项目:<span class="template-variable">&#123;TRIGGER.KEY1&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">问题详情:<span class="template-variable">&#123;ITEM.NAME&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">当前状态:<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE1&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">事件ID:<span class="template-variable">&#123;EVENT.ID&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">已启用：打钩</div></pre></td></tr></table></figure>
+<p>创建Operations</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail4.png" alt=""></figure></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail5.png" alt=""></figure></p>
+<p>到这里就基本配置完毕了。</p>
+<p>测试下关闭agent 1分钟左右可以收到邮件。 关闭防火墙和selinux 即可，不关闭防火墙开启10051端口和10050端口</p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>查看zabbix审计动态日志：<br>发送成功</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail7.png" alt=""></figure></p>
+<p>邮件已接收成功。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-mail8.png" alt=""></figure></p>
+<p>微信告警也已写详细文档。文档file已上传github上面了。</p>
+<p>zabbix-server2.4服务端编译安装 <a href="http://blog.yangcvo.me/2015/01/18/zabbix-server服务端编译安装/" target="_blank" rel="external">zabbix-server服务端编译安装</a></p>
+<p>zabbix2.4监控80端口状态 : <a href="http://blog.yangcvo.me/2016/07/20/zabbix监控80端口状态/" target="_blank" rel="external">zabbix监控80端口状态</a></p>
+<p>zabbix+Grafana安装使用监控结合 ：<a href="http://blog.yangcvo.me/2016/07/13/zabbix-Grafana安装使用结合/" target="_blank" rel="external">zabbix+Grafana安装使用监控结合</a></p>
+<p>zabbix监控MySQL-添加自定义监控项 : <a href="http://blog.yangcvo.me/2015/09/29/zabbix监控MySQL-添加自定义监控项/" target="_blank" rel="external">zabbix监控MySQL-添加自定义监控项</a></p>
+<p>zabbix的ICMP_Ping模版实现对客户端网络状态的监控 : <a href="http://blog.yangcvo.me/2015/11/18/zabbix的ICMP-Ping模版实现对客户端网络状态的监控/" target="_blank" rel="external">zabbix的ICMP_Ping模版实现对客户端网络状态的监控</a></p>
+<p>zabbix性能监控故障总结 <a href="http://blog.yangcvo.me/2016/02/07/zabbix-故障总结/" target="_blank" rel="external">zabbix性能监控故障总结</a></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2014/10/04/性能监控/Zabbix/zabbix-故障总结/">zabbix性能监控故障总结</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2014-10-04</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="TOC"><a href="#TOC" class="headerlink" title="TOC"></a>TOC</h2><p>效果如下：<br>[TOC]</p>
+<h3 id="1-Zabbix红色弹出报错-zabbix-server-is-not-running-the-information-displayed-may-not-be-current"><a href="#1-Zabbix红色弹出报错-zabbix-server-is-not-running-the-information-displayed-may-not-be-current" class="headerlink" title="1.Zabbix红色弹出报错 zabbix server is not running: the information displayed may not be current"></a>1.Zabbix红色弹出报错 <code>zabbix server is not running: the information displayed may not be current</code></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">* 排错:</div><div class="line">* </div><div class="line">1. 检查   /var/www/html/zabbix/conf/zabbix.conf.php </div><div class="line">确定 </div><div class="line"><span class="variable">$DB</span>[<span class="string">'DATABASE'</span>]  数据库</div><div class="line"><span class="variable">$DB</span>[<span class="string">'USER'</span>]    用户</div><div class="line"><span class="variable">$DB</span>[<span class="string">'PASSWORD'</span>]   密码</div><div class="line">这三个参数都是正确的。 </div><div class="line">注意：每次改了参数文件一定要记得重启zabbix_server</div><div class="line">这里都没问题。</div><div class="line"></div><div class="line">2. 关闭SELinux的方法:</div><div class="line">修改/etc/selinux/config文件中的SELINUX=<span class="string">""</span> 为 disabled ，然后重启。</div><div class="line">如果不想重启系统，使用命令setenforce 0</div><div class="line">注:</div><div class="line">setenforce 1 设置SELinux 成为enforcing模式</div><div class="line">setenforce 0 设置SELinux 成为permissive模式 </div><div class="line">在lilo或者grub的启动参数中增加：selinux=0,也可以关闭selinux</div><div class="line">selinux是否关闭。一定要关闭这个，开启selinux会引起一连串问题，甚至zabbix的discovery功能也不能正常使用</div><div class="line"></div><div class="line">3. 上面都没有问题然后在查看服务是否正常启动。</div><div class="line">查看/tmp/zabbix_server.log和/tmp/zabbix_agent.log无任何异常。</div><div class="line">如果日志提示查找不到主机名，我们看下服务是否启动。</div><div class="line"></div><div class="line">4. 看zabbix_server和zabbix_agent进程、端口都正常 </div><div class="line">   netstat -ntulp</div><div class="line">如果没有启动 需要手动启动下，这里可能服务没有启动，启动服务即可。</div></pre></td></tr></table></figure>
+<h3 id="2-Zabbix-agentd日志报错Get-value-from-agent-failed-cannot-connect-to-192-168-1-218-10050-113-No-route-to-host"><a href="#2-Zabbix-agentd日志报错Get-value-from-agent-failed-cannot-connect-to-192-168-1-218-10050-113-No-route-to-host" class="headerlink" title="2.Zabbix-agentd日志报错Get value from agent failed: cannot connect to [[192.168.1.218]:10050]: [113] No route to host"></a>2.Zabbix-agentd日志报错<code>Get value from agent failed: cannot connect to [[192.168.1.218]:10050]: [113] No route to host</code></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">* 排错:</div><div class="line"></div><div class="line">看提示“No route to host”，与网络连接有关。排除的方法如下:</div><div class="line"></div><div class="line">a）查看192.168.30.3这台机器是否已开机</div><div class="line">b)在zabbix server端向这台机器ping，看网络是否通</div><div class="line">c）用telnet 登录10050和10051端口，看该主机是否允许这两个端口通讯</div><div class="line">d)查看iptables防火墙规则是否拦截10050、10051端口</div></pre></td></tr></table></figure>
+<h3 id="3-时间不同步Check-if-client-local-time-is-in-sync-with-Zabbix-server-time"><a href="#3-时间不同步Check-if-client-local-time-is-in-sync-with-Zabbix-server-time" class="headerlink" title="3.时间不同步Check if client local time is in sync with Zabbix server time"></a>3.时间不同步<code>Check if client local time is in sync with Zabbix server time</code></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">因为我在我的网络中的一些NTP服务器，这将是很好能够测量主机和这些服务器之一之间的时间差。可悲的是，这几乎是不可能的。</div><div class="line">但有一个解决方案:</div><div class="line"></div><div class="line">`system.localtime.fuzzytime`，照顾这只是一个!!!触发的“fuzzytime”功能发出警报，如果被监控服务器的时间漂移。它比较报告主机的时间的zabbix服务器在触发器被处理的时间上的时间。fuzzytime（秒），可能是（浮点，整数）:</div><div class="line"></div><div class="line">返回1，如果时间戳（项目值）不从的zabbix服务器时间有所不同超过N秒，0 -否则通常用于system.localtime检查本地时间在服务器的zabbix本地时间同步。</div><div class="line">注:添加公式时，使用“添加”按钮，在右侧，这是很简单的这种方式！</div><div class="line"></div><div class="line">系统时间跟我现在北京时间不同步。</div><div class="line">date -R </div><div class="line">查看下</div><div class="line"></div><div class="line">需要手动添加计划任务同步下，设置开机启动。这里IP是zabbix-server IP</div><div class="line"></div><div class="line">00 * * * * /usr/sbin/ntpdate 192.168.47.20 &gt;/dev/null 2&gt;&amp;1</div></pre></td></tr></table></figure>
+<p>还有不懂得可以看:<a href="http://en.linuxkitchen.com/2014/11/03/zabbix-and-time-difference-from-host-to-zabbix-server/" target="_blank" rel="external">参考</a></p>
+<h3 id="4-MySQL内存不够-Lack-of-available-memory-on-server-MySQL"><a href="#4-MySQL内存不够-Lack-of-available-memory-on-server-MySQL" class="headerlink" title="4.MySQL内存不够 Lack of available memory on server MySQL"></a>4.MySQL内存不够 <code>Lack of available memory on server MySQL</code></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">故障原因:Lack of available memory on server argus047072</div><div class="line"></div><div class="line">需要添加内存</div><div class="line">故障原因:Redis链接数超过最大客户端数量限制。</div><div class="line">是否有大量的进程在后台运行</div></pre></td></tr></table></figure>
+<h3 id="5-Zabbix-agent不通Received-empty-response-from-Zabbix-Agent"><a href="#5-Zabbix-agent不通Received-empty-response-from-Zabbix-Agent" class="headerlink" title="5.Zabbix-agent不通Received empty response from Zabbix Agent"></a>5.Zabbix-agent不通<code>Received empty response from Zabbix Agent</code></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">出现如下错误:</div><div class="line"></div><div class="line">Received empty response from Zabbix Agent at [192.168.1.2]. Assuming that agent dropped connection because of access permission</div><div class="line">大概意思是说没有权限访问agent端口10050，解决方法如下:</div><div class="line"></div><div class="line"><span class="comment"># cat zabbix_agentd.conf| grep Server=</span></div><div class="line">Server=192.168.1.2  <span class="comment"># zabbix server ip地址</span></div><div class="line"></div><div class="line">如果你的server有多个IP地址，使用逗号分隔多个IP地址。</div></pre></td></tr></table></figure>
+<h3 id="6-Zabbix报错磁盘不足Free-disk-space-is-less-than-20-on-volume-home"><a href="#6-Zabbix报错磁盘不足Free-disk-space-is-less-than-20-on-volume-home" class="headerlink" title="6.Zabbix报错磁盘不足Free disk space is less than 20% on volume /home"></a>6.Zabbix报错磁盘不足<code>Free disk space is less than 20% on volume /home</code></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">磁盘总共大小</div><div class="line">du -Th</div><div class="line"></div><div class="line">定位查看是什么消耗那么多磁盘空间，查看home目录。</div><div class="line">du <span class="_">-s</span> -h /srv/tomcat/tomcat_account/logs/* | sort</div><div class="line">1G localhost.2015-12-21.log</div><div class="line">2G localhost.2015-12-22.log</div><div class="line">2G localhost.2015-12-23.log</div><div class="line">.....</div><div class="line"></div><div class="line">find /srv/tomcat/tomcat_account/logs/ -mtime +1 -name <span class="string">"*.log"</span> -exec rm -rf &#123;&#125; \;</div><div class="line">这个保留前一天的日志其余都删除。</div><div class="line"></div><div class="line">1. 计划任务脚本清除前一天</div><div class="line"></div><div class="line">00 00 * * * find  /home/admin/output/ -mtime +1 -exec rm &#123;&#125; \;</div><div class="line"></div><div class="line">2. 或者使用脚本放到计划任务里面跑</div><div class="line"></div><div class="line">1 0 * * * /opt/soft/<span class="built_in">log</span>/qingli-log.sh &gt;/dev/null 2&gt;&amp;1</div><div class="line"></div><div class="line">这里的设置是每天凌晨0点1分执行qingli-log.sh .sh文件进行数据清理任务了。</div><div class="line">在查看磁盘总共大小</div></pre></td></tr></table></figure>
+<h3 id="7-Zabbix监控报错zabbix-server-is-not-running-the-information-displayed-may-not-be-current"><a href="#7-Zabbix监控报错zabbix-server-is-not-running-the-information-displayed-may-not-be-current" class="headerlink" title="7.Zabbix监控报错zabbix server is not running: the information displayed may not be current"></a>7.Zabbix监控报错<code>zabbix server is not running: the information displayed may not be current</code></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">故障原因:Zabbix agent on labs047093 is unreachable <span class="keyword">for</span> 5 minutesZabbix使用一段时间后总是报Zabbix Agent不可到达</div><div class="line"></div><div class="line">解决结果:这三台机器网络不通，ssh连接不上，排错方法查看日志是否有报错，是否服务没有起来。</div><div class="line">如果数据库服务器是一直正常的，SELinux是事先关闭没有，修改完上述所提到的后发现问题依然。</div><div class="line"></div><div class="line">Zabbix依然报错（Zabbix Server Messages: PROBLEM: Zabbix agent on Zabbix server is unreachable <span class="keyword">for</span> 5 minutes。</div><div class="line">查看日志报什么错，定位解决问题，一般出现这个大部分数据延迟导致，在图形上面明显看到有4到5分钟数据是空白的。</div></pre></td></tr></table></figure>
+<h3 id="8-Zabbix图形出现乱码或者没有文字"><a href="#8-Zabbix图形出现乱码或者没有文字" class="headerlink" title="8.Zabbix图形出现乱码或者没有文字"></a>8.Zabbix图形出现乱码或者没有文字</h3><p>参考文档:<a href="https://github.com/yangcvo/zabbix.2.4" target="_blank" rel="external">zabbix2.4图形乱码</a></p>
+<h3 id="9-Zabbix监控之邮件告警发送失败smtp-server-错误代码550与535"><a href="#9-Zabbix监控之邮件告警发送失败smtp-server-错误代码550与535" class="headerlink" title="9.Zabbix监控之邮件告警发送失败smtp-server: 错误代码550与535"></a>9.Zabbix监控之邮件告警发送失败smtp-server: 错误代码550与535</h3><p>参考文档:<a href="http://clovemfong.blog.51cto.com/3297559/1702105/" target="_blank" rel="external">zabbix163邮件告警错误代码</a></p>
+<h3 id="10-Zabbix中提示：Lack-of-free-swap-space-on-hostname"><a href="#10-Zabbix中提示：Lack-of-free-swap-space-on-hostname" class="headerlink" title="10.Zabbix中提示：Lack of free swap space on hostname"></a>10.Zabbix中提示：<code>Lack of free swap space on hostname</code></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">提示：缺交换空间可以创建也可以不用创建。</div><div class="line"></div><div class="line">[root@xx ~]<span class="comment"># free -m</span></div><div class="line">             total       used       free     shared    buffers     cached</div><div class="line">Mem:          3832       3488        343          0        267       2389</div><div class="line">-/+ buffers/cache:        831       3000</div><div class="line">swap:            0          0          0</div><div class="line"></div><div class="line">个般物理机不可能不设交换分区，显然这样的设计没有考虑到云主机用户。只需要调节监控文件，即可解决问题：</div><div class="line">解决此问题的步骤如下:选择 Configuration-&gt;Templates(模板),在模板界面中选择Template OS Linux右侧的Triggers（触发器）,</div><div class="line">在触发器页面中打开Lack of free swap space on &#123;HOST.NAME&#125;项目,在新打开的触发器编辑页面中修改Expression（表达式）的内容,</div><div class="line">由原先的&#123;Template OS Linux:system.swap.size[,pfree].last(0)&#125;&lt;50</div><div class="line"></div><div class="line">修改为&#123;Template OS Linux:system.swap.size[,pfree].last(0)&#125;&lt;50 and &#123;Template OS Linux:system.swap.size[,free].last(0)&#125;&lt;&gt;0</div><div class="line"></div><div class="line"> 此处修改增加了“and&#123;Template OS Linux:system.swap.size[,free].last(0)&#125;&lt;&gt;0”判断系统有交换空间，当系统无交换空间&#123;Template OS</div><div class="line">Linux:system.swap.size[,free].last(0)&#125;的值为0时将不会使表达式成立，</div><div class="line">也就不会触发错误提示。保存后在下一个更新周期内zabbix之前报告“Lack of free swap space”问题就会被自动标记为Resolved.</div><div class="line"></div><div class="line">或者创建：</div><div class="line"></div><div class="line">1、首先看一下内存</div><div class="line">free -m</div><div class="line">2、然后创建一个分区添加交换文件</div><div class="line">mkdir /etc/swap/</div><div class="line">dd <span class="keyword">if</span>=/dev/zero of=/etc/swap/swap bs=1024 count=1024000  1个G</div><div class="line">3、创建交换空间</div><div class="line">mkswap /etc/swap/swap</div><div class="line">4、启动交换空间</div><div class="line">swapon /etc/swap/swap</div><div class="line">5、查看新增空间</div><div class="line">free -tom</div><div class="line">6、修改/etc/fstab文件使系统在重新启动的时候生效</div><div class="line">/etc/swap/swap         swap                    swap    defaults        0 0</div></pre></td></tr></table></figure>
+<h3 id="11-Zabbix-agent日志端hostname不一致：cannot-send-list-of-active-checks-to-192-168-0-1-host-Zabbix-server-not-found"><a href="#11-Zabbix-agent日志端hostname不一致：cannot-send-list-of-active-checks-to-192-168-0-1-host-Zabbix-server-not-found" class="headerlink" title="11.Zabbix-agent日志端hostname不一致：cannot send list of active checks to [192.168.0.1]: host [Zabbix server] not found"></a>11.Zabbix-agent日志端hostname不一致：<code>cannot send list of active checks to [192.168.0.1]: host [Zabbix server] not found</code></h3><figure class="highlight vbscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">查看被监控机上的/tmp/zabbix_agentd.<span class="built_in">log</span>，显示日志：</div><div class="line">No active checks <span class="keyword">on</span> <span class="built_in">server</span>: host [Zabbix <span class="built_in">server</span>] <span class="keyword">not</span> found</div><div class="line"></div><div class="line">这是因为，通过zabbix dashboard页面配置的被监控主机名跟被监控主机上zabbix_agentd.conf中配置的Hostname不一致。</div><div class="line"></div><div class="line">修改为一致的名字后，重启zabbix_agentd即可。</div></pre></td></tr></table></figure>
+<h3 id="12-解决CentOS-7安装zabbix-3-0-无法启动zabbix-server的问题"><a href="#12-解决CentOS-7安装zabbix-3-0-无法启动zabbix-server的问题" class="headerlink" title="12.解决CentOS 7安装zabbix 3.0 无法启动zabbix-server的问题"></a>12.解决CentOS 7安装zabbix 3.0 无法启动zabbix-server的问题</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">[root@kvm zabbix_agentd.d]<span class="comment"># service zabbix-agent restart</span></div><div class="line">Redirecting to /bin/systemctl restart  zabbix-agent.service</div><div class="line">Job <span class="keyword">for</span> zabbix-agent.service failed because a configured resource <span class="built_in">limit</span> was exceeded. See <span class="string">"systemctl status zabbix-agent.service"</span> and <span class="string">"journalctl -xe"</span> <span class="keyword">for</span> details.</div><div class="line"></div><div class="line">解决方案:</div><div class="line">关闭SELinux服务 。 执行命令</div><div class="line">setenforce 0 </div><div class="line"></div><div class="line">3. 重启zabbix</div><div class="line">systemctl  restart  zabbix-server.service</div></pre></td></tr></table></figure>
+<h3 id="13-zabbix-返回值为空-键值模板报错：Received-value-is-not-suitable-for-value-type-Numeric-unsigned-and-data-type-Decimal"><a href="#13-zabbix-返回值为空-键值模板报错：Received-value-is-not-suitable-for-value-type-Numeric-unsigned-and-data-type-Decimal" class="headerlink" title="13.zabbix 返回值为空 键值模板报错：Received value [] is not suitable for value type [Numeric (unsigned)] and data type [Decimal]"></a>13.zabbix 返回值为空 键值模板报错：<code>Received value [] is not suitable for value type [Numeric (unsigned)] and data type [Decimal]</code></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">解决：</div><div class="line">本地脚本获取值有返回，脚本没有zabbix赋权~</div><div class="line">监控端执行脚本：</div><div class="line">[root@jollychic-db-slave4 zabbix]<span class="comment"># sh mysql3307.sh Qcache_queries_in_cache</span></div><div class="line">87</div><div class="line"></div><div class="line">zabbix 服务端：</div><div class="line">[root@yum-zabbix ~]<span class="comment">#  zabbix_get -s 10.155.74.247 -k mysql.status3307[Threads_running]</span></div><div class="line"></div><div class="line">返回空这里就是脚本没有zabbix赋权~</div><div class="line">这里脚本需要添加下-h127.0.0.1 即可</div></pre></td></tr></table></figure>
+<h3 id="14-解决Zabbix“ZBX-NOTSUPPORTED-Timeout-while-executing-a-shell-script”"><a href="#14-解决Zabbix“ZBX-NOTSUPPORTED-Timeout-while-executing-a-shell-script”" class="headerlink" title="14.解决Zabbix“ZBX_NOTSUPPORTED: Timeout while executing a shell script”"></a>14.解决<code>Zabbix“ZBX_NOTSUPPORTED: Timeout while executing a shell script”</code></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">解决方案</div><div class="line"></div><div class="line">（1）修改zabbix_server的zabbix_server.conf：</div><div class="line">[root@nmp01 scripts]<span class="comment"># vim /usr/local/zabbix/etc/zabbix_server.conf</span></div><div class="line">修改以下参数：</div><div class="line">Timeout=30</div><div class="line">注：超时时间为30秒</div><div class="line"></div><div class="line">（2）修改脚本所在zabbix_agentd的zabbix_agentd.conf：</div><div class="line"></div><div class="line">vim /usr/<span class="built_in">local</span>/zabbix/etc/zabbix_agentd.conf</div><div class="line">修改以下参数：</div><div class="line">Timeout=30</div><div class="line">（3）重启zabbix服务端和脚本所在客户端：</div><div class="line">service zabbix_server restart</div><div class="line">service zabbix_agentd restart</div></pre></td></tr></table></figure>
+<h3 id="15-Zabbix3-0-poller-processes-more-than-75-busy警报处理"><a href="#15-Zabbix3-0-poller-processes-more-than-75-busy警报处理" class="headerlink" title="15.Zabbix3.0 poller processes more than 75% busy警报处理"></a>15.<code>Zabbix3.0 poller processes more than 75% busy</code>警报处理</h3><p>虽然Zabbix的监控警报各种有，但<code>yancy</code>使用碰到最多的几个莫过于内存耗尽，网络不通，IO太慢还有这个“Zabbix poller processes more than 75% busy”了。一开始的时候因为这个即不影响使用也持续一会儿就自行解决就没有多在意。然后随着数据库的增大，Zabbix消耗的内存可是越来越多，Poller processes（轮询）开始天天Busy了，最终<code>yancy</code>不得不把Zabbix挪到了另外一台服务器上。</p>
+<p>但这并没有彻底解决问题，警报仍然三天两头来几个。之后Kaijia开启了Zabbix警报的邮件功能，于是开始频繁收到这类邮件，于是Kaijia决定解决这个问题。Google了一下资料，没有找到很权威的答案，造成轮询忙的问题有很多中，支撑Zabbix的MySQL卡住了，Zabbix服务器的IO卡住了都有可能，Zabbix进程分配到内存不足都有可能。一个简单的方法是增加Zabbix Server启动时初始化的进程数量，这样直接增加了轮询的负载量，从比例上来讲忙的情况就少了。</p>
+<p>增加初始化进程的方法非常简单，编辑Zabbix Server的配置文件<code>/etc/zabbix/zabbix_server.conf</code>，找到配置StartPollers的段落：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">1. <span class="comment">### Option: StartPollers</span></div><div class="line">2. <span class="comment">#       Number of pre-forked instances of pollers.</span></div><div class="line">3. <span class="comment">#</span></div><div class="line">4. <span class="comment"># Mandatory: no</span></div><div class="line">5. <span class="comment"># Range: 0-1000</span></div><div class="line">6. <span class="comment"># Default:</span></div><div class="line">7. <span class="comment"># StartPollers=5</span></div></pre></td></tr></table></figure>
+<p>取消StartPollers=一行的注释或者直接在后面增加：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">StartPollers=10</div></pre></td></tr></table></figure>
+<p>因为之前zabbix除了单独跑一个server服务还有<code>agent</code>还有<code>grafana-server</code>还有代理，后面我先扩大内存和服务器CPU.<br>将StartPollers改成多少取决于服务器的性能和监控的数量，Kaijia将StartPollers设置成12之后就再没有遇到过警报。如果内存足够的话可以设置更高。设置完成之后运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">service zabbix-server restart</div></pre></td></tr></table></figure>
+<p>重启Zabbix。当然另外一种从整体上降低Zabbix服务器负载的方法就是定期重启Zabbix，这种方法可以用Cron实现，运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">crontab <span class="_">-e</span></div></pre></td></tr></table></figure>
+<p>在调出的Cron编辑器中增加一个计划：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">00 * * * * service zabbix-server restart &gt; /dev/null 2&gt;&amp;1</div></pre></td></tr></table></figure>
+<p>这个计划会每天自动重启Zabbix服务以结束僵尸进程并清理内存等。目前Kaijia这样配置Zabbix后还没有再次遇到过“Zabbix poller processes more than 75% busy”的问题。</p>
+<h3 id="16、Zabbix3-0-monitoring出现乱码"><a href="#16、Zabbix3-0-monitoring出现乱码" class="headerlink" title="16、Zabbix3.0-monitoring出现乱码"></a>16、Zabbix3.0-monitoring出现乱码</h3><p>出现乱码：</p>
+<ul>
+<li>乱码安装包下载地址：<a href="http://oak0aohum.bkt.clouddn.com/simkai.ttf" target="_blank" rel="external">中文汉化乱码包</a></li>
+</ul>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">* 参考文档：</div><div class="line">zabbix版本都已有汉化功能了，直接选择中文就行。</div><div class="line">可是低版本的就需要安装汉化，可是发现打开图形界面是空白图形：</div><div class="line">遇到中文乱码问题。zabbix乱码是怎么照成的呢？zabbix使用DejaVuSan.ttf字体，不支持中文，导致中文出现乱码。解决方法很简单，把我们电脑里面字体文件传到zabbix服务器上。</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">* 在zabbix<span class="params">-server</span>端上面进入安装目录：</div><div class="line"></div><div class="line"><span class="built_in">var</span>/www/html/zabbix/fonts目录下面查看，发现之前上传字体的文件名后缀是.ttc，猜着一般见到的都后缀都是ttf的，会不会是这个问题导致的呢。于是在windows系统上找到simkai.ttf,上传到fonts下，编辑/<span class="built_in">var</span>/www/html/zabbix/include/defines.inc.php，更改两处地方：</div><div class="line"></div><div class="line"></div><div class="line">    <span class="class"><span class="keyword">define</span></span>(‘ZBX_FONT_NAME‘, ‘simkai‘);</div><div class="line">    <span class="class"><span class="keyword">define</span></span>(‘ZBX_GRAPH_FONT_NAME‘,  ‘simkai‘);</div><div class="line">fzytk</div></pre></td></tr></table></figure>
+<p>设置好了，服务重启下，刷新，图下面就有字体了：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-luanma.png" alt=""></figure><br>graphfont</p>
+<p>常见问题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">依旧乱码：通过以上的操作，大部分同学的乱码问题解决了，但是依旧有一些同学还是乱码？细心的群友提供另外一种情况：初始化数据库的时候未使用utf8编码所致.初始化数据库使用命令</div><div class="line"></div><div class="line">create database zabbix default charset utf8;</div><div class="line">或者my.cnf增加如下配置</div><div class="line"></div><div class="line">default-character-set = utf8</div><div class="line"></div><div class="line">总结 </div><div class="line">乱码处理方法很简单，实际上就是替换字体。</div></pre></td></tr></table></figure>
+<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
+<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2014/10/03/性能监控/Zabbix/zabbix2.4服务端yum-rpm快速安装部署/">zabbix2.4服务端rpm快速安装部署</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2014-10-03</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>系统环境：</p>
+<ul>
+<li>192.168.1.170 MySQL主 </li>
+<li>192.168.1.183 zabbix-server</li>
+</ul>
+<h2 id="Zabbix-快速部署（RPM）"><a href="#Zabbix-快速部署（RPM）" class="headerlink" title="Zabbix 快速部署（RPM）"></a>Zabbix 快速部署（RPM）</h2><p>注释：安装环境为系统最小安装，注意时间同步</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># cat /etc/redhat-release</span></div><div class="line">CentOS Linux release 7.2.1511 (Core)</div></pre></td></tr></table></figure>
+<h3 id="关闭SELinux："><a href="#关闭SELinux：" class="headerlink" title="关闭SELinux："></a>关闭SELinux：</h3><p>1、临时关闭（不用重启机器）：</p>
+<pre><code>#setenforce 0                  ##设置SELinux 成为permissive模式
+#setenforce 1             ##设置SELinux 成为enforcing模式     
+</code></pre><h3 id="1-配置官方yum："><a href="#1-配置官方yum：" class="headerlink" title="1.配置官方yum："></a>1.配置官方yum：</h3><ul>
+<li><p>cnetos 32位：<code>#rpm -ivh http://repo.zabbix.com/zabbix/2.4/rhel/6/i386/zabbix-release-2.4-1.el6.noarch.rpm</code></p>
+</li>
+<li><p>cnetos 64位：<code>#rpm -ivh  http://repo.zabbix.com/zabbix/2.4/rhel/6/x86_64/zabbix-release-2.4-1.el6.noarch.rpm</code></p>
+</li>
+<li><p>centos7 64位：# <code>rpm -ivh http://repo.zabbix.com/zabbix/2.4/rhel/7/x86_64/zabbix-release-2.4-1.el7.noarch.rpm</code></p>
+</li>
+</ul>
+<p>如果选择这个方式是安装最高的2.4.8版本</p>
+<h3 id="2-安装Zabbix："><a href="#2-安装Zabbix：" class="headerlink" title="2.安装Zabbix："></a>2.安装Zabbix：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#yum -y install zabbix-server-mysql zabbix-web-mysql zabbix-agent mysql-server mysql   #安装相关软件包</span></div><div class="line"><span class="comment">#yum -y install zabbix-get zabbix-sender      #方便以后对zabbix调试用</span></div></pre></td></tr></table></figure>
+<h3 id="3-配置数据库"><a href="#3-配置数据库" class="headerlink" title="3.配置数据库"></a>3.配置数据库</h3><p> 登陆到192.168.1.170服务器上面：</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># mysql -e "create database zabbix character set utf8 collate  utf8_bin;"   #修改时区</span></div><div class="line"><span class="comment"># mysql -e "grant all privileges on zabbix.* to zabbix@localhost identified by 'zabbix';"  #创建数据库名</span></div></pre></td></tr></table></figure>
+<p> 这里我设置了只能192.168.1.0网段可以访问数据库。<br> 所以这里创建数据库直接这么操作了。</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"> [root@mysql ~]<span class="comment"># mysql -uroot -pIhaozhuo_b313 -h 192.168.1.170</span></div><div class="line">Warning: Using a password on the <span class="built_in">command</span> line interface can be insecure.</div><div class="line">Welcome to the MySQL monitor.  Commands end with ; or \g.</div><div class="line">Your MySQL connection id is 10</div><div class="line">Server version: 5.6.20-log MySQL Community Server (GPL)</div><div class="line"></div><div class="line">Copyright (c) 2000, 2014, Oracle and/or its affiliates. All rights reserved.</div><div class="line"></div><div class="line">Oracle is a registered trademark of Oracle Corporation and/or its</div><div class="line">affiliates. Other names may be trademarks of their respective</div><div class="line">owners.</div><div class="line"></div><div class="line">Type <span class="string">'help;'</span> or <span class="string">'\h'</span> <span class="keyword">for</span> help. Type <span class="string">'\c'</span> to clear the current input statement.</div><div class="line"></div><div class="line">mysql&gt; create database zabbix character <span class="built_in">set</span> utf8 collate  utf8_bin;</div><div class="line">Query OK, 1 row affected (0.06 sec)</div><div class="line">mysql&gt; GRANT ALL ON zabbix.* TO <span class="string">'zabbix'</span>@<span class="string">'192.168.1.%'</span> IDENTIFIED BY <span class="string">'zabbix123.com'</span>;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div><div class="line">mysql&gt; flush privileges;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div></pre></td></tr></table></figure>
+<p> 4.导入数据库文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /usr/share/doc/zabbix-server-mysql-2.4.8/create</div></pre></td></tr></table></figure>
+<p>操作三条命令把数据导入到在指定的MySQL：zabbix</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mysql -uzabbix -pzabbix123.com -h 192.168.1.170  zabbix &lt; schema.sql</div><div class="line">mysql -uzabbix -pzabbix123.com -h 192.168.1.170  zabbix &lt; images.sql</div><div class="line">mysql -uzabbix -pzabbix123.com -h 192.168.1.170  zabbix &lt; data.sql</div></pre></td></tr></table></figure>
+<h3 id="4-修改zabbix-server-conf-文件"><a href="#4-修改zabbix-server-conf-文件" class="headerlink" title="4. 修改zabbix_server.conf 文件"></a>4. 修改zabbix_server.conf 文件</h3><p>vim /etc/zabbix/zabbix_server.conf</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ListenPort=10051  //监听的端口</span></div><div class="line"><span class="comment"># LogFile=/var/log/zabbix/zabbix_server.log  //日志文件路径</span></div><div class="line"><span class="comment"># LogFileSize=0  //日志文件滚动，分割。（参数为“0”，不做滚动），例如当日志文件到达1G，会自动创建个新的日志文件，完成日志滚动。</span></div><div class="line">DBName=zabbix            </div><div class="line">DBUser=zabbix          <span class="comment">#数据库用户名</span></div><div class="line">DBPassword=zabbix123.com    <span class="comment">#数据库密码</span></div><div class="line">AlertScriptsPath=/usr/<span class="built_in">local</span>/zabbix/share/zabbix/alertscripts<span class="comment">#zabbix运行脚本存放目录</span></div></pre></td></tr></table></figure>
+<p>:wq! #保存退出</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#cp /etc/zabbix/zabbix_server.conf &#123;,.bak&#125;   #备份</span></div><div class="line">ln <span class="_">-s</span> /etc/alternatives/zabbix-server /usr/bin/zabbix-server</div><div class="line">cp /usr/sbin/zabbix_agentd /etc/init.d/zabbix_agentd</div><div class="line">[root@docker alternatives]<span class="comment"># cp /etc/alternatives/zabbix_server /etc/init.d/zabbix-server</span></div><div class="line"></div><div class="line">chmod +x /etc/rc.d/init.d/zabbix_server <span class="comment">#添加脚本执行权限</span></div><div class="line">chmod +x /etc/rc.d/init.d/zabbix_agentd <span class="comment">#添加脚本执行权限</span></div><div class="line"></div><div class="line">vim /etc/php.ini</div><div class="line">date.timezone = Asia/Shanghai</div><div class="line">post_max_size = 32M</div><div class="line">max_execution_time = 300</div><div class="line">max_input_time = 300</div></pre></td></tr></table></figure>
+<h3 id="5-修改zabbix开机启动脚本中的zabbix安装目录"><a href="#5-修改zabbix开机启动脚本中的zabbix安装目录" class="headerlink" title="5. 修改zabbix开机启动脚本中的zabbix安装目录"></a>5. 修改zabbix开机启动脚本中的zabbix安装目录</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">vi <span class="regexp">/etc/</span>rc.d<span class="regexp">/init.d/</span>zabbix_server <span class="comment">#编辑服务端配置文件</span></div><div class="line">BASEDIR=<span class="regexp">/usr/</span>local<span class="regexp">/zabbix/</span> <span class="comment">#zabbix安装目录</span></div><div class="line"></div><div class="line"><span class="comment"># /etc/init.d/zabbix-server start</span></div><div class="line"><span class="comment"># /etc/init.d/zabbix_agentd start</span></div><div class="line"><span class="comment">#/etc/init.d/httpd start</span></div></pre></td></tr></table></figure>
+<h3 id="6-1-添加开机启动服务"><a href="#6-1-添加开机启动服务" class="headerlink" title="6.1 添加开机启动服务"></a>6.1 添加开机启动服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">chkconfig --add zabbix-server    </div><div class="line">chkconfig --add zabbix-agent      </div><div class="line">chkconfig --add httpd </div><div class="line">chkconfig --add mysqld</div></pre></td></tr></table></figure>
+<h3 id="6-2-添加开机启动"><a href="#6-2-添加开机启动" class="headerlink" title="6.2 添加开机启动"></a>6.2 添加开机启动</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">chkconfig zabbix-server on  </div><div class="line">chkconfig zabbix-agent on    </div><div class="line">chkconfig httpd on  </div><div class="line">chkconfig mysqld on</div></pre></td></tr></table></figure>
+<h3 id="6-3-添加防火墙"><a href="#6-3-添加防火墙" class="headerlink" title="6.3 添加防火墙"></a>6.3 添加防火墙</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">-A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT</div><div class="line">-A INPUT -m state --state NEW -m tcp -p tcp --dport 10051 -j ACCEPT</div><div class="line">-A INPUT -m state --state NEW -m tcp -p tcp --dport 10050 -j ACCEPT</div></pre></td></tr></table></figure>
+<h3 id="7-在浏览器中打开："><a href="#7-在浏览器中打开：" class="headerlink" title="7.在浏览器中打开："></a>7.在浏览器中打开：</h3><p><a href="http://192.168.1.183/zabbix/进入设置界面" target="_blank" rel="external">http://192.168.1.183/zabbix/进入设置界面</a>  </p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-server0.png" alt=""></figure></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-server1.png" alt=""></figure></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-server2.png" alt=""></figure></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-server3.png" alt=""></figure></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-server4.png" alt=""></figure></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-server5.png" alt=""></figure><br>进入： “/var/www/html/zabbix/conf/zabbix.conf.php”</p>
+<p>备份：</p>
+<p>cp zabbix.conf.php.example zabbix.conf.php<br>下载下来的放到这个目录下面。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-server6.png" alt=""></figure></p>
+<p>用户名:Admin 密码：zabbix</p>
+<p>设置中文版本，2.4版本以后都支撑中文版本，2.2.0版本都是不支持的，需要下载中文版本包，放到zabbix目录下面。</p>
+<p>设置背景为经典的是不是看着会舒服点：3.0 对外观改的改动很大，支撑硬件监控功能加强。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-server7.png" alt=""></figure></p>
+<p>简单的安装就已经搞定了。</p>
+<h3 id="安装出现几种错误情况："><a href="#安装出现几种错误情况：" class="headerlink" title="安装出现几种错误情况："></a>安装出现几种错误情况：</h3><p>登陆zabbix提示<code>zabbix server is not running:the information displayedmay not be current</code></p>
+<p>解决方法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">关闭selinux与iptables</div><div class="line">vim /var/www/html/zabbix/conf/zabbix.conf.php将zabbix.conf.php里的server写成ip地址，就解决了</div></pre></td></tr></table></figure>
+<p>查看日志：</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="number">6576</span>:<span class="number">20160719</span>:<span class="number">045354.989</span> [Z3001] connection to database <span class="string">'zabbix'</span> </div><div class="line"><span class="symbol">failed:</span> [<span class="number">2002</span>] Can<span class="string">'t connect to local MySQL server through socket '</span>/var/<span class="class"><span class="keyword">lib</span>/<span class="title">mysql</span>/<span class="title">mysql</span>.<span class="title">sock</span>' (2)</span></div></pre></td></tr></table></figure>
+<p>这个报错的话，就说明配置文件有问题：</p>
+<p>设置数据库访问地址：DBHost=192.168.1.170</p>
+<p>然后vi zabbix.conf.php记得修改：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="variable">$ZBX_SERVER</span>      = <span class="string">'ZABBIX_SERVER_IP'</span>;  IP地址</div><div class="line"><span class="variable">$ZBX_SERVER_PORT</span> = <span class="string">'10051'</span>;</div></pre></td></tr></table></figure>
+<p>然后重启下服务，就不会出现MySQL本地无法连接。</p>
+<p>如果报错：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">6664:20160719:050257.665 cannot send list of active checks to [127.0.0.1]: host [Zabbix server] not monitored</div></pre></td></tr></table></figure>
+<p>确保zabbix前台上的Host name与主机的hostname一致即可。</p>
+<p>这是快速简单安装2.4.8版本的，后面还有编译安装的，编译安装的好处，可以了解安装的路径和配置文件都是自己熟悉的。</p>
+<ul>
+<li>2.4.8服务端编译安装与部署：</li>
+<li>2.4.8升级3.0安装与部署：</li>
+<li>3.0安装与部署：</li>
+<li>安装完成以后出现图像乱码： <a href="https://github.com/yangcvo/zabbix.2.4" target="_blank" rel="external">https://github.com/yangcvo/zabbix.2.4</a></li>
+<li>2.4.8版本zabbix-server服务端编译安装：<a href="http://blog.yangcvo.me/2015/01/18/zabbix-server服务端编译安装/" target="_blank" rel="external">源码编译安装部署2.4.8版本zabbix-server服务端</a></li>
+</ul>
 
 	
 
@@ -189,8 +750,8 @@
 
 
 
+	<span class="different-posts">📖 <a href="/page/13">more posts</a> 📖</span>
 
-	<span class="different-posts">📕 end of posts 📕</span>
 
 
 	</main>
@@ -221,7 +782,7 @@
 	    
 
 		<div class="footer-credit">
-			<span>© 2017 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+			<span>© 2018 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
 		</div>
 
 	</div>

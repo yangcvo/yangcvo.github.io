@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Zabbix 3.0 监控推送rabbitmq队列-消息堆积 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>Zabbix 3.0 监控推送rabbitmq队列-消息堆积</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-07-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Bigdata-Hadoop/">Bigdata Hadoop</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Bigdata-Hadoop/">Bigdata Hadoop</a> <a class="article__tag-link" href="/tags/Rabbitmq/">Rabbitmq</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h4 id="Zabbix-3-0-监控推送rabbitmq队列"><a href="#Zabbix-3-0-监控推送rabbitmq队列" class="headerlink" title="Zabbix 3.0 监控推送rabbitmq队列"></a>Zabbix 3.0 监控推送rabbitmq队列</h4><p>对于RabbitMQ的监控，除了服务器基本信息<code>（硬盘、CPU、内存、IO等）</code>以及MQ的进程和端口，我们也可以通过请求url访问管理API监控其集群和队列的情况。在java api 3.6.0以后，channel接口为我们提供了如下接口：</p>
+<ul>
+<li>messageCount：查询队列未消费的消息数，可以监控消息堆积的情况。 </li>
+<li>consumerCount：队列的消费者个数，可以对消费者进行监控 </li>
+</ul>
+<p>1.监控告警需求问题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">message.bi队列  积压&gt; 300 或者 消费者数&lt;=2</div><div class="line">message.push.cart队列  积压 &gt;10000 或者消费者数&lt;5</div><div class="line">message.user.related队列 积压&gt;2000 或者 消费者数&lt;=2</div><div class="line">message.cart队列 积压&gt;10000 或者 消费者数&lt;=2</div></pre></td></tr></table></figure>
+<p>2.编写Python脚本监控获取消费者数监控，队列。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">vim rabbitmq-monitor.py</div><div class="line"><span class="comment">#!/bin/env python</span></div><div class="line"><span class="comment"># -*- coding: UTF-8 -*-</span></div><div class="line">import sys, urllib2, base64, json, re,time</div><div class="line">ip = <span class="string">"169.23.73.22"</span></div><div class="line">keys = (<span class="string">'messages_ready'</span>,)</div><div class="line">def GetRabbitmqData():</div><div class="line">        request = urllib2.Request(<span class="string">"http://%s:15672/api/queues"</span> % ip)</div><div class="line">        base64string = base64.b64encode(<span class="string">'guest:guest'</span>)</div><div class="line">        request.add_header(<span class="string">"Authorization"</span>, <span class="string">"Basic %s"</span> % base64string)</div><div class="line">        result = urllib2.urlopen(request)</div><div class="line">        data = json.loads(result.read())</div><div class="line">        <span class="built_in">return</span> data</div><div class="line"></div><div class="line"></div><div class="line">data=GetRabbitmqData()</div><div class="line"><span class="comment">#print data</span></div><div class="line"><span class="keyword">for</span> queue <span class="keyword">in</span> data:</div><div class="line">    try:</div><div class="line">        <span class="built_in">print</span> <span class="string">"消费者数量:"</span>,queue[<span class="string">'consumers'</span>],<span class="string">"队列:"</span>,queue[<span class="string">'name'</span>],<span class="string">"消息积压数:"</span>,int(queue[keys[0]])</div><div class="line">    except:</div><div class="line">        pass</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">[root@message-center-mq zabbix]<span class="comment"># python rabbitmq-monitor.py</span></div><div class="line">消费者数量: 0 队列: 79d02dde-2007-4a49-b94b-0d4bee67b19c 消息积压数: 0</div><div class="line">消费者数量: 0 队列: aliveness-test 消息积压数: 0</div><div class="line">消费者数量: 0 队列: cartService.orderCancel.update 消息积压数: 0</div><div class="line">消费者数量: 0 队列: cartService.virtualOrderCancel.update 消息积压数: 0</div><div class="line">消费者数量: 0 队列: e9de65bd-be59-4c1c-b4a8-7312f382ac59 消息积压数: 0</div><div class="line">消费者数量: 3 队列: message.bi 消息积压数: 0</div><div class="line">消费者数量: 3 队列: message.cart 消息积压数: 0</div><div class="line">消费者数量: 3 队列: message.console 消息积压数: 0</div><div class="line">消费者数量: 3 队列: message.logistics 消息积压数: 0</div><div class="line">消费者数量: 3 队列: message.order.info 消息积压数: 0</div><div class="line">消费者数量: 30 队列: message.push.cart 消息积压数: 0</div><div class="line">消费者数量: 3 队列: message.style 消息积压数: 0</div><div class="line">消费者数量: 3 队列: message.user.related 消息积压数: 0</div><div class="line">消费者数量: 0 队列: payment.virtual.notify.success 消息积压数: 0</div><div class="line">消费者数量: 1 队列: 61b73745-4c74-475b-803e-bf2d48d2fa50 消息积压数: 0</div><div class="line">消费者数量: 1 队列: a984d00a-8bbe-43c1-aa20-c1dc788ddd97 消息积压数: 0</div><div class="line">消费者数量: 1 队列: e569e8a1-b7c9-4736-8bf8-13d76ecf7577 消息积压数: 0</div><div class="line">消费者数量: 3 队列: push.station.task.status 消息积压数: 0</div></pre></td></tr></table></figure>
+<p>编写zabbix-agentd 监控：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@message-center-mq zabbix]<span class="comment"># vim zabbix_agentd.conf</span></div><div class="line">UserParameter=rabbitmq.consumer.bi,python /etc/zabbix/rabbitmq-monitor.py | grep message.bi |awk -F<span class="string">'[ :]'</span> <span class="string">'&#123;print $3&#125;'</span></div><div class="line">UserParameter=rabbitmq.overstock.bi,python /etc/zabbix/rabbitmq-monitor.py | grep message.bi |awk -F<span class="string">'[ :]'</span> <span class="string">'&#123;print $NF&#125;'</span></div><div class="line">UserParameter=rabbitmq.consumer.push.cart,python /etc/zabbix/rabbitmq-monitor.py | grep message.push.cart |awk -F<span class="string">'[ :]'</span> <span class="string">'&#123;print $3&#125;'</span></div><div class="line">UserParameter=rabbitmq.overstock.push.cart,python /etc/zabbix/rabbitmq-monitor.py | grep message.push.cart |awk -F<span class="string">'[ :]'</span> <span class="string">'&#123;print $NF&#125;'</span></div><div class="line">UserParameter=rabbitmq.consumer.user.related,python /etc/zabbix/rabbitmq-monitor.py | grep message.user.related |awk -F<span class="string">'[ :]'</span> <span class="string">'&#123;print $3&#125;'</span></div><div class="line">UserParameter=rabbitmq.overstock.user.related,python /etc/zabbix/rabbitmq-monitor.py | grep message.user.related |awk -F<span class="string">'[ :]'</span> <span class="string">'&#123;print $NF&#125;'</span></div><div class="line">UserParameter=rabbitmq.consumer.cart,python /etc/zabbix/rabbitmq-monitor.py | grep message.cart |awk -F<span class="string">'[ :]'</span> <span class="string">'&#123;print $3&#125;'</span></div><div class="line">UserParameter=rabbitmq.overstock.cart,python /etc/zabbix/rabbitmq-monitor.py | grep message.cart |awk -F<span class="string">'[ :]'</span> <span class="string">'&#123;print $NF&#125;'</span></div></pre></td></tr></table></figure>
+<p>监控模板下载：在我github上面.</p>
+<p>weixin监控效果图：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/rabbitmq.png" alt=""></figure></p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2017/07/29/Bigdata-hadoop/RabbitMQ/Zabbix 3.0 监控推送rabbitmq队列/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2018 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>
