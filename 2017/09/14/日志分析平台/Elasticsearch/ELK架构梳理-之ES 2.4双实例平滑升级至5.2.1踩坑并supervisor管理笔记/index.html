@@ -56,7 +56,7 @@
 	
 
 	
-		<h3 id="ELK架构梳理-之ES-2-4双实例平滑升级至5-2-1踩坑并supervisor管理笔记"><a href="#ELK架构梳理-之ES-2-4双实例平滑升级至5-2-1踩坑并supervisor管理笔记" class="headerlink" title="ELK架构梳理-之ES 2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记"></a>ELK架构梳理-之ES 2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记</h3><h4 id="ELK架构梳理："><a href="#ELK架构梳理：" class="headerlink" title="ELK架构梳理："></a>ELK架构梳理：</h4><p>实时日志分析作为掌握业务情况、故障分析排查的一个重要手段，目前使用最多最成熟的莫过于ELK方案，整体方案也有各种架构组合，像<code>rsyslog-&gt;ES-&gt;kibana、rsyslog-&gt;Redis-&gt;Logstash-&gt;ES-&gt;kibana、rsyslog-&gt;kafka-&gt;Logstash-&gt;ES-&gt;kibana</code>等等，复杂点的有spark的引用。</p>
+		<h4 id="ELK架构梳理："><a href="#ELK架构梳理：" class="headerlink" title="ELK架构梳理："></a>ELK架构梳理：</h4><p>实时日志分析作为掌握业务情况、故障分析排查的一个重要手段，目前使用最多最成熟的莫过于ELK方案，整体方案也有各种架构组合，像<code>rsyslog-&gt;ES-&gt;kibana、rsyslog-&gt;Redis-&gt;Logstash-&gt;ES-&gt;kibana、rsyslog-&gt;kafka-&gt;Logstash-&gt;ES-&gt;kibana</code>等等，复杂点的有spark的引用。</p>
 <p><figure class="figure"><img src="https://pbs.twimg.com/media/CSqjJGgUwAAJdeW.png" alt=""></figure></p>
 <a id="more"></a>
 <p>每种方案适合不同的应用场景，没有优劣之分，我目前用的是<code>rsyslog-&gt;kafka-&gt;Logstash-&gt;ES-&gt;kibana和rsyslog-&gt;rsyslog中继-&gt;kafka-&gt;Logstash-&gt;ES-&gt;kibana</code>方案，共5台ES（12核、64G、机械盘）每天索引10多亿条日志，包含<code>nginx、uwsgi、redis、php</code>开发日志等，运行比较健壮，每条索引日志精简后在10个字段左右，每天Primary Shard的索引量大概在600个G，考虑到性能问题，我们没要复制分片，同时着重做了ES集群的调优，日志保留7天。</p>
