@@ -43,40 +43,6 @@
 
 	<article>
 	
-		<h1><a href="/2017/08/27/Bigdata-hadoop/zookeeper/Bigdata-Zookeeper集群日志配置详解和清理自定义启动内存 /">Bigdata-Zookeeper集群日志配置详解和清理自定义启动内存</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-08-27</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Bigdata/">Bigdata</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/ZooKeeper/">ZooKeeper</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h4 id="Zookeeper集群日志配置详解和清理自定义启动内存"><a href="#Zookeeper集群日志配置详解和清理自定义启动内存" class="headerlink" title="Zookeeper集群日志配置详解和清理自定义启动内存"></a>Zookeeper集群日志配置详解和清理自定义启动内存</h4><h3 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h3><p>搭建zookeeper和kafka集群运行大数据处理数据消费，公司dubbo使用zookeeper做服务端的服务发现管理及配置中心，在使用时都出现过由于zk的日志大小过大塞满磁盘的情况 ，遇到了Zookeeper日志问题输出路径的问题, 发现zookeeper设置log4j.properties不能解决日志路径问题, 发现解决方案如下。</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zookeeper_cartoon.jpg" alt=""></p>
-<h3 id="zookeeper日志说明"><a href="#zookeeper日志说明" class="headerlink" title="zookeeper日志说明"></a>zookeeper日志说明</h3><p>ZooKeeper使用<code>SLF4J(the Simple Logging Facade for Java)</code>作为日志的抽象层，默认使用<code>Log4J</code>来做实际的日志工作。使用2层日志抽象看起来真是够呛，这里简要的说明如何来配置<code>Log4J</code>。尽管Log4J非常灵活且强大，但它也有一些复杂，可以用一整本书来描述它，这里只是简要的介绍一下基本的用法。</p>
-		<p><a class="article__read-more-link" href="/2017/08/27/Bigdata-hadoop/zookeeper/Bigdata-Zookeeper集群日志配置详解和清理自定义启动内存 /">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
 		<h1><a href="/2017/08/04/Bigdata-hadoop/Kafka/Monitor Kafka with Prometheus +Grafana/">Monitor Kafka with Prometheus +Grafana</a></h1>
 	
 	<div class="article__infos">
@@ -322,6 +288,39 @@
 <h3 id="Kafka集群稳定"><a href="#Kafka集群稳定" class="headerlink" title="Kafka集群稳定"></a>Kafka集群稳定</h3><p>GC调优<br>　　调GC是门手艺活，幸亏Java 7引进了G1 垃圾回收，使得GC调优变的没那么难。G1主要有两个配置选项来调优：MaxGCPauseMillis 和 InitiatingHeapOccupancyPercent，具体参数设置可以参考Google，这里不赘述。</p>
 <p>　　Kafka broker能够有效的利用堆内存和对象回收，所以这些值可以调小点。对于 64Gb内存，Kafka运行堆内存5Gb，MaxGCPauseMillis 和 InitiatingHeapOccupancyPercent 分别设置为 20毫秒和 35。Kafka的启动脚本使用的不是 G1回收，需要在环境变量中加入。<br>
 		<p><a class="article__read-more-link" href="/2017/07/04/Bigdata-hadoop/Kafka/kafka性能优化–JVM参数配置优化/">...read more</a></p>
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/06/29/Bigdata-hadoop/Kafka/如何手动更新Kafka中某个Topic的偏移量/">Bigdata-如何手动更新Kafka中某个Topic的偏移量</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-06-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/大数据/">大数据</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="如何手动更新Kafka中某个Topic的偏移量"><a href="#如何手动更新Kafka中某个Topic的偏移量" class="headerlink" title="如何手动更新Kafka中某个Topic的偏移量"></a>如何手动更新Kafka中某个Topic的偏移量</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-streams-poc-old-solution.jpg" alt=""></p>
+<p>我们都知道，Kafka topic的偏移量一般都是存储在Zookeeper中，具体的路径为<code>/consumers/[groupId]/offsets/[topic]/[partitionId]</code>，比如iteblog主题分区10的偏移量获取如下：<br>在有些场景下，这个工具不满足我们的需求，我们需要的是能够手动设置分区的偏移量为任何有意义的值，而不仅仅是earliest或者latest。那咋办？</p>
+		<p><a class="article__read-more-link" href="/2017/06/29/Bigdata-hadoop/Kafka/如何手动更新Kafka中某个Topic的偏移量/">...read more</a></p>
 	
 
 	
