@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>OpenLDAP服务的配置与管理-phpldapadmin管理认证 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>OpenLDAP服务的配置与管理-phpldapadmin管理认证</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-03-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/OpenLDAP/">OpenLDAP</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/OpenLDAP/">OpenLDAP</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="使用-OpenLDAP-集中管理用户帐号"><a href="#使用-OpenLDAP-集中管理用户帐号" class="headerlink" title="使用 OpenLDAP 集中管理用户帐号"></a>使用 OpenLDAP 集中管理用户帐号</h2><h4 id="1-OpenLDAP-简介"><a href="#1-OpenLDAP-简介" class="headerlink" title="1.OpenLDAP 简介"></a>1.OpenLDAP 简介</h4><p>OpenLDAP可以从 http: //www.openldap.org/ 获得安装包。OpenLDAP 网站主页如图所示。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/openldap3.png" alt=""></figure></p>
+<a id="more"></a>
+<p>2.OpenLDAP 软件包的获取与安装<br>用 rpm –ivh 命令进行安装。 </p>
+<h4 id="1-redHat系统rpm手工安装"><a href="#1-redHat系统rpm手工安装" class="headerlink" title="1.redHat系统rpm手工安装"></a>1.redHat系统rpm手工安装</h4><pre><code class="bash"><span class="comment"># rpm -qa |grep ldap</span>
+openldap-devel-2.3.27-5
+php-ldap-5.1.6-5.el5
+openldap-servers-2.3.27-5
+openldap-2.3.27-5
+openldap-clients-2.3.27-5
+nss_ldap-253-3
+
+安装
+rpm -ivh openldap-servers-2.3.27-5.i386.rpm
+
+warning: openldap-servers-2.3.27-5.i386.rpm: Header V3 DSA signature: NOKEY, key ID 37017186
+Preparing... <span class="comment">########################################### [100%] 1:openldap-servers ########################################### [100%]</span>
+    [root@localhost teacher]<span class="comment"># rpm -ivh openldap-servers-sql-2.3.27-5.i386.rpm</span>
+warning: openldap-servers-sql-2.3.27-5.i386.rpm: Header V3 DSA signature: NOKEY, key ID 37017186
+Preparing... <span class="comment">########################################### [100%]</span>
+601
+1:openldap-servers-sql <span class="comment">########################################### [100%]</span>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">若出现以上结果表示 openldap 服务器包安装完毕。</div><div class="line"></div><div class="line">centos上面系统<span class="number">6</span> 或者<span class="number">7</span> 都是只能看到：</div></pre></td></tr></table></figure>
+
+[root@openldap ~]<span class="comment"># rpm -qa |grep ldap</span>
+openldap-2.4.40-5.el6.x86_64
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"><span class="comment">### 2.根据源代码编译安装</span></span></div><div class="line"></div><div class="line">下载源码包：[openldap-stable](ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release)</div><div class="line"></div><div class="line">```bash</div><div class="line"><span class="meta">#</span><span class="bash">tar –zxvf openldap-stable-20070831.tgz</span><span class="meta">#</span><span class="bash"><span class="built_in">cd</span> openldap-stable-20070831</span><span class="meta">#</span><span class="bash">./configure</span><span class="meta">#</span><span class="bash">make depend</span><span class="meta">#</span><span class="bash">make</span><span class="meta">#</span><span class="bash">make <span class="built_in">test</span></span><span class="meta">#</span><span class="bash">make install</span></div></pre></td></tr></table></figure>
+
+* Berkeley DB 数据库的安装
+
+OpenLDAP 可以支持多种后台数据库,如 LDBM 和 BDB 等,这些轻量级的数据库项目都是 针对(key,value)类型的信息存放的,属于非关系型数据库,采用 <span class="built_in">hash</span> 散列或者 B+树的方式存 储数据,查询效率较高。
+BDB(Berkeley DB)是由美国 Sleepycat Software 公司开发的一套开放源代码的嵌入式数据库 系统,2006 年被 Oracle 公司收购。它具有良好的可伸缩、高性能的事务处理机制和较好的可扩展 性等优点。OpenLDAP 可以使用 BDB 或 LDBM 作为后台数据库。因此,若需要正常使用 OpenLDAP 服务器,需要安装 BDB 数据库在下载[Berkeley DB](http://www.oracle.com/technology/software/products/berkeley-db/index.html)
+
+Berkeley DB 下载页面 以下载并安装 `db-4.6.19.tar.gz` 为例,使用如下命令:
+
+```bash
+<span class="comment"># tar zxvf db-4.6.19.tar.gz</span>
+<span class="comment"># cd db-4.6.19/build_unix</span>
+ <span class="comment"># ../dist/configure</span>
+<span class="comment"># make</span>
+<span class="comment"># make install</span>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">默认情况下,BDB 被安装在/usr/local/BerkeleyDB<span class="number">.4</span><span class="number">.6</span>/目录中,为了能让 OpenLDAP 使用 BDB 的库文件,还需要将 BDB 库文件所在的目录添加到系统动态链接库的路径中。需要编辑系统动态 链接库的配置文件/etc/ld.so.conf,在文件的末尾加入如下语句:    </div><div class="line">    /usr/local/ BerkeleyDB<span class="number">.4</span><span class="number">.6</span>/lib之后,使用以下命令刷新系统动态链接库缓存:Berkeley DB 数据库安装完毕。</div><div class="line"></div><div class="line">#### <span class="number">3.</span>这里我选择yum一键安装因为centos会自动安装一些需要的依赖</div><div class="line"></div><div class="line"><span class="number">1.</span>LDAP Server Setup:</div><div class="line"></div><div class="line">a.安装LDAP服务（使用YUM本地光盘安装）</div><div class="line"></div><div class="line">会提示安装以下几个必须的包，另外鉴于依赖，可能还会安装一些其他的包，所以我们选择-y：</div><div class="line"></div><div class="line">```bash</div><div class="line"></div><div class="line">openldap-devel<span class="number">-2.4</span><span class="number">.23</span><span class="number">-26.</span>el6.x86_64</div><div class="line">openldap-clients<span class="number">-2.4</span><span class="number">.23</span><span class="number">-26.</span>el6.x86_64</div><div class="line">openldap<span class="number">-2.4</span><span class="number">.23</span><span class="number">-26.</span>el6.x86_64</div><div class="line">openldap-servers<span class="number">-2.4</span><span class="number">.23</span><span class="number">-26.</span>el6.x86_64</div><div class="line"></div><div class="line"># yum install -y vim automake autoconf gcc xz ncurses-devel \ patch python-devel git python-pip gcc-c++  # 安装基本环境，后面依赖</div><div class="line"># yum install -y openldap openldap-servers openldap-clients openldap-devel</div></pre></td></tr></table></figure>
+
+前面编译安装也提到：
+OpenLDAP 使用`Berkely-DB`来作为数据库存储信息，我们可以去官网下载解压到本地安装。But,用Yum的话，应该会帮我们做好这一切事情。 我们只要在安装完后检查一下是否安装了db4*相关的rpm包就可以了。If <span class="literal">true</span>,那恭喜，我们可以进行下一步了。If not,请用yum命令安装。
+
+查看rpm安装包的命令：`rpm -qa | grep db4`
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@openldap ~]<span class="comment"># rpm -qa | grep db4</span></div><div class="line">db4-4.7.25-19.el6_6.x86_64</div><div class="line">db4-utils-4.7.25-19.el6_6.x86_64</div></pre></td></tr></table></figure>
+
+<span class="comment">## 2. 配置 OpenLDAP 服务器</span>
+OpenLDAP 的主配置文件是`/etc/openldap/slapd.conf`,配置 OpenLDAP 服务器主要是对该文件 进行修改。
+
+拷贝LDAP配置文件到LDAP目录
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># cp /usr/share/openldap-servers/slapd.conf.obsolete /etc/openldap/slapd.conf  ## 该文件是slapd的配置文件</span></div><div class="line"><span class="comment"># cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG      ## 数据库的配置文件</span></div></pre></td></tr></table></figure>
+
+Note: redhat6.0或6.1版本配置文件在主目录有备份：
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># cd /etc/openldap/</span></div><div class="line"><span class="comment">#  cp slapd.conf slapd.conf.bak</span></div></pre></td></tr></table></figure>
+
+<span class="comment">#### 配置 slapd.conf 文件</span>
+
+需要注意的是每次修改配置文件的设置后,需重新启动 OpenLDAP 服务后才能使新的配置生
+效。按照以下方法配置/etc/openldap/slapd.conf 文件。
+
+<span class="comment">#### 设置 Schema</span>
+
+`Schema(模式)`定义了 LDAP 中的对象类型、属性、语法和匹配规则等,如用户的电子邮件、 联系地址和联系电话等属性,它类似于关系数据库中的表结构。在实际应用中,不同的应用领域 会有不同的 Schema,用户可以通过自定义 Schema 使 LDAP 能够存储各种各样的信息。`OpenLDAP 安装目录的/etc/openldap/schema`目录下包含许多常用的 Schema 定义文件(例如,用于表示单位中 人员的 InetOrgPerson 模式),使用它们已经可以满足一般性应用的需要。
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[root@openldap openldap]<span class="comment"># ll /etc/openldap/schema/*.schema</span></div><div class="line">-rw-r--r--. 1 root root  6190 5月  11 07:32 /etc/openldap/schema/collective.schema</div><div class="line">-rw-r--r--. 1 root root  8063 5月  11 07:32 /etc/openldap/schema/corba.schema</div><div class="line">-rw-r--r--. 1 root root 20499 5月  11 07:32 /etc/openldap/schema/core.schema</div><div class="line">-rw-r--r--. 1 root root 73994 5月  11 07:32 /etc/openldap/schema/cosine.schema</div><div class="line">-rw-r--r--. 1 root root 10388 5月  11 07:32 /etc/openldap/schema/duaconf.schema</div><div class="line">-rw-r--r--. 1 root root  3289 5月  11 07:32 /etc/openldap/schema/dyngroup.schema</div><div class="line">-rw-r--r--. 1 root root  6267 5月  11 07:32 /etc/openldap/schema/inetorgperson.schema</div><div class="line">-rw-r--r--. 1 root root 13901 5月  11 07:32 /etc/openldap/schema/java.schema</div><div class="line">-rw-r--r--. 1 root root  2387 5月  11 07:32 /etc/openldap/schema/misc.schema</div><div class="line">-rw-r--r--. 1 root root  7640 5月  11 07:32 /etc/openldap/schema/nis.schema</div><div class="line">-rw-r--r--. 1 root root  1514 5月  11 07:32 /etc/openldap/schema/openldap.schema</div><div class="line">-rw-r--r--. 1 root root 20467 5月  11 07:32 /etc/openldap/schema/pmi.schema</div><div class="line">-rw-r--r--. 1 root root 19963 5月  11 07:32 /etc/openldap/schema/ppolicy.schema</div></pre></td></tr></table></figure>
+
+编辑 slapd.conf 文件,如下:
+
+
+```bash
+<span class="comment"># See slapd.conf(5) for details on configuration options.</span>
+<span class="comment"># This file should NOT be world readable.</span>
+<span class="comment">#</span>
+
+include         /etc/openldap/schema/corba.schema
+include         /etc/openldap/schema/core.schema
+include         /etc/openldap/schema/cosine.schema
+include         /etc/openldap/schema/duaconf.schema
+include         /etc/openldap/schema/dyngroup.schema
+include         /etc/openldap/schema/inetorgperson.schema
+include         /etc/openldap/schema/java.schema
+include         /etc/openldap/schema/misc.schema
+include         /etc/openldap/schema/nis.schema
+include         /etc/openldap/schema/openldap.schema
+include         /etc/openldap/schema/ppolicy.schema
+include         /etc/openldap/schema/collective.schema
+</code></pre>
+<ol>
+<li>其中,<code>core.schema</code> 是所有 LDAP 目录所必需的,<code>nis.schema</code> 文件用于在 LDAP 目录文件中提 供网络信息系统数据。一般而言,在不能肯定是否需要这些 schema 文件时,<code>不应删除这些文件</code>。</li>
+</ol>
+<p>2.修改目录树后缀 slapd.conf 中,目录树后缀为:</p>
+<pre><code class="bash">suffix <span class="string">"dc=my-domain,dc=com"</span>
+</code></pre>
+<p>将其修改为:</p>
+<pre><code class="bash">suffix <span class="string">"dc=ihaozhuo,dc=com"</span>
+</code></pre>
+<p>3.修改管理员 DN<br>slapd.conf 中,原 LDAP 修改管理员 DN 为:</p>
+<pre><code class="bash">rootdn <span class="string">"cn=Manager,dc=my-domain,dc=com"</span>
+</code></pre>
+<p>将其改为:</p>
+<pre><code class="bash">rootdn  <span class="string">"cn=admin,dc=ihaozhuo,dc=com"</span>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="number">4.</span>设置支持数据库 将原先设置的数据库:```bashdatabase ldbm```修改为已安装的BDB: </div><div class="line"></div><div class="line">```bash</div><div class="line">database bdb</div></pre></td></tr></table></figure>
+
+5.使用 slappasswd 命令创建加密口令
+
+在 slapd.conf 文件中,需要输入修改 OpenLDAP 后台数据库所必需的口令。默认情况下,在 slapd.conf 文件中使用 rootpw 语句以明文字符串定义口令。该口令赋予对后台数据库的完全控制 权限。
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># rootpw secret</span></div></pre></td></tr></table></figure>
+
+若希望把后台数据库口令改为“qwe123.com”,则作如下修改:
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rootpw 111</div></pre></td></tr></table></figure>
+
+但是,明文字符串是不安全的,应当为 OpenLDAP 创建加密口令。创建加密口令使用 slappasswd命令。加密方式有 SSHA、MD5、SMD5、SSH 等。
+
+<span class="comment">#### 创建LDAP管理员密码</span>
+这里我输入的密码是qwe123.com,输入完密码后,返回一串密文，先保存到剪贴板,之后要复制到LDAP配置文件中使用:
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@openldap ]<span class="comment"># slappasswd</span></div><div class="line">New password:</div><div class="line">Re-enter new password:</div><div class="line">&#123;SSHA&#125;k2+3iWauGVNo8k2sKQbGAe/iUeaAq3Hk</div></pre></td></tr></table></figure>
+
+
+则 OpenLDAP 后台数据库将使用加密口令。
+
+总结配置：
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">database        bdb</div><div class="line">suffix          <span class="string">"dc=ihaozhuo,dc=com"</span></div><div class="line">checkpoint      1024 15</div><div class="line">rootdn          <span class="string">"cn=admin,dc=ihaozhuo,dc=com"</span></div><div class="line"><span class="comment"># Cleartext passwords, especially for the rootdn, should</span></div><div class="line"><span class="comment"># be avoided.  See slappasswd(8) and slapd.conf(5) for details.</span></div><div class="line"><span class="comment"># Use of strong authentication encouraged.</span></div><div class="line"><span class="comment"># rootpw                secret</span></div><div class="line"><span class="comment"># rootpw                &#123;crypt&#125;ijFYNcSNctBYg</span></div><div class="line">rootpw  &#123;SSHA&#125;k2+3iWauGVNo8k2sKQbGAe/iUeaAq3Hk</div></pre></td></tr></table></figure>
+
+到这里就配置完sldap.conf 
+
+
+* 说明：
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">       loglevel：设置日志级别</div><div class="line">       suffix：其实就是BaseDN</div><div class="line">       rootdn:超级管理员的dn</div><div class="line">       rootpw:超级管理员的密码</div><div class="line">```    </div><div class="line"></div><div class="line"><span class="comment">#### 修改系统日志配置文件</span></div><div class="line"></div><div class="line">```bash</div><div class="line"><span class="comment"># vim /etc/rsyslog.conf</span></div><div class="line"> <span class="built_in">local</span>4.*        /var/<span class="built_in">log</span>/ldap.log</div><div class="line"><span class="comment"># local7.*下添加一行</span></div><div class="line"></div><div class="line">在启动服务。</div><div class="line"><span class="comment"># service rsyslog restart</span></div></pre></td></tr></table></figure>
+
+<span class="comment">## 3. 测试 slapd.conf 设置</span>
+
+完成 slapd.conf 文件的设置后,可以运行 slaptest 命令进行测试。命令如下:
+
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@openldap openldap]<span class="comment"># slaptest -u</span></div><div class="line">config <span class="built_in">file</span> testing succeeded</div></pre></td></tr></table></figure>
+
+如果lapd.conf文件设置不正确,将出现`“slaptest: bad configuration file!”`的提示,同时提示 错误的行号,按照提示进行修改后,运行 slaptest 命令重新检查,直到配置文件设置正确。可[参考链接](http://www.oschina.net/question/137892_77767)
+
+<span class="comment">#### OpenLDAP 的启动与停止</span>
+
+启动slapd, 查看启动情况
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">service slapd start</div></pre></td></tr></table></figure>
+
+如果跟下面一样报错 error启动 slapd：[失败] 下面是解决方法：
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@openldap openldap]<span class="comment"># service slapd start</span></div><div class="line">/var/lib/ldap/__db.006 is not owned by <span class="string">"ldap"</span>              [警告]</div><div class="line">/var/lib/ldap/__db.005 is not owned by <span class="string">"ldap"</span>              [警告]</div><div class="line">/var/lib/ldap/__db.004 is not owned by <span class="string">"ldap"</span>              [警告]</div><div class="line">/var/lib/ldap/__db.003 is not owned by <span class="string">"ldap"</span>              [警告]</div><div class="line">/var/lib/ldap/alock is not owned by <span class="string">"ldap"</span>                 [警告]</div><div class="line">/var/lib/ldap/__db.001 is not owned by <span class="string">"ldap"</span>              [警告]</div><div class="line">/var/lib/ldap/__db.002 is not owned by <span class="string">"ldap"</span>              [警告]</div><div class="line">正在启动 slapd：                                             [失败]</div></pre></td></tr></table></figure>
+
+解决方法：
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line">进入 <span class="built_in">cd</span> /var/lib/ldap/  </div><div class="line">slapd        (会生成一些库文件)</div><div class="line">[root@openldap ldap]<span class="comment"># ll</span></div><div class="line">总用量 11312</div><div class="line">-rw-r--r--. 1 root root      2048 9月  28 15:41 alock</div><div class="line">-rw-------. 1 root root     24576 9月  28 15:41 __db.001</div><div class="line">-rw-------. 1 root root   9093120 9月  28 15:41 __db.002</div><div class="line">-rw-------. 1 root root 335552512 9月  28 15:41 __db.003</div><div class="line">-rw-------. 1 root root   2359296 9月  28 15:37 __db.004</div><div class="line">-rw-------. 1 root root    753664 9月  28 15:41 __db.005</div><div class="line">-rw-------. 1 root root     32768 9月  28 15:41 __db.006</div><div class="line">-rw-r--r--. 1 root root       845 9月  28 15:06 DB_CONFIG</div><div class="line">[root@openldap ldap]<span class="comment"># slapd</span></div><div class="line">[root@openldap ldap]<span class="comment"># ll</span></div><div class="line">总用量 11472</div><div class="line">-rw-r--r--. 1 root root      2048 9月  28 15:51 alock</div><div class="line">-rw-------. 1 root root     24576 9月  28 15:51 __db.001</div><div class="line">-rw-------. 1 root root   9093120 9月  28 15:51 __db.002</div><div class="line">-rw-------. 1 root root 335552512 9月  28 15:51 __db.003</div><div class="line">-rw-------. 1 root root   2359296 9月  28 15:51 __db.004</div><div class="line">-rw-------. 1 root root    753664 9月  28 15:51 __db.005</div><div class="line">-rw-------. 1 root root     32768 9月  28 15:51 __db.006</div><div class="line">-rw-r--r--. 1 root root       845 9月  28 15:06 DB_CONFIG</div><div class="line">-rw-------. 1 root root      8192 9月  28 15:51 dn2id.bdb</div><div class="line">-rw-------. 1 root root     32768 9月  28 15:51 id2entry.bdb</div><div class="line">-rw-------. 1 root root  10485760 9月  28 15:51 log.0000000001</div><div class="line">[root@openldap ldap]<span class="comment">#  netstat -ntlp | grep 389</span></div><div class="line">tcp        0      0 0.0.0.0:389                 0.0.0.0:*                   LISTEN      1859/slapd</div><div class="line">tcp        0      0 :::389                      :::*                        LISTEN      1859/slapd</div><div class="line">[root@openldap ldap]<span class="comment"># chown ldap:ldap *</span></div><div class="line">[root@openldap ldap]<span class="comment"># chmod 600 *</span></div><div class="line">[root@openldap ldap]<span class="comment"># ll</span></div><div class="line">总用量 11472</div><div class="line">-rw-------. 1 ldap ldap      2048 9月  28 15:55 alock</div><div class="line">-rw-------. 1 ldap ldap     24576 9月  28 15:55 __db.001</div><div class="line">-rw-------. 1 ldap ldap   9093120 9月  28 16:25 __db.002</div><div class="line">-rw-------. 1 ldap ldap 335552512 9月  28 15:55 __db.003</div><div class="line">-rw-------. 1 ldap ldap   2359296 9月  28 16:10 __db.004</div><div class="line">-rw-------. 1 ldap ldap    753664 9月  28 15:55 __db.005</div><div class="line">-rw-------. 1 ldap ldap     32768 9月  28 16:10 __db.006</div><div class="line">-rw-------. 1 ldap ldap       845 9月  28 15:06 DB_CONFIG</div><div class="line">-rw-------. 1 ldap ldap      8192 9月  28 15:51 dn2id.bdb</div><div class="line">-rw-------. 1 ldap ldap     32768 9月  28 15:51 id2entry.bdb</div><div class="line">-rw-------. 1 ldap ldap  10485760 9月  28 16:10 log.0000000001</div><div class="line">[root@openldap ldap]<span class="comment"># service slapd restart</span></div><div class="line">停止 slapd：                                               [确定]</div><div class="line">正在启动 slapd：                                           [确定]</div><div class="line">[root@openldap ldap]<span class="comment"># service slapd start</span></div><div class="line">正在启动 slapd：ln: 创建硬链接<span class="string">"/var/run/slapd.pid"</span>: 文件已存在</div><div class="line"></div><div class="line">[root@openldap ldap]<span class="comment"># service slapd status</span></div><div class="line">slapd (pid  2197) 正在运行...</div><div class="line">You have new mail <span class="keyword">in</span> /var/spool/mail/root</div></pre></td></tr></table></figure>
+
+在下一步执行：
+
+    <span class="comment"># rm -rf /etc/openldap/slapd.d/*</span>
+
+测试并生成配置文件：
+
+    slaptest  <span class="_">-f</span> /etc/openldap/slapd.conf -F /etc/openldap/slapd.d
+返回config file testing succeeded,则配置成功。
+赋予生成的配置文件予权限并重启：
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># chown -R ldap:ldap /etc/openldap/slapd.d</span></div><div class="line"><span class="comment"># service slapd restart</span></div><div class="line">netstat -tulnp | grep slapd</div><div class="line">tcp        0      0 0.0.0.0:389                 0.0.0.0:*                   LISTEN      2358/slapd</div><div class="line">tcp        0      0 :::389                      :::*                        LISTEN      2358/slapd</div></pre></td></tr></table></figure>
+
+<span class="comment">## 4.创建一个账号，以备客户端测试登陆</span>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># useradd ldapuser1</span></div><div class="line"><span class="comment"># passwd ldapuser1</span></div></pre></td></tr></table></figure>
+
+至此，这些用户仅仅是系统上存在的用户`（存储在/etc/passwd和/etc/shadow上）`，并没有在LDAP数据库里，所以要把这些用户导入到LDAP里面去。但LDAP只能识别特定格式的文件 即后缀为ldif的文件（也是文本文件），所以不能直接使用`etc/passwd和/etc/shadow。`
+
+ 需要migrationtools这个工具把这两个文件转变成LDAP能识别的文件。
+
+
+<span class="comment">## 5. 安装配置migrationtools</span>
+
+    yum install migrationtools -y
+
+<span class="comment">#### 进入migrationtool配置目录</span>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#cd /usr/share/migrationtools/</span></div><div class="line">首先编辑migrate_common.ph</div><div class="line"></div><div class="line"><span class="comment"># vi  migrate_common.ph</span></div><div class="line">...</div><div class="line"><span class="comment"># Default DNS domain</span></div><div class="line"><span class="variable">$DEFAULT_MAIL_DOMAIN</span> = <span class="string">"ihaozhuo.com"</span>;</div><div class="line"></div><div class="line"><span class="comment"># Default base</span></div><div class="line"><span class="variable">$DEFAULT_BASE</span> = <span class="string">"dc=ihaozhuo,dc=com"</span>;</div><div class="line">.....</div><div class="line">保存退出。：-）</div><div class="line">K.下面利用pl脚本将/etc/passwd 和/etc/shadow生成LDAP能读懂的文件格式，保存在/tmp/下</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment"># ./migrate_base.pl &gt; /tmp/base.ldif</span></div><div class="line"><span class="comment"># ./migrate_passwd.pl  /etc/passwd &gt; /tmp/passwd.ldif</span></div><div class="line"><span class="comment"># ./migrate_group.pl  /etc/group &gt; /tmp/group.ldif</span></div></pre></td></tr></table></figure>
+
+<span class="comment">#### 说明：</span>
+ 第一次启动生会初始化ldap数据库，在/var/lib/ldap中，如果想删除ldap数据库就删除该目录，保留DB_CONFIG配置文件。新版的ldap使用的是/etc/openldap/slapd.d 下的配置文件，删除原来的配置文件，slaptest是重新生成新的配置文件.
+
+<span class="comment">## 6.导入数据 </span>
+
+下面就要把这三个文件导入到LDAP，这样LDAP的数据库里就有了我们想要的用户
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ldapadd -x -D "cn=admin,dc=example,dc=com" -W -f /tmp/base.ldif</span></div><div class="line"><span class="comment"># ldapadd -x -D "cn=admin,dc=example,dc=com" -W -f /tmp/passwd.ldif</span></div><div class="line"><span class="comment"># ldapadd -x -D "cn=admin,dc=example,dc=com" -W -f /tmp/group.ldif</span></div><div class="line">过程若无报错，则LDAP服务端配置完毕.</div></pre></td></tr></table></figure>
+
+执行成功会出现：
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">[root@openldap migrationtools]<span class="comment"># ldapadd -x -D "cn=admin,dc=ihaozhuo,dc=com" -W -f /tmp/base.ldif</span></div><div class="line">Enter LDAP Password:</div><div class="line">adding new entry <span class="string">"dc=ihaozhuo,dc=com"</span></div><div class="line"></div><div class="line">adding new entry <span class="string">"ou=Hosts,dc=ihaozhuo,dc=com"</span></div><div class="line"></div><div class="line">adding new entry <span class="string">"ou=Rpc,dc=ihaozhuo,dc=com"</span></div><div class="line"></div><div class="line">adding new entry <span class="string">"ou=Services,dc=ihaozhuo,dc=com"</span></div><div class="line"></div><div class="line">adding new entry <span class="string">"nisMapName=netgroup.byuser,dc=ihaozhuo,dc=com"</span></div><div class="line"></div><div class="line">.........</div><div class="line"></div><div class="line">[root@openldap migrationtools]<span class="comment"># ldapadd -x -D "cn=admin,dc=ihaozhuo,dc=com" -W -f /tmp/passwd.ldif</span></div><div class="line">Enter LDAP Password:</div><div class="line">adding new entry <span class="string">"uid=root,ou=People,dc=ihaozhuo,dc=com"</span></div><div class="line"></div><div class="line">adding new entry <span class="string">"uid=bin,ou=People,dc=ihaozhuo,dc=com"</span></div><div class="line"></div><div class="line">adding new entry <span class="string">"uid=daemon,ou=People,dc=ihaozhuo,dc=com"</span></div><div class="line"></div><div class="line">adding new entry <span class="string">"uid=adm,ou=People,dc=ihaozhuo,dc=com"</span></div><div class="line"></div><div class="line">adding new entry <span class="string">"uid=lp,ou=People,dc=ihaozhuo,dc=com"</span></div><div class="line"></div><div class="line">adding new entry <span class="string">"uid=sync,ou=People,dc=ihaozhuo,dc=com"</span></div><div class="line">.....</div><div class="line"></div><div class="line">[root@openldap migrationtools]<span class="comment"># ldapadd -x -D "cn=admin,dc=ihaozhuo,dc=com" -W -f /tmp/group.ldif</span></div><div class="line">Enter LDAP Password:</div><div class="line">adding new entry <span class="string">"cn=root,ou=Group,dc=ihaozhuo,dc=com"</span></div><div class="line"></div><div class="line">adding new entry <span class="string">"cn=bin,ou=Group,dc=ihaozhuo,dc=com"</span></div><div class="line">.......</div></pre></td></tr></table></figure>
+
+ldapsearch 查看数据
+
+<figure class="highlight ldif"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div></pre></td><td class="code"><pre><div class="line">[root@openldap migrationtools]<span class="comment"># ldapsearch -x -b "dc=ihaozhuo,dc=com"</span></div><div class="line"><span class="comment"># extended LDIF</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># LDAPv3</span></div><div class="line"><span class="comment"># base &lt;dc=ihaozhuo,dc=com&gt; with scope subtree</span></div><div class="line"><span class="comment"># filter: (objectclass=*)</span></div><div class="line"><span class="comment"># requesting: ALL</span></div><div class="line"><span class="comment">#</span></div><div class="line"></div><div class="line"><span class="comment"># ihaozhuo.com</span></div><div class="line"><span class="attribute">dn</span>: dc=ihaozhuo,dc=com</div><div class="line"><span class="attribute">dc</span>: ihaozhuo</div><div class="line"><span class="attribute">objectClass</span>: top</div><div class="line"><span class="attribute">objectClass</span>: domain</div><div class="line"></div><div class="line"><span class="comment"># Hosts, ihaozhuo.com</span></div><div class="line"><span class="attribute">dn</span>: ou=Hosts,dc=ihaozhuo,dc=com</div><div class="line"><span class="attribute">ou</span>: Hosts</div><div class="line"><span class="attribute">objectClass</span>: top</div><div class="line"><span class="attribute">objectClass</span>: organizationalUnit</div><div class="line"></div><div class="line"><span class="comment"># Rpc, ihaozhuo.com</span></div><div class="line"><span class="attribute">dn</span>: ou=Rpc,dc=ihaozhuo,dc=com</div><div class="line"><span class="attribute">ou</span>: Rpc</div><div class="line"><span class="attribute">objectClass</span>: top</div><div class="line"><span class="attribute">objectClass</span>: organizationalUnit</div><div class="line"></div><div class="line"><span class="comment"># Services, ihaozhuo.com</span></div><div class="line"><span class="attribute">dn</span>: ou=Services,dc=ihaozhuo,dc=com</div><div class="line"><span class="attribute">ou</span>: Services</div><div class="line"><span class="attribute">objectClass</span>: top</div><div class="line"><span class="attribute">objectClass</span>: organizationalUnit</div><div class="line"></div><div class="line"><span class="comment"># netgroup.byuser, ihaozhuo.com</span></div><div class="line"><span class="attribute">dn</span>: nisMapName=netgroup.byuser,dc=ihaozhuo,dc=com</div><div class="line"><span class="attribute">nisMapName</span>: netgroup.byuser</div><div class="line"><span class="attribute">objectClass</span>: top</div><div class="line"><span class="attribute">objectClass</span>: nisMap</div><div class="line"></div><div class="line"><span class="comment"># Mounts, ihaozhuo.com</span></div><div class="line"><span class="attribute">dn</span>: ou=Mounts,dc=ihaozhuo,dc=com</div><div class="line"><span class="attribute">ou</span>: Mounts</div><div class="line"><span class="attribute">objectClass</span>: top</div><div class="line"><span class="attribute">objectClass</span>: organizationalUnit</div><div class="line"></div><div class="line"><span class="comment"># Networks, ihaozhuo.com</span></div><div class="line"><span class="attribute">dn</span>: ou=Networks,dc=ihaozhuo,dc=com</div><div class="line"><span class="attribute">ou</span>: Networks</div><div class="line"><span class="attribute">objectClass</span>: top</div><div class="line"><span class="attribute">objectClass</span>: organizationalUnit</div><div class="line"></div><div class="line"><span class="comment"># People, ihaozhuo.com</span></div><div class="line"><span class="attribute">dn</span>: ou=People,dc=ihaozhuo,dc=com</div><div class="line"><span class="attribute">ou</span>: People</div><div class="line"><span class="attribute">objectClass</span>: top</div><div class="line"><span class="attribute">objectClass</span>: organizationalUnit</div><div class="line"></div><div class="line"><span class="comment"># Group, ihaozhuo.com</span></div><div class="line"><span class="attribute">dn</span>: ou=Group,dc=ihaozhuo,dc=com</div><div class="line"><span class="attribute">ou</span>: Group</div><div class="line"><span class="attribute">objectClass</span>: top</div><div class="line"><span class="attribute">objectClass</span>: organizationalUnit</div><div class="line"></div><div class="line"><span class="comment"># Netgroup, ihaozhuo.com</span></div><div class="line"><span class="attribute">dn</span>: ou=Netgroup,dc=ihaozhuo,dc=com</div><div class="line"><span class="attribute">ou</span>: Netgroup</div><div class="line"><span class="attribute">objectClass</span>: top</div><div class="line"><span class="attribute">objectClass</span>: organizationalUnit</div><div class="line"></div><div class="line"><span class="comment"># Protocols, ihaozhuo.com</span></div><div class="line"><span class="attribute">dn</span>: ou=Protocols,dc=ihaozhuo,dc=com</div><div class="line"><span class="attribute">ou</span>: Protocols</div><div class="line"><span class="attribute">objectClass</span>: top</div><div class="line"><span class="attribute">objectClass</span>: organizationalUnit</div><div class="line"></div><div class="line"><span class="comment"># Aliases, ihaozhuo.com</span></div><div class="line"><span class="attribute">dn</span>: ou=Aliases,dc=ihaozhuo,dc=com</div><div class="line"><span class="attribute">ou</span>: Aliases</div><div class="line"><span class="attribute">objectClass</span>: top</div><div class="line"><span class="attribute">objectClass</span>: organizationalUnit</div><div class="line"></div><div class="line"><span class="comment"># netgroup.byhost, ihaozhuo.com</span></div><div class="line"><span class="attribute">dn</span>: nisMapName=netgroup.byhost,dc=ihaozhuo,dc=com</div><div class="line"><span class="attribute">nisMapName</span>: netgroup.byhost</div><div class="line"><span class="attribute">objectClass</span>: top</div><div class="line"><span class="attribute">objectClass</span>: nisMap</div><div class="line"></div><div class="line"><span class="comment"># root, People, ihaozhuo.com</span></div><div class="line"><span class="attribute">dn</span>: uid=root,ou=People,dc=ihaozhuo,dc=com</div><div class="line"><span class="attribute">uid</span>: root</div><div class="line"><span class="attribute">cn</span>: root</div><div class="line"><span class="attribute">objectClass</span>: account</div><div class="line"><span class="attribute">objectClass</span>: posixAccount</div><div class="line"><span class="attribute">objectClass</span>: top</div><div class="line"><span class="attribute">objectClass</span>: shadowAccount</div><div class="line"><span class="attribute">userPassword:</span>: e2NyeXB0fSQ2JHJCNmVjYmdEZGtUR2w1c3QkTldDc1NQNXJBYXU3QkhpUWlXVXl</div><div class="line"> LaXl4dW9VNWtFNm0wZ1dILmRzaXhFL2ZPTG1zOC52OTdNdXVuNkZlNjhDOExTYmtvVjdiaW03Lmti</div><div class="line"> ak1ZbURVZC4=</div><div class="line"><span class="attribute">shadowLastChange</span>: 17056</div><div class="line"><span class="attribute">shadowMin</span>: 0</div><div class="line"><span class="attribute">shadowMax</span>: 99999</div><div class="line"><span class="attribute">shadowWarning</span>: 7</div><div class="line"><span class="attribute">loginShell</span>: /bin/bash</div><div class="line"><span class="attribute">uidNumber</span>: 0</div><div class="line"><span class="attribute">gidNumber</span>: 0</div><div class="line"><span class="attribute">homeDirectory</span>: /root</div><div class="line"><span class="attribute">gecos</span>: root</div><div class="line"></div><div class="line"><span class="comment"># bin, People, ihaozhuo.com</span></div><div class="line"><span class="attribute">dn</span>: uid=bin,ou=People,dc=ihaozhuo,dc=com</div><div class="line"><span class="attribute">uid</span>: bin</div><div class="line"><span class="attribute">cn</span>: bin</div><div class="line"><span class="attribute">objectClass</span>: account</div><div class="line"><span class="attribute">objectClass</span>: posixAccount</div><div class="line"><span class="attribute">objectClass</span>: top</div><div class="line"><span class="attribute">objectClass</span>: shadowAccount</div><div class="line"><span class="attribute">userPassword:</span>: e2NyeXB0fSo=</div><div class="line"><span class="attribute">shadowLastChange</span>: 15980</div><div class="line"><span class="attribute">shadowMin</span>: 0</div><div class="line"><span class="attribute">shadowMax</span>: 99999</div><div class="line"><span class="attribute">shadowWarning</span>: 7</div><div class="line"><span class="attribute">loginShell</span>: /sbin/nologin</div><div class="line"><span class="attribute">uidNumber</span>: 1</div><div class="line"><span class="attribute">gidNumber</span>: 1</div><div class="line"><span class="attribute">homeDirectory</span>: /bin</div><div class="line"><span class="attribute">gecos</span>: bin</div><div class="line"></div><div class="line">................</div></pre></td></tr></table></figure>
+
+/相关信息导入数据库成功
+
+<span class="comment">## 7.实现LDAP用户home目录自动挂载</span>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">centos 6 :</div><div class="line">yum install nfs-utils rpcbind</div><div class="line">服务器端： </div><div class="line"><span class="comment">###(建立挂载的目录，并且挂载目录。)</span></div><div class="line">[root@openldap ~]<span class="comment"># mkdir /opt/centos6</span></div><div class="line">[root@openldap ~]<span class="comment"># cd /opt/centos6/</span></div><div class="line">[root@openldap centos6]<span class="comment">#  mkdir thisISnfsFile</span></div><div class="line">[root@openldap centos6]<span class="comment">#  vi /etc/exports</span></div><div class="line">[root@openldap centos6]<span class="comment"># chkconfig nfs on</span></div><div class="line">[root@openldap centos6]<span class="comment"># /etc/init.d/rpcbind start</span></div><div class="line">正在启动 rpcbind：                                          [确定]</div><div class="line">[root@openldap centos6]<span class="comment"># /etc/init.d/nfs start</span></div><div class="line">启动 NFS 服务：                                              [确定]</div><div class="line">启动 NFS mountd：                                           [确定]</div><div class="line">启动 NFS 守护进程：                                          [确定]</div><div class="line">正在启动 RPC idmapd：                                       [确定]</div><div class="line">[root@openldap centos6]<span class="comment">#  cat /etc/exports</span></div><div class="line">/opt/centos6 *(rw,sync)</div><div class="line"><span class="comment">### 备注：/opt/centos6表示nfs共享的目录 有读写权限。</span></div><div class="line">这个可以不需要写：</div><div class="line"></div><div class="line">/opt/centos6 192.168.1.0/24(ro,no_root_squash)</div><div class="line"><span class="comment">### 备注:/opt/centos6表示nfs共享的目录 192.168.1.0-192.168.1.254区间的IP可以访问，访问权限是自读，root 用户</span></div></pre></td></tr></table></figure>
+
+可参考：[Nfs共享同步](http://blog.chinaunix.net/uid-26284318-id-3111651.html)
+
+<span class="comment">## 8.使用 phpLDAPadmin</span>
+
+OpenLDAP 安装目录的 bin 子目录下提供了管理目录树的客户端命令(如 ldapadd、ldapdelete 和 ldapsearch 等),但对于不熟悉 OpenLDAP 命令的初学者而言,使用它们去管理目录树是一件非 常麻烦的事。可以借助于图形界面的 LDAP管理工具来管理目录树,其中,用 PHP 编写的 phpLDAPadmin 就是一款很好的选择。
+
+   1.1 初始化数据
+
+
+为了能使用 phpLDAPadmin 管理目录树,需要为目录树建立初始化数据,方法是将初始化数 据保存在 LDIF 文件中,然后使用 ldapadd 命令导入 LDAP 的数据库中。
+LDIF 是 LDAP Data Interchange Format (即 LDAP 数据交换格式)的缩写。将 LDAP 保存为 一种简单的文本格式,该格式可以用于在符合 LDAP 标准的目录上完成批量操作,如添加、修改、 删除和导入、导出数据等批量操作。LDIF 可以在来自两个不同的厂家的 LDAP 服务器间交换数据, 即使 LDAP 服务器使用不同的后台数据库或运行在不同的操作系统上。
+
+这一步已经在上面导入过数据了。
+
+
+* 下载与安装
+
+phpLDAPadmin 是一款开放源代码的,通过它提供的友好用户界面,只要使用 Web 浏览器即 可轻松管理本地或远程的 LDAP 服务器,例如浏览 LDAP 目录树,创建/删除/修改和复制节点, 执行搜索,导入/导出 LDIF 文件,查看服务器 schema。还可以在两个 LDAP 服务器之间复制对象、 恢复删除、复制树节点。phpLDAPadmin 的下载地址是 http://phpldapadmin.sourceforge.net/
+
+实现phpldapadmin 网页WEB管理用户
+
+需要注意的是`,phpLDAPadmin `是一个基于 `web `的管理工具,因此,若要正常使用 phpLDAPadmin,需要确保` Apache` 服务器运行正常。
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">yum install httpd -y</div><div class="line">vi /etc/httpd/conf/httpd.conf</div><div class="line"></div><div class="line">添加：</div><div class="line">....</div><div class="line">ServerName 192.168.1.186:80</div><div class="line">.....</div><div class="line"></div><div class="line">service httpd start</div></pre></td></tr></table></figure>
+
+先通过scp上传phpldapadmin-1.2.3.zip到apache网页目录
+
+下载：[phpldapadmin](https://sourceforge.net/projects/phpldapadmin/files/phpldapadmin-php5/1.2.3/phpldapadmin-1.2.3.tgz)
+
+或者这里用我下载好的链接wget.
+
+    <span class="built_in">cd</span> /var/www/html/
+    wget http://oak0aohum.bkt.clouddn.com/phpldapadmin-1.2.3.tgz
+    tar -zxvf phpldapadmin-1.2.3.tgz
+    mv phpldapadmin-1.2.3 phpldapadmin
+    <span class="built_in">cd</span> phpldapadmin/config/
+    cp config.php.example config.php
+    vim config.php
+
+<span class="comment">#### 2.修改配置文件</span>
+用文本编辑器打开 config.php 文件后发现,尽管文件行数几百行,但实际上很多都是 php 程
+序的注释语句。因此,只需要修改其中一部分内容,即可完成 phpLDAPadmin 的配置。设置如下:   
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">/*</div><div class="line"><span class="variable">$servers</span>-&gt;newServer(<span class="string">'ldap_pla'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'name'</span>,<span class="string">'LDAP Server'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'host'</span>,<span class="string">'192.168.1.186'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'port'</span>,389);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'base'</span>,array(<span class="string">'dc=ihaozhuo,dc=com'</span>));</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'login'</span>,<span class="string">'auth_type'</span>,<span class="string">'cookie'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'login'</span>,<span class="string">'bind_id'</span>,<span class="string">'cn=admin,dc=ihaozhuo,dc=com'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'login'</span>,<span class="string">'bind_pass'</span>,<span class="string">'qwe123.com'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'tls'</span>,<span class="literal">false</span>);</div></pre></td></tr></table></figure>
+
+<span class="comment">#### 对以上的设置作如下说明:   LDAP 服务器名</span>
+
+    <span class="variable">$ldapservers</span>-&gt;SetValue(<span class="variable">$i</span>,<span class="string">'server'</span>,<span class="string">'name'</span>,<span class="string">'My LDAP Server'</span>);
+
+
+使用以上语句,设置 LDAP 服务器名称为“My LDAP Server”。  
+
+&gt; LDAP 服务器 IP
+
+    <span class="variable">$ldapservers</span>-&gt;SetValue(<span class="variable">$i</span>,<span class="string">'server'</span>,<span class="string">'host'</span>,<span class="string">'192.168.1.186'</span>);
+
+使用以上语句,设置 LDAP 服务器地址为“192.168.1.186”。   
+
+&gt;LDAP 服务器管理员 DN
+
+    <span class="variable">$ldapservers</span>-&gt;SetValue(<span class="variable">$i</span>,<span class="string">'login'</span>,<span class="string">'dn'</span>,<span class="string">'cn=admin,dc=ihaozhuo,dc=com'</span>);
+
+设置 LDAP 服务器管理员 DN为`“cn=Manager,dc=example,dc=com”。`
+
+&gt;LDAP 服务器管理员口令
+
+    <span class="variable">$ldapservers</span>-&gt;SetValue(<span class="variable">$i</span>,<span class="string">'login'</span>,<span class="string">'pass'</span>,<span class="string">''</span>);
+
+此处将 LDAP 服务器管理员口令设置为空。   LDAP 服务器认证方式phpLDAPadmin 提供了 cookie、session 和 config 这三种认证方式。cookie 方式提供一个登录 的界面,让用户输入正确的 LDAP 管理员的 DN 和口令才允许登录到服务器,同时 LDAP 管理员 的 DN 与口令会保存在客户端 Web 浏览器的 cookie 里面。session 方式类似 cookie,不同点在于 LDAP 管理员的 DN 与口令保存在服务器端,而不是客户端。config 是 phpLDAPadmin 缺省的认证 方式,不需要用户登录,但需要将LDAP管理员的DN和口令写在phpLDAPadmin的主配置文件中。
+
+以上语句表明 phpLDAPadmin 采用 cookie 认证。在使用 cookie 认证方式时,必须配置一个口 令加密字符串,以便安全地加密和解密一些敏感信息。<span class="string">'blowfish'</span>就是口令加密字符串,可以随意 设置,例如设置为“phpldapadmin”。
+删除的内容: ‘ 删除的内容: ’
+
+ 设置完毕后,保存 config.php 文件使设置生效。
+
+
+<span class="comment">## apache-http修改</span>
+
+    vim /etc/httpd/conf/httpd.conf
+    &lt;Directory <span class="string">"/var/www/html/phpldapadmin"</span>&gt;
+    DirectoryIndex index.html index.html.var index.php
+
+重启服务。
+
+    service httpd restart
+
+
+<span class="comment">## 网页访问</span>
+http://192.168.1.186/phpldapadmin 报错无法正常访问，是由于php,php-ldap依赖包没有安装.
+
+安装php可参考我博客上面文档：[PHP编译升级YUM最全面安装部署](http://blog.yangcvo.me/2015/12/21/PHP%E7%BC%96%E8%AF%91%E5%8D%87%E7%BA%A7YUM%E6%9C%80%E5%85%A8%E9%9D%A2%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/)
+安装完，重启http服务。
+
+    service httpd restart
+
+设置防火墙访问：
+
+    -A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
+
+    重启iptables 
+    service iptables restart
+
+
+<span class="comment">#### 1.登录</span>
+
+![](http://7xrthw.com1.z0.glb.clouddn.com/openldap4.png)
+单击左侧“Login”链接,打开如图1.1 所示页面,输入 ldap 服务器认证信息。此处应当输
+入管理员的 DN 和密码。
+
+![](http://7xrthw.com1.z0.glb.clouddn.com/openldap5.png)
+
+
+单击“认证”按钮后,进入 phpLDAPadmin 管理页面,如图 1.2所示。页面右侧提示“LDAP
+服务器认证成功”,页面左侧是 LDAP 的目录树。
+在左页面中单击【dc=ihaozhuo,dc=com】链接,在右页面中会出现目录树的各种属性并提供各 种操作链接。
+
+&gt;查看对象
+
+![](http://7xrthw.com1.z0.glb.clouddn.com/openldap6.png)
+
+因为之前导入了 LDIF 文件,初始化的数据在此处可以显示出来。
+
+<span class="comment">#### 2.创建对象</span>
+
+选择【创建一个子条目】链接,在出现的【创建对象】页面中,选择【Organization Unit】(组 织机构),如图1.3所示。
+
+&gt;选择需要创建的对象
+
+![](http://7xrthw.com1.z0.glb.clouddn.com/openldap7.png)
+
+
+单击【Organization Unit】前面的单选按钮后,进入创建【Organization Unit】界面,如图
+&gt;创建新组织机构(OU)
+
+![](http://7xrthw.com1.z0.glb.clouddn.com/openldap8.png)
+
+在 phpLDAPadmin 中创建 LDAP 目录树中的其他对象,同样使用如上所述的方法,不同的是 需要在图1.3 中选择不同的对象。
+
+&gt; 创建 OU 成功
+
+![](http://7xrthw.com1.z0.glb.clouddn.com/openldap9.png)
+
+
+<span class="comment">#### 3.导入导出</span>
+
+使用导入导出按钮,可以将 LDAP 服务器使用的 LDIF 文件导出,也可以导入需要的 LDIF 文 件。直接导入导出 LDIF 文件是管理 LDAP 目录树一种快捷方法。
+
+在该页面中,单击【浏览】按钮,选择相关的 LDIF 文件,或是直接在【Paste your LDIF file】 文件的位置输入 LDIF 文件内容,单击【Proceed】按钮,开始导入。
+若导入成功,显示如下图所示提示内容。若导入不成功,同样会出现相关错误提示。
+
+![](http://7xrthw.com1.z0.glb.clouddn.com/openldap10.png)
+
+选择导出操作时,单击页面左侧【<span class="built_in">export</span>】导出链接,出现如图 所示【导出】页面。在 该页面中,选择 DN;导出范围、导出格式及行结束标志等都在该页面中设置。
+![](http://7xrthw.com1.z0.glb.clouddn.com/openldap11.png)
+
+
+注意：
+
+导入用户成功以后，再次导入或者创建  下次不要重复导入。不然会报错，68
+导入group 和user就行，过滤 、/etc/passwd 、/etc/group新建的用户，导入成功以后，重新刷新。
+
+
+<span class="comment">## 设置 LDIF 文件</span>
+LDAP 数据交换格式(LDIF)是指存储 LDAP 配置信息及目录内容的标准文本文件格式,之 所以使用文本文件格式来存储这些信息是为了方便读取和修改。LDAP 也是其他大多数服务配置 文件所采取的格式。LDIF 文件常用来向目录导入或更改记录信息,这些信息需要按照 LDAP 中 schema 的格式进行组织,并会接受 schema 的检查,不符合其要求的格式将会出现报错信息。
+
+<span class="comment">#### 1.语法格式</span>
+LDIF 文件中条目的语法结构如下:
+
+```bash
+dn: &lt;distinguished name&gt;
+&lt;attrdesc&gt;: &lt;attrvalue&gt;
+&lt;attrdesc&gt;: &lt;attrvalue&gt;
+&lt;attrdesc&gt;:: &lt;base64-encoded-value&gt;
+&lt;attrdesc&gt;:&lt; &lt;URL&gt;
+...
+<figure class="highlight ldif"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">例如:```bash <span class="comment">#LDIF file example</span><span class="attribute">dn</span>: dc=mydomain,dc=org<span class="attribute">objectClass</span>: domain<span class="attribute">dc</span>: mydomain</div></pre></td></tr></table></figure>
+
+以“<span class="comment">#”号开头的为注释行;第二行起的各行中,冒号左边为属性,右边是属性的值,与编程 中的变量及为其所赋的值类似,LDIF 文件中属性可以被重复赋值。</span>
+以下是一个有三个条目的 LDIF 文件:
+
+```bash
+dn: cn=Barbara J Jensen,dc=example,dc=com
+cn: Barbara J Jensen
+cn: Babs Jensen
+objectclass: person
+description:&lt; file:///tmp/babs
+sn: Jensen
+dn: cn=Bjorn J Jensen,dc=example,dc=com
+cn: Bjorn J Jensen
+cn: Bjorn Jensen
+objectclass: person
+sn: Jensen
+dn: cn=Jennifer J Jensen,dc=example,dc=com
+cn: Jennifer J Jensen
+cn: Jennifer Jensen
+objectclass: person
+sn: Jensen
+jpegPhoto:: /9j/4AAQSkZJRgABAAAAAQABAAD/2wBDABALD
+ A4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQ
+ ERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVG
+...
+<figure class="highlight ldif"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">#### 2.创建 LDIF 文件</span>可以用任何文本编辑器以 root 用户进行创建 LDIF 文件。当创建 LDIF 文件时需要注意,在每 个 DN 行前应添加空行,确保 LDAP 能够识别是一个新的 DN 的开始。例如,创建 test.ldif 文件。</div><div class="line"> 3.定义基准 </div><div class="line"> </div><div class="line"> DN使用如下内容定义基准 DN。```<span class="attribute">dn</span>: dc=test, dc=net<span class="attribute">objectClass</span>: top<span class="attribute">objectClass</span>: dcobject<span class="attribute">objectClass</span>: organization<span class="attribute">o</span>: Test, Inc.<span class="attribute">dc</span>: test</div></pre></td></tr></table></figure>
+
+4.定义管理员
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"> dn: cn=manager, dc=test, dc=net<span class="symbol">objectClass:</span> organizationalRole<span class="symbol">cn:</span> manager<span class="symbol">description:</span> A Manager of Test, <span class="keyword">inc</span>.```<span class="number">5.</span>定义组织机构```<span class="symbol">dn:</span> ou=members, dc=test, dc=net<span class="symbol">objectClass:</span> organizationalUnit<span class="symbol">ou:</span> members</div></pre></td></tr></table></figure>
+
+6.定义用户
+</code></pre>
+<p>dn: cn=Ray D. Jones, ou= members, dc=test, dc=net<br>objectClass: organizationalPerson<br>objectClass: inetOrgPerson<br>cn: Ray D. Jones<br>sn: Jones<br>telephoneNumber: 444-555-6767<br>mail: jonesrd@test.net<br>localityName: Houston<br>dn: cn=Eric S. Woods, ou= members, dc=test, dc=net<br>objectClass: organizationalPerson<br>objectClass: inetOrgPerson<br>cn: Eric S. Woods<br>sn: Woods<br>telephoneNumber: 444-555-6768<br>mail: woodses@test.net<br>localityName: Houston<br><figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="number">7.</span>保存并导入 LDIF 文件 使用如下命令导入 LDIF 文件</div><div class="line"></div><div class="line">```# ldapadd -x -W -D <span class="string">"cn=manager,dc=test,dc=net"</span> -f test.ldifEnter LDAP Password:</div></pre></td></tr></table></figure></p>
+<p>此处输入的口令是 LDAP 管理员口令,-x 表明使用简单验证。-D 表示使用在 slapd.conf 文件 中所定义的 DN。-W 表示提示输入口令而不是从命令行输入。-f 表明要装载的文件“test.ldif”。<br>ldapadd 命令成功添加了每个条目内容同时,会列出每个条目内容有关的 DN。</p>
+<p>8.搜索目录</p>
+<p>搜索目录使用 ldapsearch 命令,搜索结果如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ldapsearch -x -W -D 'cn=manager,dc=test,dc=net' -b ' dc=test,dc=net ' '(objectClass=*)'</span>    Enter LDAP Password:    <span class="comment"># extended LDIF</span>    <span class="comment">#</span>    <span class="comment"># LDAPv3</span>    <span class="comment"># base &lt; dc=test,dc=net &gt; with scope subtree</span>    <span class="comment"># filter: (objectClass=*)</span>    <span class="comment"># requesting: ALL</span>    <span class="comment">#</span>    <span class="comment"># test. net</span>    dn: dc=<span class="built_in">test</span>, dc=net    objectClass: top    objectClass: dcobject    objectClass: organization    o: Test, Inc.    dc: <span class="built_in">test</span>    <span class="comment"># manager, test. net</span>    dn: cn=manager, dc=<span class="built_in">test</span>, dc=net    objectClass: organizationalRole    cn: manager    description: A Manager of Test, inc.    <span class="comment"># members, test. net</span>    dn: ou=members, dc=<span class="built_in">test</span>, dc=net    objectClass: organizationalUnit    ou: members    ...</div></pre></td></tr></table></figure>
+
+	
+
+	
+		<span class="different-posts"><a href="/2017/03/29/OpenLDAP/OpenLDAP服务的配置与管理-phpldapadmin管理认证/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2018 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

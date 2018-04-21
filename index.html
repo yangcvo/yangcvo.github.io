@@ -74,38 +74,6 @@
 
 	<article>
 	
-		<h1><a href="/2018/02/04/OpenLDAP/OpenLDAP 错误收集/">OpenLDAP 错误收集</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2018-02-04</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/OpenLDAP/">OpenLDAP</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/OpenLDAP/">OpenLDAP</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h4 id="OpenLDAP-错误收集"><a href="#OpenLDAP-错误收集" class="headerlink" title="OpenLDAP 错误收集"></a>OpenLDAP 错误收集</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line">启动slapd服务：报错</div><div class="line"></div><div class="line">Checking configuration files <span class="keyword">for</span> slapd:                    [WARNING]</div><div class="line">bdb_db_open: warning – no DB_CONFIG file found <span class="keyword">in</span> directory /var/lib/ldap: (2).</div><div class="line">Expect poor performance <span class="keyword">for</span> suffix “dc=my-domain,dc=com”.</div><div class="line">config file testing succeeded</div><div class="line"></div><div class="line">操作命令：</div><div class="line">rm -rf /var/lib/ldap/*</div><div class="line">cp /usr/share/doc/openldap-servers-2.4.12/DB_CONFIG.example /var/lib/ldap/DB_CONFIG</div><div class="line">chown -R ldap:ldap /var/lib/ldap</div><div class="line">/etc/init.d/ldap restart</div><div class="line"></div><div class="line">2. slaptest <span class="_">-f</span> /etc/openldap/slapd.conf -F /etc/openldap/slapd.d 报错：</div><div class="line"></div><div class="line">[root@yancy ldap]<span class="comment"># slaptest  -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d</span></div><div class="line">59842dbe bdb_db_open: database <span class="string">"dc=jollychic,dc=com"</span>: db_open(/var/lib/ldap/id2entry.bdb) failed: No such file or directory (2).</div><div class="line">59842dbe backend_startup_one (<span class="built_in">type</span>=bdb, suffix=<span class="string">"dc=jollychic,dc=com"</span>): bi_db_open failed! (2)</div><div class="line">slap_startup failed (<span class="built_in">test</span> would succeed using the -u switch)</div><div class="line"></div><div class="line"></div><div class="line">解决操作命令：</div><div class="line">解决方法： </div><div class="line">cp /usr/share/openldap-servers/DB_CONFIG.example  /var/lib/ldap/DB_CONFIG</div><div class="line">chown -R ldap.ldap /var/lib/ldap</div><div class="line"></div><div class="line">继续检查配置文件</div><div class="line">slaptest <span class="_">-f</span> /etc/openldap/slapd.conf -F /etc/openldap/slapd.d</div><div class="line"></div><div class="line">如果还继续报错：</div><div class="line"></div><div class="line">删掉slapd.d下的文件，重新生成 不然待会启动时会报错</div><div class="line">[root@yancy ldap]<span class="comment"># rm -rf  slapd.d/*</span></div><div class="line">[root@yancy ldap]<span class="comment"># cd /var/lib/ldap/</span></div><div class="line">[root@yancy ldap]<span class="comment"># slapd</span></div><div class="line"></div><div class="line">测试 slapd.conf 设置 </div><div class="line">slaptest -u</div><div class="line">cp <span class="_">-a</span> /etc/openldap/slapd.d/ /etc/openldap/slapd.dbakup0810</div><div class="line">rm -rf /etc/openldap/slapd.d/*</div><div class="line">chown ldap.ldap /var/lib/ldap/*</div><div class="line">chmod -R 600 /var/lib/ldap/*</div><div class="line"><span class="built_in">cd</span> /var/lib/ldap/ &amp;&amp; slapd</div><div class="line">slaptest <span class="_">-f</span> /etc/openldap/slapd.conf -F /etc/openldap/slapd.d</div><div class="line"></div><div class="line"></div><div class="line">如果还不行：</div><div class="line">rm -rf /etc/openldap/slapd.d/*</div><div class="line">rm -rf rm -rf /var/lib/ldap/__db.00*</div><div class="line">rm -rf /var/lib/ldap/alock</div><div class="line">/etc/init.d/slapd restart</div><div class="line"></div><div class="line">chown -R ldap:ldap /etc/openldap/slapd.d</div><div class="line">chown ldap.ldap /var/lib/ldap/*</div><div class="line">service slapd restart</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">3.  导入数据报错： </div><div class="line">[root@H5 ldap]<span class="comment">#  ldapadd -x -D "cn=Manager,dc=jollychic,dc=com" -W -f /tmp/base.ldif</span></div><div class="line">Enter LDAP Password:</div><div class="line">adding new entry <span class="string">"dc=jollychic,dc=com"</span></div><div class="line">ldap_add: Server is unwilling to perform (53)</div><div class="line">additional info: shadow context; no update referral</div></pre></td></tr></table></figure>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
 		<h1><a href="/2018/02/03/OpenLDAP/ OpenLDAP 企业应用方案 -PPT认识LDAP+熟悉操作LDAP命令/">OpenLDAP企业应用方案-PPT认识LDAP+熟悉操作LDAP命令</a></h1>
 	
 	<div class="article__infos">
@@ -125,76 +93,8 @@
 	
 
 	
-		<h4 id="认识LDAP熟悉LDAP配置"><a href="#认识LDAP熟悉LDAP配置" class="headerlink" title="认识LDAP熟悉LDAP配置"></a>认识LDAP熟悉LDAP配置</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">LDAP目录中可以存储各种类型的数据：电子邮件地址、邮件路由信息、人力资源数据、公用密匙、联系人列表，等等</div><div class="line">但是不是关系型数据库。不象被设计成每分钟需要处理成百上千条数据变化的数据库 </div><div class="line">可以把数据“推”到远程的办公室，以增加数据的安全性</div><div class="line">复制功能，数据库产商就会要你支付额外的费用，而且也很难管理</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">LDAP组织-目录树的结构</div><div class="line"></div><div class="line">LDAP目录中的所有记录项都有一个唯一的“Distinguished Name”</div><div class="line">现在为公司的员工设置一个DN。可以用基于cn或uid（User ID），作为典型的用户帐号</div><div class="line">用uid表示“User ID”，不要把它和UNIX的uid号混淆了 ，大多数公司都会给每一个员工唯一的登录名，因此用这个办法可以很好地保存员工的信息</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">LDIF文件格式例子：一个普通用户都要存哪些信息?</div><div class="line"></div><div class="line">你可以用LDAP存储各种类型的数据对象，只要这些对象可以用属性来表示，下面这些是可以在LDAP中存储的一些信息： </div><div class="line">员工信息：员工的姓名、登录名、口令、员工号、他的经理的登录名，邮件服务器，等等。 </div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">lDAP默认端口：端口为389</div><div class="line"></div><div class="line">LDAP同步配置:</div><div class="line"><span class="comment"># Where to store the replica logs for database #1</span></div><div class="line"><span class="comment">#replogfile     /var/lib/ldap/master-slapd.replog</span></div><div class="line"></div><div class="line">replogfile /var/lib/ldap/master-slapd.replog</div><div class="line">replica         host=192.168.7.108:389</div><div class="line">                binddn=<span class="string">"cn=admin,dc=ldap,dc=monkey,dc=com,dc=de"</span></div><div class="line">                bindmethod=simple credentials=<span class="string">'password'</span></div></pre></td></tr></table></figure>
-<h5 id="OpenLDAP-包在服务器上安装了很多程序："><a href="#OpenLDAP-包在服务器上安装了很多程序：" class="headerlink" title="OpenLDAP 包在服务器上安装了很多程序："></a>OpenLDAP 包在服务器上安装了很多程序：</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"> 守护进程：</div><div class="line"></div><div class="line"></div><div class="line">- slapd：主 LDAP 服务器</div><div class="line"></div><div class="line">- slurpd：负责与复制 LDAP 服务器保持同步的服务器</div><div class="line"></div><div class="line">- 对网络上的目录进行操作的客户机程序。下面这两个程序是一对儿：</div><div class="line"></div><div class="line">- ldapadd：打开一个到 LDAP 服务器的连接，绑定、修改或增加条目</div><div class="line"></div><div class="line">- ldapsearch：打开一个到 LDAP 服务器的连接，绑定并使用指定的参数进行搜索</div><div class="line"></div><div class="line">- 对本地系统上的数据库进行操作的几个程序：</div><div class="line"></div><div class="line">- slapadd：将以 LDAP 目录交换格式（LDIF）指定的条目添加到 LDAP 数据库中</div><div class="line"></div><div class="line">- slapcat：打开 LDAP 数据库，并将对应的条目输出为 LDIF 格式</div></pre></td></tr></table></figure>
-<h5 id="Openldap命令操作总结："><a href="#Openldap命令操作总结：" class="headerlink" title="Openldap命令操作总结："></a>Openldap命令操作总结：</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line">解读配置文件：</div><div class="line"></div><div class="line">vim /etc/openldap/slapd.conf</div><div class="line"></div><div class="line"></div><div class="line">例子 </div><div class="line"></div><div class="line">创建用户</div><div class="line"></div><div class="line">ldapadd -x -D <span class="string">"cn=Manager,dc=jollychic,dc=com"</span> -w secret <span class="_">-f</span> /root/test.ldif </div><div class="line">ldapadd -x -D <span class="string">"cn=Manager,dc=jollychic,dc=com"</span> -w secret (这样写就是在命令行添加条目)</div><div class="line"></div><div class="line">-x   进行简单认证</div><div class="line">-D   用来绑定服务器的DN</div><div class="line">-w   绑定DN的密码</div><div class="line">-b   指定要查询的根节点</div><div class="line">-H   制定要查询的服务器</div><div class="line">-S   提示的输入密码</div><div class="line"><span class="_">-s</span> pass 把密码设置为pass</div><div class="line"><span class="_">-a</span> pass 设置old passwd为pass</div><div class="line">-A   提示的设置old passwd</div><div class="line">-I   使用sasl会话方式</div><div class="line"></div><div class="line">这样可以访问整个的活动目录结构.</div><div class="line"></div><div class="line">ldapsearch -x -W -D <span class="string">"cn=Manager,dc=jollychic,dc=com"</span> -b <span class="string">"dc=jollychic,dc=com"</span> </div><div class="line">se12pa</div><div class="line"></div><div class="line">ldapsearch -x -W -D <span class="string">"uid=764,ou=users,dc=jollychic,dc=com"</span> -b <span class="string">"uid=764,ou=users,dc=jollychic,dc=com"</span></div><div class="line">使用简单认证，用 <span class="string">"ou=users,dc=jollychic,dc=com"</span> 进行绑定，要查询的根是 <span class="string">"dc=jollychic,dc=com"</span>。这样会把绑定的用户能访问<span class="string">"uid=764,ou=users,dc=jollychic,dc=com"</span>下的</div><div class="line">所有数据显示出来。</div><div class="line"></div><div class="line"></div><div class="line">ldapdelete -x -D <span class="string">"cn=Manager,dc=jollychic,dc=com"</span> -W <span class="string">"uid=900,ou=users,dc=jollychic,dc=com"</span> -S</div><div class="line">ldapmodify命令,在changetype时输入：delete</div><div class="line"></div><div class="line"></div><div class="line">修改用户密码：</div><div class="line"></div><div class="line">ldappasswd -x -D <span class="string">"cn=Manager,dc=jollychic,dc=com"</span> -W <span class="string">"uid=900,ou=users,dc=jollychic,dc=com"</span> -S</div><div class="line">New password:</div><div class="line">Re-enter new password:</div><div class="line">Enter LDAP Password:</div><div class="line">就可以更改密码了，如果原来记录中没有密码，将会自动生成一个userPassword。</div><div class="line"><span class="comment">##Enter LDAP password" 是 "cn=Manager,dc=jollychic,dc=com"管理员的密码.</span></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">管理员密码更改</div><div class="line"><span class="comment">#slappasswd</span></div><div class="line">New password</div><div class="line">Re-enter new password</div></pre></td></tr></table></figure>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2018/01/29/OpenLDAP/OpenLDAP服务的配置与管理-phpldapadmin管理认证/">OpenLDAP服务的配置与管理-phpldapadmin管理认证</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2018-01-29</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/OpenLDAP/">OpenLDAP</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/OpenLDAP/">OpenLDAP</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h2 id="使用-OpenLDAP-集中管理用户帐号"><a href="#使用-OpenLDAP-集中管理用户帐号" class="headerlink" title="使用 OpenLDAP 集中管理用户帐号"></a>使用 OpenLDAP 集中管理用户帐号</h2><h4 id="1-OpenLDAP-简介"><a href="#1-OpenLDAP-简介" class="headerlink" title="1.OpenLDAP 简介"></a>1.OpenLDAP 简介</h4><p>OpenLDAP可以从 http: //www.openldap.org/ 获得安装包。OpenLDAP 网站主页如图所示。</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/openldap3.png" alt=""></p>
-		<p><a class="article__read-more-link" href="/2018/01/29/OpenLDAP/OpenLDAP服务的配置与管理-phpldapadmin管理认证/">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2018/01/26/OpenLDAP/OpenLDAP入门了解学习笔记(一)/">OpenLDAP入门了解学习笔记(一)</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2018-01-26</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/OpenLDAP/">OpenLDAP</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/OpenLDAP/">OpenLDAP</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h2 id="OpenLDAP入门了解"><a href="#OpenLDAP入门了解" class="headerlink" title="OpenLDAP入门了解"></a>OpenLDAP入门了解</h2><h3 id="LDAP概述"><a href="#LDAP概述" class="headerlink" title="LDAP概述"></a>LDAP概述</h3><p>我的个人理解：LDAP是轻量目录访问协议(Lightweight Directory Access Protocol)的缩写，LDAP是一个统一的账号管理认证平台，使用轻量级目录访问协议（LDAP）构建集中的身份验证系统可以减少管理成本，增强安全性，避免数据复制的问题，并提高数据的一致性。随着 Linux的不断成熟，已经出现了很多工具用来简化用户帐号信息到 LDAP目录的迁移。还开发了一些工具用来在客户机和目录服务器之间启用加密通信配置，并通过复制提供容错性。本文将向您展示如何配置服务器和客户机在Centos上使用OpenLDAP。</p>
-<p><img src="https://devopsideas.com/wp-content/uploads/2017/09/Openldap-7-800x445.jpg" alt=""></p>
-		<p><a class="article__read-more-link" href="/2018/01/26/OpenLDAP/OpenLDAP入门了解学习笔记(一)/">...read more</a></p>
+		<h4 id="认识LDAP熟悉LDAP配置"><a href="#认识LDAP熟悉LDAP配置" class="headerlink" title="认识LDAP熟悉LDAP配置"></a>认识LDAP熟悉LDAP配置</h4><p>LDAP目录中可以存储各种类型的数据：电子邮件地址、邮件路由信息、人力资源数据、公用密匙、联系人列表，等等<br>但是不是关系型数据库。不象被设计成每分钟需要处理成百上千条数据变化的数据库<br>可以把数据“推”到远程的办公室，以增加数据的安全性<br>复制功能，数据库产商就会要你支付额外的费用，而且也很难管理</p>
+		<p><a class="article__read-more-link" href="/2018/02/03/OpenLDAP/ OpenLDAP 企业应用方案 -PPT认识LDAP+熟悉操作LDAP命令/">...read more</a></p>
 	
 
 	
@@ -296,6 +196,145 @@
 <p>Source : 接收的event数和处理的event数<br>Channel : Channel中拥堵的event数<br>Sink : 已经处理的event数</p>
 <p><img src="https://cdn.itzgeek.com/wp-content/uploads/2014/07/Zabbix.jpg" alt=""></p>
 		<p><a class="article__read-more-link" href="/2017/09/21/性能监控/Zabbix/ZABBIX monitoring Flume/">...read more</a></p>
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/09/14/日志分析平台/Elasticsearch/ELK架构梳理-之ES 2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记/">ELK架构梳理-之ES2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-09-14</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/logstash/">logstash</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="ELK架构梳理-之ES-2-4双实例平滑升级至5-2-1踩坑并supervisor管理笔记"><a href="#ELK架构梳理-之ES-2-4双实例平滑升级至5-2-1踩坑并supervisor管理笔记" class="headerlink" title="ELK架构梳理-之ES 2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记"></a>ELK架构梳理-之ES 2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记</h3><h4 id="ELK架构梳理："><a href="#ELK架构梳理：" class="headerlink" title="ELK架构梳理："></a>ELK架构梳理：</h4><p>实时日志分析作为掌握业务情况、故障分析排查的一个重要手段，目前使用最多最成熟的莫过于ELK方案，整体方案也有各种架构组合，像<code>rsyslog-&gt;ES-&gt;kibana、rsyslog-&gt;Redis-&gt;Logstash-&gt;ES-&gt;kibana、rsyslog-&gt;kafka-&gt;Logstash-&gt;ES-&gt;kibana</code>等等，复杂点的有spark的引用。</p>
+<p>每种方案适合不同的应用场景，没有优劣之分，我目前用的是<code>rsyslog-&gt;kafka-&gt;Logstash-&gt;ES-&gt;kibana和rsyslog-&gt;rsyslog中继-&gt;kafka-&gt;Logstash-&gt;ES-&gt;kibana</code>方案，共5台ES（12核、64G、机械盘）每天索引10多亿条日志，包含<code>nginx、uwsgi、redis、php</code>开发日志等，运行比较健壮，每条索引日志精简后在10个字段左右，每天Primary Shard的索引量大概在600个G，考虑到性能问题，我们没要复制分片，同时着重做了ES集群的调优，日志保留7天。</p>
+<p>从整体架构进行抽象总结，其实就是采集-&gt;清洗-&gt;索引-&gt;展现四个环节，再去考虑各环节中缓存、队列的使用，每个环节点用不同的软件来实现。下面介绍一下我目前方案集群的搭建和配置。</p>
+<h4 id="ES集群方案平滑："><a href="#ES集群方案平滑：" class="headerlink" title="ES集群方案平滑："></a>ES集群方案平滑：</h4><p>ES老集群用的2.4.1版本，跑的比较好就一直没动，最近看资料ES5.X已经稳定，并且性能有较大提升，心里就发痒了，但由于业务要保持高可用的属性，就得想一个平滑升级的方案，最后想到了多实例过度的办法，5.X版本网上介绍配置变化较大，也做好了踩坑准备，确定好要升级后，立刻动手。</p>
+<p>一、对应升级改造方案</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="number">1</span>. 使用端口<span class="number">9220</span>和<span class="number">9330</span> 安装并配置好新的ES5<span class="meta">.2</span><span class="meta">.1</span>实例</div><div class="line"><span class="number">2</span>. 关掉logstash并将ES2<span class="meta">.4</span><span class="meta">.1</span>实例堆栈调小重启（kafka保留<span class="number">3</span>个小时日志所以不会丢失</div><div class="line"><span class="number">3</span>. 启动ES5<span class="meta">.2</span><span class="meta">.1</span>并将logstash开启指向ES5<span class="meta">.2</span><span class="meta">.1</span></div><div class="line"><span class="number">4</span>. 安装新版kibana实例做好指向，老数据用http://host/old访问——&gt;ES5<span class="meta">.2</span><span class="meta">.1</span>配置调优。</div></pre></td></tr></table></figure>
+<p>二、升级后统一用<a href="github：https://github.com/mlazarov/supervisord-monitor">supervisord-monitor管理</a><br>三、周末跑了一天ES的cpu、IO、heap内存使用率，es磁盘情况，集群健康监测和thread_pool的监控数据（需要了解的添加QQ群）<br>四、升级过程——编写了ES5.2.1的安装脚本如下</p>
+<h4 id="集群脚本化部署："><a href="#集群脚本化部署：" class="headerlink" title="集群脚本化部署："></a>集群脚本化部署：</h4><p>之前用的rpm包，后考虑直接使用tar包安装，对于需要系统做的调优操作，直接编写自动化安装脚本，一键将所有系统参数配置后，将环境搭建好。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#/bin/sh</span></div><div class="line">id elasticsearch || useradd elasticsearch <span class="_">-s</span> /sbin/nologin   <span class="comment">#添加用户</span></div><div class="line">grep <span class="string">"* - nofile 512000"</span> /etc/security/limits.conf || <span class="built_in">echo</span>  <span class="string">"* - nofile 512000"</span>  &gt;&gt; /etc/security/limits.conf  <span class="comment">#修改文件描述符数量</span></div><div class="line">grep <span class="string">"elasticsearch - nproc unlimited"</span> /etc/security/limits.conf || <span class="built_in">echo</span> <span class="string">"elasticsearch - nproc unlimited"</span>   &gt;&gt; /etc/security/limits.conf  <span class="comment">#修改最大打开进程数数量</span></div><div class="line">grep <span class="string">"fs.file-max = 1024000"</span> /etc/sysctl.conf || <span class="built_in">echo</span> <span class="string">"fs.file-max = 1024000"</span>  &gt;&gt; /etc/sysctl.conf  <span class="comment">#修改系统文件描述符</span></div><div class="line">grep <span class="string">"vm.max_map_count = 262144"</span> /etc/sysctl.conf || <span class="built_in">echo</span> <span class="string">"vm.max_map_count = 262144"</span>  &gt;&gt;  /etc/sysctl.conf  <span class="comment">#修改程序最大管理的vm</span></div><div class="line">sysctl -p</div><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/src</div><div class="line">[ ! <span class="_">-f</span> /usr/<span class="built_in">local</span>/src/elasticsearch-5.2.1.zip ] &amp;&amp; wget </div><div class="line">https://artifacts.elastic.co/dow ... ticsearch-5.2.1.zip</div><div class="line">[ ! <span class="_">-d</span> /usr/<span class="built_in">local</span>/src/elasticsearch-5.2.1 ] &amp;&amp; unzip elasticsearch-5.2.1.zip</div><div class="line">mv elasticsearch-5.2.1 /usr/<span class="built_in">local</span>/</div><div class="line">chown -R elasticsearch:elasticsearch /usr/<span class="built_in">local</span>/elasticsearch-5.2.1  <span class="comment">#修改拥有者所有组</span></div><div class="line">sed -i <span class="string">'s/-XX:+UseConcMarkSweepGC/-XX:+UseG1GC/'</span> /usr/<span class="built_in">local</span>/elasticsearch-5.2.1/config/jvm.options    <span class="comment">#GC方式修改为G1</span></div><div class="line">sed -i <span class="string">'s/-XX:CMSInitiatingOccupancyFraction=75/-XX:MaxGCPauseMillis=200/'</span> /usr/<span class="built_in">local</span>/elasticsearch-5.2.1/config/jvm.options</div><div class="line">sed -i <span class="string">'s/-XX:+UseCMSInitiatingOccupancyOnly/#-XX:+UseCMSInitiatingOccupancyOnly/'</span> /usr/<span class="built_in">local</span>/elasticsearch-5.2.1/config/jvm.options</div></pre></td></tr></table></figure>
+<h4 id="五、升级过程——配置文件、索引相关的更新调优"><a href="#五、升级过程——配置文件、索引相关的更新调优" class="headerlink" title="五、升级过程——配置文件、索引相关的更新调优"></a>五、升级过程——配置文件、索引相关的更新调优</h4><p>   升级期间着实踩了不少坑，老版ES索引配置可以直接写到配置文件里，新版是不行的，必须使用api去设置，另外ES2.X版本的进程数调优，在ES5.X我发现调整与否没有影响。配置文件如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">cluster.name: yz-5search</div><div class="line">path.data:  /data1/LogData5/</div><div class="line">path.logs:  /data1/LogData5/logs</div><div class="line">bootstrap.memory_lock: <span class="literal">false</span>   <span class="comment">#centos6内核不支持，必须要关闭</span></div><div class="line">bootstrap.system_call_filter: <span class="literal">false</span></div><div class="line">network.host: 10.39.40.94</div><div class="line">http.port: 9220</div><div class="line">transport.tcp.port: 9330</div><div class="line">discovery.zen.ping.unicast.hosts: [<span class="string">"10.39.40.94:9330"</span>,<span class="string">"10.39.40.95:9330"</span>,<span class="string">"10.39.40.96:9330"</span>,<span class="string">"10.39.40.97:9330"</span>]</div><div class="line">discovery.zen.minimum_master_nodes: 2</div><div class="line">http.cors.enabled: <span class="literal">true</span></div><div class="line">http.cors.allow-origin: <span class="string">"*"</span></div></pre></td></tr></table></figure>
+<p>为了加快索引效率，编写index的模板配置（index配置不允许写到配置文件了），将参数put到es的里，当然模板也可以通过前端logstash指定（要改logtash觉得麻烦），template脚本如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#/bin/sh</span></div><div class="line"><span class="comment">#index template</span></div><div class="line">curl -XPUT <span class="string">'http://10.39.40.94:9220/_template/cms_logs?pretty'</span> <span class="_">-d</span> <span class="string">'&#123;</span></div><div class="line">     "order": 6,                                    #优先级</div><div class="line">      "template": "logstash-cms*",                  #正则匹配索引</div><div class="line">      "settings": &#123;</div><div class="line">             "index.refresh_interval" : "60s",  #索引刷新时间</div><div class="line">             "index.number_of_replicas" : "0",  #副本数设置为0</div><div class="line">             "index.number_of_shards" : "8",    #分片数设置为8，共4台服务器</div><div class="line">             "index.translog.flush_threshold_size" : "768m",  #translog触发flush的阀值</div><div class="line">             "index.store.throttle.max_bytes_per_sec" : "500m", #存储的阀值</div><div class="line">             "index.translog.durability": "async",              #设置translog异步刷新到硬盘，更注重性能</div><div class="line">             "index.merge.scheduler.max_thread_count": "1",     #机械盘设置为1</div><div class="line">             "index.routing.allocation.total_shards_per_node": "2"  #每个节点上两个分片</div><div class="line">      &#125;</div><div class="line">&#125;'</div></pre></td></tr></table></figure>
+<p>备：如果是更改，将PUT改为POST</p>
+<p>日志保留7天，清除的脚本如下，写入计划任务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line">DATE=`date +%Y.%m.%d.%I`</div><div class="line">DATA2=`date +%Y.%m.%d <span class="_">-d</span><span class="string">'-7 day'</span>`</div><div class="line">curl -XDELETE <span class="string">"http://10.39.40.97:9220/logstash-*-<span class="variable">$&#123;DATA2&#125;</span>*?pretty"</span></div></pre></td></tr></table></figure>
+<p>   由于单个索引达到了35G甚至40G以上，于是在logstash层面对建索引数量进行修改，把每天12个索引修改为每天24个索引：</p>
+<p>logstash的修改如下：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="attr">index</span> =&gt; <span class="string">"logstash-cms-front-nginx-%&#123;+YYYY.MM.dd.hh&#125;"</span>  修改为</div><div class="line"><span class="attr">index</span> =&gt; <span class="string">"logstash-cms-front-nginx-%&#123;+YYYY.MM.dd.HH&#125;"</span></div></pre></td></tr></table></figure>
+<p><em>*更新自动化搭建es集群，架构梳理详解-与实现es监控服务</em></p>
+<p>参考： Logstash分享,online生产环境的使用,online日志规范。</p>
+<p><strong>☺待整理续写~~</strong> </p>
+<h3 id="Communicative-learning"><a href="#Communicative-learning" class="headerlink" title="Communicative learning:"></a>Communicative learning:</h3><p>🐧  Linux shell_ senior operation and maintenance faction: QQ group <code>459096184</code> circle (system operation and maintenance - application operation and maintenance - automation operation and maintenance - virtualization technology research, welcome to join)<br>🐧  BigData-Exchange School:QQ group <code>521621407</code> circles (big data Yun Wei) (Hadoop developer) (big data research enthusiasts) welcome to join</p>
+<p>Bidata have internal WeChat exchange group, learn from each other, join QQ group has links.</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/09/13/日志分析平台/Elasticsearch/Logstash分享,online生产环境的使用,online日志规范。/">Logstash分享,online生产环境的使用,online日志规范。</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-09-13</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/logstash/">logstash</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="Logstash分享-online生产环境的使用-online日志规范。"><a href="#Logstash分享-online生产环境的使用-online日志规范。" class="headerlink" title="Logstash分享,online生产环境的使用,online日志规范。"></a>Logstash分享,online生产环境的使用,online日志规范。</h3><p>写这篇文章，主要分享几点: 因为学所有学，既然学何不深度去了解~</p>
+<ol>
+<li>什么是Logstash？</li>
+<li>logstash运行在什么环境下对应的版本是多少？</li>
+<li>logstash工作原理？</li>
+<li>online日志现在是如何规范？</li>
+<li>如何写logstash收集conf文件？ </li>
+</ol>
+<h4 id="1-什么是Logstash？"><a href="#1-什么是Logstash？" class="headerlink" title="1. 什么是Logstash？"></a>1. 什么是Logstash？</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Logstash 是有管道输送能力的开源数据收集引擎。它可以动态地从分散的数据源收集数据，并且标准化数据输送到你选择的目的地。它是一款日志而不仅限于日志的搜集处理框架，将分散多样的数据搜集自定义处理并输出到指定位置。</div></pre></td></tr></table></figure>
+<h4 id="2-logstash运行在什么环境下对应的版本是多少？"><a href="#2-logstash运行在什么环境下对应的版本是多少？" class="headerlink" title="2. logstash运行在什么环境下对应的版本是多少？"></a>2. logstash运行在什么环境下对应的版本是多少？</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">logstash更新比较快，跟es一样，2.4以上直接升级到5.0 </div><div class="line"></div><div class="line">5.0x以下版本运行环境 需要JDK1.7以上版本.</div><div class="line">5.0x版本运行环境 需要JDK1.8以上版本。</div><div class="line"></div><div class="line">安装方法很多：yum,rpm,tar.gz源码， 支持Docker镜像运行。</div></pre></td></tr></table></figure>
+<h4 id="3-logstash工作原理？"><a href="#3-logstash工作原理？" class="headerlink" title="3. logstash工作原理？"></a>3. logstash工作原理？</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Logstash使用管道方式进行日志的搜集处理和输出。有点类似linux系统的管道命令 xxx | ccc | ddd，xxx执行完了会执行ccc，然后执行ddd。</div><div class="line"></div><div class="line">logstash收集日志基本流程: input--&gt;codec--&gt;filter--&gt;codec--&gt;output </div><div class="line">1.input:从哪里收集日志。 </div><div class="line">2.filter:发出去前进行过滤  （不是必须的）</div><div class="line">3.output:输出至Elasticsearch或Redis消息队列 </div><div class="line">4.codec:输出至前台，方便边实践边测试 </div><div class="line">5.数据量不大日志按照月来进行收集</div></pre></td></tr></table></figure>
+<p><figure class="figure"><img src="https://www.elastic.co/guide/en/logstash/current/static/images/basic_logstash_pipeline.png" alt=""></figure></p>
+<h4 id="4-日志现在收集规范："><a href="#4-日志现在收集规范：" class="headerlink" title="4.日志现在收集规范："></a>4.日志现在收集规范：</h4><p>是记录用户访问行为和服务运行状态的信息，是应用软件基本的输出单元，做到日志输出位置、命名、格式规范，可以大大方便后续应用服务监控和数据分析。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">1. 日志目录结构</div><div class="line">2. 日志类型</div><div class="line">3. 日志要求配置</div><div class="line">4. 日志级别</div><div class="line">5. 日志分割与周期</div><div class="line">6. 日志保留要求</div><div class="line"></div><div class="line">现在我们online 日志规范架构：</div><div class="line"></div><div class="line"><span class="comment">###之前应用日志规范：</span></div><div class="line"></div><div class="line">一个Tomcat服务logs目录下面的日志：定期对catalina.out几个G按两个小时进行压缩一次，保留7天，每天备份到<span class="built_in">log</span>-server服务器。</div><div class="line"></div><div class="line">logstash收集catalina.out所有日志。</div><div class="line"></div><div class="line"><span class="comment">###现在应用日志规范:</span></div><div class="line"></div><div class="line">一个Tomcat服务logs目录下面的日志：定期对catalina.out每天1M多日志进行压缩一次，保留7天，每天备份到<span class="built_in">log</span>-server服务器。</div><div class="line"></div><div class="line">logstash收集每台应用输出应用日志：error.log &amp; info.log</div><div class="line"></div><div class="line">好处分别为四个： </div><div class="line">1.对索引的要求细分和kibana查询日志速度无疑会变更快。</div><div class="line">2.查询日志快速定位。</div><div class="line">3.不会对catalina.out日志进行大级别日志写入，那里只存放系统日志，例如：发布日志，请求第三方地址日志。</div><div class="line">4.日志开发可以在Java代码<span class="built_in">log</span>4j文件大小指定压缩，每天定时清空，不需要我们写脚本处理。多个脚本定时在运行，特别乱。</div></pre></td></tr></table></figure>
+<h4 id="5-如何写logstash收集conf文件？"><a href="#5-如何写logstash收集conf文件？" class="headerlink" title="5.如何写logstash收集conf文件？"></a>5.如何写logstash收集conf文件？</h4><p>下面是我写好的online logstash收集代码，根据之前日志收集方式，现在修过几个地方：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"> input &#123;</div><div class="line">       stdin&#123;&#125;  <span class="comment">#可以标准输入读数据 （可以放可以不放）</span></div><div class="line">	file &#123;</div><div class="line">	  <span class="built_in">type</span> =&gt; <span class="string">"tms-task-info"</span></div><div class="line">	  path =&gt; [<span class="string">"/data/tms-task_new/logs/info.log"</span>]</div><div class="line">	  start_position =&gt; <span class="string">"beginning"</span> <span class="comment">#从文件开始处读写</span></div><div class="line">     &#125;</div><div class="line">	file &#123;</div><div class="line">	  <span class="built_in">type</span> =&gt; <span class="string">"tms-task-error"</span></div><div class="line">	  path =&gt; [<span class="string">"/data/tms-task_new/logs/error.log"</span>]</div><div class="line">	  start_position =&gt; <span class="string">"beginning"</span> <span class="comment">#从文件开始处读写</span></div><div class="line">     &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">filter &#123; <span class="comment">#过滤方式</span></div><div class="line"></div><div class="line">        multiline &#123;</div><div class="line">                        pattern =&gt; <span class="string">"^\d+-\d+-\d+"</span></div><div class="line">                        negate =&gt; <span class="literal">true</span></div><div class="line">                        what =&gt; <span class="string">"previous"</span></div><div class="line">                &#125;</div><div class="line"></div><div class="line">       &#125;</div><div class="line">output &#123;</div><div class="line">	<span class="keyword">if</span> [<span class="built_in">type</span>] == <span class="string">"tms-task-info"</span> &#123;</div><div class="line">	  elasticsearch &#123;</div><div class="line">          hosts =&gt; [<span class="string">"10.155.90.141:9200"</span>,<span class="string">"10.155.90.176:9200"</span>]</div><div class="line">   	  index =&gt; <span class="string">"log-tms-task-info-%&#123;+YYYY.MM.dd&#125;"</span></div><div class="line">	   document_type =&gt; <span class="string">"log"</span></div><div class="line">   	   template_overwrite =&gt; <span class="literal">true</span></div><div class="line"> 	 &#125;</div><div class="line">&#125;</div><div class="line">	 <span class="keyword">if</span> [<span class="built_in">type</span>] == <span class="string">"tms-task-error"</span> &#123;</div><div class="line">          elasticsearch &#123;</div><div class="line">          hosts =&gt; [<span class="string">"10.155.90.141:9200"</span>,<span class="string">"10.155.90.176:9200"</span>]</div><div class="line">          index =&gt; <span class="string">"log-tms-task-error-%&#123;+YYYY.MM.dd&#125;"</span></div><div class="line">          document_type =&gt; <span class="string">"log"</span></div><div class="line">          template_overwrite =&gt; <span class="literal">true</span></div><div class="line">	       	 &#125;</div><div class="line">	&#125;</div><div class="line">stdout&#123;</div><div class="line">    codec=&gt;rubydebug  <span class="comment">#控制台输出 (不建议配置，测试阶段可以调试使用)</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">有一些比较有用的配置项，可以用来指定 FileWatch 库的行为：</div><div class="line"></div><div class="line">discover_interval</div><div class="line">logstash 每隔多久去检查一次被监听的 path 下是否有新文件。默认值是 15 秒。</div><div class="line"></div><div class="line">exclude</div><div class="line">不想被监听的文件可以排除出去，这里跟 path 一样支持 glob 展开。</div><div class="line"></div><div class="line">sincedb_path</div><div class="line">如果你不想用默认的 <span class="variable">$HOME</span>/.sincedb(Windows 平台上在 C:\Windows\System32\config\systemprofile\.sincedb)，可以通过这个配置定义 sincedb 文件到其他位置。</div><div class="line"></div><div class="line">sincedb_write_interval</div><div class="line">logstash 每隔多久写一次 sincedb 文件，默认是 15 秒。</div><div class="line"></div><div class="line">stat_interval</div><div class="line">logstash 每隔多久检查一次被监听文件状态（是否有更新），默认是 1 秒。</div><div class="line"></div><div class="line">start_position</div><div class="line">logstash 从什么位置开始读取文件数据，默认是结束位置，也就是说 logstash 进程会以类似 tail -F 的形式运行。如果你是要导入原有数据，把这个设定改成 <span class="string">"beginning"</span>，logstash 进程就从头开始读取，有点类似 cat，但是读到最后一行不会终止，而是继续变成 tail -F。</div></pre></td></tr></table></figure>
+<p>配置详解：参考中文文档<a href="https://doc.yonyoucloud.com/doc/logstash-best-practice-cn/input/file.html" target="_blank" rel="external">logstash-best-practice-cn</a><br>官网详细说明：<a href="https://www.elastic.co/guide/en/logstash/current/multiple-input-output-plugins.html" target="_blank" rel="external">multiple-input-output-plugins</a></p>
+<h3 id="Communicative-learning"><a href="#Communicative-learning" class="headerlink" title="Communicative learning:"></a>Communicative learning:</h3><p>🐧  Linux shell_ senior operation and maintenance faction: QQ group <code>459096184</code> circle (system operation and maintenance - application operation and maintenance - automation operation and maintenance - virtualization technology research, welcome to join)<br>🐧  BigData-Exchange School:QQ group <code>521621407</code> circles (big data Yun Wei) (Hadoop developer) (big data research enthusiasts) welcome to join</p>
+<p>Bidata have internal WeChat exchange group, learn from each other, join QQ group has links.</p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/09/11/Bigdata-hadoop/Kafka/KafKa不懂就学就问就解答笔记/">KafKa不懂就学就问就解答笔记</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-09-11</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Bigdata-Hadoop/">Bigdata Hadoop</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Kafka/">Kafka</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h4 id="1-部署生产环境，打算部署三个broker实例，但zookeeper部署一个可以吗"><a href="#1-部署生产环境，打算部署三个broker实例，但zookeeper部署一个可以吗" class="headerlink" title="1. 部署生产环境，打算部署三个broker实例，但zookeeper部署一个可以吗?"></a>1. 部署生产环境，打算部署三个broker实例，但zookeeper部署一个可以吗?</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">答案：可以是可以，但为了容错还是部署zookeeper集群比较好。broker和zookeeper的对应比例倒是没什么，都是独立集群。</div></pre></td></tr></table></figure>
+<p><img src="https://www.confluent.io/wp-content/uploads/2016/09/Event-sourced-based-architecture.jpeg" alt=""></p>
+		<p><a class="article__read-more-link" href="/2017/09/11/Bigdata-hadoop/Kafka/KafKa不懂就学就问就解答笔记/">...read more</a></p>
 	
 
 	
