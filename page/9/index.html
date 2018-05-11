@@ -43,6 +43,153 @@
 
 	<article>
 	
+		<h1><a href="/2016/06/21/性能监控/Zabbix/zabbix3-0部署jmx监控tomcat/">zabbix3.0部署jmx监控tomcat</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-06-21</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>zabbix提供了一个java gateway的应用去监控jmx（Java Management Extensions，即Java管理扩展）是一个为应用程序、设备、系统等植入管理功能的框架。JMX可以跨越一系列异构操作系统平台、系统体系结构和网络传输协议，灵活的开发无缝集成的系统、网络和服务管理应用。</p>
+<h2 id="一-Zabbix-的JMX监控架构"><a href="#一-Zabbix-的JMX监控架构" class="headerlink" title="一. Zabbix 的JMX监控架构"></a>一. Zabbix 的JMX监控架构</h2><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat1.png" alt=""></figure></p>
+<h3 id="一：部署环境"><a href="#一：部署环境" class="headerlink" title="一：部署环境"></a>一：部署环境</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Centos   6.7</div><div class="line">Zabbix     3.0.3</div><div class="line">Tomcat     7.0.55</div></pre></td></tr></table></figure>
+<h3 id="服务端配置"><a href="#服务端配置" class="headerlink" title="服务端配置"></a>服务端配置</h3><h3 id="1、安装jdk（版本1-7-0-79）"><a href="#1、安装jdk（版本1-7-0-79）" class="headerlink" title="1、安装jdk（版本1.7.0_79）"></a>1、安装jdk（版本1.7.0_79）</h3><p>JDK 各自的版本7.0 还是8.0 版本官网下载：<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank" rel="external">JDK</a></p>
+<p>我这里也上传了7.0.67 版本的和8.0版本的jdk源码包：</p>
+<p><a href="http://oak0aohum.bkt.clouddn.com/jdk1.7.0_67.tar.gz" target="_blank" rel="external">7.0JDK源码包</a></p>
+<p><a href="http://oak0aohum.bkt.clouddn.com/jdk1.8.0_66.tar.gz" target="_blank" rel="external">8.0JDK源码包</a></p>
+<p>并上传到zabbix server</p>
+<p>直接解压下载下来的包到自定义的目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tar -zxvf jdk1.7.0_67.tar.gz -C /srv/</div></pre></td></tr></table></figure>
+<p>安装成功之后添加系统环境变量</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="built_in">cd</span> /etc/profile.d</div><div class="line">vim java.sh</div><div class="line"><span class="built_in">export</span> JAVA_HOME=/srv/jdk1.7.0_67</div><div class="line"><span class="built_in">export</span> CLASS_PATH=<span class="string">"<span class="variable">$JAVA_HOME</span>/lib:<span class="variable">$JAVA_HOME</span>/jre/lib"</span></div><div class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$JAVA_HOME</span>/bin</div></pre></td></tr></table></figure>
+<p>使配置生效</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">source</span> <span class="regexp">/etc/</span>profile</div></pre></td></tr></table></figure>
+<p>安装与配置比较简单。执行java -version命令，出现类似界面表示成功。</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">java </span>-version</div><div class="line"><span class="keyword">java </span>version <span class="string">"1.7.0_67"</span></div><div class="line"><span class="keyword">Java(TM) </span>SE Runtime Environment (<span class="keyword">build </span><span class="number">1</span>.<span class="number">7</span>.<span class="number">0</span>_67-<span class="keyword">b01)</span></div><div class="line"><span class="keyword">Java </span>HotSpot(TM) <span class="number">64</span>-<span class="keyword">Bit </span>Server VM (<span class="keyword">build </span><span class="number">24</span>.<span class="number">65</span>-<span class="keyword">b04, </span>mixed mode)</div></pre></td></tr></table></figure>
+<p>如果出现问题，查看下环境变量是否设置。</p>
+<h3 id="2、安装Zabbix-Java-gateway"><a href="#2、安装Zabbix-Java-gateway" class="headerlink" title="2、安装Zabbix-Java-gateway"></a>2、安装<code>Zabbix-Java-gateway</code></h3><p>Zabbix2.0起添加了支持用于监控JMX应用程序的服务进程，称为“Zabbix-Java-gateway”，它是用java写的一个程序。</p>
+<p>可使用rpm进行安装，我使用源码安装，大家可在安装zabbix时启用–enable-java参数即可安装zabbix java gateway，如果第一次没有加载，可重新加载编译安装</p>
+<p>有两种方法可以安装Zabbix-Java-gateway，第1种是编译安装zabbix时添加–enable java参数。第2种是单独安装，步骤如下：</p>
+<ul>
+<li><code>第一种方法</code>：</li>
+</ul>
+<p>安装gateway，需要java，java-devel依赖</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">yum　install　－ｙ　</div><div class="line">http://repo.zabbix.com/zabbix/2.4/rhel/6/x86_64/zabbix-release-2.4-1.el6.noarch.rpm　　　　　　　　　　　　　　　    安装yum源</div><div class="line">yum install -y  java  java-devel  zabbix-java-gateway　　安装gateway</div></pre></td></tr></table></figure>
+<p>测试是否成功：</p>
+<p>第一：测试java是否成功</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">java </span>-version</div><div class="line"><span class="keyword">java </span>version <span class="string">"1.7.0_67"</span></div><div class="line"><span class="keyword">Java(TM) </span>SE Runtime Environment (<span class="keyword">build </span><span class="number">1</span>.<span class="number">7</span>.<span class="number">0</span>_67-<span class="keyword">b01)</span></div><div class="line"><span class="keyword">Java </span>HotSpot(TM) <span class="number">64</span>-<span class="keyword">Bit </span>Server VM (<span class="keyword">build </span><span class="number">24</span>.<span class="number">65</span>-<span class="keyword">b04, </span>mixed mode)</div></pre></td></tr></table></figure>
+<p>第二：测试gateway是否安装成功</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">service zabbix-java-gateway <span class="built_in">status</span></div><div class="line">zabbix-java-gateway <span class="built_in">is</span> stopped</div></pre></td></tr></table></figure>
+<ul>
+<li><code>第二种方法</code>：</li>
+</ul>
+<p>我这里升级3.0.3版本的时候已经安装好了。所以如果没有安装上的可以单独安装没关系的：</p>
+<p>不受影响步骤如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># tar zxvf zabbix-3.0.3.tar.gz</span></div><div class="line"><span class="comment"># cd zabbix-3.0.3</span></div><div class="line"><span class="comment"># ./configure  --enable-java  --prefix=/data/zabbix/zabbix_java  #/data/zabbix是我的zabbix安装目录</span></div><div class="line"><span class="comment"># make &amp;&amp; make install</span></div></pre></td></tr></table></figure>
+<p>我的目录是默认在/usr/local/zabbix/sbin/zabbix_java/</p>
+<h3 id="3、修改Java-gateway的配置文件并启动它"><a href="#3、修改Java-gateway的配置文件并启动它" class="headerlink" title="3、修改Java-gateway的配置文件并启动它"></a>3、修改<code>Java-gateway</code>的配置文件并启动它</h3><p>配置文件单独安装的路径为/data/zabbix/zabbix_java/sbin/zabbix_java/settings.sh<br>我这里是这个目录。具体根据实际安装情况） /usr/local/zabbix/sbin/zabbix_java/settings.sh<br>启用以下参数：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">LISTEN_IP=<span class="string">"127.0.0.1"</span>       <span class="comment">#监听地址</span></div><div class="line">LISTEN_PORT=10052      <span class="comment">#监听端口</span></div><div class="line">START_POLLERS=50        <span class="comment"># 开启的工作线程数（必须大于等于后面zabbix_server.conf文件的StartJavaPollers参数） #必须配置，启动的进出数</span></div></pre></td></tr></table></figure>
+<p><code>注意事项：</code></p>
+<ol>
+<li>配置文件PID_FILE的路径必须是正确的，可以自己去cd找，yum安装默认情况下不用改动。</li>
+<li>START_POLLERS项是配置启动的进出数，该值必须大于等于Zabbix-Server里面的startJavaPollers项。</li>
+</ol>
+<p>进入/usr/local/zabbix/sbin/zabbix_java/目录，执行./startup.sh</p>
+<p>检查端口是否监听：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">netstat -anp|grep 10052</div><div class="line">tcp        0      0 0.0.0.0:10052               0.0.0.0:*                   LISTEN      21949/java</div></pre></td></tr></table></figure>
+<p>查看是否已经监听10052端口，如果已监听，表示启动成功，如果没有，可通过zabbix_server日志查看解决</p>
+<h3 id="4、修改zabbix-server的配置文件并重启"><a href="#4、修改zabbix-server的配置文件并重启" class="headerlink" title="4、修改zabbix_server的配置文件并重启"></a>4、修改<code>zabbix_server</code>的配置文件并重启</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">vim /usr/<span class="built_in">local</span>/zabbix/etc/zabbix_server.conf</div><div class="line"></div><div class="line">JavaGateway=127.0.0.1      <span class="comment"># JavaGateway 服务器地址，zabbix_server与zabbix_java_gateway在同一台主机</span></div><div class="line">JavaGatewayPort=10052       <span class="comment">#端口</span></div><div class="line">StartJavaPollers=5          <span class="comment"># #设定连接java gateway 的进程数，当设置为0时表示不具有抓取java信息的能力</span></div></pre></td></tr></table></figure>
+<h3 id="5、-添加catalina-jmx-remote-jar"><a href="#5、-添加catalina-jmx-remote-jar" class="headerlink" title="5、 添加catalina-jmx-remote.jar"></a>5、 添加catalina-jmx-remote.jar</h3><p>添加catalina-jmx-remote.jar到zabbix java gateway的lib目录下，catalina-jmx-remote.jar包可在<a href="http://archive.apache.org/dist/tomcat/下，在各版本目录的bin/extras/子目录下" target="_blank" rel="external">http://archive.apache.org/dist/tomcat/下，在各版本目录的bin/extras/子目录下</a></p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd /usr/local/zabbix/sbin/zabbix_java/<span class="class"><span class="keyword">lib</span>/</span></div><div class="line">wget <span class="symbol">http:</span>/<span class="regexp">/archive.apache.org/dist</span><span class="regexp">/tomcat/tomcat</span>-<span class="number">7</span>/v7.<span class="number">0.55</span>/bin/extras/catalina-jmx-remote.jar</div></pre></td></tr></table></figure>
+<p>重启服务zabbix和java gateway 并加入启动项并验证：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">/etc/init.d/zabbix_server restart</div><div class="line">/usr/<span class="built_in">local</span>/zabbix/sbin/zabbix_java/shutdown.sh</div><div class="line">/usr/<span class="built_in">local</span>/zabbix/sbin/zabbix_java/startup.sh</div></pre></td></tr></table></figure>
+<h3 id="6-下载测试工具cmdline-jmxclient-0-10-3-jar"><a href="#6-下载测试工具cmdline-jmxclient-0-10-3-jar" class="headerlink" title="6.下载测试工具cmdline-jmxclient-0.10.3.jar"></a>6.下载测试工具<code>cmdline-jmxclient-0.10.3.jar</code></h3><p>cmdline-jmxclient-0.10.3.jar为一个测试工具，可用来测试jmx是否配置正确，下载cmdline-jmxclient-0.10.3.jar(下载到任意目录)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wget http://crawler.archive.org/cmdline-jmxclient/cmdline-jmxclient-0.10.3.jar</div></pre></td></tr></table></figure>
+<h2 id="二、被监控tomcat-配置［被监控tomcat操作］"><a href="#二、被监控tomcat-配置［被监控tomcat操作］" class="headerlink" title="二、被监控tomcat 配置［被监控tomcat操作］"></a>二、被监控tomcat 配置［被监控tomcat操作］</h2><h3 id="下载catalina-jmx-remote-jar"><a href="#下载catalina-jmx-remote-jar" class="headerlink" title="下载catalina-jmx-remote.jar"></a>下载catalina-jmx-remote.jar</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> /srv/tomcat/tomcat-account/lib/</div><div class="line">wget http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.55/bin/extras/catalina-jmx-remote.jar <span class="comment">#我的tomcat版本是7.0.55</span></div><div class="line">chown -R tomcat:tomcat catalina-jmx-remote.jar</div><div class="line">chmod +x catalina-jmx-remote.jar</div></pre></td></tr></table></figure>
+<p>我的tomcat版本是<code>7.0.55</code>  将下载后后的jar包放到被监控的tomcat实例的lib目录下。 </p>
+<h3 id="查看tomcat的版本"><a href="#查看tomcat的版本" class="headerlink" title="查看tomcat的版本"></a>查看tomcat的版本</h3><ul>
+<li>这里之前也自己也忘记了tomcat的版本是多少了，所以我先查看下然后在下载：</li>
+</ul>
+<figure class="highlight ldif"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">cd /srv/tomcat/tomcat_account/bin</span></div><div class="line">[root@tomcat_A1 bin]# ./version.sh --</div><div class="line">Using CATALINA_BASE:   /srv/tomcat/tomcat_account</div><div class="line"><span class="attribute">Using CATALINA_HOME</span>:   /srv/tomcat/tomcat_account</div><div class="line"><span class="attribute">Using CATALINA_TMPDIR</span>: /srv/tomcat/tomcat_account/temp</div><div class="line"><span class="attribute">Using JRE_HOME</span>:        /srv/jdk1.7.0_67</div><div class="line"><span class="attribute">Using CLASSPATH</span>:       /srv/tomcat/tomcat_account/bin/bootstrap.jar:/srv/tomcat/tomcat_account/bin/tomcat-juli.jar</div><div class="line"><span class="attribute">Server version</span>: Apache Tomcat/7.0.55</div><div class="line"><span class="attribute">Server built</span>:   Jul 18 2014 05:34:04</div><div class="line"><span class="attribute">Server number</span>:  7.0.55.0</div><div class="line"><span class="attribute">OS Name</span>:        Linux</div><div class="line"><span class="attribute">OS Version</span>:     2.6.32-573.8.1.el6.x86_64</div><div class="line"><span class="attribute">Architecture</span>:   amd64</div><div class="line"><span class="attribute">JVM Version</span>:    1.7.0_67-b01</div><div class="line"><span class="attribute">JVM Vendor</span>:     Oracle Corporation</div></pre></td></tr></table></figure>
+<p>在tomcat端配置JMX。（tomcat/bin/catalina.sh）自己安装的tomcat路径，找到catalina.sh文件。</p>
+<p>网上很多人修改tomcat/bin/下的catalina.sh，添加如下内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">CATALINA_OPTS=<span class="string">"-Dcom.sun.management.jmxremote</span></div><div class="line">-Dcom.sun.management.jmxremote.authenticate=false</div><div class="line">-Dcom.sun.management.jmxremote.ssl=false</div><div class="line">-Dcom.sun.management.jmxremote.port=12345  #定义jmx监听端口</div><div class="line">-Djava.rmi.server.hostname=192.168.7.186"</div></pre></td></tr></table></figure>
+<ul>
+<li>我这里是直接在bin目录下面创建自定义的脚本。</li>
+</ul>
+<h3 id="修改setenv-sh"><a href="#修改setenv-sh" class="headerlink" title="修改setenv.sh"></a>修改setenv.sh</h3><p>vi /srv/tomcat/tomcat-account/bin/setenv.sh</p>
+<p>添加如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">CATALINA_OPTS=<span class="string">"<span class="variable">$&#123;CATALINA_OPTS&#125;</span> -Djava.rmi.server.hostname=192.168.7.186"</span></div><div class="line">CATALINA_OPTS=<span class="string">"<span class="variable">$&#123;CATALINA_OPTS&#125;</span> -Djavax.management.builder.initial="</span></div><div class="line">CATALINA_OPTS=<span class="string">"<span class="variable">$&#123;CATALINA_OPTS&#125;</span> -Dcom.sun.management.jmxremote=true"</span></div><div class="line">CATALINA_OPTS=<span class="string">"<span class="variable">$&#123;CATALINA_OPTS&#125;</span> -Dcom.sun.management.jmxremote.ssl=false"</span></div><div class="line">CATALINA_OPTS=<span class="string">"<span class="variable">$&#123;CATALINA_OPTS&#125;</span> -Dcom.sun.management.jmxremote.authenticate=false"</span></div></pre></td></tr></table></figure>
+<p>注意：hostname位机器ip地址，即被监控机器对外服务地址</p>
+<h3 id="3-修改server-xml"><a href="#3-修改server-xml" class="headerlink" title="3.修改server.xml"></a>3.修改server.xml</h3><p>vi /opt/apache-tomcat/conf/server.xml<br>添加如下，注意添加位置在</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Listener className=<span class="string">"org.apache.catalina.core.ThreadLocalLeakPreventionListener"</span> /&gt;</div></pre></td></tr></table></figure>
+<p>之后添加如下代码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;Listener className=<span class="string">"org.apache.catalina.mbeans.JmxRemoteLifecycleListener"</span> rmiRegistryPortPlatform=<span class="string">"12345"</span> rmiServerPortPlatform=<span class="string">"12345"</span> /&gt;</div></pre></td></tr></table></figure>
+<p>3、重启<code>tomcat</code><br>这里我之前是用写好的启动脚本去启动的，发现一个问题。<br>因为我都是用/etc/init.d/tomcat stop start 来启动。<br>可是发现服务启动了，可是之前的tomcat服务端口不见了。我之前的tomcat服务端口<code>10001</code></p>
+<p>然后查看日志出现报错：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">	at java<span class="selector-class">.lang</span><span class="selector-class">.reflect</span><span class="selector-class">.Method</span><span class="selector-class">.invoke</span>(Method<span class="selector-class">.java</span>:<span class="number">606</span>)</div><div class="line">	at org<span class="selector-class">.apache</span><span class="selector-class">.commons</span><span class="selector-class">.daemon</span><span class="selector-class">.support</span><span class="selector-class">.DaemonLoader</span><span class="selector-class">.start</span>(DaemonLoader<span class="selector-class">.java</span>:<span class="number">243</span>)</div><div class="line">Caused by: java<span class="selector-class">.lang</span><span class="selector-class">.IllegalArgumentException</span>: jmxremote<span class="selector-class">.access</span> (没有那个文件或目录)</div><div class="line">	at javax<span class="selector-class">.management</span><span class="selector-class">.remote</span><span class="selector-class">.rmi</span><span class="selector-class">.RMIConnectorServer</span><span class="selector-class">.start</span>(RMIConnectorServer<span class="selector-class">.java</span>:<span class="number">373</span>)</div><div class="line">	at org<span class="selector-class">.apache</span><span class="selector-class">.catalina</span><span class="selector-class">.mbeans</span><span class="selector-class">.JmxRemoteLifecycleListener</span><span class="selector-class">.createServer</span>(JmxRemoteLifecycleListener<span class="selector-class">.java</span>:<span class="number">313</span>)</div><div class="line">	at org<span class="selector-class">.apache</span><span class="selector-class">.catalina</span><span class="selector-class">.mbeans</span><span class="selector-class">.JmxRemoteLifecycleListener</span><span class="selector-class">.lifecycleEvent</span>(JmxRemoteLifecycleListener<span class="selector-class">.java</span>:<span class="number">259</span>)</div><div class="line">	at org<span class="selector-class">.apache</span><span class="selector-class">.catalina</span><span class="selector-class">.util</span><span class="selector-class">.LifecycleSupport</span><span class="selector-class">.fireLifecycleEvent</span>(LifecycleSupport<span class="selector-class">.java</span>:<span class="number">117</span>)</div><div class="line">	at org<span class="selector-class">.apache</span><span class="selector-class">.catalina</span><span class="selector-class">.util</span><span class="selector-class">.LifecycleBase</span><span class="selector-class">.fireLifecycleEvent</span>(LifecycleBase<span class="selector-class">.java</span>:<span class="number">90</span>)</div><div class="line">	at org<span class="selector-class">.apache</span><span class="selector-class">.catalina</span><span class="selector-class">.util</span><span class="selector-class">.LifecycleBase</span><span class="selector-class">.setStateInternal</span>(LifecycleBase<span class="selector-class">.java</span>:<span class="number">402</span>)</div><div class="line">	at org<span class="selector-class">.apache</span><span class="selector-class">.catalina</span><span class="selector-class">.util</span><span class="selector-class">.LifecycleBase</span><span class="selector-class">.setState</span>(LifecycleBase<span class="selector-class">.java</span>:<span class="number">347</span>)</div><div class="line">	at org<span class="selector-class">.apache</span><span class="selector-class">.catalina</span><span class="selector-class">.core</span><span class="selector-class">.StandardServer</span><span class="selector-class">.startInternal</span>(StandardServer<span class="selector-class">.java</span>:<span class="number">732</span>)</div><div class="line">	at org<span class="selector-class">.apache</span><span class="selector-class">.catalina</span><span class="selector-class">.util</span><span class="selector-class">.LifecycleBase</span><span class="selector-class">.start</span>(LifecycleBase<span class="selector-class">.java</span>:<span class="number">150</span>)</div><div class="line">	... <span class="number">11</span> more</div><div class="line">Caused by: java<span class="selector-class">.io</span><span class="selector-class">.FileNotFoundException</span>: jmxremote<span class="selector-class">.access</span> (没有那个文件或目录)</div><div class="line">	at java<span class="selector-class">.io</span><span class="selector-class">.FileInputStream</span><span class="selector-class">.open</span>(Native Method)</div><div class="line">	at java<span class="selector-class">.io</span><span class="selector-class">.FileInputStream</span>.&lt;init&gt;(FileInputStream<span class="selector-class">.java</span>:<span class="number">146</span>)</div><div class="line">	at java<span class="selector-class">.io</span><span class="selector-class">.FileInputStream</span>.&lt;init&gt;(FileInputStream<span class="selector-class">.java</span>:<span class="number">101</span>)</div><div class="line">	at com<span class="selector-class">.sun</span><span class="selector-class">.jmx</span><span class="selector-class">.remote</span><span class="selector-class">.security</span><span class="selector-class">.MBeanServerFileAccessController</span><span class="selector-class">.propertiesFromFile</span>(MBeanServerFileAccessController<span class="selector-class">.java</span>:<span class="number">294</span>)</div><div class="line">	at com<span class="selector-class">.sun</span><span class="selector-class">.jmx</span><span class="selector-class">.remote</span><span class="selector-class">.security</span><span class="selector-class">.MBeanServerFileAccessController</span>.&lt;init&gt;(MBeanServerFileAccessController<span class="selector-class">.java</span>:<span class="number">133</span>)</div><div class="line">	at javax<span class="selector-class">.management</span><span class="selector-class">.remote</span><span class="selector-class">.rmi</span><span class="selector-class">.RMIConnectorServer</span><span class="selector-class">.start</span>(RMIConnectorServer<span class="selector-class">.java</span>:<span class="number">371</span>)</div><div class="line">	... <span class="number">19</span> more</div></pre></td></tr></table></figure>
+<p>这里先kill -9 tomcat进程<br>只需要在/bin/目录下面启动服务。<code>./startup.sh</code><br>然后查看有下面的12345 12346 进程 和tomcat进程10001 说明就对了。</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[root@tomcat_A1 bin]# netstat -ntulp</div><div class="line">Active Internet connections (only servers)</div><div class="line">Proto Recv-Q Send-Q Local Address               Foreign Address             State       PID/Program name</div><div class="line">tcp        <span class="number">0</span>      <span class="number">0</span> <span class="number">10.46</span><span class="meta">.72</span><span class="meta">.172</span>:<span class="number">10050</span>          <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                   LISTEN      <span class="number">8483</span>/zabbix_agentd</div><div class="line">tcp        <span class="number">0</span>      <span class="number">0</span> <span class="number">127.0</span><span class="meta">.0</span><span class="meta">.1</span>:<span class="number">8006</span>              <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                   LISTEN      <span class="number">8942</span>/java</div><div class="line">tcp        <span class="number">0</span>      <span class="number">0</span> <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:<span class="number">4041</span>                <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                   LISTEN      <span class="number">8942</span>/java</div><div class="line">tcp        <span class="number">0</span>      <span class="number">0</span> <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:<span class="number">10001</span>               <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                   LISTEN      <span class="number">8942</span>/java</div><div class="line">tcp        <span class="number">0</span>      <span class="number">0</span> <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:<span class="number">22</span>                  <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                   LISTEN      <span class="number">1363</span>/sshd</div><div class="line">tcp        <span class="number">0</span>      <span class="number">0</span> <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:<span class="number">36440</span>               <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                   LISTEN      <span class="number">8942</span>/java</div><div class="line">tcp        <span class="number">0</span>      <span class="number">0</span> <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:<span class="number">12345</span>               <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                   LISTEN      <span class="number">8942</span>/java</div><div class="line">tcp        <span class="number">0</span>      <span class="number">0</span> <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:<span class="number">12346</span>               <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                   <span class="number">1374</span>/ntpd</div><div class="line">udp        <span class="number">0</span>      <span class="number">0</span> <span class="number">10.46</span><span class="meta">.72</span><span class="meta">.172</span>:<span class="number">123</span>            <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                               <span class="number">1374</span>/ntpd</div><div class="line">udp        <span class="number">0</span>      <span class="number">0</span> <span class="number">127.0</span><span class="meta">.0</span><span class="meta">.1</span>:<span class="number">123</span>               <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                               <span class="number">1374</span>/ntpd</div><div class="line">udp        <span class="number">0</span>      <span class="number">0</span> <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:<span class="number">123</span>                 <span class="number">0.0</span><span class="meta">.0</span><span class="meta">.0</span>:*                               <span class="number">1374</span>/ntpd</div></pre></td></tr></table></figure>
+<p>重启zabbix agent</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">service zabbix-agent restart</span></div></pre></td></tr></table></figure>
+<p>注：防火墙需要开放12345，12346端口</p>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">-A INPUT -i  eth0 -p tcp -m <span class="keyword">state</span> --state NEW -m tcp --dport <span class="number">12345</span> -j ACCEPT</div><div class="line">-A INPUT -i  eth0 -p tcp -m <span class="keyword">state</span> --state NEW -m tcp --dport <span class="number">12346</span> -j ACCEPT</div></pre></td></tr></table></figure>
+<p>###4、服务端测试是否可以获取数据</p>
+<p>命令行下测试需要cmdline-jmxclient-0.10.3.jar这个包，测试结果如下：</p>
+<p>这个包下载地址:<a href="http://oak0aohum.bkt.clouddn.com/cmdline-jmxclient-0.10.3.jar" target="_blank" rel="external">cmdline-jmxclient-0.10.3.jar</a></p>
+<p>在zabbix server上执行</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">java -jar /tmp/cmdline-jmxclient-<span class="number">0.10</span>.<span class="number">3</span><span class="selector-class">.jar</span> - <span class="number">192.168</span>.<span class="number">7.186</span>:<span class="number">12345</span> java<span class="selector-class">.lang</span>:type=Memory NonHeapMemoryUsage</div></pre></td></tr></table></figure>
+<p>如果有如下回显表示jmx配置正确，如不正确，请检查配置,看下端口启动是否正常，server.xml 配置。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="number">07</span><span class="regexp">/22/</span><span class="number">2016</span> <span class="number">14</span>:<span class="number">45</span>:<span class="number">28</span> +<span class="number">0800</span> org.archive.jmx.Client <span class="string">NonHeapMemoryUsage:</span></div><div class="line"><span class="string">committed:</span> <span class="number">80347136</span></div><div class="line"><span class="string">init:</span> <span class="number">24576000</span></div><div class="line"><span class="string">max:</span> <span class="number">136314880</span></div><div class="line"><span class="string">used:</span> <span class="number">46634984</span></div></pre></td></tr></table></figure>
+<p>写个脚本自动判断：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">vim context.sh</div><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line">java -jar /opt/tomcat/cmdline-jmxclient-0.10.3.jar - 10.46.72.172:12345 Catalina:<span class="built_in">type</span>=Manager,*| awk -F <span class="string">","</span> <span class="string">'&#123; print $1 &#125;'</span>|awk -F: <span class="string">'&#123; print $2 &#125;'</span>&gt;/tmp/tomcat/context.csv</div></pre></td></tr></table></figure>
+<h2 id="三、导入模板到zabbix，并关联到主机，添加监控"><a href="#三、导入模板到zabbix，并关联到主机，添加监控" class="headerlink" title="三、导入模板到zabbix，并关联到主机，添加监控"></a>三、导入模板到zabbix，并关联到主机，添加监控</h2><p>这样也可以选择系统自带的，我这里zabbix版本是3.0的，系统自带的可以选择：<br>选择配置：主机-模板-选择-模板-：<br>Template JMX Tomcat<br>Template JMX Generic</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat4.png" alt=""></figure></p>
+<p>从网上下载了一个不错的模板，导入后如下：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat2.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat3.png" alt=""></figure></p>
+<p>导入模板以后主机添加端口：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat6.png" alt=""></figure></p>
+<p>然后查看图形：<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat5.png" alt=""></figure></p>
+<p>就有了。</p>
+<h3 id="四、如何监控单主机多个tomcat"><a href="#四、如何监控单主机多个tomcat" class="headerlink" title="四、如何监控单主机多个tomcat"></a>四、如何监控单主机多个tomcat</h3><p>监控多个tomcat实例，网上的详细的配置文档很少，几乎没有。比较好的办法是使用自动发现，但刚使用zabbix，来不及研究，所以采用笨法，修改模板、监控项、图形来达到最终目的。<br>关键配置：<br>1、添加主机时添加多个jmx端口</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat7.png" alt=""></figure></p>
+<p>2、修改监控项、键值<br>在同一主机上，zabbix不允键值重复，但是监控的项目是一样的，不可能键值写的不重复，经过几番搜索，找到方法如下：<br>只要在箭头处添加1个空格就可以，也可以是多个。（注意位置不要错，在逗到后面）</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat8.png" alt=""></figure></p>
+<p>剩下的就是体力活了，克隆监控项、修改监控项、克隆图形、修改图形。。。<br>以下是两个tomcat实例的监控项：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat10.png" alt=""></figure></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat9.png" alt=""></figure></p>
+<p>多个tomcat在一台主机上面最后的监控效果如下：</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat11.png" alt=""></figure></p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-tomcat12.png" alt=""></figure></p>
+<p>一开始zabbix监控tomcat 一路顺畅，可是到测试正不正常时候，返回拒绝连接，第一时间想到就是配置有问题：</p>
+<p>我是参考这个解决了。</p>
+<p>具体参数内容请参考 <a href="https://tomcat.apache.org/tomcat-7.0-doc/config/listeners.html#Additional_Implementations" target="_blank" rel="external">apache tomcat 文档</a></p>
+<p>也非常感谢：张爱德大神 一路zabbix上面的帮我一起排坑：</p>
+<p>zabbix大神 他的博客blog：<a href="https://blog.cactifans.com" target="_blank" rel="external">https://blog.cactifans.com</a></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
 		<h1><a href="/2016/06/21/性能监控/Zabbix/zabbix监控tcp连接数/">zabbix监控tcp连接数</a></h1>
 	
 	<div class="article__infos">
@@ -600,445 +747,6 @@
 		<h2 id="TOC"><a href="#TOC" class="headerlink" title="TOC"></a>TOC</h2><p>[TOC]</p>
 <h2 id="第一章Shell前言："><a href="#第一章Shell前言：" class="headerlink" title="第一章Shell前言："></a>第一章Shell前言：</h2><p>Shell本身是一种用C语言编写的程序，从用户的角度来看，Shell是用户与Linux操作系统沟通的桥梁。用户既可以输入命令执行，又可以利用 Shell脚本编程，完成更加复杂的操作。在Linux GUI日益完善的今天在运维领域Shell编程仍然起着不可忽视的作用。深入地了解和熟练地掌握Shell编程，是每一个Linux用户的必修。</p>
 		<p><a class="article__read-more-link" href="/2016/03/21/shell编程入门到简单/shell入门到简单 学习总结1-12章/">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/03/15/运维笔记/个人记录💥-走上全栈运维工程师学习笔记/">个人记录💥-走上全栈运维工程师学习笔记</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-03-15</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/运维笔记/">运维笔记</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Operation-and-maintenance-Road/">Operation and maintenance Road</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h2 id="个人运维💥学习笔记："><a href="#个人运维💥学习笔记：" class="headerlink" title="个人运维💥学习笔记："></a>个人运维💥学习笔记：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">从2014年初就开始慢慢记录自己所接触和学习到的东西，慢慢的积累，整理出很多学习的好文章，在这里我并且记录下来。</div><div class="line">这是我现在维护的个人笔记库和博客不同，它们大多都不是直接来源于我的原创，而是我一边阅读一边整理加工而成的笔记列表.</div><div class="line">我的目的是将零散的知识点放在一个集中的地方. </div><div class="line"> 第一：方便我自己查看和学习，可以更好的找到我想要的文档。</div><div class="line"> 第二：可以给自己学习结果每年做一个总结。</div><div class="line"> </div><div class="line"> 每3个月都会更新记录。</div></pre></td></tr></table></figure>
-<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
-<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
-<h3 id="Linux-系统"><a href="#Linux-系统" class="headerlink" title="Linux 系统"></a>Linux 系统</h3><p><code>Centos源</code></p>
-<ul>
-<li><a href="http://distrowatch.com/table.php?distribution=centos" target="_blank" rel="external">centos源码包更新下载地址</a></li>
-<li><a href="https://wiki.centos.org/Download" target="_blank" rel="external">centos 镜像下载地址</a></li>
-</ul>
-<p><code>硬盘分区</code></p>
-<ul>
-<li><a href="http://www.unix-ninja.com/p/Formatting_Ext4_volumes_beyond_the_16TB_limit" target="_blank" rel="external">格式化的ext4量超过16TB的限制(1)</a></li>
-<li><a href="http://blog.ronnyegner-consulting.de/2011/08/18/ext4-and-the-16-tb-limit-now-solved/" target="_blank" rel="external">格式化的ext4量超过16TB的限制(2)</a></li>
-</ul>
-<p><code>FileZilla</code></p>
-<ul>
-<li><a href="https://filezilla-project.org/download.php?type=client" target="_blank" rel="external">filezilla下载地址</a></li>
-</ul>
-<p><code>PXE</code></p>
-<ul>
-<li><a href="http://jiarh.blog.51cto.com/3467177/1734985" target="_blank" rel="external">pxe 无人值守安装操作系统</a></li>
-<li><a href="http://www.zyops.com/autoinstall-kickstart" target="_blank" rel="external">PXE 安装</a></li>
-</ul>
-<p><code>YUM库</code></p>
-<ul>
-<li><a href="http://www.zyops.com/autodeploy-yum" target="_blank" rel="external">自动化部署-搭建YUM仓库</a></li>
-</ul>
-<p><code>rpm</code></p>
-<ul>
-<li><a href="http://www.zyops.com/autodeploy-rpm" target="_blank" rel="external">定制化RPM包</a></li>
-</ul>
-<p><code>DNS</code></p>
-<ul>
-<li><a href="http://www.zyops.com/aliyun-dns-analysis" target="_blank" rel="external">DNS域名解析原理</a></li>
-</ul>
-<p><code>开源epel</code></p>
-<ul>
-<li><a href="http://mirrors.ustc.edu.cn/" target="_blank" rel="external">开源epel下载包</a></li>
-<li><a href="http://mirrors.sohu.com/" target="_blank" rel="external">开源站点</a></li>
-<li><a href="http://ftp.linux.ncsu.edu/pub/epel/6/x86_64/" target="_blank" rel="external">linux_epel</a> </li>
-<li><a href="http://rpm.pbone.net/index.php3/stat/3/srodzaj/1/search/epel-release" target="_blank" rel="external">rpm-epel包</a></li>
-<li><a href="https://dl.fedoraproject.org/pub/epel/" target="_blank" rel="external">epel rpm软件包</a></li>
-</ul>
-<p><code>samba</code></p>
-<ul>
-<li><a href="http://blog.csdn.net/liuaigui/article/details/5077935" target="_blank" rel="external">samba配置方法</a></li>
-</ul>
-<p><code>iperf</code></p>
-<ul>
-<li><a href="http://heylinux.com/archives/3825.html" target="_blank" rel="external">使用iperf检测主机间网络带宽</a></li>
-</ul>
-<h3 id="虚拟化"><a href="#虚拟化" class="headerlink" title="虚拟化"></a>虚拟化</h3><p><code>Docker</code></p>
-<ul>
-<li><a href="http://www.infoq.com/cn/articles/docker-command-line-quest/" target="_blank" rel="external">Docker 命令学习</a></li>
-<li><a href="http://www.tuicool.com/articles/7V7vYn" target="_blank" rel="external">Docker操作使用</a></li>
-<li><a href="http://openskill.cn/article/22" target="_blank" rel="external">Docker 入门学习</a></li>
-<li><a href="http://yuedu.baidu.com/ebook/d817967416fc700abb68fca1?pn=1&amp;pa=1" target="_blank" rel="external">Docker 入门之战电子书</a></li>
-<li><a href="http://blog.csdn.net/birdben/article/details/49873725" target="_blank" rel="external">Docker实战（1)-(15)</a></li>
-<li><a href="http://www.cnblogs.com/hslzju/p/5839913.html" target="_blank" rel="external">SSH远程登陆docker容器</a></li>
-<li><a href="http://www.cnblogs.com/hslzju/p/5839983.html" target="_blank" rel="external">部署Jenkins+docker集成环境</a></li>
-</ul>
-<p><code>Esxi</code></p>
-<ul>
-<li><a href="http://www.josephturley.com/vsphere-5-5-client-download/" target="_blank" rel="external">vsphere客户端下载</a></li>
-<li><a href="http://www.josephturley.com/vsphere-web-client-download/" target="_blank" rel="external">vsphere web客户端</a></li>
-<li><a href="http://www.josephturley.com/vsphere-5-5-client-download/" target="_blank" rel="external">vsphere web客户端下载</a></li>
-<li><a href="http://www.prolved.com/vsphere-client-downloads/" target="_blank" rel="external">vSphere Client下载</a></li>
-</ul>
-<p><code>KVM</code></p>
-<h3 id="容器平台"><a href="#容器平台" class="headerlink" title="容器平台"></a>容器平台</h3><p><code>Docker</code></p>
-<blockquote>
-<p>Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。</p>
-</blockquote>
-<p><code>Rocket</code></p>
-<blockquote>
-<p>Rocket （也叫 rkt）是 CoreOS 推出的一款容器引擎，和 Docker 类似，帮助开发者打包应用和依赖包到可移植容器中，简化搭环境等部署工作。</p>
-</blockquote>
-<p><code>Ubuntu（LXC）</code></p>
-<blockquote>
-<p>LXD 是 ubuntu 基于 LXC 技术的重构，容器天然支持非特权和分布式。LXD 与 Docker 的思路不同，Docker 是 PAAS，LXD 是 IAAS。LXC 项目由一个 Linux 内核补丁和一些 userspace 工具组成。这些 userspace 工具使用由补丁增加的内核新特性，提供一套简化的工具来维护容器。</p>
-</blockquote>
-<h3 id="微服务平台"><a href="#微服务平台" class="headerlink" title="微服务平台"></a>微服务平台</h3><p><code>OpenShift</code></p>
-<blockquote>
-<p>OpenShift 是由红帽推出的一款面向开源开发人员开放的平台即服务(PaaS)。 OpenShift通过为开发人员提供在语言、框架和云上的更多的选择，使开发人员可以构建、测试、运行和管理他们的应用。</p>
-</blockquote>
-<p><code>Cloud Foundry</code></p>
-<blockquote>
-<p>Cloud Foundry 是VMware于2011年4月12日推出的业界第一个开源PaaS云平台，它支持多种框架、语言、运行时环境、云平台及应用服务，使开发 人员能够在几秒钟内进行应用程序的部署和扩展，无需担心任何基础架构的问题。</p>
-</blockquote>
-<p><code>Kubernetes</code></p>
-<blockquote>
-<p>Kubernetes 是来自 Google 云平台的开源容器集群管理系统。基于 Docker 构建一个容器的调度服务。该系统可以自动在一个容器集群中选择一个工作容器供使用。其核心概念是 Container Pod。</p>
-</blockquote>
-<p><code>Mesosphere</code></p>
-<blockquote>
-<p>Apache Mesos 是一个集群管理器，提供了有效的、跨分布式应用或框架的资源隔离和共享，可以运行Hadoop、MPI、Hypertable、Spark。</p>
-</blockquote>
-<h3 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h3><p><code>MySQL</code></p>
-<ul>
-<li><a href="http://www.phperz.com/article/15/0801/144981.html" target="_blank" rel="external">mysql 教程</a></li>
-<li><a href="http://dev.mysql.com/downloads/repo/yum/" target="_blank" rel="external">MySQL官方软件包下载地址</a></li>
-<li><a href="http://www.aiplaypc.com/371.html" target="_blank" rel="external">MySQL主从配置文档</a></li>
-<li><a href="http://heylinux.com/archives/1004.html" target="_blank" rel="external">MySQL主从复制(Master-Slave)与读写分离（MySQL-Proxy）实践</a></li>
-<li><a href="http://openskill.cn/article/244" target="_blank" rel="external">Mysql架构的演化</a></li>
-</ul>
-<p><code>mongodb</code></p>
-<ul>
-<li><a href="http://www.yiibai.com/mongodb/mongodb_quick_guide.html" target="_blank" rel="external">MongoDB快速入门</a></li>
-<li><a href="http://www.runoob.com/mongodb/mongodb-tutorial.html" target="_blank" rel="external">MongoDB 教程</a></li>
-<li><a href="http://heylinux.com/archives/1950.html" target="_blank" rel="external">安装配置MongoDB</a></li>
-<li><a href="https://www.mongodb.com/download-center?jmp=nav#community" target="_blank" rel="external">MongoDB安装包官网地址</a></li>
-<li><a href="http://limingnihao.iteye.com/blog/1938262" target="_blank" rel="external">第1章 MongoDB的安装</a></li>
-<li><a href="http://limingnihao.iteye.com/blog/1938383" target="_blank" rel="external">第2章 MongoDB的增删改查</a></li>
-<li><a href="http://limingnihao.iteye.com/blog/1940438" target="_blank" rel="external">第3章 MongoDB的Java驱动</a></li>
-</ul>
-<p><code>Robomongo</code></p>
-<ul>
-<li><a href="https://robomongo.org/" target="_blank" rel="external">官网</a>   MongoDB的一个客户端GUI工具</li>
-<li><a href="http://app.robomongo.org/download.html" target="_blank" rel="external">下载地址</a></li>
-</ul>
-<h3 id="云☁️服务"><a href="#云☁️服务" class="headerlink" title="云☁️服务"></a>云☁️服务</h3><p><code>CDN</code></p>
-<ul>
-<li><a href="http://www.cedexis.com/reports/#?report=cdn_response_time&amp;country=CN&amp;date=2015-09-29" target="_blank" rel="external">CDN测试排行</a></li>
-<li><a href="http://www.infoq.com/cn/articles/find-the-same-in-the-variable-from-CDN-to-cloud-computing/" target="_blank" rel="external">CDN变化</a></li>
-<li><p><a href="http://www.17ce.com/" target="_blank" rel="external">网站测速</a></p>
-<p><code>OpenStack</code></p>
-</li>
-</ul>
-<ul>
-<li><a href="https://www.ibm.com/developerworks/community/blogs/132cfa78-44b0-4376-85d0-d3096cd30d3f/entry/%E5%86%99%E5%9C%A8%E6%9C%80%E5%89%8D%E9%9D%A2_%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%8E%A9%E8%BD%AC_OpenStack_1?lang=en" target="_blank" rel="external">每天5分钟玩转 OpenStack</a></li>
-<li><a href="https://docs.openstack.org/ocata/install-guide-rdo/" target="_blank" rel="external">Red Hat Enterprise Linux和CentOS的OpenStack安装指南</a>  </li>
-<li><a href="http://xmodulo.com/manage-vms-openstack-command-line-tools.html" target="_blank" rel="external">如何使用OpenStack命令行工具管理虚拟机</a></li>
-</ul>
-<h3 id="大数据运维"><a href="#大数据运维" class="headerlink" title="大数据运维"></a>大数据运维</h3><p><code>HBase 集群安装部署</code> <a href="http://wuchong.me/blog/2015/04/05/hbase-cluster-deploy/" target="_blank" rel="external">HBase 集群安装部署</a></p>
-<h3 id="编程script"><a href="#编程script" class="headerlink" title="编程script"></a>编程script</h3><p><code>shell</code></p>
-<ul>
-<li><a href="http://c.biancheng.net/cpp/shell/" target="_blank" rel="external">shell学习网站</a></li>
-<li><a href="http://man.linuxde.net/" target="_blank" rel="external">Linux命令大全</a></li>
-</ul>
-<p><code>Python</code></p>
-<ul>
-<li><a href="http://edu.51cto.com/lesson/id-48608.html?edu_recommend_adid=174?edu_recommend_adid=174" target="_blank" rel="external">python 学习视频</a></li>
-<li><a href="http://www.pythondoc.com/pythontutorial3/index.html" target="_blank" rel="external">Python 入门指南</a></li>
-<li><a href="http://www.jobui.com/mianshiti/it/python/" target="_blank" rel="external">Python面试题</a></li>
-<li><a href="http://www.pythondoc.com/" target="_blank" rel="external">python中文大本营</a></li>
-<li><p><a href="https://bitbucket.org/rootart/bandersnatch/src/069c46166d9ed8cc236daa7eac39c2bb2f224644/src/bandersnatch/?at=default" target="_blank" rel="external">bandersnatch</a></p>
-<p><code>pip</code></p>
-</li>
-<li><p><a href="http://rfyiamcool.blog.51cto.com/1030776/1290456?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">构建快速部署的python pip环境及pypi本地源环境</a></p>
-</li>
-<li><a href="http://blog.csdn.net/tantexian/article/details/37724633" target="_blank" rel="external">CentOS 6.5 PYPI本地源制作</a></li>
-</ul>
-<h3 id="Web服务"><a href="#Web服务" class="headerlink" title="Web服务"></a>Web服务</h3><p><code>NGINX</code></p>
-<ul>
-<li><a href="http://www.phperz.com/article/15/0903/153754.html" target="_blank" rel="external">nginx 教程</a></li>
-<li><a href="http://www.bysocket.com/?p=282" target="_blank" rel="external">图解http协议</a></li>
-<li><a href="http://www.nginx.cn/591.html" target="_blank" rel="external">nginx 配置入门</a></li>
-<li><a href="https://segmentfault.com/a/1190000002990165" target="_blank" rel="external">nginx 入门2</a></li>
-<li><a href="http://blog.jobbole.com/89287/" target="_blank" rel="external">nginx 优化</a></li>
-<li><a href="https://blog.martinfjordvald.com/2011/04/optimizing-nginx-for-high-traffic-loads/" target="_blank" rel="external">nginx  优化2</a></li>
-<li><a href="https://www.nginx.com/resources/wiki/start/topics/examples/redhatnginxinit/" target="_blank" rel="external">nginx yum安装 脚本下载地址</a></li>
-</ul>
-<p><code>tomcat</code></p>
-<ul>
-<li><a href="http://www.zyops.com/java-tomcat" target="_blank" rel="external">JAVA企业级应用TOMCAT实战</a></li>
-<li><a href="http://www.zyops.com/java-tomcat" target="_blank" rel="external">tomcat 集群</a></li>
-<li><a href="http://www.zyops.com/java-tomcat" target="_blank" rel="external">tomcat 监控</a></li>
-<li><a href="http://www.zyops.com/java-tomcat" target="_blank" rel="external">jvm 调优</a></li>
-</ul>
-<p><code>负载均衡</code></p>
-<p><a href="https://www.shiyanlou.com/courses/652" target="_blank" rel="external">LVS 集群负载均衡实战</a></p>
-<h3 id="开源的分布式版本控制系统"><a href="#开源的分布式版本控制系统" class="headerlink" title="开源的分布式版本控制系统"></a>开源的分布式版本控制系统</h3><p><code>Git</code></p>
-<ul>
-<li><a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000" target="_blank" rel="external">git教程</a></li>
-</ul>
-<p><code>Gitlab</code></p>
-<ul>
-<li><a href="https://www.gitlab.cc/downloads/#centos6" target="_blank" rel="external">gitlab官网</a></li>
-</ul>
-<h3 id="mail"><a href="#mail" class="headerlink" title="mail"></a>mail</h3><p><code>zimbra</code></p>
-<ul>
-<li><a href="http://aba.qzu.cn/archives/251.html" target="_blank" rel="external">Centos6.2下安装zimbra 7.2</a></li>
-<li><a href="http://www.csdn.net/tag/zimbra" target="_blank" rel="external">zimbra</a></li>
-</ul>
-<h3 id="自动化运维"><a href="#自动化运维" class="headerlink" title="自动化运维"></a>自动化运维</h3><p><code>ansible</code></p>
-<blockquote>
-<p>Ansible 提供一种最简单的方式用于发布、管理和编排计算机系统的工具，你可在数分钟内搞定。Ansible 是一个模型驱动的配置管理器，支持多节点发布、远程任务执行。默认使用 SSH 进行远程连接。无需在被管理节点上安装附加软件，可使用各种编程语言进行扩展。</p>
-<ul>
-<li><a href="http://www.aikaiyuan.com/6299.html" target="_blank" rel="external">ansible指南</a></li>
-</ul>
-</blockquote>
-<p><code>saltstack</code></p>
-<blockquote>
-<p>Saltstack 可以看做是func的增强版+Puppet的弱化版。使用Python编写。非常好用,快速可以基于EPEL部署。Salt 是一个开源的工具用来管理你的基础架构，可轻松管理成千上万台服务器。</p>
-</blockquote>
-<ul>
-<li><a href="https://blog.cunss.com/?p=255" target="_blank" rel="external">saltstack指南</a></li>
-<li><a href="https://docs.saltstack.com/en/getstarted/fundamentals/remotex.html" target="_blank" rel="external">salt官网入门基础</a></li>
-<li><a href="http://setjs.com/?p=226" target="_blank" rel="external">salt使用总结</a></li>
-<li><a href="http://www.saltstack.cn/kb/managing-firewall-with-salt/#managing-firewall-with-salt" target="_blank" rel="external">基于Salt管理iptables防火墙规则</a></li>
-</ul>
-<p><code>Django</code></p>
-<ul>
-<li><a href="http://www.ziqiangxuetang.com/django/django-intro.html" target="_blank" rel="external">基础教程</a></li>
-</ul>
-<h3 id="APP持续集成部署平台"><a href="#APP持续集成部署平台" class="headerlink" title="APP持续集成部署平台"></a>APP持续集成部署平台</h3><p><code>Jenkins</code></p>
-<ul>
-<li><a href="https://my.oschina.net/u/1242185/blog/323241?fromerr=YKc8u9du" target="_blank" rel="external">enkins安装配置</a></li>
-<li><a href="https://hengyunabc.github.io/deploy-system-build-with-jenkins-ansible-supervisor/?spm=5176.blog6068.yqblogcon1.3.A6PSop" target="_blank" rel="external">jenkins 发布系统</a></li>
-<li><a href="http://pkg.jenkins-ci.org/redhat/" target="_blank" rel="external">jenkins rpm 软件包</a></li>
-<li><a href="https://www.jqlinux.com/archives/662" target="_blank" rel="external">jenkins简单使用</a></li>
-<li><a href="http://www.cnblogs.com/mouseIT/p/5024718.html" target="_blank" rel="external">Jenkins将项目发送到tomcat</a></li>
-<li><a href="https://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+on+Red+Hat+distributions" target="_blank" rel="external">centos7安装文档</a></li>
-<li><a href="https://segmentfault.com/a/1190000004639325" target="_blank" rel="external">CentOS 安装 Jenkins</a></li>
-</ul>
-<h3 id="日志分析平台"><a href="#日志分析平台" class="headerlink" title="日志分析平台"></a>日志分析平台</h3><p><code>ELK</code> </p>
-<p> <code>Logstash</code></p>
-<blockquote>
-<p>Logstash 是一个应用程序日志、事件的传输、处理、管理和搜索的平台。你可以用它来统一对应用程序日志进行收集管理，提供 Web 接口用于查询和统计。</p>
-</blockquote>
-<ul>
-<li><a href="https://wsgzao.github.io/post/elk/" target="_blank" rel="external">ELK 搭建日志分析平台</a></li>
-<li><a href="http://kibana.logstash.es/content/logstash/get_start/index.html" target="_blank" rel="external">ELK 中文执指南</a></li>
-<li><a href="http://www.ttlsa.com/elk/elk-kibana-install-and-plugin-management/" target="_blank" rel="external">elk 插件管理</a></li>
-<li><a href="http://www.sojson.com/blog/85" target="_blank" rel="external">elk 插件使用</a></li>
-<li><a href="https://github.com/yangcvo/ELK_config" target="_blank" rel="external">elk 脚本</a></li>
-</ul>
-<p><code>Graylog</code></p>
-<ul>
-<li><a href="http://blog.topspeedsnail.com/archives/4066" target="_blank" rel="external">CentOS 7安装配置Graylog</a></li>
-<li><a href="https://my.oschina.net/fitnessefan/blog/464351?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">Graylog——日志聚合工具中的后起之秀</a></li>
-<li><a href="http://docs.graylog.org/en/1.3/pages/extractors.html" target="_blank" rel="external">Graylog 入门到精通文档</a></li>
-</ul>
-<h3 id="开源监控，警告-amp-分析"><a href="#开源监控，警告-amp-分析" class="headerlink" title="开源监控，警告&amp;分析"></a>开源监控，警告&amp;分析</h3><p><code>zabbix</code></p>
-<ul>
-<li><a href="http://www.zabbix.net.cn/viewforum.php?f=13&amp;sid=2c1c952dbc2384612a1e22de916601b9" target="_blank" rel="external">zabbix学习论坛</a></li>
-<li><a href="http://www.ttlsa.com/zabbix/follow-ttlsa-to-study-zabbix/" target="_blank" rel="external">zabbix入门</a></li>
-<li><a href="http://dl528888.blog.51cto.com/2382721/1428561" target="_blank" rel="external">zabbix优化web事件打开速度</a></li>
-<li><a href="http://canghai.coding.io/2015/07/29/monitoring-mysql-with-zabbix/" target="_blank" rel="external">zabbix监控MySQL</a></li>
-<li><a href="https://share.zabbix.com/official-templates" target="_blank" rel="external">zabbix官方模块</a></li>
-<li><a href="http://docs.grafana.org/v2.0/installation/" target="_blank" rel="external">grafana 二次开源安装</a></li>
-<li><a href="https://github.com/alexanderzobnin/grafana-zabbix" target="_blank" rel="external">grafana-zabbix插件-官方网站</a></li>
-<li><a href="http://play.grafana.org/" target="_blank" rel="external">grafana演示站点</a></li>
-<li><a href="http://www.iyunv.com/thread-25966-1-1.html" target="_blank" rel="external">zabbix监控软件的使用排错</a></li>
-<li><a href="http://www.zabbix.com/download.php" target="_blank" rel="external">zabbix软件包下载地址</a></li>
-<li><a href="https://www.zabbix.com/documentation/3.0/manual/introduction/whatsnew300" target="_blank" rel="external">什么3.0.0的zabbix的新功能</a></li>
-<li><a href="https://github.com/bushvin/zabbix-kvm-res" target="_blank" rel="external">通过ZABBIX KVM监控</a></li>
-<li>个人github上面有整理比较详细的监控文档</li>
-<li><a href="https://blog.cactifans.com/2015/07/24/monitoring-tomcat-with-zabbix/" target="_blank" rel="external">1. zabbix通过jmx监控tomcat</a></li>
-<li><a href="http://www.cnblogs.com/Eivll0m/p/5446311.html" target="_blank" rel="external">2. zabbix通过jmx监控tomcat</a></li>
-<li><a href="https://share.zabbix.com" target="_blank" rel="external">zabbix官网模板</a></li>
-</ul>
-<p><code>zabbix开源监控区别</code></p>
-<ul>
-<li><a href="http://www.sysopen.cn/20150524/" target="_blank" rel="external">Nagios、cacti、zabbix的对比？</a></li>
-</ul>
-<p><code>Nagios</code></p>
-<blockquote>
-<p>Nagios 是一个监视系统运行状态和网络信息的监视系统。Nagios能监视所指定的本地或远程主机以及服务，同时提供异常通知功能等。</p>
-</blockquote>
-<p><code>Ganglia</code></p>
-<blockquote>
-<p>Ganglia 是一个跨平台可扩展的，高 性能计算系统下的分布式监控系统，如集群和网格。它是基于分层设计，它使用广泛的技术，如XML数据代表，便携数据传输，RRDtool用于数据存储和可视化。</p>
-</blockquote>
-<p><code>Graphite</code></p>
-<blockquote>
-<p>Graphite 是一个用于采集网站实时信息并进行统计的开源项目，可用于采集多种网站服务运行状态信息。Graphite服务平均每分钟有4800次更新操作。</p>
-</blockquote>
-<p><code>Kibana</code></p>
-<blockquote>
-<p>Kibana 是一个为 Logstash 和 ElasticSearch 提供的日志分析的 Web 接口。可使用它对日志进行高效的搜索、可视化、分析等各种操作。</p>
-</blockquote>
-<h3 id="团队技术平台和项目管理平台-amp-测试平台"><a href="#团队技术平台和项目管理平台-amp-测试平台" class="headerlink" title="团队技术平台和项目管理平台&amp;测试平台"></a>团队技术平台和项目管理平台&amp;测试平台</h3><p><code>confluence团队项目协作平台</code></p>
-<ul>
-<li><a href="https://www.teambition.com" target="_blank" rel="external">teambition</a></li>
-<li><a href="https://www.atlassian.com/software/confluence/" target="_blank" rel="external">confluence</a></li>
-</ul>
-<p><code>teambition 公司技术团队工作记录跟踪迭代平台</code></p>
-<ul>
-<li><a href="https://www.teambition.com" target="_blank" rel="external">teambition</a></li>
-</ul>
-<p><code>jira-敏捷项目管理工具</code></p>
-<ul>
-<li><a href="https://my.atlassian.com/products/index" target="_blank" rel="external">jira-敏捷项目管理工具</a></li>
-</ul>
-<p><code>创业公司禅道项目管理系统</code></p>
-<ul>
-<li><a href="http://www.zentao.net/download/79930.html" target="_blank" rel="external">禅道项目管理软件</a></li>
-</ul>
-<p><code>APP推广统计数据分析</code></p>
-<ul>
-<li><a href="www.talkingdata.com">talkingdata</a></li>
-</ul>
-<p><code>RAP是一个可视化接口管理工具 通过分析接口结构</code></p>
-<ul>
-<li><a href="http://rap.taobao.org/org/index.do" target="_blank" rel="external">RAP 接口管理工具</a></li>
-</ul>
-<h3 id="统一的账号管理认证平台"><a href="#统一的账号管理认证平台" class="headerlink" title="统一的账号管理认证平台"></a>统一的账号管理认证平台</h3><p><code>openLDAP</code></p>
-<ul>
-<li><a href="http://blog.csdn.net/hitabc141592/article/details/22931179" target="_blank" rel="external">openldap 部署1</a></li>
-<li><a href="http://jianshi-dlw.iteye.com/blog/1557846" target="_blank" rel="external">openldap 部署2</a></li>
-<li><a href="https://www.howtoforge.com/setting-up-an-openvpn-server-with-authentication-against-openldap-on-ubuntu-10.04-lts#-install-openvpn" target="_blank" rel="external">LDAP 认证</a></li>
-<li><a href="http://wiki.yepn.net/lam" target="_blank" rel="external">Samba+LDAP+LAM管理工具应用</a></li>
-<li><p><a href="http://blog.blackroom.cn/blog/2013/04/05/samba-web-modify-password/" target="_blank" rel="external">让Samba用户通过WEB页面修改密码</a></p>
-<p><code>OpenLDAP + ProFTPD</code></p>
-</li>
-<li><p><a href="http://www.pudgecon.com/blog/2013/08/23/install-openldap-and-proftpd-on-ubuntu-12-dot-04/" target="_blank" rel="external">Install OpenLDAP and ProFTPD on Ubuntu 12.04</a></p>
-</li>
-</ul>
-<h3 id="公司VPN"><a href="#公司VPN" class="headerlink" title="公司VPN"></a>公司VPN</h3><p><code>OpenVPN Server</code></p>
-<ul>
-<li><a href="http://heylinux.com/archives/3499.html" target="_blank" rel="external">CentOS 6上部署OpenVPN Server</a></li>
-<li><a href="https://docs.ucloud.cn/software/vpn/OpenVPN4CentOS.html" target="_blank" rel="external">OpenVPN for CentOS</a></li>
-<li><a href="https://www.unixmen.com/setup-openvpn-server-client-centos-6-5/" target="_blank" rel="external">centos 安装部署openvpn </a></li>
-<li><p><a href="https://www.digitalocean.com/community/tutorials/how-to-setup-and-configure-an-openvpn-server-on-centos-6" target="_blank" rel="external">部署参考</a></p>
-<ul>
-<li>openVPN <a href="https://www.tunnelblick.net/" target="_blank" rel="external">Tunnelblick工具下载</a></li>
-</ul>
-</li>
-</ul>
-<h3 id="翻墙"><a href="#翻墙" class="headerlink" title="翻墙"></a>翻墙</h3><p><code>ssh隧道翻墙</code></p>
-<ul>
-<li><a href="http://www.cenhq.com/2015/12/18/ssh-tunnel-over-the-wall/" target="_blank" rel="external">ssh隧道翻墙</a></li>
-</ul>
-<h3 id="node-js-后台"><a href="#node-js-后台" class="headerlink" title="node.js 后台"></a>node.js 后台</h3><ul>
-<li><a href="http://blog.csdn.net/nsrainbow/article/details/33740915" target="_blank" rel="external">如何卸载node.js</a> </li>
-</ul>
-<h3 id="海外代理服务器平台"><a href="#海外代理服务器平台" class="headerlink" title="海外代理服务器平台"></a>海外代理服务器平台</h3><p><code>服务器供应商</code></p>
-<ul>
-<li><a href="http://www.capitalonline.net/zh-cn/" target="_blank" rel="external">服务器</a></li>
-</ul>
-<h3 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h3><p><code>windows 防火墙</code></p>
-<ul>
-<li><a href="http://heylinux.com/archives/category/windows" target="_blank" rel="external">Windows Server 2008上的防火墙配置脚本</a></li>
-</ul>
-<p><code>Windows系统中文换英文</code></p>
-<ul>
-<li><a href="http://heylinux.com/archives/1667.html" target="_blank" rel="external">Windows 7中文旗舰版与英文版自由切换</a></li>
-</ul>
-<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><ul>
-<li><a href="http://openstf.io/" target="_blank" rel="external">openstf</a></li>
-<li><a href="http://www.open-open.com/lib/view/open1437967814581.html" target="_blank" rel="external">stf环境搭建</a></li>
-<li><a href="https://www.sdk.cn/news/2794" target="_blank" rel="external">macaca 自动化测试</a></li>
-<li><a href="https://xudafeng.github.io/slide/archives/macaca/#/" target="_blank" rel="external">移动时代的自动化</a></li>
-</ul>
-<h3 id="war包仓库"><a href="#war包仓库" class="headerlink" title="war包仓库"></a>war包仓库</h3><p><code>Maven私服nexus</code></p>
-<ul>
-<li><a href="http://www.cnblogs.com/dingyingsi/p/3776557.html" target="_blank" rel="external">Centos 基础开发环境搭建之Maven私服nexus</a></li>
-</ul>
-<h3 id="wkhtmltox-HTML效果转PDF格式"><a href="#wkhtmltox-HTML效果转PDF格式" class="headerlink" title="wkhtmltox-HTML效果转PDF格式"></a>wkhtmltox-HTML效果转PDF格式</h3><ul>
-<li>参考我博客的wkhtmltox</li>
-</ul>
-<h3 id="博客"><a href="#博客" class="headerlink" title="博客"></a>博客</h3><p><code>Ghost</code></p>
-<ul>
-<li><a href="http://support.ghost.org/how-to-upgrade/" target="_blank" rel="external">官方-Ghost升级方法</a></li>
-<li><a href="https://wiki.bitnami.com/Applications/BitNami_Ghost" target="_blank" rel="external">一键安装Ghost博客</a></li>
-<li><a href="https://bitnami.com/stack/ghost/installer#linux" target="_blank" rel="external">bitnami 下载一键安装Ghost脚本包</a></li>
-<li><a href="https://segmentfault.com/a/1190000002397419" target="_blank" rel="external">vps 安装 Ghost 博客系统记录</a></li>
-<li><a href="http://www.open-open.com/news/view/144e24e" target="_blank" rel="external">15个免费的Ghost博客主题</a></li>
-<li><a href="https://github.com/yangcvo/Ghost" target="_blank" rel="external">我自己整理的Ghost 20种博客主题</a></li>
-<li><a href="http://www.ghostchina.com/" target="_blank" rel="external">Ghost中文官方版</a></li>
-<li><a href="https://github.com/yangcvo/Ghost" target="_blank" rel="external">Ghost英文文档安装</a></li>
-<li><a href="https://github.com/yangcvo/Ghost" target="_blank" rel="external">Ghost博客安装，使用，更新一条龙教程 - 中文版</a><br>在我github上面都有的，我安装的是7.0的。</li>
-<li><a href="https://github.com/yangcvo/Ghost" target="_blank" rel="external">Ghost修改端口方法文档</a></li>
-<li>Ghost20种主题主题包下载：<a href="https://github.com/yangcvo/Ghost/tree/master/Ghost-theme" target="_blank" rel="external">Ghost20种主题包</a></li>
-<li><a href="https://www.bokeyy.com/post/ghost-install-in-vps-solution-in-china.html" target="_blank" rel="external">Ghost 博客安装中文全攻略</a></li>
-<li><a href="http://docs.ghost.org/zh/themes/" target="_blank" rel="external">Ghost主题变更</a></li>
-</ul>
-<p><code>Wordpress</code></p>
-<ul>
-<li><a href="https://wordpress.org/showcase/" target="_blank" rel="external">官网</a></li>
-<li><a href="https://cn.wordpress.org/" target="_blank" rel="external">中文官网WordPress</a> 访问有点慢。</li>
-<li><a href="http://www.wpdaxue.com/tutorials/page/2" target="_blank" rel="external">非常有益的我是参考了建站网站有很详细说Wordpass</a></li>
-<li><a href="http://www.wpdaxue.com/tutorials/page/2" target="_blank" rel="external">wordpass大学</a></li>
-<li><a href="https://zh-cn.forums.wordpress.org/forum/plugins" target="_blank" rel="external">Wordpress下载插件-中文网站</a><br>非常好的一位博主很详细讲了WordPress的安装过程和主题更换，插件使用等等WordPress先生</li>
-<li><a href="http://www.wpsir.cn/archives/tag/wordpress%E5%AE%89%E8%A3%85" target="_blank" rel="external">WordPress</a></li>
-<li><a href="http://www.wpsir.cn/archives/768" target="_blank" rel="external">如何搭建WordPress博客?</a></li>
-<li><a href="https://bbs.aliyun.com/read/259101.html?spm=5176.7189909.5.41.yW4V0H" target="_blank" rel="external">阿里云视频-如何在ECS上快递搭建一个WordPress站点</a></li>
-<li><a href="http://www.wpdaxue.com/install-wordpress-theme-and-plugin.html" target="_blank" rel="external">WordPress入门 之 安装主题和插件</a></li>
-</ul>
-<p><code>hexo</code></p>
-<p>这个是我现在的博客用的效果。</p>
-<h3 id="网上书店-非常不错"><a href="#网上书店-非常不错" class="headerlink" title="网上书店-非常不错"></a>网上书店-非常不错</h3><ul>
-<li><a href="https://www.packtpub.com/all" target="_blank" rel="external">packt</a></li>
-</ul>
-<h3 id="已学习视频"><a href="#已学习视频" class="headerlink" title="已学习视频"></a>已学习视频</h3><p><code>Linux</code></p>
-<ul>
-<li><a href="http://edu.51cto.com/course/course_id-549.html" target="_blank" rel="external">从0开始一步步实战深入学习Linux运维视频课程(三)</a>  2014-03-28 看完 –现在这需要付费，我当初看的时候免费的，给你们个链接 越过去：<a href="http://edu.51cto.com/lesson/id-11907.html" target="_blank" rel="external">http://edu.51cto.com/lesson/id-11907.html</a></li>
-</ul>
-<p><code>MySQL</code></p>
-<ul>
-<li><p><a href="https://ke.qq.com/course/134105" target="_blank" rel="external">企业Mysql实战系列入门篇</a> 2014年3月5日看完</p>
-</li>
-<li><p><a href="http://down.51cto.com/zt/535#0-sqq-1-75870-9737f6f9e09dfaf5d3fd14d775bfee85" target="_blank" rel="external">Mysql从入门到精通视频教程（共29集）</a>  2015年11月3日看完</p>
-</li>
-</ul>
-<p>还有些网上分享的视频，存放在百度云。有数据库优化12篇视频。还有数据库架构</p>
-<p><code>Docker</code></p>
-<p><a href="https://ke.qq.com/user/tasks/index.html?cid=132963#tid=100148647&amp;fr=2" target="_blank" rel="external">实战企业Docker虚拟化系列</a>  2016年3月23日看完</p>
-<p><code>Python</code></p>
-<p><a href="https://ke.qq.com/course/139441" target="_blank" rel="external">学会Python编程基础篇</a>  2016-02-13 学完</p>
-<p><code>监控</code></p>
-<p><a href="http://edu.51cto.com/course/course_id-460.html" target="_blank" rel="external">企业级高级监控系统cacti+nagios【马哥linux视频课程】</a><br><a href="http://edu.51cto.com/course/course_id-6907.html" target="_blank" rel="external">Zabbix监控平台应用实战视频课程</a> 收费 需要可@我 2016-09-10 学完</p>
-<h3 id="Ubuntu"><a href="#Ubuntu" class="headerlink" title="Ubuntu"></a>Ubuntu</h3><p><a href="http://www.lupaworld.com/article-221573.html" target="_blank" rel="external">Ubuntu上可使用的15个桌面环境</a> 很早就玩过了。</p>
-<p><a href="http://mirrors.163.com/ubuntu-releases/14.04/" target="_blank" rel="external">Ubuntu iso镜像下载地址</a></p>
-<h3 id="平面设计"><a href="#平面设计" class="headerlink" title="平面设计"></a>平面设计</h3><p><code>PS</code></p>
-<ul>
-<li><a href="http://wenku.baidu.com/course/view/994e6037ee06eff9aef8078d?cid=5" target="_blank" rel="external">Photoshop学习教程</a></li>
-</ul>
-<h6 id="陆续更新-（Update-time-：2016：12：11）"><a href="#陆续更新-（Update-time-：2016：12：11）" class="headerlink" title="@@ 陆续更新 ~~  （Update time ：2016：12：11）"></a>@@ 陆续更新 ~~  （Update time ：2016：12：11）</h6>
 	
 
 	

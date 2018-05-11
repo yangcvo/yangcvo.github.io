@@ -43,6 +43,38 @@
 
 	<article>
 	
+		<h1><a href="/2016/02/14/个人生活记录/在一起的第588天💕/">在一起的第588天💕</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-02-14</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/生活/">生活</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Personal-life-record/">Personal life record</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="今天2016年2月14日我们的第二个情人节："><a href="#今天2016年2月14日我们的第二个情人节：" class="headerlink" title="今天2016年2月14日我们的第二个情人节："></a>今天2016年2月14日我们的第二个情人节：</h3><p>夜已经很深了，我还坐在电脑前写信给你,慢慢把我们在一起点点滴滴记录下来,这些天总是有很多话想对你说,但对你的思念扰乱了我所有的思绪。我不知道该说些什么或怎么说？说心里话，和你的每一天我很快乐很幸福，是我一生中从未有过的！真的XXL。<br><img src="http://7xrthw.com1.z0.glb.clouddn.com/IMG_0200.JPG" alt=""></p>
+		<p><a class="article__read-more-link" href="/2016/02/14/个人生活记录/在一起的第588天💕/">...read more</a></p>
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
 		<h1><a href="/2016/01/30/日志分析平台/Elasticsearch/Elasticsearch5.x版本的索引定时自动清理和检测进程状态自动启动/">Elasticsearch5.x版本的索引定时自动清理和检测进程状态自动启动</a></h1>
 	
 	<div class="article__infos">
@@ -393,93 +425,6 @@
 <p>匹配了所有指定的key.</p>
 <p>使用 L 列表的方式，必须把 minion 列出来，或者是列出几台后，在后面接 or 或者 and 表达式， or 或者 and 后面接的表达式后面可以使用正则表达式。</p>
 <p>注：想使用正则表达式，最好的方式就是使用<code>E</code></p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2015/10/10/自动化+Jenkins/saltstack/自动化运维工具--Saltstack安装部署配置使用/">自动化运维工具--Saltstack安装部署配置使用</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2015-10-10</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Automation/">Automation</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Saltstack/">Saltstack</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h1 id="自动化运维工具–Saltstack安装部署配置使用"><a href="#自动化运维工具–Saltstack安装部署配置使用" class="headerlink" title="自动化运维工具–Saltstack安装部署配置使用"></a>自动化运维工具–Saltstack安装部署配置使用</h1><p>前言：</p>
-<p>开始学saltstack的时候是在现在一家做CDN云加速的那是在2014年，salt刚刚出来所以我觉得我接触应该也算早的。 使用最多的同步下发的用到这个工具，下面我简单介绍和操作给大家看下。<br>Salt 和 Puppet Chef 一样可以让你同时在多台服务器上执行命令也包括安装和配置软件。</p>
-<p>Salt 有两个主要的功能：<code>配置管理和远程执行</code>。 Saltstack是一个大型分布式的配置管理系统（安装升级卸载软件，检测环境），也是一个远程命令执行系统。通过c/s的模型实现。服务器端对远程客户机的操作：</p>
-<p>###（一）部署虚拟化环境</p>
-<p>（1）两组服务器进行，操作系统版本为Centos release 6.4 RHEL 也可以。 （2）安装这个先安装下epel 由于现在网络RHEL官网yum源还没有 saltstack的安装包支持。因此先安装epel作为部署saltstack的默认yum源。</p>
-<ul>
-<li>CenOs 5 版本: rpm -Uvh 下载地址：<a href="http://ftp.linux.ncsu.edu/pud/epel/6/i386/epel-release-5-4.noarch.rpm" target="_blank" rel="external">http://ftp.linux.ncsu.edu/pud/epel/6/i386/epel-release-5-4.noarch.rpm</a></li>
-<li>CenOs 6 版本: rpm -Uvh 下载地址：<a href="http://ftp.linux.ncsu.edu/pud/epel/6/i386/epel-release-6-8.noarch.rpm" target="_blank" rel="external">http://ftp.linux.ncsu.edu/pud/epel/6/i386/epel-release-6-8.noarch.rpm</a></li>
-<li>百度云也可以去下载，我的是centos 64位的 <a href="http://pan.baidu.com/s/1eQGWboI" target="_blank" rel="external">http://pan.baidu.com/s/1eQGWboI</a></li>
-</ul>
-<p><code>(1) 主服务器 （主控端） IP：192.168.23.21</code></p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="selector-id">#rpm</span> -ivh http:<span class="comment">//mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm</span></div><div class="line"><span class="selector-id">#yum</span> install salt-master -y    （安装salt-master）</div><div class="line"><span class="selector-id">#chkconfig</span> salt-master on</div><div class="line"><span class="selector-id">#service</span> salt-master start</div></pre></td></tr></table></figure>
-<p><code>(2)从服务器安装 （被控端）IP：192.168.23.24</code></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash">yum install salt-minion -y （安装salt-minion）</span></div><div class="line"><span class="meta">#</span><span class="bash">chkconfig salt-master on</span></div><div class="line"><span class="meta">#</span><span class="bash">service salt-master start</span></div></pre></td></tr></table></figure>
-<p>到这里已经安装完成。</p>
-<p><code>Saltstack 防火墙配置</code></p>
-<p>在主控端添加TCP 4505,TCP 4506 的规则，而在被控端无须配置防火墙，原理是被控端直接与主控端的zeromp建立链接。 接收 广播道任务信息并执行，具体操作是添加两条iptables规则：</p>
-<figure class="highlight pf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">-A INPUT -m <span class="keyword">state</span> --state new -m tcp -p tcp --dport <span class="number">4505</span> -j ACCEPT</div><div class="line">-A INPUT -m <span class="keyword">state</span> --state new -m tcp -p tcp --dport <span class="number">4506</span> -j ACCEPT</div></pre></td></tr></table></figure>
-<p>默认配置文件位于/etc/salt/master ，默认不需要更改该配置文件。master端有两个端口需要在iptables上放行.</p>
-<p><strong>部署要求：两台机器网络互通，最好关闭防火墙。关闭selinux. 在启动下服务。</strong></p>
-<p>更新Saltstack 配置及安装效验。</p>
-<p>Saltsatack 分两种，一种为master (主控制)，另一端为minion (被控端)，安装完毕后需要对两种角色的配置文件进行修改。 具体说明如下：</p>
-<p>（1） master 主控端配置</p>
-<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">  vim /etc/salt/master</div><div class="line">  # 绑定Master 通信<span class="built_in">IP</span>；</div><div class="line">  interface :<span class="number">192.168</span><span class="meta">.23</span><span class="meta">.21</span></div><div class="line">  #自动认证，避免手动运行salt-key 来确认证书信任；</div><div class="line">  auto-accept:True</div><div class="line"></div><div class="line">  修改/etc/hosts</div><div class="line">主机要添加被控机器的<span class="built_in">IP</span> 和主机名</div><div class="line"><span class="number">192.168</span><span class="meta">.23</span><span class="meta">.24</span>  xx.rix.com</div></pre></td></tr></table></figure>
-<p><strong>服务端配置</strong></p>
-<p>主控端基本设置 编辑配置文件 /etc/salt/master,修改如下所示配置项，去掉前面的注释符</p>
-<figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">interface:</span> <span class="number">192.168</span><span class="number">.23</span><span class="number">.21</span></div><div class="line"><span class="symbol">log_file:</span> <span class="meta-keyword">/var/</span>log<span class="meta-keyword">/salt/</span>master      <span class="meta"># 记录主控端运行日志</span></div><div class="line"><span class="symbol">key_logfile:</span> <span class="meta-keyword">/var/</span>log<span class="meta-keyword">/salt/</span>key      <span class="meta"># 记录认证证书日志</span></div></pre></td></tr></table></figure>
-<p> <strong>客户端配置</strong> </p>
-<p>修改/etc/hosts</p>
-<p>主机要添加服务端机器的IP 和主机名</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">192<span class="selector-class">.168</span><span class="selector-class">.23</span><span class="selector-class">.21</span>  <span class="selector-tag">salt</span></div></pre></td></tr></table></figure>
-<p> 受控端基本设置 编辑配置文件 /etc/salt/minion,修改如下所示配置项，去掉前面的注释符#</p>
-<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="literal">master</span>: <span class="number">192.168</span>.<span class="number">23.21</span>        <span class="comment"># 设置主控端</span></div><div class="line">这里<span class="literal">master</span>设置主控端可以hosts名称：</div><div class="line"><span class="comment">#master: salt</span></div><div class="line">前提是要设置hosts.</div></pre></td></tr></table></figure>
-<p>我这里直接配置的是主机名，也可以配置成IP地址，如果配置成主机名的话，就需要在/etc/hosts文件中master主机对应的IP ，如果使用内部DNS的例外，可以在内部DNS上的统一配置。</p>
-<p>在其下增加一行内容为：</p>
-<figure class="highlight qml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- <span class="attribute">id:</span><span class="string"> tomcatA1</span></div></pre></td></tr></table></figure>
-<p>这里是指定当前主机的id号，这在后面master认证和master调用命令执行时显示的名称，可以根据实际识别需要填写。另外需要注意的是，<code>以上两处配置冒号后面都需要有一个空格，不然会报如下错误：</code></p>
-<figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">log_file:</span> <span class="meta-keyword">/var/</span>log<span class="meta-keyword">/salt/</span>minion  <span class="meta"># 记录受控端运行日志</span></div><div class="line"><span class="symbol">key_logfile:</span> <span class="meta-keyword">/var/</span>log<span class="meta-keyword">/salt/</span>key  <span class="meta"># 记录认证证书日志</span></div></pre></td></tr></table></figure>
-<p><strong>主控端和受控端</strong></p>
-<p> 启动各自的服务，确保服务启动后没有任何报错信息,如果异常请检查相应日志文件处理</p>
-<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">主控端: service salt-<span class="keyword">master</span> <span class="title">restart</span></div><div class="line">受控端: service salt-minion restart</div></pre></td></tr></table></figure>
-<p>saltstack 主控端是依靠openssl证书来与受控端主机认证通讯的，受控端启动后会发送给主控端一个公钥证书文件，在主控端用 salt-key 命令来管理证书。</p>
-<figure class="highlight gauss"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">salt-<span class="built_in">key</span> -L                  <span class="meta"># 用来查看证书情况</span></div><div class="line">salt-<span class="built_in">key</span> -a 服务端名称或IP    <span class="meta"># 用来管理接受证书</span></div><div class="line">salt-<span class="built_in">key</span> -A                <span class="meta"># 用来管理接受所有认证主机的认证</span></div></pre></td></tr></table></figure>
-<p>主控端和被控端的证书默认都存放在<code>/etc/salt/pki/</code> 中，如果遇到证书不生效的情况下，可在主控端证书存放目录删除受控端证书，重新认证一下。</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="selector-attr">[root@ny-cloud-pagespeed00 ~]</span># <span class="selector-tag">salt-key</span> <span class="selector-tag">-a</span>  192<span class="selector-class">.168</span><span class="selector-class">.23</span><span class="selector-class">.24</span></div><div class="line"><span class="selector-tag">The</span> <span class="selector-tag">following</span> <span class="selector-tag">keys</span> <span class="selector-tag">are</span> <span class="selector-tag">going</span> <span class="selector-tag">to</span> <span class="selector-tag">be</span> <span class="selector-tag">accepted</span>:</div><div class="line"><span class="selector-tag">Unaccepted</span> <span class="selector-tag">Keys</span>:</div><div class="line">192<span class="selector-class">.168</span><span class="selector-class">.23</span><span class="selector-class">.24</span></div><div class="line"><span class="selector-tag">Proceed</span>? <span class="selector-attr">[n/Y]</span> <span class="selector-tag">y</span>   #这里输入<span class="selector-tag">y</span> 代表同意加入证书。</div><div class="line"></div><div class="line"><span class="selector-attr">[root@ny-cloud-pagespeed00 minions]</span># <span class="selector-tag">salt</span> <span class="selector-tag">-v</span> "<span class="selector-tag">xx</span><span class="selector-class">.rix</span><span class="selector-class">.com</span>" <span class="selector-tag">test</span><span class="selector-class">.ping</span>  #这里的<span class="selector-class">.com</span>是受控机的<span class="selector-tag">hostname</span> 认证名称。</div><div class="line"></div><div class="line"><span class="selector-tag">Executing</span> <span class="selector-tag">job</span> <span class="selector-tag">with</span> <span class="selector-tag">jid</span> 20151004162442004183</div><div class="line"> <span class="selector-tag">-------------------------------------------</span></div><div class="line"></div><div class="line"><span class="selector-tag">xx</span><span class="selector-class">.rix</span><span class="selector-class">.com</span>:</div><div class="line"><span class="selector-tag">True</span></div></pre></td></tr></table></figure>
-<p>这里可以获取到认证，那么我们把认证加进去。</p>
-<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">[root@salt ~]<span class="comment"># salt-key -L</span></div><div class="line">Accepted Keys:</div><div class="line">Gateway1</div><div class="line">Gateway2</div><div class="line">ihaozhuo1</div><div class="line">ihaozhuo2</div><div class="line"><span class="keyword">node</span></div><div class="line"><span class="title">openapi</span></div><div class="line">report1</div><div class="line">report2</div><div class="line">tomcat_A1</div><div class="line">tomcat_A2</div><div class="line">tomcat_B1</div><div class="line">tomcat_B2</div><div class="line">tomcat_bmw</div><div class="line">tomcat_C1</div><div class="line">tomcat_C2</div><div class="line">weixin</div><div class="line">Denied Keys:</div><div class="line">Unaccepted Keys:</div><div class="line">Rejected Keys:</div></pre></td></tr></table></figure>
-<p>我上面用的-A参数，该参数意思是接受所有认证主机的认证，也可以使用 -a id名 只认证单独的主机。默认认证完成后会在/etc/salt/pki/master/minions目录找到以ID名命令的文件，里面存放的是密钥文件。</p>
-<p>如果对客户端信任，可以让master自动接受请求，在master端/etc/salt/master配置。</p>
-<h3 id="（二）命令执行"><a href="#（二）命令执行" class="headerlink" title="（二）命令执行"></a>（二）命令执行</h3><p><code>True</code>代表正常，<code>*</code>代表所有主机，也可以选择单台或者按组及正则进行匹配等，这个可以参看下官方相关文档 。其默认执行的正则是shell正则，也可以使用其他正则或组等，如下：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="string">[root@salt</span> <span class="string">~]#</span> <span class="string">salt</span> <span class="string">'*'</span> <span class="string">test.ping</span></div><div class="line"><span class="string">[root@salt</span> <span class="string">~]#</span> <span class="string">salt</span> <span class="string">'*'</span> <span class="string">test.ping</span></div><div class="line"><span class="attr">tomcat_C2:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">tomcat_B2:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">ihaozhuo1:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">ihaozhuo2:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">openapi:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">tomcat_B1:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">tomcat_C1:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">weixin:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">tomcat_A1:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">tomcat_A2:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">node:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">Gateway2:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">report1:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">report2:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">tomcat_bmw:</span></div><div class="line">    <span class="literal">True</span></div><div class="line"><span class="attr">Gateway1:</span></div><div class="line">    <span class="string">Minion</span> <span class="string">did</span> <span class="string">not</span> <span class="string">return.</span> <span class="string">[Not</span> <span class="string">connected]</span></div></pre></td></tr></table></figure>
-<p>这里可以看到有一台ping不通，就应该上去查看下。</p>
-<figure class="highlight tap"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@Gateway1 ~]<span class="comment"># ps -ef | grep minion</span></div><div class="line">root    <span class="number"> 15343 </span>15168 <span class="number"> 0 </span>11:22 pts/0    00:00:00 grep --color=auto minion</div><div class="line">[root@Gateway1 ~]<span class="comment"># service salt-minion start</span></div><div class="line">Redirecting to /bin/systemctl start  salt-minion.service</div><div class="line">[root@Gateway1 ~]<span class="comment"># ps -ef | grep minion</span></div><div class="line">root    <span class="number"> 15422 </span>   <span class="number"> 1 </span><span class="number"> 7 </span>11:22 ?        00:00:00 /usr/bin/python /usr/bin/salt-minion</div><div class="line">root    <span class="number"> 15431 </span>15422<span class="number"> 46 </span>11:22 ?        00:00:00 /usr/bin/python /usr/bin/salt-minion</div><div class="line">root    <span class="number"> 15494 </span>15168 <span class="number"> 0 </span>11:22 pts/0    00:00:00 grep --color=auto minion</div></pre></td></tr></table></figure>
-<p>原来是进程挂了，所有这也是salt什么都好唯一一点缺点就是需要配置客户端启动服务，这样对网络传输等等都有要求比较高。一旦进程死了，几百台以上可能就比较费力。</p>
-<figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">-<span class="ruby"> salt <span class="string">'shell正则'</span> 命令</span></div><div class="line">-<span class="ruby"> salt -E <span class="string">'prel 正则'</span></span></div><div class="line">-<span class="ruby"> salt -N $group 命令</span></div><div class="line">-<span class="ruby"> salt -L <span class="string">'server_id1,server_id2,server_id3'</span> 命令</span></div></pre></td></tr></table></figure>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">常用的操作类似如下</div><div class="line">- salt <span class="string">'*'</span> cmd<span class="selector-class">.run</span> <span class="string">"ab -n 10 -c 2 http://www.google.com/"</span></div><div class="line">- salt <span class="string">'*'</span> grains<span class="selector-class">.ls</span> 查看grains分类</div><div class="line">- salt <span class="string">'*'</span> grains<span class="selector-class">.items</span> 查看grains所有信息</div><div class="line">- salt <span class="string">'*'</span> grains<span class="selector-class">.item</span> osrelease 查看grains某个信息</div><div class="line">- salt <span class="string">'*'</span> cmd<span class="selector-class">.run</span> <span class="string">"/App/nginx/sbin/nginx -v"</span></div></pre></td></tr></table></figure>
 
 	
 
