@@ -43,6 +43,38 @@
 
 	<article>
 	
+		<h1><a href="/2016/09/02/个人生活记录/厨艺依然好👍/">厨艺依然好👍</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-09-02</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/生活/">生活</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Personal-life-record/">Personal life record</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>一个男的能做的出一手好的美食是多么棒👍的一件事。这还要感谢我有一个特别的棒的父亲。<br>记得小时候12岁我就开始学会做饭，学会第一道菜南瓜饭🎃</p>
+		<p><a class="article__read-more-link" href="/2016/09/02/个人生活记录/厨艺依然好👍/">...read more</a></p>
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
 		<h1><a href="/2016/08/21/性能监控/Zabbix/直播分享的主题是云监控----zabbix&amp;collectd 互相讨论/">直播分享的主题是云监控----zabbix&amp;collectd 互相讨论</a></h1>
 	
 	<div class="article__infos">
@@ -313,183 +345,6 @@ DenyHosts could not obtain lock (pid: )
 <p>发现自己登陆不上去了，然后只能去阿里控制台操作查看原因。</p>
 <p>原来发现 <code>cat /etc/hosts.deny</code>来查看记录了<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun6.png" alt=""></figure></p>
 <p>然后去掉，115IP 发现就可以登陆了。 所以我做的设置是<code>root</code>尝试破解4次以上，被锁定。</p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/06/22/性能监控/Zabbix/zabbix3-0实现微信报警/">zabbix3.0实现微信报警</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-06-22</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>  因为我已经在<code>测试环境</code>和·生产环境·都实现了微信和邮件告警。今天有空就写了篇文档后期可以在复习下，现实生产环境中，我们通常使用邮件和短信接受zabbix报警信息，但是邮件经常被工作人员搁置在角落中甚至被设置为垃圾邮件被过滤掉。公司的短信接口又太贵，复杂环境中使用短息报警会使运维成本增加很多。微信提供了很好的第三方接口，我们可以利用微信报警以求降低运维成本。</p>
-<p>   这里我现在公司也用第三方的<code>电话短信猫做告警</code>，严重的故障会用短信来发送到指定的运维人员。这样即使微信和邮件都没有打开收到，短信和电话会第一时间通知。</p>
-<h3 id="微信告警的好处："><a href="#微信告警的好处：" class="headerlink" title="微信告警的好处："></a>微信告警的好处：</h3><p>第一：可以及时通知时间通知运维人员。及时的解决故障。</p>
-<p>第二：下班周末课余时间可以准时接收到。</p>
-<h3 id="安装与配置："><a href="#安装与配置：" class="headerlink" title="安装与配置："></a>安装与配置：</h3><p>微信的第三方接口要求我们先申请一个企业号——传送门：<a href="https://qy.weixin.qq.com/" target="_blank" rel="external">微信企业公众号平台</a></p>
-<p>  第一步：申请微信公众号<br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin1.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin2.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin3.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin4.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin5.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin6.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin7.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin8.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin9.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin10.png" alt=""></figure></p>
-<p>这里跟微信绑定后期登陆只需要扫描下二维码就可以了。</p>
-<p>如何申请也可参考这篇文档：<a href="http://itnihao.blog.51cto.com/1741976/1733245" target="_blank" rel="external">申请微信公众号</a></p>
-<h3 id="如何操作企业号？"><a href="#如何操作企业号？" class="headerlink" title="如何操作企业号？"></a>如何操作企业号？</h3><p>1.通讯录添加企业成员</p>
-<p> 我们要提前把成员信息添加进组织部门，必填项+手机号或者微信号，这样别人扫描二维码的时候才能成功关注企业号。<br>注意：这里有两个我们要用到信息，一个组织部门的ID，一个部门成员的账号（账号是自己手动指定的，不同于微信号，最好是字母加数字）</p>
-<p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin12.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin13.png" alt=""></figure></p>
-<p> 2.应用中心创建应用</p>
-<pre><code>我们要在这里创建应用，因为要通过应用发送消息给部门成员
-注意：这里要记住一个值，应用ID
-</code></pre><p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin14.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin15.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin16.png" alt=""></figure></p>
-<p> 3.给部门设置管理员</p>
-<pre><code>设置---&gt;功能设置----&gt;权限管理----&gt;新建管理组
-管理员必须事先已经关注了企业号，并且已经设置好邮箱地址  
-</code></pre><p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin17.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin18.png" alt=""></figure></p>
-<p>  确定管理员可以读取通讯录，可以使用应用发消息。<br>  <code>注意：我们需要管理员的CorpID和Secret</code></p>
-<p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin19.png" alt=""></figure></p>
-<p>   我们要准备这些东西：</p>
-<pre><code>一个微信企业号
-企业号已经被部门成员关注
-企业号里有一个可以发消息的应用
-一个授权管理员，可以使用该应用给成员发消息
-</code></pre><p>我们要取到这些信息：</p>
-<pre><code>成员账号
-组织部门ID
-应用ID
-CropID
-Secret
-</code></pre><p>如何调用微信接口？</p>
-<p>  调用微信接口需要一个调用接口的凭证：access_token</p>
-<pre><code>通过 ：CropID 、Secret  才能获取到access_token，但是获取到的token有效期为两分钟
-</code></pre><p>微信企业号接口调试工具传送门：<a href="http://qydev.weixin.qq.com/debug" target="_blank" rel="external">http://qydev.weixin.qq.com/debug</a></p>
-<p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin20.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin21.png" alt=""></figure></p>
-<h3 id="测试是否可通："><a href="#测试是否可通：" class="headerlink" title="测试是否可通："></a>测试是否可通：</h3><p>  使用：</p>
-<pre><code>curl -s -G  url    获取 AccessToke
-</code></pre><p>  使用：</p>
-<pre><code>curl --data  url  传送凭证调用企业号接口
-</code></pre><p>这里出现一个问题：</p>
-<p> curl -s -G  url  获取 AccessToke时候为什么我在用企业号发送消息的时候总是返回<code>{&quot;errcode&quot;:41004,&quot;errmsg&quot;:&quot;corpsecret missing”}</code>呢？</p>
-<p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin22.png" alt=""></figure></p>
-<p>主要原因：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">“41004”说明：缺少secret参数，请排查相关问题。</div><div class="line"></div><div class="line">用“”把url括起来就OK，即curl <span class="_">-s</span> -G <span class="string">"url"</span>，估计你已经解决了，帮助后来者吧。</div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin23.png" alt=""></figure></p>
-<p>这个问题很棘手，一开始弄搞了一个半个小时后面看到一篇过来人的文章帮助了我：<br>这里我也贴出来了。<a href="参考链接：http://qydev.weixin.qq.com/qa/index.php?qa=16596&amp;qa_1=%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E5%9C%A8%E7%94%A8%E4%BC%81%E4%B8%9A%E5%8F%B7%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF%E7%9A%84%E6%97%B6%E5%80%99%E6%80%BB%E6%98%AF%E8%BF%94%E5%9B%9E">参考文档</a></p>
-<h3 id="python脚本原理"><a href="#python脚本原理" class="headerlink" title="python脚本原理"></a>python脚本原理</h3><pre><code> 使用：
-
- self.__corpid =  corpid
-
- 使用：
-
-self.__secret = secret     传送凭证调用企业号接口
-</code></pre><p>脚本已贴出来了，可以下载 <a href="http://oak0aohum.bkt.clouddn.com/weixin4.py" target="_blank" rel="external">weixin.py</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div></pre></td><td class="code"><pre><div class="line">**<span class="comment">#!/usr/bin/env python</span></div><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"></div><div class="line">import urllib,urllib2,json</div><div class="line">import sys</div><div class="line">import logging</div><div class="line">reload(sys)</div><div class="line">sys.setdefaultencoding( <span class="string">"utf-8"</span> )</div><div class="line"></div><div class="line">class WeChat(object):</div><div class="line">	__token_id = <span class="string">''</span></div><div class="line">	<span class="comment"># init attribute</span></div><div class="line">	def __init__(self,url):</div><div class="line">		self.__url = url.rstrip(<span class="string">'/'</span>)</div><div class="line">		self.__corpid = <span class="string">'xxx'</span></div><div class="line">		self.__secret = <span class="string">'xxx'</span></div><div class="line"></div><div class="line">	<span class="comment"># Get TokenID</span></div><div class="line">	def authID(self):</div><div class="line">		params = &#123;<span class="string">'corpid'</span>:self.__corpid, <span class="string">'corpsecret'</span>:self.__secret&#125;</div><div class="line">		data = urllib.urlencode(params)</div><div class="line"></div><div class="line">		content = self.getToken(data)</div><div class="line"></div><div class="line">		try:</div><div class="line">			self.__token_id = content[<span class="string">'access_token'</span>]</div><div class="line">			<span class="comment"># print content['access_token']</span></div><div class="line">		except KeyError:</div><div class="line">			raise KeyError</div><div class="line"></div><div class="line">	<span class="comment"># Establish a connection</span></div><div class="line">	def getToken(self,data,url_prefix=<span class="string">'/'</span>):</div><div class="line">		url = self.__url + url_prefix + <span class="string">'gettoken?'</span></div><div class="line">		try:</div><div class="line">			response = urllib2.Request(url + data)</div><div class="line">		except KeyError:</div><div class="line">			raise KeyError</div><div class="line">		result = urllib2.urlopen(response)</div><div class="line">		content = json.loads(result.read())</div><div class="line">		<span class="built_in">return</span> content</div><div class="line"></div><div class="line">	<span class="comment"># Get sendmessage url</span></div><div class="line">	def postData(self,data,url_prefix=<span class="string">'/'</span>):</div><div class="line">		url = self.__url + url_prefix + <span class="string">'message/send?access_token=%s'</span> % self.__token_id</div><div class="line">		request = urllib2.Request(url,data)</div><div class="line">		try:</div><div class="line">			result = urllib2.urlopen(request)</div><div class="line">		except urllib2.HTTPError as e:</div><div class="line">			<span class="keyword">if</span> hasattr(e,<span class="string">'reason'</span>):</div><div class="line">				<span class="built_in">print</span> <span class="string">'reason'</span>,e.reason</div><div class="line">			<span class="keyword">elif</span> hasattr(e,<span class="string">'code'</span>):</div><div class="line">				<span class="built_in">print</span> <span class="string">'code'</span>,e.code</div><div class="line">			<span class="built_in">return</span> 0</div><div class="line">		<span class="keyword">else</span>:</div><div class="line">			content = json.loads(result.read())</div><div class="line">			result.close()</div><div class="line">		<span class="built_in">return</span> content</div><div class="line"></div><div class="line">	<span class="comment"># send message</span></div><div class="line">	def sendMessage(self,touser,message):</div><div class="line"></div><div class="line">		self.authID()</div><div class="line"></div><div class="line">		data = json.dumps(&#123;</div><div class="line">			<span class="string">'touser'</span>:touser,</div><div class="line">			<span class="string">'toparty'</span>:<span class="string">"3"</span>,</div><div class="line">			<span class="string">'msgtype'</span>:<span class="string">"text"</span>,</div><div class="line">			<span class="string">'agentid'</span>:<span class="string">"3"</span>,</div><div class="line">			<span class="string">'text'</span>:&#123;</div><div class="line">				<span class="string">'content'</span>:message</div><div class="line">			&#125;,</div><div class="line">			<span class="string">'safe'</span>:<span class="string">"0"</span></div><div class="line">		&#125;,ensure_ascii=False)</div><div class="line"></div><div class="line">		response = self.postData(data)</div><div class="line"></div><div class="line">		log_file = <span class="string">"/home/zabbix/weixin.log"</span></div><div class="line"></div><div class="line">		logging.basicConfig(filename=log_file,filemode=<span class="string">'a'</span>,level=logging.DEBUG)</div><div class="line">		logging.info(data)</div><div class="line">		logging.debug(response)</div><div class="line">		<span class="built_in">print</span> response</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">        <span class="keyword">if</span> len(sys.argv) != 4:</div><div class="line">            <span class="built_in">print</span> <span class="string">'error segments, now exit'</span></div><div class="line">            sys.exit()</div><div class="line">	a = WeChat(<span class="string">'https://qyapi.weixin.qq.com/cgi-bin'</span>)</div><div class="line">	a.sendMessage(sys.argv[1],sys.argv[3])</div></pre></td></tr></table></figure>
-<pre><code>log_file = &quot;/home/zabbix/weixin.log&quot; 微信日志
-&apos;toparty&apos;:&quot;3&quot;,
-
- &apos;agentid&apos;:&quot;3&quot;, 这里3 是我这边应用ID 3
-touser否成员ID列表（消息接收者，多个接收者用‘|’分隔，最多支持1000个）。特殊情况：指定为@all，则向关注该企业应用的全部成员发送
-toparty否部门ID列表，多个接收者用‘|’分隔，最多支持100个。当touser为@all时忽略本参数
-totag否标签ID列表，多个接收者用‘|’分隔。当touser为@all时忽略本参数
-msgtype是消息类型，此时固定为：text
-agentid是企业应用的id，整型。可在应用的设置页面查看
-content是消息内容
-safe否表示是否是保密消息，0表示否，1表示是，默认0
-
-
-&quot;touser&quot;:&quot;touser&quot;,   #企业号中的用户帐号，在zabbix用户Media中配置，如果配置不正常，将按部门发送。
-文中使用的用户, toparty 部门iD为3，agentid 应用ID为3.
-</code></pre><h3 id="为什么要这样写脚本？"><a href="#为什么要这样写脚本？" class="headerlink" title="为什么要这样写脚本？"></a>为什么要这样写脚本？</h3><p>因为微信企业号开放的端口有固定的格式限制<br> 企业号支持的格式：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=消息类型及数据格式" target="_blank" rel="external">http://qydev.weixin.qq.com/wiki/index.php?title=消息类型及数据格式</a></p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin24.png" alt=""></figure></p>
-<p>将脚本放入zabbix默认执行路径下</p>
-<pre><code>mv weixin.sh /usr/local/zabbix/share/zabbix/alertscripts
-chown zabbix.zabbix /usr/local/zabbix/share/zabbix/alertscripts/weixin.py
-chmod +x /usr/local/zabbix/share/zabbix/alertscripts/weixin.py
-</code></pre><hr>
-<p>到这里上面基本的已经配置完毕了。</p>
-<h3 id="测试脚本是否可以发送成功消息"><a href="#测试脚本是否可以发送成功消息" class="headerlink" title="测试脚本是否可以发送成功消息"></a>测试脚本是否可以发送成功消息</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@salt alertscripts]<span class="comment"># python weixin.py test world!</span></div><div class="line">&#123;<span class="string">u'errcode'</span>: <span class="number">60011</span>, <span class="string">u'errmsg'</span>: <span class="string">u'no privilege to access/modify contact/party/agent '</span>&#125;</div></pre></td></tr></table></figure>
-<p>出现我是企业号体验账户 我发送消息：微信错误 errcode=60011. 可参考：<a href="http://qydev.weixin.qq.com/qa/index.php?qa=3197&amp;qa_1=%E6%88%91%E6%98%AF%E4%BC%81%E4%B8%9A%E5%8F%B7%E4%BD%93%E9%AA%8C%E8%B4%A6%E6%88%B7-%E6%88%91%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF%EF%BC%9A%E5%BE%AE%E4%BF%A1%E9%94%99%E8%AF%AF&amp;show=3197#q3197" target="_blank" rel="external">微信错误 errcode=60011</a></p>
-<p>我这里的原因是应用ID一开始写1，后来改成3测试就通了。</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@salt alertscripts]<span class="comment"># python weixin.py test hello world!</span></div><div class="line">&#123;<span class="string">u'invaliduser'</span>: <span class="string">u'all user invalid'</span>, <span class="string">u'errcode'</span>: <span class="number">0</span>, <span class="string">u'errmsg'</span>: <span class="string">u'ok'</span>&#125;</div></pre></td></tr></table></figure>
-<p>这里用户关注了以后：</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@salt alertscripts]<span class="comment"># python weixin.py jinyu hello world!</span></div><div class="line">&#123;<span class="string">u'errcode'</span>: <span class="number">0</span>, <span class="string">u'errmsg'</span>: <span class="string">u'ok'</span>&#125;</div></pre></td></tr></table></figure>
-<h3 id="web服务端配置："><a href="#web服务端配置：" class="headerlink" title="web服务端配置："></a>web服务端配置：</h3><p>至此工具安装完成，在zabbix界面里添加脚本告警</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin25.png" alt=""></figure></p>
-<p>设置脚本，脚本名称为工具名称，设置好点添加按钮</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin26.png" alt=""></figure></p>
-<p>添加新的报警媒介到用户，我以Admin用户为例</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin27.png" alt=""></figure><br>添加</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin28.png" alt=""></figure></p>
-<p>选择刚才的媒介，收件人为我提供的UserID，多个用户用｜隔开</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin29.png" alt=""></figure></p>
-<p>添加后一点要点更新</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin30.png" alt=""></figure></p>
-<p>我们在这里独立设置一个Action，当然你也可以在默认的Action里添加</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin31.png" alt=""></figure></p>
-<p>名称为weixin</p>
-<p>告警消息的格式，大家可以根据自己需求具体设置，下面是我的设置<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin32.png" alt=""></figure></p>
-<p>默认接收人：故障{TRIGGER.STATUS},服务器:{HOSTNAME1}发生: {TRIGGER.NAME}故障!</p>
-<p>默认信息：</p>
-<figure class="highlight dust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="xml">告警主机:</span><span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml"></span></div><div class="line">告警时间:<span class="template-variable">&#123;EVENT.DATE&#125;</span><span class="xml"> </span><span class="template-variable">&#123;EVENT.TIME&#125;</span><span class="xml"></span></div><div class="line">告警等级:<span class="template-variable">&#123;TRIGGER.SEVERITY&#125;</span><span class="xml"></span></div><div class="line">告警信息: <span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml"></span></div><div class="line">告警项目:<span class="template-variable">&#123;TRIGGER.KEY1&#125;</span><span class="xml"></span></div><div class="line">问题详情:<span class="template-variable">&#123;ITEM.NAME&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE&#125;</span><span class="xml"></span></div><div class="line">前状态:<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE1&#125;</span><span class="xml"></span></div><div class="line">事件ID:<span class="template-variable">&#123;EVENT.ID&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">恢复主旨：恢复<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">, 服务器:</span><span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml">: </span><span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml">已恢复!</span></div><div class="line"></div><div class="line">恢复信息：</div><div class="line"></div><div class="line">告警主机:<span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml"></span></div><div class="line">告警时间:<span class="template-variable">&#123;EVENT.DATE&#125;</span><span class="xml"> </span><span class="template-variable">&#123;EVENT.TIME&#125;</span><span class="xml"></span></div><div class="line">告警等级:<span class="template-variable">&#123;TRIGGER.SEVERITY&#125;</span><span class="xml"></span></div><div class="line">告警信息: <span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml"></span></div><div class="line">告警项目:<span class="template-variable">&#123;TRIGGER.KEY1&#125;</span><span class="xml"></span></div><div class="line">问题详情:<span class="template-variable">&#123;ITEM.NAME&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE&#125;</span><span class="xml"></span></div><div class="line">当前状态:<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE1&#125;</span><span class="xml"></span></div><div class="line">事件ID:<span class="template-variable">&#123;EVENT.ID&#125;</span><span class="xml"></span></div></pre></td></tr></table></figure>
-<p>切换到操作标签，添加操作<br>选择发送到Admin用户，只使用weixin，选择好之后点添加,这里我已经添加过了，所以提示更新。<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin33.png" alt=""></figure><br>设置好之后如下，点添加</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin35.png" alt=""></figure></p>
-<p>经过以上步骤，就完成了配置，就可以使用zabbix来告警啦，用dd命令测试下磁盘i/o告警，一会就会看到微信上发过来的告警信息</p>
-<pre><code>dd if=/dev/zero of=/tmp/test2.img bs=1024M count=1000 oflag=dsync
-</code></pre><h3 id="课外普及："><a href="#课外普及：" class="headerlink" title="课外普及："></a>课外普及：</h3><p>普及：</p>
-<p>如何正确使用dd工具测试磁盘的I/O速度</p>
-<p>一般情况下，我们都是使用dd命令创建一个大文件来测试磁盘的读写速度。但是，很多人都存在一个误区，以为dd命令显示的速度就是磁盘的写入速度，其实这是不然的。我们分析一下dd命令是如何工作的。</p>
-<ol>
-<li>dd if=/dev/zero of=/xiaohan/test.iso bs=1024M count=1</li>
-</ol>
-<p>这种情况下测试显示的速度是dd命令将数据写入到内存缓冲区中的速度，只有当数据写入内存缓冲区完成后，才开始将数据刷入硬盘，所以这时候的数据是无法正确衡量磁盘写入速度的。</p>
-<ol>
-<li>dd if=/dev/zero of=/xiaohan/test.iso bs=1024M count=1;sync</li>
-</ol>
-<p>这种情况下测试显示的跟上一种情况是一样的，两个命令是先后执行的，当sync开始执行的时候，dd命令已经将速度信息打印到了屏幕上，仍然无法显示从内存写硬盘时的真正速度。</p>
-<ol>
-<li>dd if=/dev/zero of=/xiaohan/test.iso bs=1024M count=1 conv=fdatasync</li>
-</ol>
-<p>这种情况加入这个参数后，dd命令执行到最后会真正执行一次“同步(sync)”操作，所以这时候你得到的是读取这128M数据到内存并写入到磁盘上所需的时间，这样算出来的时间才是比较符合实际的。</p>
-<ol>
-<li>dd if=/dev/zero of=/xiaohan/test.iso bs=1024M count=1 oflag=dsync</li>
-</ol>
-<p>这种情况下，dd在执行时每次都会进行同步写入操作。也就是说，这条命令每次读取1M后就要先把这1M写入磁盘，然后再读取下面这1M，一共重复128次。这可能是最慢的一种方式，基本上没有用到写缓存(write cache)。</p>
-<p>总结：</p>
-<p>建议使用测试写速度的方式为：</p>
-<p>dd if=/dev/zero of=/xiaohan/test.iso bs=1024M count=1 conv=fdatasync</p>
-<p>建议使用测试读速度的方式为：</p>
-<p>dd if=/xiaohan/test.iso of=/dev/zero bs=1024M count=1 iflag=direct</p>
-<p>*注：要正确测试磁盘读写能力，建议测试文件的大小要远远大于内存的容量！！！</p>
-<h3 id="PS：后续计划"><a href="#PS：后续计划" class="headerlink" title="PS：后续计划"></a>PS：后续计划</h3><p>1.后续可能会增加发送次数计数，方便管理用户</p>
-<p>2.添加查询操作到微信，针对用户定制开发。可通过微信查询zabbix服务器里监控主机的状态，通过微信简单操作zabbix。</p>
-<h3 id="预览"><a href="#预览" class="headerlink" title="预览"></a>预览</h3><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin38.png" alt=""></figure></p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin39.jpg" alt=""></figure></p>
-<h3 id="注意事项及报错处理"><a href="#注意事项及报错处理" class="headerlink" title="注意事项及报错处理"></a>注意事项及报错处理</h3><pre><code> #Zabbix-web页面新增用户权限处理，发送对象选择（用户的名称）
-
-#应用当中可见范围选择注意（选这要发送的对象（部门，及部门成员））
-</code></pre><p> zabbix-server2.4服务端编译安装 <a href="http://blog.yangcvo.me/2015/01/18/zabbix-server服务端编译安装/" target="_blank" rel="external">zabbix-server服务端编译安装</a></p>
-<p>zabbix2.4监控80端口状态 : <a href="http://blog.yangcvo.me/2016/07/20/zabbix监控80端口状态/" target="_blank" rel="external">zabbix监控80端口状态</a></p>
-<p>zabbix+Grafana安装使用监控结合 ：<a href="http://blog.yangcvo.me/2016/07/13/zabbix-Grafana安装使用结合/" target="_blank" rel="external">zabbix+Grafana安装使用监控结合</a></p>
-<p>zabbix监控MySQL-添加自定义监控项 : <a href="http://blog.yangcvo.me/2015/09/29/zabbix监控MySQL-添加自定义监控项/" target="_blank" rel="external">zabbix监控MySQL-添加自定义监控项</a></p>
-<p>zabbix的ICMP_Ping模版实现对客户端网络状态的监控 : <a href="http://blog.yangcvo.me/2015/11/18/zabbix的ICMP-Ping模版实现对客户端网络状态的监控/" target="_blank" rel="external">zabbix的ICMP_Ping模版实现对客户端网络状态的监控</a></p>
-<p>zabbix性能监控故障总结 <a href="http://blog.yangcvo.me/2016/02/07/zabbix-故障总结/" target="_blank" rel="external">zabbix性能监控故障总结</a></p>
 
 	
 
