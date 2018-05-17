@@ -41,40 +41,6 @@
 
 	<article>
 	
-		<h1><a href="/2018/05/13/个人生活记录/4年异地恋亲身经历分享给大家，我坚持了4年并一直很开心，@车车/">4年异地恋亲身经历分享给大家，我坚持了4年并一直很开心，@车车</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2018-05-13</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/生活/">生活</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Personal-life-record/">Personal life record</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h4 id="自黑开场介绍："><a href="#自黑开场介绍：" class="headerlink" title="自黑开场介绍："></a>自黑开场介绍：</h4><p>在这里我想说：我其实情商真的越来越低，别人是越老越老练，“怀疑是不是👨‍💻‍代码撸多了” 在感情方面我一直停留在读书时代那种幼稚处理感情方式，以前那些所谓被人说：“你女朋友长得挺漂亮的”，“你跟她很般配”，“夫妻相哈” 当然我也是比较自恋的一个人，总觉得自己魅力不错，实时在读书一路走来有那么自信体会，也是因为靠着爸妈给了颜值不错的“强大基因’ 才能让我遇到这么优秀的她：徐讯捷。</p>
-<p>2014年的我们：</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/13.jpeg" alt=""></p>
-		<p><a class="article__read-more-link" href="/2018/05/13/个人生活记录/4年异地恋亲身经历分享给大家，我坚持了4年并一直很开心，@车车/">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
 		<h1><a href="/2018/05/11/个人生活记录/阿衰附体：人生总会遇到不顺心事情/">阿衰🍊附体：人生总会遇到不顺心事情</a></h1>
 	
 	<div class="article__infos">
@@ -307,6 +273,40 @@
 		<h4 id="1-部署生产环境，打算部署三个broker实例，但zookeeper部署一个可以吗"><a href="#1-部署生产环境，打算部署三个broker实例，但zookeeper部署一个可以吗" class="headerlink" title="1. 部署生产环境，打算部署三个broker实例，但zookeeper部署一个可以吗?"></a>1. 部署生产环境，打算部署三个broker实例，但zookeeper部署一个可以吗?</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">答案：可以是可以，但为了容错还是部署zookeeper集群比较好。broker和zookeeper的对应比例倒是没什么，都是独立集群。</div></pre></td></tr></table></figure>
 <p><img src="https://www.confluent.io/wp-content/uploads/2016/09/Event-sourced-based-architecture.jpeg" alt=""></p>
 		<p><a class="article__read-more-link" href="/2017/09/11/Bigdata-hadoop/Kafka/KafKa不懂就学就问就解答笔记/">...read more</a></p>
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2017/08/27/Bigdata-hadoop/zookeeper/Bigdata-Zookeeper集群日志配置详解和清理自定义启动内存 /">Bigdata-Zookeeper集群日志配置详解和清理自定义启动内存</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-08-27</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Bigdata/">Bigdata</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/ZooKeeper/">ZooKeeper</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h4 id="Zookeeper集群日志配置详解和清理自定义启动内存"><a href="#Zookeeper集群日志配置详解和清理自定义启动内存" class="headerlink" title="Zookeeper集群日志配置详解和清理自定义启动内存"></a>Zookeeper集群日志配置详解和清理自定义启动内存</h4><h3 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h3><p>搭建zookeeper和kafka集群运行大数据处理数据消费，公司dubbo使用zookeeper做服务端的服务发现管理及配置中心，在使用时都出现过由于zk的日志大小过大塞满磁盘的情况 ，遇到了Zookeeper日志问题输出路径的问题, 发现zookeeper设置log4j.properties不能解决日志路径问题, 发现解决方案如下。</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zookeeper_cartoon.jpg" alt=""></p>
+<h3 id="zookeeper日志说明"><a href="#zookeeper日志说明" class="headerlink" title="zookeeper日志说明"></a>zookeeper日志说明</h3><p>ZooKeeper使用<code>SLF4J(the Simple Logging Facade for Java)</code>作为日志的抽象层，默认使用<code>Log4J</code>来做实际的日志工作。使用2层日志抽象看起来真是够呛，这里简要的说明如何来配置<code>Log4J</code>。尽管Log4J非常灵活且强大，但它也有一些复杂，可以用一整本书来描述它，这里只是简要的介绍一下基本的用法。</p>
+		<p><a class="article__read-more-link" href="/2017/08/27/Bigdata-hadoop/zookeeper/Bigdata-Zookeeper集群日志配置详解和清理自定义启动内存 /">...read more</a></p>
 	
 
 	
