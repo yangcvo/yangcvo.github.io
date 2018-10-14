@@ -43,183 +43,6 @@
 
 	<article>
 	
-		<h1><a href="/2016/06/22/性能监控/Zabbix/zabbix3-0实现微信报警/">zabbix3.0实现微信报警</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-06-22</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>  因为我已经在<code>测试环境</code>和·生产环境·都实现了微信和邮件告警。今天有空就写了篇文档后期可以在复习下，现实生产环境中，我们通常使用邮件和短信接受zabbix报警信息，但是邮件经常被工作人员搁置在角落中甚至被设置为垃圾邮件被过滤掉。公司的短信接口又太贵，复杂环境中使用短息报警会使运维成本增加很多。微信提供了很好的第三方接口，我们可以利用微信报警以求降低运维成本。</p>
-<p>   这里我现在公司也用第三方的<code>电话短信猫做告警</code>，严重的故障会用短信来发送到指定的运维人员。这样即使微信和邮件都没有打开收到，短信和电话会第一时间通知。</p>
-<h3 id="微信告警的好处："><a href="#微信告警的好处：" class="headerlink" title="微信告警的好处："></a>微信告警的好处：</h3><p>第一：可以及时通知时间通知运维人员。及时的解决故障。</p>
-<p>第二：下班周末课余时间可以准时接收到。</p>
-<h3 id="安装与配置："><a href="#安装与配置：" class="headerlink" title="安装与配置："></a>安装与配置：</h3><p>微信的第三方接口要求我们先申请一个企业号——传送门：<a href="https://qy.weixin.qq.com/" target="_blank" rel="external">微信企业公众号平台</a></p>
-<p>  第一步：申请微信公众号<br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin1.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin2.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin3.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin4.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin5.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin6.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin7.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin8.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin9.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin10.png" alt=""></figure></p>
-<p>这里跟微信绑定后期登陆只需要扫描下二维码就可以了。</p>
-<p>如何申请也可参考这篇文档：<a href="http://itnihao.blog.51cto.com/1741976/1733245" target="_blank" rel="external">申请微信公众号</a></p>
-<h3 id="如何操作企业号？"><a href="#如何操作企业号？" class="headerlink" title="如何操作企业号？"></a>如何操作企业号？</h3><p>1.通讯录添加企业成员</p>
-<p> 我们要提前把成员信息添加进组织部门，必填项+手机号或者微信号，这样别人扫描二维码的时候才能成功关注企业号。<br>注意：这里有两个我们要用到信息，一个组织部门的ID，一个部门成员的账号（账号是自己手动指定的，不同于微信号，最好是字母加数字）</p>
-<p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin12.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin13.png" alt=""></figure></p>
-<p> 2.应用中心创建应用</p>
-<pre><code>我们要在这里创建应用，因为要通过应用发送消息给部门成员
-注意：这里要记住一个值，应用ID
-</code></pre><p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin14.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin15.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin16.png" alt=""></figure></p>
-<p> 3.给部门设置管理员</p>
-<pre><code>设置---&gt;功能设置----&gt;权限管理----&gt;新建管理组
-管理员必须事先已经关注了企业号，并且已经设置好邮箱地址  
-</code></pre><p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin17.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin18.png" alt=""></figure></p>
-<p>  确定管理员可以读取通讯录，可以使用应用发消息。<br>  <code>注意：我们需要管理员的CorpID和Secret</code></p>
-<p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin19.png" alt=""></figure></p>
-<p>   我们要准备这些东西：</p>
-<pre><code>一个微信企业号
-企业号已经被部门成员关注
-企业号里有一个可以发消息的应用
-一个授权管理员，可以使用该应用给成员发消息
-</code></pre><p>我们要取到这些信息：</p>
-<pre><code>成员账号
-组织部门ID
-应用ID
-CropID
-Secret
-</code></pre><p>如何调用微信接口？</p>
-<p>  调用微信接口需要一个调用接口的凭证：access_token</p>
-<pre><code>通过 ：CropID 、Secret  才能获取到access_token，但是获取到的token有效期为两分钟
-</code></pre><p>微信企业号接口调试工具传送门：<a href="http://qydev.weixin.qq.com/debug" target="_blank" rel="external">http://qydev.weixin.qq.com/debug</a></p>
-<p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin20.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin21.png" alt=""></figure></p>
-<h3 id="测试是否可通："><a href="#测试是否可通：" class="headerlink" title="测试是否可通："></a>测试是否可通：</h3><p>  使用：</p>
-<pre><code>curl -s -G  url    获取 AccessToke
-</code></pre><p>  使用：</p>
-<pre><code>curl --data  url  传送凭证调用企业号接口
-</code></pre><p>这里出现一个问题：</p>
-<p> curl -s -G  url  获取 AccessToke时候为什么我在用企业号发送消息的时候总是返回<code>{&quot;errcode&quot;:41004,&quot;errmsg&quot;:&quot;corpsecret missing”}</code>呢？</p>
-<p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin22.png" alt=""></figure></p>
-<p>主要原因：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">“41004”说明：缺少secret参数，请排查相关问题。</div><div class="line"></div><div class="line">用“”把url括起来就OK，即curl <span class="_">-s</span> -G <span class="string">"url"</span>，估计你已经解决了，帮助后来者吧。</div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin23.png" alt=""></figure></p>
-<p>这个问题很棘手，一开始弄搞了一个半个小时后面看到一篇过来人的文章帮助了我：<br>这里我也贴出来了。<a href="参考链接：http://qydev.weixin.qq.com/qa/index.php?qa=16596&amp;qa_1=%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E5%9C%A8%E7%94%A8%E4%BC%81%E4%B8%9A%E5%8F%B7%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF%E7%9A%84%E6%97%B6%E5%80%99%E6%80%BB%E6%98%AF%E8%BF%94%E5%9B%9E">参考文档</a></p>
-<h3 id="python脚本原理"><a href="#python脚本原理" class="headerlink" title="python脚本原理"></a>python脚本原理</h3><pre><code> 使用：
-
- self.__corpid =  corpid
-
- 使用：
-
-self.__secret = secret     传送凭证调用企业号接口
-</code></pre><p>脚本已贴出来了，可以下载 <a href="http://oak0aohum.bkt.clouddn.com/weixin4.py" target="_blank" rel="external">weixin.py</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div></pre></td><td class="code"><pre><div class="line">**<span class="comment">#!/usr/bin/env python</span></div><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"></div><div class="line">import urllib,urllib2,json</div><div class="line">import sys</div><div class="line">import logging</div><div class="line">reload(sys)</div><div class="line">sys.setdefaultencoding( <span class="string">"utf-8"</span> )</div><div class="line"></div><div class="line">class WeChat(object):</div><div class="line">	__token_id = <span class="string">''</span></div><div class="line">	<span class="comment"># init attribute</span></div><div class="line">	def __init__(self,url):</div><div class="line">		self.__url = url.rstrip(<span class="string">'/'</span>)</div><div class="line">		self.__corpid = <span class="string">'xxx'</span></div><div class="line">		self.__secret = <span class="string">'xxx'</span></div><div class="line"></div><div class="line">	<span class="comment"># Get TokenID</span></div><div class="line">	def authID(self):</div><div class="line">		params = &#123;<span class="string">'corpid'</span>:self.__corpid, <span class="string">'corpsecret'</span>:self.__secret&#125;</div><div class="line">		data = urllib.urlencode(params)</div><div class="line"></div><div class="line">		content = self.getToken(data)</div><div class="line"></div><div class="line">		try:</div><div class="line">			self.__token_id = content[<span class="string">'access_token'</span>]</div><div class="line">			<span class="comment"># print content['access_token']</span></div><div class="line">		except KeyError:</div><div class="line">			raise KeyError</div><div class="line"></div><div class="line">	<span class="comment"># Establish a connection</span></div><div class="line">	def getToken(self,data,url_prefix=<span class="string">'/'</span>):</div><div class="line">		url = self.__url + url_prefix + <span class="string">'gettoken?'</span></div><div class="line">		try:</div><div class="line">			response = urllib2.Request(url + data)</div><div class="line">		except KeyError:</div><div class="line">			raise KeyError</div><div class="line">		result = urllib2.urlopen(response)</div><div class="line">		content = json.loads(result.read())</div><div class="line">		<span class="built_in">return</span> content</div><div class="line"></div><div class="line">	<span class="comment"># Get sendmessage url</span></div><div class="line">	def postData(self,data,url_prefix=<span class="string">'/'</span>):</div><div class="line">		url = self.__url + url_prefix + <span class="string">'message/send?access_token=%s'</span> % self.__token_id</div><div class="line">		request = urllib2.Request(url,data)</div><div class="line">		try:</div><div class="line">			result = urllib2.urlopen(request)</div><div class="line">		except urllib2.HTTPError as e:</div><div class="line">			<span class="keyword">if</span> hasattr(e,<span class="string">'reason'</span>):</div><div class="line">				<span class="built_in">print</span> <span class="string">'reason'</span>,e.reason</div><div class="line">			<span class="keyword">elif</span> hasattr(e,<span class="string">'code'</span>):</div><div class="line">				<span class="built_in">print</span> <span class="string">'code'</span>,e.code</div><div class="line">			<span class="built_in">return</span> 0</div><div class="line">		<span class="keyword">else</span>:</div><div class="line">			content = json.loads(result.read())</div><div class="line">			result.close()</div><div class="line">		<span class="built_in">return</span> content</div><div class="line"></div><div class="line">	<span class="comment"># send message</span></div><div class="line">	def sendMessage(self,touser,message):</div><div class="line"></div><div class="line">		self.authID()</div><div class="line"></div><div class="line">		data = json.dumps(&#123;</div><div class="line">			<span class="string">'touser'</span>:touser,</div><div class="line">			<span class="string">'toparty'</span>:<span class="string">"3"</span>,</div><div class="line">			<span class="string">'msgtype'</span>:<span class="string">"text"</span>,</div><div class="line">			<span class="string">'agentid'</span>:<span class="string">"3"</span>,</div><div class="line">			<span class="string">'text'</span>:&#123;</div><div class="line">				<span class="string">'content'</span>:message</div><div class="line">			&#125;,</div><div class="line">			<span class="string">'safe'</span>:<span class="string">"0"</span></div><div class="line">		&#125;,ensure_ascii=False)</div><div class="line"></div><div class="line">		response = self.postData(data)</div><div class="line"></div><div class="line">		log_file = <span class="string">"/home/zabbix/weixin.log"</span></div><div class="line"></div><div class="line">		logging.basicConfig(filename=log_file,filemode=<span class="string">'a'</span>,level=logging.DEBUG)</div><div class="line">		logging.info(data)</div><div class="line">		logging.debug(response)</div><div class="line">		<span class="built_in">print</span> response</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">        <span class="keyword">if</span> len(sys.argv) != 4:</div><div class="line">            <span class="built_in">print</span> <span class="string">'error segments, now exit'</span></div><div class="line">            sys.exit()</div><div class="line">	a = WeChat(<span class="string">'https://qyapi.weixin.qq.com/cgi-bin'</span>)</div><div class="line">	a.sendMessage(sys.argv[1],sys.argv[3])</div></pre></td></tr></table></figure>
-<pre><code>log_file = &quot;/home/zabbix/weixin.log&quot; 微信日志
-&apos;toparty&apos;:&quot;3&quot;,
-
- &apos;agentid&apos;:&quot;3&quot;, 这里3 是我这边应用ID 3
-touser否成员ID列表（消息接收者，多个接收者用‘|’分隔，最多支持1000个）。特殊情况：指定为@all，则向关注该企业应用的全部成员发送
-toparty否部门ID列表，多个接收者用‘|’分隔，最多支持100个。当touser为@all时忽略本参数
-totag否标签ID列表，多个接收者用‘|’分隔。当touser为@all时忽略本参数
-msgtype是消息类型，此时固定为：text
-agentid是企业应用的id，整型。可在应用的设置页面查看
-content是消息内容
-safe否表示是否是保密消息，0表示否，1表示是，默认0
-
-
-&quot;touser&quot;:&quot;touser&quot;,   #企业号中的用户帐号，在zabbix用户Media中配置，如果配置不正常，将按部门发送。
-文中使用的用户, toparty 部门iD为3，agentid 应用ID为3.
-</code></pre><h3 id="为什么要这样写脚本？"><a href="#为什么要这样写脚本？" class="headerlink" title="为什么要这样写脚本？"></a>为什么要这样写脚本？</h3><p>因为微信企业号开放的端口有固定的格式限制<br> 企业号支持的格式：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=消息类型及数据格式" target="_blank" rel="external">http://qydev.weixin.qq.com/wiki/index.php?title=消息类型及数据格式</a></p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin24.png" alt=""></figure></p>
-<p>将脚本放入zabbix默认执行路径下</p>
-<pre><code>mv weixin.sh /usr/local/zabbix/share/zabbix/alertscripts
-chown zabbix.zabbix /usr/local/zabbix/share/zabbix/alertscripts/weixin.py
-chmod +x /usr/local/zabbix/share/zabbix/alertscripts/weixin.py
-</code></pre><hr>
-<p>到这里上面基本的已经配置完毕了。</p>
-<h3 id="测试脚本是否可以发送成功消息"><a href="#测试脚本是否可以发送成功消息" class="headerlink" title="测试脚本是否可以发送成功消息"></a>测试脚本是否可以发送成功消息</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@salt alertscripts]<span class="comment"># python weixin.py test world!</span></div><div class="line">&#123;<span class="string">u'errcode'</span>: <span class="number">60011</span>, <span class="string">u'errmsg'</span>: <span class="string">u'no privilege to access/modify contact/party/agent '</span>&#125;</div></pre></td></tr></table></figure>
-<p>出现我是企业号体验账户 我发送消息：微信错误 errcode=60011. 可参考：<a href="http://qydev.weixin.qq.com/qa/index.php?qa=3197&amp;qa_1=%E6%88%91%E6%98%AF%E4%BC%81%E4%B8%9A%E5%8F%B7%E4%BD%93%E9%AA%8C%E8%B4%A6%E6%88%B7-%E6%88%91%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF%EF%BC%9A%E5%BE%AE%E4%BF%A1%E9%94%99%E8%AF%AF&amp;show=3197#q3197" target="_blank" rel="external">微信错误 errcode=60011</a></p>
-<p>我这里的原因是应用ID一开始写1，后来改成3测试就通了。</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@salt alertscripts]<span class="comment"># python weixin.py test hello world!</span></div><div class="line">&#123;<span class="string">u'invaliduser'</span>: <span class="string">u'all user invalid'</span>, <span class="string">u'errcode'</span>: <span class="number">0</span>, <span class="string">u'errmsg'</span>: <span class="string">u'ok'</span>&#125;</div></pre></td></tr></table></figure>
-<p>这里用户关注了以后：</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@salt alertscripts]<span class="comment"># python weixin.py jinyu hello world!</span></div><div class="line">&#123;<span class="string">u'errcode'</span>: <span class="number">0</span>, <span class="string">u'errmsg'</span>: <span class="string">u'ok'</span>&#125;</div></pre></td></tr></table></figure>
-<h3 id="web服务端配置："><a href="#web服务端配置：" class="headerlink" title="web服务端配置："></a>web服务端配置：</h3><p>至此工具安装完成，在zabbix界面里添加脚本告警</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin25.png" alt=""></figure></p>
-<p>设置脚本，脚本名称为工具名称，设置好点添加按钮</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin26.png" alt=""></figure></p>
-<p>添加新的报警媒介到用户，我以Admin用户为例</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin27.png" alt=""></figure><br>添加</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin28.png" alt=""></figure></p>
-<p>选择刚才的媒介，收件人为我提供的UserID，多个用户用｜隔开</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin29.png" alt=""></figure></p>
-<p>添加后一点要点更新</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin30.png" alt=""></figure></p>
-<p>我们在这里独立设置一个Action，当然你也可以在默认的Action里添加</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin31.png" alt=""></figure></p>
-<p>名称为weixin</p>
-<p>告警消息的格式，大家可以根据自己需求具体设置，下面是我的设置<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin32.png" alt=""></figure></p>
-<p>默认接收人：故障{TRIGGER.STATUS},服务器:{HOSTNAME1}发生: {TRIGGER.NAME}故障!</p>
-<p>默认信息：</p>
-<figure class="highlight dust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="xml">告警主机:</span><span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml"></span></div><div class="line">告警时间:<span class="template-variable">&#123;EVENT.DATE&#125;</span><span class="xml"> </span><span class="template-variable">&#123;EVENT.TIME&#125;</span><span class="xml"></span></div><div class="line">告警等级:<span class="template-variable">&#123;TRIGGER.SEVERITY&#125;</span><span class="xml"></span></div><div class="line">告警信息: <span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml"></span></div><div class="line">告警项目:<span class="template-variable">&#123;TRIGGER.KEY1&#125;</span><span class="xml"></span></div><div class="line">问题详情:<span class="template-variable">&#123;ITEM.NAME&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE&#125;</span><span class="xml"></span></div><div class="line">前状态:<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE1&#125;</span><span class="xml"></span></div><div class="line">事件ID:<span class="template-variable">&#123;EVENT.ID&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">恢复主旨：恢复<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">, 服务器:</span><span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml">: </span><span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml">已恢复!</span></div><div class="line"></div><div class="line">恢复信息：</div><div class="line"></div><div class="line">告警主机:<span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml"></span></div><div class="line">告警时间:<span class="template-variable">&#123;EVENT.DATE&#125;</span><span class="xml"> </span><span class="template-variable">&#123;EVENT.TIME&#125;</span><span class="xml"></span></div><div class="line">告警等级:<span class="template-variable">&#123;TRIGGER.SEVERITY&#125;</span><span class="xml"></span></div><div class="line">告警信息: <span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml"></span></div><div class="line">告警项目:<span class="template-variable">&#123;TRIGGER.KEY1&#125;</span><span class="xml"></span></div><div class="line">问题详情:<span class="template-variable">&#123;ITEM.NAME&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE&#125;</span><span class="xml"></span></div><div class="line">当前状态:<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE1&#125;</span><span class="xml"></span></div><div class="line">事件ID:<span class="template-variable">&#123;EVENT.ID&#125;</span><span class="xml"></span></div></pre></td></tr></table></figure>
-<p>切换到操作标签，添加操作<br>选择发送到Admin用户，只使用weixin，选择好之后点添加,这里我已经添加过了，所以提示更新。<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin33.png" alt=""></figure><br>设置好之后如下，点添加</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin35.png" alt=""></figure></p>
-<p>经过以上步骤，就完成了配置，就可以使用zabbix来告警啦，用dd命令测试下磁盘i/o告警，一会就会看到微信上发过来的告警信息</p>
-<pre><code>dd if=/dev/zero of=/tmp/test2.img bs=1024M count=1000 oflag=dsync
-</code></pre><h3 id="课外普及："><a href="#课外普及：" class="headerlink" title="课外普及："></a>课外普及：</h3><p>普及：</p>
-<p>如何正确使用dd工具测试磁盘的I/O速度</p>
-<p>一般情况下，我们都是使用dd命令创建一个大文件来测试磁盘的读写速度。但是，很多人都存在一个误区，以为dd命令显示的速度就是磁盘的写入速度，其实这是不然的。我们分析一下dd命令是如何工作的。</p>
-<ol>
-<li>dd if=/dev/zero of=/xiaohan/test.iso bs=1024M count=1</li>
-</ol>
-<p>这种情况下测试显示的速度是dd命令将数据写入到内存缓冲区中的速度，只有当数据写入内存缓冲区完成后，才开始将数据刷入硬盘，所以这时候的数据是无法正确衡量磁盘写入速度的。</p>
-<ol>
-<li>dd if=/dev/zero of=/xiaohan/test.iso bs=1024M count=1;sync</li>
-</ol>
-<p>这种情况下测试显示的跟上一种情况是一样的，两个命令是先后执行的，当sync开始执行的时候，dd命令已经将速度信息打印到了屏幕上，仍然无法显示从内存写硬盘时的真正速度。</p>
-<ol>
-<li>dd if=/dev/zero of=/xiaohan/test.iso bs=1024M count=1 conv=fdatasync</li>
-</ol>
-<p>这种情况加入这个参数后，dd命令执行到最后会真正执行一次“同步(sync)”操作，所以这时候你得到的是读取这128M数据到内存并写入到磁盘上所需的时间，这样算出来的时间才是比较符合实际的。</p>
-<ol>
-<li>dd if=/dev/zero of=/xiaohan/test.iso bs=1024M count=1 oflag=dsync</li>
-</ol>
-<p>这种情况下，dd在执行时每次都会进行同步写入操作。也就是说，这条命令每次读取1M后就要先把这1M写入磁盘，然后再读取下面这1M，一共重复128次。这可能是最慢的一种方式，基本上没有用到写缓存(write cache)。</p>
-<p>总结：</p>
-<p>建议使用测试写速度的方式为：</p>
-<p>dd if=/dev/zero of=/xiaohan/test.iso bs=1024M count=1 conv=fdatasync</p>
-<p>建议使用测试读速度的方式为：</p>
-<p>dd if=/xiaohan/test.iso of=/dev/zero bs=1024M count=1 iflag=direct</p>
-<p>*注：要正确测试磁盘读写能力，建议测试文件的大小要远远大于内存的容量！！！</p>
-<h3 id="PS：后续计划"><a href="#PS：后续计划" class="headerlink" title="PS：后续计划"></a>PS：后续计划</h3><p>1.后续可能会增加发送次数计数，方便管理用户</p>
-<p>2.添加查询操作到微信，针对用户定制开发。可通过微信查询zabbix服务器里监控主机的状态，通过微信简单操作zabbix。</p>
-<h3 id="预览"><a href="#预览" class="headerlink" title="预览"></a>预览</h3><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin38.png" alt=""></figure></p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin39.jpg" alt=""></figure></p>
-<h3 id="注意事项及报错处理"><a href="#注意事项及报错处理" class="headerlink" title="注意事项及报错处理"></a>注意事项及报错处理</h3><pre><code> #Zabbix-web页面新增用户权限处理，发送对象选择（用户的名称）
-
-#应用当中可见范围选择注意（选这要发送的对象（部门，及部门成员））
-</code></pre><p> zabbix-server2.4服务端编译安装 <a href="http://blog.yangcvo.me/2015/01/18/zabbix-server服务端编译安装/" target="_blank" rel="external">zabbix-server服务端编译安装</a></p>
-<p>zabbix2.4监控80端口状态 : <a href="http://blog.yangcvo.me/2016/07/20/zabbix监控80端口状态/" target="_blank" rel="external">zabbix监控80端口状态</a></p>
-<p>zabbix+Grafana安装使用监控结合 ：<a href="http://blog.yangcvo.me/2016/07/13/zabbix-Grafana安装使用结合/" target="_blank" rel="external">zabbix+Grafana安装使用监控结合</a></p>
-<p>zabbix监控MySQL-添加自定义监控项 : <a href="http://blog.yangcvo.me/2015/09/29/zabbix监控MySQL-添加自定义监控项/" target="_blank" rel="external">zabbix监控MySQL-添加自定义监控项</a></p>
-<p>zabbix的ICMP_Ping模版实现对客户端网络状态的监控 : <a href="http://blog.yangcvo.me/2015/11/18/zabbix的ICMP-Ping模版实现对客户端网络状态的监控/" target="_blank" rel="external">zabbix的ICMP_Ping模版实现对客户端网络状态的监控</a></p>
-<p>zabbix性能监控故障总结 <a href="http://blog.yangcvo.me/2016/02/07/zabbix-故障总结/" target="_blank" rel="external">zabbix性能监控故障总结</a></p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
 		<h1><a href="/2016/06/21/性能监控/Zabbix/zabbix3-0部署jmx监控tomcat/">zabbix3.0部署jmx监控tomcat</a></h1>
 	
 	<div class="article__infos">
@@ -500,7 +323,7 @@ chmod +x /usr/local/zabbix/share/zabbix/alertscripts/weixin.py
 <p>vi /etc/services #编辑，在最后添加以下代码</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Zabbix</span></div><div class="line">zabbix-agent 10050/tcp   <span class="comment"># Zabbix Agent</span></div><div class="line">zabbix-agent 10050/udp   <span class="comment"># Zabbix Agent</span></div><div class="line">zabbix-trapper 10051/tcp <span class="comment"># Zabbix Trapper</span></div><div class="line">zabbix-trapper 10051/udp <span class="comment"># Zabbix Trapper</span></div><div class="line">:wq! <span class="comment">#保存退出</span></div></pre></td></tr></table></figure>
 <p>添加后如下</p>
-<figure class="highlight 1c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta"># grep zabbix /etc/services</span></div><div class="line">zabbix-agent     <span class="number">10050</span>/tcp  <span class="meta">#ZabbixAgent</span></div><div class="line">zabbix-agent     <span class="number">10050</span>/udp  <span class="meta">#ZabbixAgent</span></div><div class="line">zabbix-trapper   <span class="number">10051</span>/tcp  <span class="meta">#ZabbixTrapperz</span></div><div class="line">abbix-trapper    <span class="number">10051</span>/udp  <span class="meta">#ZabbixTrapper</span></div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># grep zabbix /etc/services</span></div><div class="line">zabbix-agent     10050/tcp  <span class="comment">#ZabbixAgent</span></div><div class="line">zabbix-agent     10050/udp  <span class="comment">#ZabbixAgent</span></div><div class="line">zabbix-trapper   10051/tcp  <span class="comment">#ZabbixTrapperz</span></div><div class="line">abbix-trapper    10051/udp  <span class="comment">#ZabbixTrapper</span></div></pre></td></tr></table></figure>
 <p>修改zabbix配置文件</p>
 <p>vim /usr/local/zabbix/etc/zabbix_server.conf</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">DBName=zabbix <span class="comment">#数据库名称</span></div><div class="line">DBUser=zabbix <span class="comment">#数据库用户名</span></div><div class="line">DBPassword=zabbix123.com <span class="comment">#数据库密码</span></div><div class="line">ListenIP=192.168.1.170 <span class="comment">#数据库ip地址</span></div><div class="line">AlertScriptsPath=/usr/<span class="built_in">local</span>/zabbix/share/zabbix/alertscripts   <span class="comment">#zabbix运行脚本存放目录</span></div></pre></td></tr></table></figure>
@@ -726,7 +549,7 @@ chmod +x /usr/local/zabbix/share/zabbix/alertscripts/weixin.py
 <p>centos 7 系统启动服务：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span><span class="bash"> systemctl daemon-reload</span></div><div class="line"><span class="meta">$</span><span class="bash"> systemctl start grafana-server</span></div><div class="line"><span class="meta">$</span><span class="bash"> systemctl status grafana-server</span></div></pre></td></tr></table></figure>
 <p>centos 7 设置开机启动</p>
-<figure class="highlight axapta"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo systemctl enable grafana-<span class="keyword">server</span>.service</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo systemctl <span class="built_in">enable</span> grafana-server.service</div></pre></td></tr></table></figure>
 <h3 id="环境文件"><a href="#环境文件" class="headerlink" title="环境文件"></a>环境文件</h3><p>该systemd服务文件和脚本的init.d都使用位于文件 在<code>/etc/sysconfig/grafana</code>服务启动后端时所使用的环境变量。<br>在这里，您可以覆盖日志目录，数据目录和其他变量。</p>
 <h3 id="记录"><a href="#记录" class="headerlink" title="记录"></a>记录</h3><p>默认情况下Grafana将记录到的<code>/var/log/grafana</code></p>
 <h3 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h3><p>默认配置指定位于一个sqlite3的数据库 <code>/var/lib/grafana/grafana.db</code>。请备份升级之前，这个数据库。你也可以使用MySQL或者Postgres作为Grafana数据库上详述配置页面。</p>
@@ -892,6 +715,445 @@ chmod +x /usr/local/zabbix/share/zabbix/alertscripts/weixin.py
 		<h2 id="TOC"><a href="#TOC" class="headerlink" title="TOC"></a>TOC</h2><p>[TOC]</p>
 <h2 id="第一章Shell前言："><a href="#第一章Shell前言：" class="headerlink" title="第一章Shell前言："></a>第一章Shell前言：</h2><p>Shell本身是一种用C语言编写的程序，从用户的角度来看，Shell是用户与Linux操作系统沟通的桥梁。用户既可以输入命令执行，又可以利用 Shell脚本编程，完成更加复杂的操作。在Linux GUI日益完善的今天在运维领域Shell编程仍然起着不可忽视的作用。深入地了解和熟练地掌握Shell编程，是每一个Linux用户的必修。</p>
 		<p><a class="article__read-more-link" href="/2016/03/21/shell编程入门到简单/shell入门到简单 学习总结1-12章/">...read more</a></p>
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2016/03/15/运维笔记/个人记录💥-走上全栈运维工程师学习笔记/">个人记录💥-走上全栈运维工程师学习笔记</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-03-15</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/运维笔记/">运维笔记</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Operation-and-maintenance-Road/">Operation and maintenance Road</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="个人运维💥学习笔记："><a href="#个人运维💥学习笔记：" class="headerlink" title="个人运维💥学习笔记："></a>个人运维💥学习笔记：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">从2014年初就开始慢慢记录自己所接触和学习到的东西，慢慢的积累，整理出很多学习的好文章，在这里我并且记录下来。</div><div class="line">这是我现在维护的个人笔记库和博客不同，它们大多都不是直接来源于我的原创，而是我一边阅读一边整理加工而成的笔记列表.</div><div class="line">我的目的是将零散的知识点放在一个集中的地方. </div><div class="line"> 第一：方便我自己查看和学习，可以更好的找到我想要的文档。</div><div class="line"> 第二：可以给自己学习结果每年做一个总结。</div><div class="line"> </div><div class="line"> 每3个月都会更新记录。</div></pre></td></tr></table></figure>
+<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
+<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
+<h3 id="Linux-系统"><a href="#Linux-系统" class="headerlink" title="Linux 系统"></a>Linux 系统</h3><p><code>Centos源</code></p>
+<ul>
+<li><a href="http://distrowatch.com/table.php?distribution=centos" target="_blank" rel="external">centos源码包更新下载地址</a></li>
+<li><a href="https://wiki.centos.org/Download" target="_blank" rel="external">centos 镜像下载地址</a></li>
+</ul>
+<p><code>硬盘分区</code></p>
+<ul>
+<li><a href="http://www.unix-ninja.com/p/Formatting_Ext4_volumes_beyond_the_16TB_limit" target="_blank" rel="external">格式化的ext4量超过16TB的限制(1)</a></li>
+<li><a href="http://blog.ronnyegner-consulting.de/2011/08/18/ext4-and-the-16-tb-limit-now-solved/" target="_blank" rel="external">格式化的ext4量超过16TB的限制(2)</a></li>
+</ul>
+<p><code>FileZilla</code></p>
+<ul>
+<li><a href="https://filezilla-project.org/download.php?type=client" target="_blank" rel="external">filezilla下载地址</a></li>
+</ul>
+<p><code>PXE</code></p>
+<ul>
+<li><a href="http://jiarh.blog.51cto.com/3467177/1734985" target="_blank" rel="external">pxe 无人值守安装操作系统</a></li>
+<li><a href="http://www.zyops.com/autoinstall-kickstart" target="_blank" rel="external">PXE 安装</a></li>
+</ul>
+<p><code>YUM库</code></p>
+<ul>
+<li><a href="http://www.zyops.com/autodeploy-yum" target="_blank" rel="external">自动化部署-搭建YUM仓库</a></li>
+</ul>
+<p><code>rpm</code></p>
+<ul>
+<li><a href="http://www.zyops.com/autodeploy-rpm" target="_blank" rel="external">定制化RPM包</a></li>
+</ul>
+<p><code>DNS</code></p>
+<ul>
+<li><a href="http://www.zyops.com/aliyun-dns-analysis" target="_blank" rel="external">DNS域名解析原理</a></li>
+</ul>
+<p><code>开源epel</code></p>
+<ul>
+<li><a href="http://mirrors.ustc.edu.cn/" target="_blank" rel="external">开源epel下载包</a></li>
+<li><a href="http://mirrors.sohu.com/" target="_blank" rel="external">开源站点</a></li>
+<li><a href="http://ftp.linux.ncsu.edu/pub/epel/6/x86_64/" target="_blank" rel="external">linux_epel</a> </li>
+<li><a href="http://rpm.pbone.net/index.php3/stat/3/srodzaj/1/search/epel-release" target="_blank" rel="external">rpm-epel包</a></li>
+<li><a href="https://dl.fedoraproject.org/pub/epel/" target="_blank" rel="external">epel rpm软件包</a></li>
+</ul>
+<p><code>samba</code></p>
+<ul>
+<li><a href="http://blog.csdn.net/liuaigui/article/details/5077935" target="_blank" rel="external">samba配置方法</a></li>
+</ul>
+<p><code>iperf</code></p>
+<ul>
+<li><a href="http://heylinux.com/archives/3825.html" target="_blank" rel="external">使用iperf检测主机间网络带宽</a></li>
+</ul>
+<h3 id="虚拟化"><a href="#虚拟化" class="headerlink" title="虚拟化"></a>虚拟化</h3><p><code>Docker</code></p>
+<ul>
+<li><a href="http://www.infoq.com/cn/articles/docker-command-line-quest/" target="_blank" rel="external">Docker 命令学习</a></li>
+<li><a href="http://www.tuicool.com/articles/7V7vYn" target="_blank" rel="external">Docker操作使用</a></li>
+<li><a href="http://openskill.cn/article/22" target="_blank" rel="external">Docker 入门学习</a></li>
+<li><a href="http://yuedu.baidu.com/ebook/d817967416fc700abb68fca1?pn=1&amp;pa=1" target="_blank" rel="external">Docker 入门之战电子书</a></li>
+<li><a href="http://blog.csdn.net/birdben/article/details/49873725" target="_blank" rel="external">Docker实战（1)-(15)</a></li>
+<li><a href="http://www.cnblogs.com/hslzju/p/5839913.html" target="_blank" rel="external">SSH远程登陆docker容器</a></li>
+<li><a href="http://www.cnblogs.com/hslzju/p/5839983.html" target="_blank" rel="external">部署Jenkins+docker集成环境</a></li>
+</ul>
+<p><code>Esxi</code></p>
+<ul>
+<li><a href="http://www.josephturley.com/vsphere-5-5-client-download/" target="_blank" rel="external">vsphere客户端下载</a></li>
+<li><a href="http://www.josephturley.com/vsphere-web-client-download/" target="_blank" rel="external">vsphere web客户端</a></li>
+<li><a href="http://www.josephturley.com/vsphere-5-5-client-download/" target="_blank" rel="external">vsphere web客户端下载</a></li>
+<li><a href="http://www.prolved.com/vsphere-client-downloads/" target="_blank" rel="external">vSphere Client下载</a></li>
+</ul>
+<p><code>KVM</code></p>
+<h3 id="容器平台"><a href="#容器平台" class="headerlink" title="容器平台"></a>容器平台</h3><p><code>Docker</code></p>
+<blockquote>
+<p>Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。</p>
+</blockquote>
+<p><code>Rocket</code></p>
+<blockquote>
+<p>Rocket （也叫 rkt）是 CoreOS 推出的一款容器引擎，和 Docker 类似，帮助开发者打包应用和依赖包到可移植容器中，简化搭环境等部署工作。</p>
+</blockquote>
+<p><code>Ubuntu（LXC）</code></p>
+<blockquote>
+<p>LXD 是 ubuntu 基于 LXC 技术的重构，容器天然支持非特权和分布式。LXD 与 Docker 的思路不同，Docker 是 PAAS，LXD 是 IAAS。LXC 项目由一个 Linux 内核补丁和一些 userspace 工具组成。这些 userspace 工具使用由补丁增加的内核新特性，提供一套简化的工具来维护容器。</p>
+</blockquote>
+<h3 id="微服务平台"><a href="#微服务平台" class="headerlink" title="微服务平台"></a>微服务平台</h3><p><code>OpenShift</code></p>
+<blockquote>
+<p>OpenShift 是由红帽推出的一款面向开源开发人员开放的平台即服务(PaaS)。 OpenShift通过为开发人员提供在语言、框架和云上的更多的选择，使开发人员可以构建、测试、运行和管理他们的应用。</p>
+</blockquote>
+<p><code>Cloud Foundry</code></p>
+<blockquote>
+<p>Cloud Foundry 是VMware于2011年4月12日推出的业界第一个开源PaaS云平台，它支持多种框架、语言、运行时环境、云平台及应用服务，使开发 人员能够在几秒钟内进行应用程序的部署和扩展，无需担心任何基础架构的问题。</p>
+</blockquote>
+<p><code>Kubernetes</code></p>
+<blockquote>
+<p>Kubernetes 是来自 Google 云平台的开源容器集群管理系统。基于 Docker 构建一个容器的调度服务。该系统可以自动在一个容器集群中选择一个工作容器供使用。其核心概念是 Container Pod。</p>
+</blockquote>
+<p><code>Mesosphere</code></p>
+<blockquote>
+<p>Apache Mesos 是一个集群管理器，提供了有效的、跨分布式应用或框架的资源隔离和共享，可以运行Hadoop、MPI、Hypertable、Spark。</p>
+</blockquote>
+<h3 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h3><p><code>MySQL</code></p>
+<ul>
+<li><a href="http://www.phperz.com/article/15/0801/144981.html" target="_blank" rel="external">mysql 教程</a></li>
+<li><a href="http://dev.mysql.com/downloads/repo/yum/" target="_blank" rel="external">MySQL官方软件包下载地址</a></li>
+<li><a href="http://www.aiplaypc.com/371.html" target="_blank" rel="external">MySQL主从配置文档</a></li>
+<li><a href="http://heylinux.com/archives/1004.html" target="_blank" rel="external">MySQL主从复制(Master-Slave)与读写分离（MySQL-Proxy）实践</a></li>
+<li><a href="http://openskill.cn/article/244" target="_blank" rel="external">Mysql架构的演化</a></li>
+</ul>
+<p><code>mongodb</code></p>
+<ul>
+<li><a href="http://www.yiibai.com/mongodb/mongodb_quick_guide.html" target="_blank" rel="external">MongoDB快速入门</a></li>
+<li><a href="http://www.runoob.com/mongodb/mongodb-tutorial.html" target="_blank" rel="external">MongoDB 教程</a></li>
+<li><a href="http://heylinux.com/archives/1950.html" target="_blank" rel="external">安装配置MongoDB</a></li>
+<li><a href="https://www.mongodb.com/download-center?jmp=nav#community" target="_blank" rel="external">MongoDB安装包官网地址</a></li>
+<li><a href="http://limingnihao.iteye.com/blog/1938262" target="_blank" rel="external">第1章 MongoDB的安装</a></li>
+<li><a href="http://limingnihao.iteye.com/blog/1938383" target="_blank" rel="external">第2章 MongoDB的增删改查</a></li>
+<li><a href="http://limingnihao.iteye.com/blog/1940438" target="_blank" rel="external">第3章 MongoDB的Java驱动</a></li>
+</ul>
+<p><code>Robomongo</code></p>
+<ul>
+<li><a href="https://robomongo.org/" target="_blank" rel="external">官网</a>   MongoDB的一个客户端GUI工具</li>
+<li><a href="http://app.robomongo.org/download.html" target="_blank" rel="external">下载地址</a></li>
+</ul>
+<h3 id="云☁️服务"><a href="#云☁️服务" class="headerlink" title="云☁️服务"></a>云☁️服务</h3><p><code>CDN</code></p>
+<ul>
+<li><a href="http://www.cedexis.com/reports/#?report=cdn_response_time&amp;country=CN&amp;date=2015-09-29" target="_blank" rel="external">CDN测试排行</a></li>
+<li><a href="http://www.infoq.com/cn/articles/find-the-same-in-the-variable-from-CDN-to-cloud-computing/" target="_blank" rel="external">CDN变化</a></li>
+<li><p><a href="http://www.17ce.com/" target="_blank" rel="external">网站测速</a></p>
+<p><code>OpenStack</code></p>
+</li>
+</ul>
+<ul>
+<li><a href="https://www.ibm.com/developerworks/community/blogs/132cfa78-44b0-4376-85d0-d3096cd30d3f/entry/%E5%86%99%E5%9C%A8%E6%9C%80%E5%89%8D%E9%9D%A2_%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%8E%A9%E8%BD%AC_OpenStack_1?lang=en" target="_blank" rel="external">每天5分钟玩转 OpenStack</a></li>
+<li><a href="https://docs.openstack.org/ocata/install-guide-rdo/" target="_blank" rel="external">Red Hat Enterprise Linux和CentOS的OpenStack安装指南</a>  </li>
+<li><a href="http://xmodulo.com/manage-vms-openstack-command-line-tools.html" target="_blank" rel="external">如何使用OpenStack命令行工具管理虚拟机</a></li>
+</ul>
+<h3 id="大数据运维"><a href="#大数据运维" class="headerlink" title="大数据运维"></a>大数据运维</h3><p><code>HBase 集群安装部署</code> <a href="http://wuchong.me/blog/2015/04/05/hbase-cluster-deploy/" target="_blank" rel="external">HBase 集群安装部署</a></p>
+<h3 id="编程script"><a href="#编程script" class="headerlink" title="编程script"></a>编程script</h3><p><code>shell</code></p>
+<ul>
+<li><a href="http://c.biancheng.net/cpp/shell/" target="_blank" rel="external">shell学习网站</a></li>
+<li><a href="http://man.linuxde.net/" target="_blank" rel="external">Linux命令大全</a></li>
+</ul>
+<p><code>Python</code></p>
+<ul>
+<li><a href="http://edu.51cto.com/lesson/id-48608.html?edu_recommend_adid=174?edu_recommend_adid=174" target="_blank" rel="external">python 学习视频</a></li>
+<li><a href="http://www.pythondoc.com/pythontutorial3/index.html" target="_blank" rel="external">Python 入门指南</a></li>
+<li><a href="http://www.jobui.com/mianshiti/it/python/" target="_blank" rel="external">Python面试题</a></li>
+<li><a href="http://www.pythondoc.com/" target="_blank" rel="external">python中文大本营</a></li>
+<li><p><a href="https://bitbucket.org/rootart/bandersnatch/src/069c46166d9ed8cc236daa7eac39c2bb2f224644/src/bandersnatch/?at=default" target="_blank" rel="external">bandersnatch</a></p>
+<p><code>pip</code></p>
+</li>
+<li><p><a href="http://rfyiamcool.blog.51cto.com/1030776/1290456?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">构建快速部署的python pip环境及pypi本地源环境</a></p>
+</li>
+<li><a href="http://blog.csdn.net/tantexian/article/details/37724633" target="_blank" rel="external">CentOS 6.5 PYPI本地源制作</a></li>
+</ul>
+<h3 id="Web服务"><a href="#Web服务" class="headerlink" title="Web服务"></a>Web服务</h3><p><code>NGINX</code></p>
+<ul>
+<li><a href="http://www.phperz.com/article/15/0903/153754.html" target="_blank" rel="external">nginx 教程</a></li>
+<li><a href="http://www.bysocket.com/?p=282" target="_blank" rel="external">图解http协议</a></li>
+<li><a href="http://www.nginx.cn/591.html" target="_blank" rel="external">nginx 配置入门</a></li>
+<li><a href="https://segmentfault.com/a/1190000002990165" target="_blank" rel="external">nginx 入门2</a></li>
+<li><a href="http://blog.jobbole.com/89287/" target="_blank" rel="external">nginx 优化</a></li>
+<li><a href="https://blog.martinfjordvald.com/2011/04/optimizing-nginx-for-high-traffic-loads/" target="_blank" rel="external">nginx  优化2</a></li>
+<li><a href="https://www.nginx.com/resources/wiki/start/topics/examples/redhatnginxinit/" target="_blank" rel="external">nginx yum安装 脚本下载地址</a></li>
+</ul>
+<p><code>tomcat</code></p>
+<ul>
+<li><a href="http://www.zyops.com/java-tomcat" target="_blank" rel="external">JAVA企业级应用TOMCAT实战</a></li>
+<li><a href="http://www.zyops.com/java-tomcat" target="_blank" rel="external">tomcat 集群</a></li>
+<li><a href="http://www.zyops.com/java-tomcat" target="_blank" rel="external">tomcat 监控</a></li>
+<li><a href="http://www.zyops.com/java-tomcat" target="_blank" rel="external">jvm 调优</a></li>
+</ul>
+<p><code>负载均衡</code></p>
+<p><a href="https://www.shiyanlou.com/courses/652" target="_blank" rel="external">LVS 集群负载均衡实战</a></p>
+<h3 id="开源的分布式版本控制系统"><a href="#开源的分布式版本控制系统" class="headerlink" title="开源的分布式版本控制系统"></a>开源的分布式版本控制系统</h3><p><code>Git</code></p>
+<ul>
+<li><a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000" target="_blank" rel="external">git教程</a></li>
+</ul>
+<p><code>Gitlab</code></p>
+<ul>
+<li><a href="https://www.gitlab.cc/downloads/#centos6" target="_blank" rel="external">gitlab官网</a></li>
+</ul>
+<h3 id="mail"><a href="#mail" class="headerlink" title="mail"></a>mail</h3><p><code>zimbra</code></p>
+<ul>
+<li><a href="http://aba.qzu.cn/archives/251.html" target="_blank" rel="external">Centos6.2下安装zimbra 7.2</a></li>
+<li><a href="http://www.csdn.net/tag/zimbra" target="_blank" rel="external">zimbra</a></li>
+</ul>
+<h3 id="自动化运维"><a href="#自动化运维" class="headerlink" title="自动化运维"></a>自动化运维</h3><p><code>ansible</code></p>
+<blockquote>
+<p>Ansible 提供一种最简单的方式用于发布、管理和编排计算机系统的工具，你可在数分钟内搞定。Ansible 是一个模型驱动的配置管理器，支持多节点发布、远程任务执行。默认使用 SSH 进行远程连接。无需在被管理节点上安装附加软件，可使用各种编程语言进行扩展。</p>
+<ul>
+<li><a href="http://www.aikaiyuan.com/6299.html" target="_blank" rel="external">ansible指南</a></li>
+</ul>
+</blockquote>
+<p><code>saltstack</code></p>
+<blockquote>
+<p>Saltstack 可以看做是func的增强版+Puppet的弱化版。使用Python编写。非常好用,快速可以基于EPEL部署。Salt 是一个开源的工具用来管理你的基础架构，可轻松管理成千上万台服务器。</p>
+</blockquote>
+<ul>
+<li><a href="https://blog.cunss.com/?p=255" target="_blank" rel="external">saltstack指南</a></li>
+<li><a href="https://docs.saltstack.com/en/getstarted/fundamentals/remotex.html" target="_blank" rel="external">salt官网入门基础</a></li>
+<li><a href="http://setjs.com/?p=226" target="_blank" rel="external">salt使用总结</a></li>
+<li><a href="http://www.saltstack.cn/kb/managing-firewall-with-salt/#managing-firewall-with-salt" target="_blank" rel="external">基于Salt管理iptables防火墙规则</a></li>
+</ul>
+<p><code>Django</code></p>
+<ul>
+<li><a href="http://www.ziqiangxuetang.com/django/django-intro.html" target="_blank" rel="external">基础教程</a></li>
+</ul>
+<h3 id="APP持续集成部署平台"><a href="#APP持续集成部署平台" class="headerlink" title="APP持续集成部署平台"></a>APP持续集成部署平台</h3><p><code>Jenkins</code></p>
+<ul>
+<li><a href="https://my.oschina.net/u/1242185/blog/323241?fromerr=YKc8u9du" target="_blank" rel="external">enkins安装配置</a></li>
+<li><a href="https://hengyunabc.github.io/deploy-system-build-with-jenkins-ansible-supervisor/?spm=5176.blog6068.yqblogcon1.3.A6PSop" target="_blank" rel="external">jenkins 发布系统</a></li>
+<li><a href="http://pkg.jenkins-ci.org/redhat/" target="_blank" rel="external">jenkins rpm 软件包</a></li>
+<li><a href="https://www.jqlinux.com/archives/662" target="_blank" rel="external">jenkins简单使用</a></li>
+<li><a href="http://www.cnblogs.com/mouseIT/p/5024718.html" target="_blank" rel="external">Jenkins将项目发送到tomcat</a></li>
+<li><a href="https://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+on+Red+Hat+distributions" target="_blank" rel="external">centos7安装文档</a></li>
+<li><a href="https://segmentfault.com/a/1190000004639325" target="_blank" rel="external">CentOS 安装 Jenkins</a></li>
+</ul>
+<h3 id="日志分析平台"><a href="#日志分析平台" class="headerlink" title="日志分析平台"></a>日志分析平台</h3><p><code>ELK</code> </p>
+<p> <code>Logstash</code></p>
+<blockquote>
+<p>Logstash 是一个应用程序日志、事件的传输、处理、管理和搜索的平台。你可以用它来统一对应用程序日志进行收集管理，提供 Web 接口用于查询和统计。</p>
+</blockquote>
+<ul>
+<li><a href="https://wsgzao.github.io/post/elk/" target="_blank" rel="external">ELK 搭建日志分析平台</a></li>
+<li><a href="http://kibana.logstash.es/content/logstash/get_start/index.html" target="_blank" rel="external">ELK 中文执指南</a></li>
+<li><a href="http://www.ttlsa.com/elk/elk-kibana-install-and-plugin-management/" target="_blank" rel="external">elk 插件管理</a></li>
+<li><a href="http://www.sojson.com/blog/85" target="_blank" rel="external">elk 插件使用</a></li>
+<li><a href="https://github.com/yangcvo/ELK_config" target="_blank" rel="external">elk 脚本</a></li>
+</ul>
+<p><code>Graylog</code></p>
+<ul>
+<li><a href="http://blog.topspeedsnail.com/archives/4066" target="_blank" rel="external">CentOS 7安装配置Graylog</a></li>
+<li><a href="https://my.oschina.net/fitnessefan/blog/464351?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">Graylog——日志聚合工具中的后起之秀</a></li>
+<li><a href="http://docs.graylog.org/en/1.3/pages/extractors.html" target="_blank" rel="external">Graylog 入门到精通文档</a></li>
+</ul>
+<h3 id="开源监控，警告-amp-分析"><a href="#开源监控，警告-amp-分析" class="headerlink" title="开源监控，警告&amp;分析"></a>开源监控，警告&amp;分析</h3><p><code>zabbix</code></p>
+<ul>
+<li><a href="http://www.zabbix.net.cn/viewforum.php?f=13&amp;sid=2c1c952dbc2384612a1e22de916601b9" target="_blank" rel="external">zabbix学习论坛</a></li>
+<li><a href="http://www.ttlsa.com/zabbix/follow-ttlsa-to-study-zabbix/" target="_blank" rel="external">zabbix入门</a></li>
+<li><a href="http://dl528888.blog.51cto.com/2382721/1428561" target="_blank" rel="external">zabbix优化web事件打开速度</a></li>
+<li><a href="http://canghai.coding.io/2015/07/29/monitoring-mysql-with-zabbix/" target="_blank" rel="external">zabbix监控MySQL</a></li>
+<li><a href="https://share.zabbix.com/official-templates" target="_blank" rel="external">zabbix官方模块</a></li>
+<li><a href="http://docs.grafana.org/v2.0/installation/" target="_blank" rel="external">grafana 二次开源安装</a></li>
+<li><a href="https://github.com/alexanderzobnin/grafana-zabbix" target="_blank" rel="external">grafana-zabbix插件-官方网站</a></li>
+<li><a href="http://play.grafana.org/" target="_blank" rel="external">grafana演示站点</a></li>
+<li><a href="http://www.iyunv.com/thread-25966-1-1.html" target="_blank" rel="external">zabbix监控软件的使用排错</a></li>
+<li><a href="http://www.zabbix.com/download.php" target="_blank" rel="external">zabbix软件包下载地址</a></li>
+<li><a href="https://www.zabbix.com/documentation/3.0/manual/introduction/whatsnew300" target="_blank" rel="external">什么3.0.0的zabbix的新功能</a></li>
+<li><a href="https://github.com/bushvin/zabbix-kvm-res" target="_blank" rel="external">通过ZABBIX KVM监控</a></li>
+<li>个人github上面有整理比较详细的监控文档</li>
+<li><a href="https://blog.cactifans.com/2015/07/24/monitoring-tomcat-with-zabbix/" target="_blank" rel="external">1. zabbix通过jmx监控tomcat</a></li>
+<li><a href="http://www.cnblogs.com/Eivll0m/p/5446311.html" target="_blank" rel="external">2. zabbix通过jmx监控tomcat</a></li>
+<li><a href="https://share.zabbix.com" target="_blank" rel="external">zabbix官网模板</a></li>
+</ul>
+<p><code>zabbix开源监控区别</code></p>
+<ul>
+<li><a href="http://www.sysopen.cn/20150524/" target="_blank" rel="external">Nagios、cacti、zabbix的对比？</a></li>
+</ul>
+<p><code>Nagios</code></p>
+<blockquote>
+<p>Nagios 是一个监视系统运行状态和网络信息的监视系统。Nagios能监视所指定的本地或远程主机以及服务，同时提供异常通知功能等。</p>
+</blockquote>
+<p><code>Ganglia</code></p>
+<blockquote>
+<p>Ganglia 是一个跨平台可扩展的，高 性能计算系统下的分布式监控系统，如集群和网格。它是基于分层设计，它使用广泛的技术，如XML数据代表，便携数据传输，RRDtool用于数据存储和可视化。</p>
+</blockquote>
+<p><code>Graphite</code></p>
+<blockquote>
+<p>Graphite 是一个用于采集网站实时信息并进行统计的开源项目，可用于采集多种网站服务运行状态信息。Graphite服务平均每分钟有4800次更新操作。</p>
+</blockquote>
+<p><code>Kibana</code></p>
+<blockquote>
+<p>Kibana 是一个为 Logstash 和 ElasticSearch 提供的日志分析的 Web 接口。可使用它对日志进行高效的搜索、可视化、分析等各种操作。</p>
+</blockquote>
+<h3 id="团队技术平台和项目管理平台-amp-测试平台"><a href="#团队技术平台和项目管理平台-amp-测试平台" class="headerlink" title="团队技术平台和项目管理平台&amp;测试平台"></a>团队技术平台和项目管理平台&amp;测试平台</h3><p><code>confluence团队项目协作平台</code></p>
+<ul>
+<li><a href="https://www.teambition.com" target="_blank" rel="external">teambition</a></li>
+<li><a href="https://www.atlassian.com/software/confluence/" target="_blank" rel="external">confluence</a></li>
+</ul>
+<p><code>teambition 公司技术团队工作记录跟踪迭代平台</code></p>
+<ul>
+<li><a href="https://www.teambition.com" target="_blank" rel="external">teambition</a></li>
+</ul>
+<p><code>jira-敏捷项目管理工具</code></p>
+<ul>
+<li><a href="https://my.atlassian.com/products/index" target="_blank" rel="external">jira-敏捷项目管理工具</a></li>
+</ul>
+<p><code>创业公司禅道项目管理系统</code></p>
+<ul>
+<li><a href="http://www.zentao.net/download/79930.html" target="_blank" rel="external">禅道项目管理软件</a></li>
+</ul>
+<p><code>APP推广统计数据分析</code></p>
+<ul>
+<li><a href="www.talkingdata.com">talkingdata</a></li>
+</ul>
+<p><code>RAP是一个可视化接口管理工具 通过分析接口结构</code></p>
+<ul>
+<li><a href="http://rap.taobao.org/org/index.do" target="_blank" rel="external">RAP 接口管理工具</a></li>
+</ul>
+<h3 id="统一的账号管理认证平台"><a href="#统一的账号管理认证平台" class="headerlink" title="统一的账号管理认证平台"></a>统一的账号管理认证平台</h3><p><code>openLDAP</code></p>
+<ul>
+<li><a href="http://blog.csdn.net/hitabc141592/article/details/22931179" target="_blank" rel="external">openldap 部署1</a></li>
+<li><a href="http://jianshi-dlw.iteye.com/blog/1557846" target="_blank" rel="external">openldap 部署2</a></li>
+<li><a href="https://www.howtoforge.com/setting-up-an-openvpn-server-with-authentication-against-openldap-on-ubuntu-10.04-lts#-install-openvpn" target="_blank" rel="external">LDAP 认证</a></li>
+<li><a href="http://wiki.yepn.net/lam" target="_blank" rel="external">Samba+LDAP+LAM管理工具应用</a></li>
+<li><p><a href="http://blog.blackroom.cn/blog/2013/04/05/samba-web-modify-password/" target="_blank" rel="external">让Samba用户通过WEB页面修改密码</a></p>
+<p><code>OpenLDAP + ProFTPD</code></p>
+</li>
+<li><p><a href="http://www.pudgecon.com/blog/2013/08/23/install-openldap-and-proftpd-on-ubuntu-12-dot-04/" target="_blank" rel="external">Install OpenLDAP and ProFTPD on Ubuntu 12.04</a></p>
+</li>
+</ul>
+<h3 id="公司VPN"><a href="#公司VPN" class="headerlink" title="公司VPN"></a>公司VPN</h3><p><code>OpenVPN Server</code></p>
+<ul>
+<li><a href="http://heylinux.com/archives/3499.html" target="_blank" rel="external">CentOS 6上部署OpenVPN Server</a></li>
+<li><a href="https://docs.ucloud.cn/software/vpn/OpenVPN4CentOS.html" target="_blank" rel="external">OpenVPN for CentOS</a></li>
+<li><a href="https://www.unixmen.com/setup-openvpn-server-client-centos-6-5/" target="_blank" rel="external">centos 安装部署openvpn </a></li>
+<li><p><a href="https://www.digitalocean.com/community/tutorials/how-to-setup-and-configure-an-openvpn-server-on-centos-6" target="_blank" rel="external">部署参考</a></p>
+<ul>
+<li>openVPN <a href="https://www.tunnelblick.net/" target="_blank" rel="external">Tunnelblick工具下载</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="翻墙"><a href="#翻墙" class="headerlink" title="翻墙"></a>翻墙</h3><p><code>ssh隧道翻墙</code></p>
+<ul>
+<li><a href="http://www.cenhq.com/2015/12/18/ssh-tunnel-over-the-wall/" target="_blank" rel="external">ssh隧道翻墙</a></li>
+</ul>
+<h3 id="node-js-后台"><a href="#node-js-后台" class="headerlink" title="node.js 后台"></a>node.js 后台</h3><ul>
+<li><a href="http://blog.csdn.net/nsrainbow/article/details/33740915" target="_blank" rel="external">如何卸载node.js</a> </li>
+</ul>
+<h3 id="海外代理服务器平台"><a href="#海外代理服务器平台" class="headerlink" title="海外代理服务器平台"></a>海外代理服务器平台</h3><p><code>服务器供应商</code></p>
+<ul>
+<li><a href="http://www.capitalonline.net/zh-cn/" target="_blank" rel="external">服务器</a></li>
+</ul>
+<h3 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h3><p><code>windows 防火墙</code></p>
+<ul>
+<li><a href="http://heylinux.com/archives/category/windows" target="_blank" rel="external">Windows Server 2008上的防火墙配置脚本</a></li>
+</ul>
+<p><code>Windows系统中文换英文</code></p>
+<ul>
+<li><a href="http://heylinux.com/archives/1667.html" target="_blank" rel="external">Windows 7中文旗舰版与英文版自由切换</a></li>
+</ul>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><ul>
+<li><a href="http://openstf.io/" target="_blank" rel="external">openstf</a></li>
+<li><a href="http://www.open-open.com/lib/view/open1437967814581.html" target="_blank" rel="external">stf环境搭建</a></li>
+<li><a href="https://www.sdk.cn/news/2794" target="_blank" rel="external">macaca 自动化测试</a></li>
+<li><a href="https://xudafeng.github.io/slide/archives/macaca/#/" target="_blank" rel="external">移动时代的自动化</a></li>
+</ul>
+<h3 id="war包仓库"><a href="#war包仓库" class="headerlink" title="war包仓库"></a>war包仓库</h3><p><code>Maven私服nexus</code></p>
+<ul>
+<li><a href="http://www.cnblogs.com/dingyingsi/p/3776557.html" target="_blank" rel="external">Centos 基础开发环境搭建之Maven私服nexus</a></li>
+</ul>
+<h3 id="wkhtmltox-HTML效果转PDF格式"><a href="#wkhtmltox-HTML效果转PDF格式" class="headerlink" title="wkhtmltox-HTML效果转PDF格式"></a>wkhtmltox-HTML效果转PDF格式</h3><ul>
+<li>参考我博客的wkhtmltox</li>
+</ul>
+<h3 id="博客"><a href="#博客" class="headerlink" title="博客"></a>博客</h3><p><code>Ghost</code></p>
+<ul>
+<li><a href="http://support.ghost.org/how-to-upgrade/" target="_blank" rel="external">官方-Ghost升级方法</a></li>
+<li><a href="https://wiki.bitnami.com/Applications/BitNami_Ghost" target="_blank" rel="external">一键安装Ghost博客</a></li>
+<li><a href="https://bitnami.com/stack/ghost/installer#linux" target="_blank" rel="external">bitnami 下载一键安装Ghost脚本包</a></li>
+<li><a href="https://segmentfault.com/a/1190000002397419" target="_blank" rel="external">vps 安装 Ghost 博客系统记录</a></li>
+<li><a href="http://www.open-open.com/news/view/144e24e" target="_blank" rel="external">15个免费的Ghost博客主题</a></li>
+<li><a href="https://github.com/yangcvo/Ghost" target="_blank" rel="external">我自己整理的Ghost 20种博客主题</a></li>
+<li><a href="http://www.ghostchina.com/" target="_blank" rel="external">Ghost中文官方版</a></li>
+<li><a href="https://github.com/yangcvo/Ghost" target="_blank" rel="external">Ghost英文文档安装</a></li>
+<li><a href="https://github.com/yangcvo/Ghost" target="_blank" rel="external">Ghost博客安装，使用，更新一条龙教程 - 中文版</a><br>在我github上面都有的，我安装的是7.0的。</li>
+<li><a href="https://github.com/yangcvo/Ghost" target="_blank" rel="external">Ghost修改端口方法文档</a></li>
+<li>Ghost20种主题主题包下载：<a href="https://github.com/yangcvo/Ghost/tree/master/Ghost-theme" target="_blank" rel="external">Ghost20种主题包</a></li>
+<li><a href="https://www.bokeyy.com/post/ghost-install-in-vps-solution-in-china.html" target="_blank" rel="external">Ghost 博客安装中文全攻略</a></li>
+<li><a href="http://docs.ghost.org/zh/themes/" target="_blank" rel="external">Ghost主题变更</a></li>
+</ul>
+<p><code>Wordpress</code></p>
+<ul>
+<li><a href="https://wordpress.org/showcase/" target="_blank" rel="external">官网</a></li>
+<li><a href="https://cn.wordpress.org/" target="_blank" rel="external">中文官网WordPress</a> 访问有点慢。</li>
+<li><a href="http://www.wpdaxue.com/tutorials/page/2" target="_blank" rel="external">非常有益的我是参考了建站网站有很详细说Wordpass</a></li>
+<li><a href="http://www.wpdaxue.com/tutorials/page/2" target="_blank" rel="external">wordpass大学</a></li>
+<li><a href="https://zh-cn.forums.wordpress.org/forum/plugins" target="_blank" rel="external">Wordpress下载插件-中文网站</a><br>非常好的一位博主很详细讲了WordPress的安装过程和主题更换，插件使用等等WordPress先生</li>
+<li><a href="http://www.wpsir.cn/archives/tag/wordpress%E5%AE%89%E8%A3%85" target="_blank" rel="external">WordPress</a></li>
+<li><a href="http://www.wpsir.cn/archives/768" target="_blank" rel="external">如何搭建WordPress博客?</a></li>
+<li><a href="https://bbs.aliyun.com/read/259101.html?spm=5176.7189909.5.41.yW4V0H" target="_blank" rel="external">阿里云视频-如何在ECS上快递搭建一个WordPress站点</a></li>
+<li><a href="http://www.wpdaxue.com/install-wordpress-theme-and-plugin.html" target="_blank" rel="external">WordPress入门 之 安装主题和插件</a></li>
+</ul>
+<p><code>hexo</code></p>
+<p>这个是我现在的博客用的效果。</p>
+<h3 id="网上书店-非常不错"><a href="#网上书店-非常不错" class="headerlink" title="网上书店-非常不错"></a>网上书店-非常不错</h3><ul>
+<li><a href="https://www.packtpub.com/all" target="_blank" rel="external">packt</a></li>
+</ul>
+<h3 id="已学习视频"><a href="#已学习视频" class="headerlink" title="已学习视频"></a>已学习视频</h3><p><code>Linux</code></p>
+<ul>
+<li><a href="http://edu.51cto.com/course/course_id-549.html" target="_blank" rel="external">从0开始一步步实战深入学习Linux运维视频课程(三)</a>  2014-03-28 看完 –现在这需要付费，我当初看的时候免费的，给你们个链接 越过去：<a href="http://edu.51cto.com/lesson/id-11907.html" target="_blank" rel="external">http://edu.51cto.com/lesson/id-11907.html</a></li>
+</ul>
+<p><code>MySQL</code></p>
+<ul>
+<li><p><a href="https://ke.qq.com/course/134105" target="_blank" rel="external">企业Mysql实战系列入门篇</a> 2014年3月5日看完</p>
+</li>
+<li><p><a href="http://down.51cto.com/zt/535#0-sqq-1-75870-9737f6f9e09dfaf5d3fd14d775bfee85" target="_blank" rel="external">Mysql从入门到精通视频教程（共29集）</a>  2015年11月3日看完</p>
+</li>
+</ul>
+<p>还有些网上分享的视频，存放在百度云。有数据库优化12篇视频。还有数据库架构</p>
+<p><code>Docker</code></p>
+<p><a href="https://ke.qq.com/user/tasks/index.html?cid=132963#tid=100148647&amp;fr=2" target="_blank" rel="external">实战企业Docker虚拟化系列</a>  2016年3月23日看完</p>
+<p><code>Python</code></p>
+<p><a href="https://ke.qq.com/course/139441" target="_blank" rel="external">学会Python编程基础篇</a>  2016-02-13 学完</p>
+<p><code>监控</code></p>
+<p><a href="http://edu.51cto.com/course/course_id-460.html" target="_blank" rel="external">企业级高级监控系统cacti+nagios【马哥linux视频课程】</a><br><a href="http://edu.51cto.com/course/course_id-6907.html" target="_blank" rel="external">Zabbix监控平台应用实战视频课程</a> 收费 需要可@我 2016-09-10 学完</p>
+<h3 id="Ubuntu"><a href="#Ubuntu" class="headerlink" title="Ubuntu"></a>Ubuntu</h3><p><a href="http://www.lupaworld.com/article-221573.html" target="_blank" rel="external">Ubuntu上可使用的15个桌面环境</a> 很早就玩过了。</p>
+<p><a href="http://mirrors.163.com/ubuntu-releases/14.04/" target="_blank" rel="external">Ubuntu iso镜像下载地址</a></p>
+<h3 id="平面设计"><a href="#平面设计" class="headerlink" title="平面设计"></a>平面设计</h3><p><code>PS</code></p>
+<ul>
+<li><a href="http://wenku.baidu.com/course/view/994e6037ee06eff9aef8078d?cid=5" target="_blank" rel="external">Photoshop学习教程</a></li>
+</ul>
+<h6 id="陆续更新-（Update-time-：2016：12：11）"><a href="#陆续更新-（Update-time-：2016：12：11）" class="headerlink" title="@@ 陆续更新 ~~  （Update time ：2016：12：11）"></a>@@ 陆续更新 ~~  （Update time ：2016：12：11）</h6>
 	
 
 	

@@ -43,67 +43,6 @@
 
 	<article>
 	
-		<h1><a href="/2014/10/01/性能监控/Zabbix/zabbix的ICMP-Ping模版实现对客户端网络状态的监控/">zabbix的ICMP_Ping模版实现对客户端网络状态的监控</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2014-10-01</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<p>上一次搭建了邮件告警和微信告警，可以很方便及时接收到告警的。<br>这里讲zabbix里面ICMP-ping模板的实现网络监控。</p>
-<p>Zabbix使用外部命令fping处理ICMP ping的请求，fping不包含在zabbix的发行版本中，需要额外去下载安装fping程序，安装完毕之后需要在<code>zabinx_server.conf</code>中的参数<code>FpingLocation</code>配置fping安装的路径。</p>
-<p>由于fping默认是<code>root</code>权限工作，而<code>zabbix-server</code>是zabbix用户运行的，所以需要对fping程序设置<code>setuid</code>权限，<br>如果在自定义key的时候需要用到<code>netstat</code>命令，也同样要设置<code>setuid</code>，否则不能获取到数据，而在日志中提示权拒绝。</p>
-<h3 id="一、登陆Zabbix服务器做以下操作："><a href="#一、登陆Zabbix服务器做以下操作：" class="headerlink" title="一、登陆Zabbix服务器做以下操作："></a>一、登陆Zabbix服务器做以下操作：</h3><p>1.fping安装</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">wget http://www.fping.org/dist/fping-3.10.tar.gz</div><div class="line">tar zxvf fping-3.10.tar.gz</div><div class="line"><span class="built_in">cd</span> fping-3.10</div><div class="line">./configure --prefix=/usr/<span class="built_in">local</span>/fping/</div><div class="line">make &amp;&amp; make install</div></pre></td></tr></table></figure>
-<p>2.修改zabbix_server.conf配置文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">vim /usr/<span class="built_in">local</span>/zabbix/etc/zabbix_server.conf</div><div class="line"></div><div class="line">把FpingLocation路径修改为刚安装的fping路径。</div><div class="line"></div><div class="line">FpingLocation=/usr/<span class="built_in">local</span>/fping/sbin/fping</div></pre></td></tr></table></figure>
-<p>如果不修改zabbix_server.conf配置件需要使用软连接到/usr/local/sbin/fping，zabbix默认fping的路径是/usr/sbin/fping</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ln <span class="_">-s</span> /usr/sbin/fping /path/to/non-existant/fping</div><div class="line">ln <span class="_">-s</span> /usr/sbin/fping6 /path/to/non-existant/fping6</div></pre></td></tr></table></figure>
-<p>3.修改fping权限（如果不设下面权限，zabbix服务端会采集不到数据）</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># chown root:zabbix /usr/local/fping/sbin/fping</span></div><div class="line"><span class="comment"># chmod 4710 /usr/local/fping/sbin/fping</span></div></pre></td></tr></table></figure>
-<p>安装完fping，设置好zabbix-server 配置文件，需要重启服务。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">service zabbix_server restart  <span class="comment">#重启服务</span></div></pre></td></tr></table></figure>
-<p>4.zabbix用户测试fping命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">/usr/<span class="built_in">local</span>/fping/sbin/fping www.baidu.com</div><div class="line">www.baidu.com is alive   <span class="comment"># 说明命令返回成功。</span></div></pre></td></tr></table></figure>
-<h3 id="二、登陆Zabbix监控网页做以下设置"><a href="#二、登陆Zabbix监控网页做以下设置" class="headerlink" title="二、登陆Zabbix监控网页做以下设置"></a>二、登陆Zabbix监控网页做以下设置</h3><p>打开zabbix-configuration-host-creat </p>
-<p>1.host添加需要监控的ip地址,这里就不介绍了。</p>
-<p>2.选择模版template icmp ping</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-icmp.png" alt=""></figure></p>
-<p>3.添加Graphs</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-icmp1.png" alt=""></figure></p>
-<p>添加完以后可以查看对应的机器图形：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-icmp2.png" alt=""></figure></p>
-<p>四、触发器模版已自带，设置报警方式后就可以接收报警邮件了。</p>
-<p>zabbix-server2.4服务端编译安装 <a href="http://blog.yangcvo.me/2015/01/18/zabbix-server服务端编译安装/" target="_blank" rel="external">zabbix-server服务端编译安装</a></p>
-<p>zabbix2.4监控80端口状态 : <a href="http://blog.yangcvo.me/2016/07/20/zabbix监控80端口状态/" target="_blank" rel="external">zabbix监控80端口状态</a></p>
-<p>zabbix+Grafana安装使用监控结合 ：<a href="http://blog.yangcvo.me/2016/07/13/zabbix-Grafana安装使用结合/" target="_blank" rel="external">zabbix+Grafana安装使用监控结合</a></p>
-<p>zabbix监控MySQL-添加自定义监控项 : <a href="http://blog.yangcvo.me/2015/09/29/zabbix监控MySQL-添加自定义监控项/" target="_blank" rel="external">zabbix监控MySQL-添加自定义监控项</a></p>
-<p>zabbix的ICMP_Ping模版实现对客户端网络状态的监控 : <a href="http://blog.yangcvo.me/2015/11/18/zabbix的ICMP-Ping模版实现对客户端网络状态的监控/" target="_blank" rel="external">zabbix的ICMP_Ping模版实现对客户端网络状态的监控</a></p>
-<p>zabbix性能监控故障总结 <a href="http://blog.yangcvo.me/2016/02/07/zabbix-故障总结/" target="_blank" rel="external">zabbix性能监控故障总结</a></p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
 		<h1><a href="/2014/09/13/运维安全/httpd进程非常多，查找被攻击的原因/">httpd进程非常多，查找被攻击的原因</a></h1>
 	
 	<div class="article__infos">
