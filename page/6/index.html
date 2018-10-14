@@ -43,6 +43,38 @@
 
 	<article>
 	
+		<h1><a href="/2017/03/03/OpenLDAP/ OpenLDAP 企业应用方案 -PPT认识LDAP+熟悉操作LDAP命令/">OpenLDAP企业应用方案-PPT认识LDAP+熟悉操作LDAP命令</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-03-03</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/OpenLDAP/">OpenLDAP</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/OpenLDAP/">OpenLDAP</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h4 id="认识LDAP熟悉LDAP配置"><a href="#认识LDAP熟悉LDAP配置" class="headerlink" title="认识LDAP熟悉LDAP配置"></a>认识LDAP熟悉LDAP配置</h4><p>LDAP目录中可以存储各种类型的数据：电子邮件地址、邮件路由信息、人力资源数据、公用密匙、联系人列表，等等<br>但是不是关系型数据库。不象被设计成每分钟需要处理成百上千条数据变化的数据库<br>可以把数据“推”到远程的办公室，以增加数据的安全性<br>复制功能，数据库产商就会要你支付额外的费用，而且也很难管理</p>
+		<p><a class="article__read-more-link" href="/2017/03/03/OpenLDAP/ OpenLDAP 企业应用方案 -PPT认识LDAP+熟悉操作LDAP命令/">...read more</a></p>
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
 		<h1><a href="/2017/02/11/Bigdata-hadoop/Kafka/kafka10.0.9版本总是在启动一段时间后自动停止/">kafka总是在启动一段时间后自动停止</a></h1>
 	
 	<div class="article__infos">
@@ -631,152 +663,6 @@ phpmailer.smtp-password: xxxx
 	
 		<p>最近弄灰度发布系统，由于最近体检项目需要对css文件和js文件进行压缩，各种比较之后，选择了grunt进行构建。google一下，几乎都是grunt最新版的使用说明<code>查看gruntjs的入门 Getting started</code>，又是云里雾里的，好吧，只能耐心看文档和不断的实践吧。</p>
 		<p><a class="article__read-more-link" href="/2016/11/24/Node.js-npm/Node.js-Grunt工具搭建后台管理实践/">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/11/14/日志分析平台/Graylog/graylog 升级2.1 集中日志解决方案/">graylog 升级2.1 集中日志解决方案</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-11-14</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Graylog/">Graylog</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h1 id="graylog-升级2-1-集中日志解决方案"><a href="#graylog-升级2-1-集中日志解决方案" class="headerlink" title="graylog 升级2.1 集中日志解决方案"></a>graylog 升级2.1 集中日志解决方案</h1><p>参考官网：<a href="http://docs.graylog.org/en/2.1/pages/upgrade/graylog-2.1.html" target="_blank" rel="external">升级到Graylog的2.1.x</a></p>
-<h3 id="一：为什么需要集中日志解决方案？"><a href="#一：为什么需要集中日志解决方案？" class="headerlink" title="一：为什么需要集中日志解决方案？"></a>一：为什么需要集中日志解决方案？</h3><p>在公司服务机子部署越来越多的情况下，让我们来想想会遇到的问题：</p>
-<ul>
-<li>开发人员不能登录线上服务器查看详细日志，经过运维周转费时费力</li>
-<li>日志数据分散在多个系统，难以查找</li>
-<li>日志数据量大，查询速度慢</li>
-<li>一个调用会涉及多个系统，难以在这些系统的日志中快速定位数据</li>
-<li>数据不够实时</li>
-<li>很难对数据进行挖掘，分析，业务告警，审计</li>
-<li>这些问题的存在让开发以及运维人员很是头痛，严重影响效率！</li>
-</ul>
-<h3 id="二：什么是graylog技术栈？"><a href="#二：什么是graylog技术栈？" class="headerlink" title="二：什么是graylog技术栈？"></a>二：什么是graylog技术栈？</h3><p>为了解决上述问题，我们需要一个日志的集中管理方案，graylog技术栈：</p>
-<ul>
-<li>java （jdk1.8.0_66/）环境</li>
-<li>Collector-sidecar（收集日志）或者syslog</li>
-<li>Mongodb（存储日志源文件）</li>
-<li>Elasticsearch（提供搜索日志）</li>
-<li>Graylog2.1.1（搜索和视图展示日志，告警和权限）</li>
-</ul>
-<p>有了这些，我们就能把日志先收集起来，进行我们想要的分析之后，web的形式展示出来，提供查询！</p>
-<h3 id="三：graylog的安装部署"><a href="#三：graylog的安装部署" class="headerlink" title="三：graylog的安装部署"></a>三：graylog的安装部署</h3><p>安装环境：linux centOS系统安装，已安装JDK1.8版本，安装启动顺序</p>
-<p>1.安装部署mongodb<br>2.安装部署elasticsearch<br>3.安装部署graylog<br>4.安装部署Graylog Collector Sidecar</p>
-<hr>
-<p> <strong>1：安装部署mongodb</strong> <strong>Java也安装</strong>  参考我博文有介绍。 </p>
-<p> <strong>2：安装部署elasticsearch</strong></p>
-<p><strong>(1)下载jar包</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">wget https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/2.3.5/elasticsearch-2.3.5.tar.gz</div><div class="line"></div><div class="line">如果报错</div><div class="line">执行</div><div class="line"></div><div class="line">wget --no-check-certificate</div><div class="line"></div><div class="line">https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/2.3.5/elasticsearch-2.3.5.tar.gz</div></pre></td></tr></table></figure>
-<p><strong>(2)解压jar包</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tar -zxvf elasticsearch-2.3.5.tar.gz -C /opt/</div></pre></td></tr></table></figure>
-<p><strong>(3)修改elasticsearch.yml配置文件</strong></p>
-<p> 这里需要修改配置文件：配置前先创建几个目录文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mkdir /home/data/es-data -p</div><div class="line">mkdir /home/data/es-work -p</div></pre></td></tr></table></figure>
-<p>elasticsearch-2.3.5安装目录conf下执行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">vim elasticsearch-2.3.5/config/elasticsearch.yml</div><div class="line"> </div><div class="line">cluster.name: graylog              <span class="comment">#集群名称建议命名graylog，便于识别区分</span></div><div class="line">node.name: elasticsearch-node-1     <span class="comment"># elasticsearch集群节点名称</span></div><div class="line">network.host: 192.168.1.234    <span class="comment"># 绑定节点IP</span></div><div class="line">http.port: 9200         <span class="comment"># 外部访问端口，默认，也可以安全考虑修改</span></div><div class="line">path.logs: /home/data/logs</div><div class="line">path.data: /home/data/es-data</div><div class="line">discovery.zen.ping.multicast.enabled: <span class="literal">false</span>   <span class="comment">#多播发现方式关闭，因为graylog采用单播方式发现elasticsearch集群方式</span></div><div class="line">discovery.zen.ping.unicast.hosts                   <span class="comment">#多个节点用逗号隔开</span></div><div class="line">discovery.zen.minimum_master_nodes: 3    <span class="comment"># elasticsearch集群节点，最少选举数，这个数一定要设置为整个集群节点个数的一半加1，即N/2+1，必须为奇数</span></div></pre></td></tr></table></figure>
-<p><strong>(4)启动elasticsearch服务</strong></p>
-<p>新建一个elasticsearch用户，出于安全考虑，elasticsearch服务不能使用root用户启动</p>
-<p>创建elasticsearch用户组及elasticsearch用户，执行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">groupadd elasticsearch</div><div class="line">useradd elasticsearch -g elasticsearch -p elasticsearch</div></pre></td></tr></table></figure>
-<p>其中-g使用户属于某个组，-p为新用户使用加密密码）<br>更改elasticsearch-2.3.5文件夹及内部文件的所属用户及组为elasticsearch:elasticsearch</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">chown -R elasticsearch:elasticsearch  /home/data/</div><div class="line">chown -R elasticsearch:elasticsearch  elasticsearch-2.3.5</div></pre></td></tr></table></figure>
-<p>切换用户</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">su elasticsearch</div></pre></td></tr></table></figure>
-<p>在elasticsearch-2.3.5/bin目录下执行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[elasticsearch@graylog bin]$ ps -ef | grep elasticsearch</div><div class="line">root     18265 16004  0 14:27 pts/1    00:00:00 su elasticsearch</div><div class="line">502      18405     1 62 14:27 pts/1    00:00:13 /srv/jdk1.8.0_66/bin/java -Xms256m -Xmx1g -Djava.awt.headless=<span class="literal">true</span> -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=75 -XX:+UseCMSInitiatingOccupancyOnly -XX:+HeapDumpOnOutOfMemoryError -XX:+DisableExplicitGC -Dfile.encoding=UTF-8 -Djna.nosys=<span class="literal">true</span> -Des.path.home=/opt/elasticsearch-2.3.5 -cp /opt/elasticsearch-2.3.5/lib/elasticsearch-2.3.5.jar:/opt/elasticsearch-2.3.5/lib/* org.elasticsearch.bootstrap.Elasticsearch start <span class="_">-d</span></div><div class="line">502      18530 18266  0 14:27 pts/1    00:00:00 grep --color=auto ela</div></pre></td></tr></table></figure>
-<p><strong>(5)检查elasticsearch服务状态</strong></p>
-<p>执行如下命令测试Elasticsearch是否正常运行：</p>
-<p>$ curl -XGET ‘<a href="http://localhost:9200/_cluster/health?pretty=true" target="_blank" rel="external">http://localhost:9200/_cluster/health?pretty=true</a>‘</p>
-<p>输出的信息如下表示Elasticsearch安装成功：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">[elasticsearch@graylog bin]$ curl -XGET <span class="string">'http://192.168.1.234:9200/_cluster/health?pretty=true'</span></div><div class="line">&#123;</div><div class="line">  <span class="string">"cluster_name"</span> : <span class="string">"graylog"</span>,</div><div class="line">  <span class="string">"status"</span> : <span class="string">"yellow"</span>,</div><div class="line">  <span class="string">"timed_out"</span> : <span class="literal">false</span>,</div><div class="line">  <span class="string">"number_of_nodes"</span> : 1,</div><div class="line">  <span class="string">"number_of_data_nodes"</span> : 1,</div><div class="line">  <span class="string">"active_primary_shards"</span> : 30,</div><div class="line">  <span class="string">"active_shards"</span> : 30,</div><div class="line">  <span class="string">"relocating_shards"</span> : 0,</div><div class="line">  <span class="string">"initializing_shards"</span> : 0,</div><div class="line">  <span class="string">"unassigned_shards"</span> : 30,</div><div class="line">  <span class="string">"delayed_unassigned_shards"</span> : 0,</div><div class="line">  <span class="string">"number_of_pending_tasks"</span> : 0,</div><div class="line">  <span class="string">"number_of_in_flight_fetch"</span> : 0,</div><div class="line">  <span class="string">"task_max_waiting_in_queue_millis"</span> : 0,</div><div class="line">  <span class="string">"active_shards_percent_as_number"</span> : 50.0</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="3：安装部署graylog-2-1版本"><a href="#3：安装部署graylog-2-1版本" class="headerlink" title="3：安装部署graylog-2.1版本"></a>3：安装部署graylog-2.1版本</h3><p><strong>(1)下载安装包</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wget https://packages.graylog2.org/releases/graylog/graylog-2.1.1.tgz</div></pre></td></tr></table></figure>
-<p><strong>(2)解压安装包</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tar -zxvf graylog-2.1.1.tgz -C /opt/.</div></pre></td></tr></table></figure>
-<p><strong>(3)修改配置文件</strong></p>
-<p>修改安装目录下 graylog.conf.example 文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vim graylog.conf.example</div></pre></td></tr></table></figure>
-<p>web_listen_uri 值是graylog启动成功后，web服务访问地址</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">web_listen_uri = http://192.168.1.234:9000/</div></pre></td></tr></table></figure>
-<p>rest_listen_uri 的值，是graylog启动成功后，api访问地址</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rest_listen_uri = http://192.168.1.234:9000/api/</div></pre></td></tr></table></figure>
-<p>root_timezone = UTC  #设置时区，否则默认使用的是UTC时间也就是世界时间 这里是必须改下的，因为后期收集日志显示时间是有变化的。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">root_timezone = Asia/Shanghai</div></pre></td></tr></table></figure>
-<p>其中 password_secret 的值用命令生成</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">yum install -y pwgen</div><div class="line">pwgen -N 1 <span class="_">-s</span> 96       H1R5v17kWtyDxj2PzxLMxu41D6HDt9JzhfZcj6QlCURVddgkLAdnUmpkdIscmmu4ELKsTrHwKvPmxFKSYyTn0YlqebbpQqyr</div><div class="line"></div><div class="line">    password_secret = H1R5v17kWtyDxj2PzxLMxu41D6HDt9JzhfZcj6QlCURVddgkLAdnUmpkdIscmmu4ELKsTrHwKvPmxFKSYyTn0YlqebbpQqyr</div></pre></td></tr></table></figure>
-<p>其中root_password_sha2 的值使用命令生成</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="built_in">echo</span> -n Ihaozhuo_b313 | sha256sum  (这里对密码123456哈希加密)</div><div class="line"></div><div class="line"><span class="built_in">fc</span>88c28d48b0cb97f3fb5286cc35c520409ef037acd30ec687f0c0bd3d5a5115 </div><div class="line">   </div><div class="line">root_password_sha2 = <span class="built_in">fc</span>88c28d48b0cb97f3fb5286cc35c520409ef037acd30ec687f0c0bd3d5a5115</div></pre></td></tr></table></figure>
-<p>elasticsearch_cluster_name 值必须是elasticsearch配置文件中的cluster_name</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">elasticsearch_cluster_name = graylog</div></pre></td></tr></table></figure>
-<p>elasticsearch_discovery_zen_ping_unicast_hosts 填写elasticsearch地址，如果是多个，用逗号隔开</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">elasticsearch_discovery_zen_ping_unicast_hosts = 192.168.1.234:9300</div></pre></td></tr></table></figure>
-<p>elasticsearch_discovery_zen_ping_multicast_enabled = false 多播模式关闭</p>
-<p>由于我们只有一个Elasticsearch shard，需要把elasticsearch_shards参数设置为1：<br>elasticsearch集群分片数量</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">elasticsearch_shards = 1</div></pre></td></tr></table></figure>
-<p>elasticsearch绑定的节点IP</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">299 elasticsearch_network_host = 192.168.1.234</div><div class="line">300 elasticsearch_network_bind_host = 192.168.1.234</div><div class="line">301 elasticsearch_network_publish_host = 192.168.1.234</div></pre></td></tr></table></figure>
-<p>mongodb安装服务的ip地址</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mongodb_uri = mongodb://192.168.1.234/graylog</div></pre></td></tr></table></figure>
-<p>这里mongodb是安装在我同一台服务器上面的。如果要把mongodb单独服务器跑连接方式配置文件里面也有例子说明：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mongodb_uri =mongodb://graylog:123456@160.17.2.251:27017/graylog2             <span class="comment">#连接到mongodb的服务器地址为160.17.2.251:27017，账号为graylog，密码为123456 数据库为graylog2</span></div></pre></td></tr></table></figure>
-<p> 设置告警邮件发送者信息</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"> <span class="comment"># Email transport</span></div><div class="line">transport_email_enabled = <span class="literal">false</span></div><div class="line">transport_email_hostname = smtp.exmail.qq.com</div><div class="line">transport_email_port = 465</div><div class="line">transport_email_use_auth = <span class="literal">true</span></div><div class="line">transport_email_use_tls = <span class="literal">true</span></div><div class="line">transport_email_use_ssl = <span class="literal">true</span></div><div class="line">transport_email_auth_username = chengyangyang@qq.cn</div><div class="line">transport_email_auth_password = beneTqq</div><div class="line">transport_email_subject_prefix = [graylog]</div><div class="line">transport_email_from_email = chengyangyang@qq.cn</div></pre></td></tr></table></figure>
-<p><strong>(4)复制配置文件</strong></p>
-<p> 因为graylog安装bin目录下，默认启动配置文件</p>
-<p>配置文件路径：<code>/etc/graylog/server/server.conf</code></p>
-<p>所以需要将<code>graylog.conf.example</code> 复制到<code>/etc/graylog/server/</code>目录下，并且改名 <code>server.conf</code></p>
-<p>执行命令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mkdir -p /etc/graylog/server/ </div><div class="line">cp graylog.conf.example /etc/graylog/server/server.conf</div></pre></td></tr></table></figure>
-<p><strong>(5)启动graylog</strong></p>
-<p>在graylog安装bin目录下执行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./graylogctl start</div></pre></td></tr></table></figure>
-<p>查看日志，在graylog安装目录下执行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tail -200f /<span class="built_in">log</span>/graylog-server.log</div></pre></td></tr></table></figure>
-<p>如果报错：</p>
-<p>原因：</p>
-<p>在mongodb版本2.6之后，是需要日志journaling设置的，而默认情况下是关闭的</p>
-<p>解决办法：</p>
-<p>在mongodb启动命令加上 –journal</p>
-<p>最后启动命令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./mongod --dbpath=/usr/<span class="built_in">local</span>/mongodb/data/ --fork --logpath=/usr/<span class="built_in">local</span>/mongodb/logs --storageEngine=mmapv1 --journal</div></pre></td></tr></table></figure>
-<p>重启mongodb后，重启graylog服务即可！</p>
-<p><strong>(6)启动graylog(报错二)</strong></p>
-<p>查看日志，在graylog安装目录下执行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">tail -200f /<span class="built_in">log</span>/graylog-server.log</div></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;com.mongodb.MongoSocketOpenException: Exception opening socket&#125;, caused by &#123;java.net.ConnectException: 拒绝连接&#125;&#125;]&#125;. Waiting <span class="keyword">for</span> 30000 ms before timing out</div><div class="line">2016-11-22 15:10:29,355 INFO : org.graylog2.bootstrap.CmdLineTool - Loaded plugin: Elastic Beats Input 1.1.1 [org.graylog.plugins.beats.BeatsInputPlugin]</div><div class="line">2016-11-22 15:10:29,357 INFO : org.graylog2.bootstrap.CmdLineTool - Loaded plugin: Collector 1.1.1 [org.graylog.plugins.collector.CollectorPlugin]</div><div class="line">2016-11-22 15:10:29,357 INFO : org.graylog2.bootstrap.CmdLineTool - Loaded plugin: Enterprise Integration Plugin 1.1.1 [org.graylog.plugins.enterprise_integration.EnterpriseIntegrationPlugin]</div><div class="line">2016-11-22 15:10:29,358 INFO : org.graylog2.bootstrap.CmdLineTool - Loaded plugin: MapWidgetPlugin 1.1.1 [org.graylog.plugins.map.MapWidgetPlugin]</div><div class="line">2016-11-22 15:10:29,359 INFO : org.graylog2.bootstrap.CmdLineTool - Loaded plugin: Pipeline Processor Plugin 1.1.1 [org.graylog.plugins.pipelineprocessor.ProcessorPlugin]</div><div class="line">2016-11-22 15:10:29,359 INFO : org.graylog2.bootstrap.CmdLineTool - Loaded plugin: Anonymous Usage Statistics 2.1.1 [org.graylog.plugins.usagestatistics.UsageStatsPlugin]</div><div class="line">2016-11-22 15:10:29,487 INFO : org.graylog2.bootstrap.CmdLineTool - Running with JVM arguments: -Djava.library.path=./../lib/sigar -Xms1g -Xmx1g -XX:NewRatio=1 -XX:+ResizeTLAB -XX:+UseConcMarkSweepGC -XX:+CMSConcurrentMTEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:-OmitStackTraceInFastThrow</div></pre></td></tr></table></figure>
-<p>提示mongodb 拒绝连接。 这个时候需要看下端口地址是否是IP地址还是127.0.0.1 如果不是需要修改下在重启服务就可以了。</p>
-<p><strong>查看启动服务端口：</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[root@graylog graylog-2.1.1]<span class="comment"># netstat -ntulp</span></div><div class="line">Active Internet connections (only servers)</div><div class="line">Proto Recv-Q Send-Q Local Address               Foreign Address             State       PID/Program name</div><div class="line">tcp        0      0 127.0.0.1:27017             0.0.0.0:*                   LISTEN      22308/mongod</div><div class="line">tcp        0      0 0.0.0.0:22                  0.0.0.0:*                   LISTEN      1974/sshd</div><div class="line">tcp        0      0 127.0.0.1:25                0.0.0.0:*                   LISTEN      1287/master</div><div class="line">tcp        0      0 ::ffff:192.168.1.234:9350   :::*                        LISTEN      23642/java</div><div class="line">tcp        0      0 ::ffff:192.168.1.234:9000   :::*                        LISTEN      23642/java</div><div class="line">tcp        0      0 ::ffff:192.168.1.234:9200   :::*                        LISTEN      18405/java</div><div class="line">tcp        0      0 ::ffff:192.168.1.234:9300   :::*                        LISTEN      18405/java</div><div class="line">tcp        0      0 :::22                       :::*                        LISTEN      1974/sshd</div><div class="line">tcp        0      0 ::1:25                      :::*                        LISTEN      1287/master</div></pre></td></tr></table></figure>
-<p><strong>(6)访问graylog</strong></p>
-<p>graylog启动成功后，浏览器访问：<strong>graylog安装IP:9000</strong></p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog10.png" alt=""></figure></p>
-<h3 id="四：总结"><a href="#四：总结" class="headerlink" title="四：总结"></a>四：总结</h3><p>到此，基础的集中日志管理graylog安装完毕！，后续将继续介绍：</p>
-<p>安装部署Graylog Collector Sidecar 收集应用日志</p>
-<p>采用syslog收集日志方式</p>
-<p>graylog一些使用，包括日志截取，告警等。</p>
-<p>之前也实践过ELK技术栈，后来选型graylog，是基于graylog带有的权限管理，和告警功能比较完善！</p>
-
 	
 
 	
