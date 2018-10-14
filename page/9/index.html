@@ -43,84 +43,6 @@
 
 	<article>
 	
-		<h1><a href="/2016/06/29/运维安全/ 化解自己的阿里云服务器被黑客攻击-暴力破解/">化解自己的阿里云服务器被黑客攻击-暴力破解</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-06-29</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/运维安全/">运维安全</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Operation-safety/">Operation safety</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<p>说明下：因为阿里云服务器我是用来自己搭建blog 的做了一些简单的监控。</p>
-<p>因为防止被攻击瘫痪，做到安全防范，可是今天晚上吃完饭，发现又被人攻击，是印度和巴西IP地址暴力破解方式一直在尝试破解我密码。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">还好我在阿里云上面使用了云盾告警，其实它这个一般般，只能提醒，不能有效阻止黑客攻击。</div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun.png" alt=""></figure></p>
-<p>收到告警以后，马上打开电脑去云盾上面查看下。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun2.png" alt=""></figure></p>
-<p>然后看了以后发现问题不大，可是上机器查看，发现有不断的攻击痕迹。<br>日志查看到很多来历不明的IP。德国🇩🇪  巴西 印度。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun3.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun4.png" alt=""></figure></p>
-<p>看到这个，我就写了个脚本记录被攻击留下的保存指定文件夹，我看下是否还在继续攻击了。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"> <span class="comment">#!/bin/bash</span></div><div class="line"><span class="comment">#Denyhosts SHELL SCRIPT</span></div><div class="line"><span class="comment">#2016-2-18</span></div><div class="line">cat /var/<span class="built_in">log</span>/secure|awk <span class="string">'/Failed/&#123;print $(NF-  3)&#125;'</span>|sort|uniq -c|awk <span class="string">'&#123;print $2"=" $1;&#125;'</span> &gt;/root/bin/Denyhosts.txt</div><div class="line">DEFINE=<span class="string">"10"</span></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> `cat /root/bin/Denyhosts.txt`</div><div class="line"><span class="keyword">do</span></div><div class="line">    IP=`<span class="built_in">echo</span> <span class="variable">$i</span>|awk -F= <span class="string">'&#123;print $1&#125;'</span>`</div><div class="line">    NUM=`<span class="built_in">echo</span> <span class="variable">$i</span>|awk -F= <span class="string">'&#123;print $2&#125;'</span>`</div><div class="line">    <span class="keyword">if</span> [ <span class="variable">$NUM</span> <span class="_">-gt</span> <span class="variable">$DEFINE</span> ]</div><div class="line">    <span class="keyword">then</span></div><div class="line">            grep <span class="variable">$IP</span> /etc/hosts.deny &gt;/dev/null</div><div class="line">            <span class="keyword">if</span> [ $? <span class="_">-gt</span> 0 ];</div><div class="line">            <span class="keyword">then</span></div><div class="line">            <span class="built_in">echo</span> <span class="string">"sshd:<span class="variable">$IP</span>"</span> &gt;&gt; /etc/hosts.deny</div><div class="line">            <span class="keyword">fi</span></div><div class="line">    <span class="keyword">fi</span></div><div class="line"><span class="keyword">done</span></div></pre></td></tr></table></figure>
-<p>因为保存到其他的txt文件下面：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@iZ28by3xm9eZ bin]<span class="comment"># ll</span></div><div class="line">总用量 4</div><div class="line">-rwxr-xr-x 1 root root 535 2月  17 21:38 Denyhosts.sh</div><div class="line">-rw-r--r-- 1 root root   0 2月  17 21:45 Denyhosts.txt</div></pre></td></tr></table></figure>
-<p>查看里面有不断攻击的IP :</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@iZ28by3xm9eZ bin]<span class="comment"># vim Denyhosts.txt</span></div><div class="line"></div><div class="line">101.69.252.146=1</div><div class="line">115.196.20.181=11</div><div class="line">117.243.176.226=6</div><div class="line">186.208.19.61=5</div><div class="line">186.251.118.71=3</div><div class="line">89.238.64.148=2</div><div class="line">94.215.141.101=1</div></pre></td></tr></table></figure>
-<p>这里我记录了攻击的多少次也有的。</p>
-<p>可是发现的确在继续攻击，我在想如何阻止被破解呢。</p>
-<p>主要是依靠denyhost软件。稳重所讲的是下载安装包安装，实际上可以从直接使用yum或者apt安装，找到相应的源就可以。下边是帖子原文： DenyHosts官方网站为：<a href="http://denyhosts.sourceforge.net" target="_blank" rel="external">http://denyhosts.sourceforge.net</a></p>
-<p>这里下载最新的版本是2008年 2.6 版本的 一直没更新。不过已经足够强大。 1. 安装</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># tar -zxvf DenyHosts-2.6.tar.gz</span></div><div class="line"><span class="comment"># cd DenyHosts-2.6</span></div><div class="line"><span class="comment"># python setup.py install</span></div></pre></td></tr></table></figure>
-<p>默认是安装到/usr/share/denyhosts目录的。</p>
-<p>1.配置</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment"># cd /usr/share/denyhosts/</span></div><div class="line"><span class="comment"># cp denyhosts.cfg-dist denyhosts.cfg</span></div><div class="line"><span class="comment"># vi denyhosts.cfg</span></div><div class="line">PURGE_DENY = 50m <span class="comment">#过多久后清除已阻止IP</span></div><div class="line">HOSTS_DENY = /etc/hosts.deny </div><div class="line"><span class="comment">#将阻止IP写入到hosts.deny</span></div><div class="line">BLOCK_SERVICE = sshd </div><div class="line"><span class="comment">#阻止服务名</span></div><div class="line">DENY_THRESHOLD_INVALID = 1 </div><div class="line"><span class="comment">#允许无效用户登录失败的次数</span></div><div class="line">DENY_THRESHOLD_VALID = 10 </div><div class="line"><span class="comment">#允许普通用户登录失败的次数</span></div><div class="line">DENY_THRESHOLD_ROOT = 5 </div><div class="line"><span class="comment">#允许root登录失败的次数</span></div><div class="line">WORK_DIR = /usr/<span class="built_in">local</span>/share/denyhosts/data</div><div class="line"><span class="comment">#将deny的host或ip纪录到Work_dir</span></div><div class="line">DENY_THRESHOLD_RESTRICTED = 1 </div><div class="line"><span class="comment">#设定 deny host 写入到该资料夹</span></div><div class="line">LOCK_FILE = /var/lock/subsys/denyhosts <span class="comment">#将DenyHOts启动的pid纪录到LOCK_FILE中，已确保服务正确启动，防止同时启动多个服务。</span></div><div class="line">HOSTNAME_LOOKUP=NO <span class="comment">#是否做域名反解            ADMIN_EMAIL = #设置管理员邮件地址</span></div><div class="line">DAEMON_LOG = /var/<span class="built_in">log</span>/denyhosts <span class="comment">#自己的日志文件</span></div><div class="line">DAEMON_PURGE = 10m <span class="comment">#该项与PURGE_DENY 设置成一样，也是清除hosts.deniedssh 用户的时间。</span></div></pre></td></tr></table></figure>
-<p>2.设置启动脚本</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># cp daemon-control-dist daemon-control</span></div><div class="line"><span class="comment"># chown root daemon-control</span></div><div class="line"><span class="comment"># chmod 700 daemon-control</span></div></pre></td></tr></table></figure>
-<p>完了之后执行daemon-contron start就可以了。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ./daemon-control start</span></div></pre></td></tr></table></figure>
-<p>如果要使DenyHosts每次重起后自动启动还需做如下设置：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ln -s /usr/share/denyhosts/daemon-control                 /etc/init.d/denyhosts</span></div><div class="line"><span class="comment"># chkconfig --add denyhosts</span></div><div class="line"><span class="comment"># chkconfig denyhosts on</span></div></pre></td></tr></table></figure>
-<p>然后就可以启动了：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># service denyhosts start</span></div></pre></td></tr></table></figure>
-<p>可以看看/etc/hosts.deny内是否有禁止的IP，有的话说明已经成功了。</p>
-<p>启动出现错误解决：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./daemon-control start</div></pre></td></tr></table></figure>
-<p>出现：<code>starting DenyHosts: /usr/bin/env python /usr/bin/denyhosts.py --daemon --config=/usr/share/denyhosts/denyhosts.cfg 
-DenyHosts could not obtain lock (pid: ) 
-[Errno 17] File exists: &#39;/var/lock/subsys/denyhosts&#39;</code> 使用：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"> touch /private/var/<span class="built_in">log</span>/system.log</div><div class="line"> touch /var/lock/subsys/denyhosts</div><div class="line">rm <span class="_">-f</span> /var/lock/subsys/denyhosts</div><div class="line"></div><div class="line">./daemon-control start</div><div class="line">starting DenyHosts: /usr/bin/env python /usr/bin/denyhosts.py –daemon –config=/usr/share/denyhosts/denyhosts.cfg </div><div class="line">OK！</div></pre></td></tr></table></figure>
-<p>启动完成啦。 你可以使用</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">service denyhosts status来查看运行状态</div></pre></td></tr></table></figure>
-<p>DenyHosts is running with pid = 25874 表示已经启动起来了。<br>接下来就可以使用</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cat /etc/hosts.deny来查看记录了</div></pre></td></tr></table></figure>
-<p>然后启动成功以后，我自己测试了下，</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">ssh root@115.28.175.207</div><div class="line">root@115.28.175.207<span class="string">'s password:</span></div><div class="line">Permission denied, please try again.</div><div class="line">root@115.28.175.207's password:</div><div class="line">cPermission denied, please try again.</div><div class="line">root@115.28.175.207<span class="string">'s password:</span></div><div class="line">Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password).</div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun5.png" alt=""></figure></p>
-<p>发现自己登陆不上去了，然后只能去阿里控制台操作查看原因。</p>
-<p>原来发现 <code>cat /etc/hosts.deny</code>来查看记录了<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun6.png" alt=""></figure></p>
-<p>然后去掉，115IP 发现就可以登陆了。 所以我做的设置是<code>root</code>尝试破解4次以上，被锁定。</p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
 		<h1><a href="/2016/06/22/性能监控/Zabbix/zabbix3-0实现微信报警/">zabbix3.0实现微信报警</a></h1>
 	
 	<div class="article__infos">
@@ -941,6 +863,35 @@ chmod +x /usr/local/zabbix/share/zabbix/alertscripts/weixin.py
 <p>然后安装完成正常显示版本信息：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"> ln <span class="_">-s</span> /usr/<span class="built_in">local</span>/bin/ansible /usr/bin/ansible </div><div class="line"> </div><div class="line"> [root@LAN_zabbix pip-9.0.1]<span class="comment"># ansible --version</span></div><div class="line">ansible 2.2.1.0</div><div class="line">  config file =</div><div class="line">  configured module search path = Default w/o overrides</div></pre></td></tr></table></figure>
 
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
+		<h1><a href="/2016/03/21/shell编程入门到简单/shell入门到简单 学习总结1-12章/">shell入门到简单 学习总结1-12章</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-03-21</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Shell-programming/">Shell programming</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="TOC"><a href="#TOC" class="headerlink" title="TOC"></a>TOC</h2><p>[TOC]</p>
+<h2 id="第一章Shell前言："><a href="#第一章Shell前言：" class="headerlink" title="第一章Shell前言："></a>第一章Shell前言：</h2><p>Shell本身是一种用C语言编写的程序，从用户的角度来看，Shell是用户与Linux操作系统沟通的桥梁。用户既可以输入命令执行，又可以利用 Shell脚本编程，完成更加复杂的操作。在Linux GUI日益完善的今天在运维领域Shell编程仍然起着不可忽视的作用。深入地了解和熟练地掌握Shell编程，是每一个Linux用户的必修。</p>
+		<p><a class="article__read-more-link" href="/2016/03/21/shell编程入门到简单/shell入门到简单 学习总结1-12章/">...read more</a></p>
 	
 
 	
