@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>企业级Nginx Web服务优化实战 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>企业级Nginx Web服务优化实战</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-08-23</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/nginx/">nginx</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Nginx/">Nginx</a> <a class="article__tag-link" href="/tags/Web-Service/">Web Service</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="企业级Nginx-Web服务优化实战"><a href="#企业级Nginx-Web服务优化实战" class="headerlink" title="企业级Nginx Web服务优化实战"></a>企业级Nginx Web服务优化实战</h3><h5 id="前言"><a href="#前言" class="headerlink" title="前言:"></a>前言:</h5><p>  在运维工作已经3个年，运维岗位：对web服务是必须要会的，这次我对Nginx Web服务做一次优化总结，上次记得写博客是对Nginx配置详解和服务的高可用。希望写的对你看到我博客的人有所帮助。</p>
+<h5 id="1-1-Nginx-基本安全优化"><a href="#1-1-Nginx-基本安全优化" class="headerlink" title="1.1 Nginx 基本安全优化"></a>1.1 Nginx 基本安全优化</h5><h6 id="1-1-2-调整参数隐藏Nginx软件版本号信息"><a href="#1-1-2-调整参数隐藏Nginx软件版本号信息" class="headerlink" title="1.1.2 调整参数隐藏Nginx软件版本号信息"></a>1.1.2 调整参数隐藏Nginx软件版本号信息</h6><p> 这里说隐藏版本号重要性软件出现漏洞跟版本特别有关系，我们尽可能隐藏或消除web服务队访问用户显示各类敏感信息，这样恶意要攻击你的用户就很难猜到他攻击的服务所用的是否有特定的漏洞的软件，或者是否有对应漏洞的某一特定版本，从而加强了Web服务的安全性。</p>
+<p> 例子：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">[root@nginx ~]<span class="comment"># curl -I 127.0.0.7 </span></div><div class="line">HTTP/1.1 200 OK</div><div class="line">Server: nginx/1.9.7   <span class="comment">#&lt;--这里清晰地暴露了web版本号（1.9.7）以及软件名称（Nginx）</span></div><div class="line">Date: Sat, 08 Apr 2017 08:15:59 GMT</div><div class="line">Content-Type: text/html</div><div class="line">Content-Length: 612</div><div class="line">Last-Modified: Thu, 19 Nov 2015 05:50:20 GMT</div><div class="line">Connection: keep-alive</div><div class="line">ETag: <span class="string">"564d631c-264"</span></div><div class="line">Accept-Ranges: bytes</div></pre></td></tr></table></figure>
+<p>如何隐藏可以通过配置文件加参数来实现：</p>
+<p>在Nginx配置文件Nginx.conf 中的server标签🏷内加入<code>“server_tokens off”</code>参数，具体查看如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">      listen       80;</div><div class="line">      server_name  localhost;</div><div class="line">      server_tokens off;</div><div class="line"></div><div class="line">      location / &#123;</div><div class="line">          root   html;</div><div class="line">          index  index.html index.htm;</div><div class="line">      limit_req  zone=one;</div><div class="line">      &#125;</div></pre></td></tr></table></figure>
+<p> 配置完成后保存，重新加载配置文件，再次curl查看：</p>
+<pre><code class="bash"> [root@nginx ~]<span class="comment"># curl -I 127.0.0.7</span>
+HTTP/1.1 200 OK
+Server: nginx
+Date: Sat, 08 Apr 2017 08:20:31 GMT
+Content-Type: text/html
+Content-Length: 612
+Last-Modified: Thu, 19 Nov 2015 05:50:20 GMT
+Connection: keep-alive
+ETag: <span class="string">"564d631c-264"</span>
+Accept-Ranges: bytes
+</code></pre>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/08/23/Web服务技术/Nginx/企业级Nginx Web服务优化实战/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2018 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

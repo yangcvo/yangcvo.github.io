@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>搭建配置tomcat环境 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>搭建配置tomcat环境</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2015-11-21</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/tomcat/">tomcat</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Java-Tomcat-notes/">Java+Tomcat notes</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="先安装jdk-java环境"><a href="#先安装jdk-java环境" class="headerlink" title="先安装jdk-java环境"></a>先安装jdk-java环境</h3><p>首先先检查linux机器上是否有自带的jdk,一般不建议用yum安装，环境变量不方便自定义。</p>
+<p><code>java -version</code>检查下就可以，如果有版本低的话可以先卸载掉方法如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[root@localhost java]<span class="comment"># rpm -qa|grep gcj 或者 rpm -qa|grep java</span></div><div class="line">libgcj-4.1.2-44.el5</div><div class="line">java-1.4.2-gcj-compat-1.4.2.0-40jpp.115</div></pre></td></tr></table></figure>
+<p>如果没有信息就是没有安装、如果有那么如下操作:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@localhost]<span class="comment"># yum -y remove java-1.4.2-gcj-compat-1.4.2.0-40jpp.115   </span></div><div class="line">或者 rpm <span class="_">-e</span> --nodeps java-1.4.2-gcj-compat-1.4.2.0-40jpp.115</div><div class="line">Complete!(看到这个说明完成了。。)  卸载完成了</div></pre></td></tr></table></figure>
+<p>如果其他目录有这个安装好的。直接拷贝过去，做个变量就行.</p>
+<p>JDK官网下载地址：<a href="http://download.oracle.com/otn-pub/java/jdk/8u60-b27/jdk-8u60-linux-x64.tar.gz" target="_blank" rel="external">jdk-8u60-linux-x64.tar.gz</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">下载jdk命令：</div><div class="line"></div><div class="line">wget --header <span class="string">"Cookie: oraclelicense=accept-securebackup-cookie”   http://download.oracle.com/otn-pub/java/jdk/8u144-b01/090f390dda5b47b9b721c7dfaa008135/jdk-8u144-linux-x64.tar.gz</span></div></pre></td></tr></table></figure>
+<p>编译安装jdk</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">curl -O http://oak0aohum.bkt.clouddn.com/jdk1.7.0_67.tar.gz -C /srv/</div><div class="line"></div><div class="line">设置环境变量：</div><div class="line"></div><div class="line"><span class="built_in">cd</span> /etc/profile.d/ 放到这下面写个变量java.sh</div><div class="line"><span class="built_in">export</span> JAVA_HOME=/srv/jdk1.7.0_67</div><div class="line"><span class="built_in">export</span> CLASS_PATH=<span class="string">"<span class="variable">$JAVA_HOME</span>/lib:<span class="variable">$JAVA_HOME</span>/jre/lib"</span></div><div class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$JAVA_HOME</span>/bin</div></pre></td></tr></table></figure>
+<p>添加完毕保存退出.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">source</span> /etc/profile</div><div class="line"><span class="built_in">echo</span> <span class="variable">$JAVA_HOME</span></div><div class="line">/usr/java/jdk1.7.0</div></pre></td></tr></table></figure>
+<h3 id="安装：apache-tomcat"><a href="#安装：apache-tomcat" class="headerlink" title="安装：apache-tomcat"></a>安装：apache-tomcat</h3><ul>
+<li>先下载tomcat包：<a href="http://mirror.bit.edu.cn/apache/tomcat/tomcat-8/v8.0.41/src/" target="_blank" rel="external">apache-tomcat-8.0.41-src.tar.gz</a></li>
+</ul>
+<p>配置端口 b不要有冲突了默认是8080这里修改成8082。</p>
+<blockquote>
+<p>（1）采用记事本打开Tomcat安装目录下的conf文件夹下的servlet.xml文件。<br>（2）在servlet.xml文件中找到以下代码：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"> &lt;Connector port=<span class="string">"8082"</span> protocol=<span class="string">"HTTP/1.1"</span>  URIEncoding=<span class="string">"UTF-8"</span></div><div class="line">connectionTimeout=<span class="string">"20000"</span></div><div class="line"> redirectPort=<span class="string">"8443"</span> /&gt;</div></pre></td></tr></table></figure>
+<p>（3）将上面代码中的<code>port=&quot;8080&quot;修改为port=&quot;8082&quot;</code>，即可将Tomcat的默认端口设置为8081。在修改端口时，应避免与公用端口冲突。建议采用默认的8080端口，不要修改，除非8080端口被其他程序所占用。</p>
+<p>Connector子元素下的port是设置服务器端口，而connection Timeout则是服务器连接超时单位为毫秒.</p>
+<p>（4）URIEncoding=”UTF-8 设置是让tomcat支持中文，不会出现乱码</p>
+<p>###配置防火墙</p>
+<p>允许然后把8082 这个端口开放到指定的办公网络端口访问。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">-A INPUT -i eth0 <span class="_">-s</span> 192.168.1.0/24 -p tcp -m state --state NEW -m tcp --dport 8082 -j ACCEPT</div></pre></td></tr></table></figure>
+<ol>
+<li>进入linux系统下tomcat的bin目录，</li>
+</ol>
+<p>比如，进入到 apache-tomcat-7.0.42/bin 目录</p>
+<ol>
+<li>关闭一下tomcat服务，特别是已经启动的情况下，只不过有些异常</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./shutdown.sh</div></pre></td></tr></table></figure>
+<p>####3. 检查tomcat启动进程</p>
+<p>ps -ef|grep tomcat</p>
+<p>假如出现以下类似的提示，表示tomcat已经关闭</p>
+<p>root     30248 30113  0 10:00 pts/0    00:00:00 grep java</p>
+<p>####4. 最后重新启动tomcat</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./startup.sh</div></pre></td></tr></table></figure>
+<p>也可以写启动脚本，配置好jdk和tomcat的环境变量。</p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2015/11/21/Web服务技术/tomcat/搭建配置tomcat环境/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2018 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

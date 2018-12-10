@@ -43,84 +43,6 @@
 
 	<article>
 	
-		<h1><a href="/2017/02/10/自动化+Jenkins/Ansible/Ansible-Playbook高级语法运用/">Ansible-Playbook高级语法运用</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-02-10</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/automation/">automation</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Ansible/">Ansible</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h3 id="Ansible-官网学习："><a href="#Ansible-官网学习：" class="headerlink" title="Ansible 官网学习："></a>Ansible 官网学习：</h3><p>免费下载的ANSIBLE WHITEPAPER  <a href="https://www.ansible.com/ansible-in-depth-whitepaper" target="_blank" rel="external">ansible高级白皮书</a></p>
-<p>Ansible简介, <a href="https://fast.wistia.net/embed/iframe/p1oo1n6jtv?popover=true" target="_blank" rel="external">111分钟的学习视频官网</a></p>
-<p>Ansible自动化平台演示,<a href="https://fast.wistia.net/embed/iframe/xi5453qdhl?popover=true" target="_blank" rel="external">演示</a></p>
-<h4 id="我在官网学习📚书籍-，这里也是官网推荐我贴了3本，需要自己去下载："><a href="#我在官网学习📚书籍-，这里也是官网推荐我贴了3本，需要自己去下载：" class="headerlink" title="我在官网学习📚书籍 ，这里也是官网推荐我贴了3本，需要自己去下载："></a>我在官网学习📚书籍 ，这里也是官网推荐我贴了3本，需要自己去下载：</h4><ol>
-<li>Ansible for DevOps, by Jeff Geerling<br><a href="https://www.ansible.com/ansible-devops-book" target="_blank" rel="external">FREE BOOK SAMPLE</a></li>
-</ol>
-<ol>
-<li><p>Extending Ansible eBook Preview , Extending Ansible  ,by Rishabh Das<br><a href="https://www.ansible.com/extending-ansible" target="_blank" rel="external">FREE BOOK SAMPLE</a>  </p>
-</li>
-<li><p>Mastering Ansible ebook , Mastering Ansible , by Jesse Keating<br><a href="https://www.ansible.com/mastering-ansible-jesse-keating" target="_blank" rel="external">FREE BOOK SAMPLE</a> </p>
-</li>
-</ol>
-<p>这里我主要应用到<code>Ansible-Playbook</code> 比较多，一开始学ansible是因为运维这块需要用到自动化，以前自动化发布等等都是用shell,python复杂性的去完成，shell去实现部署一个环境，要完成多台机器之前采用，salt去实现效果，发现在公司一个大型的架构演变salt支撑不了，而且需要网络稳定性高，他们的自动化控制是用agent去控制的，需要控制的机器都要修改和配置安装agent,ansbile就不需要。</p>
-<p>在Ansible中，我们就充当编剧的角色，亲自编写剧本（一系列的服务器操作），让一出出精彩的戏剧（play）巧妙配合，完成对服务器的一系列精确控制。</p>
-<h3 id="1-1-Playbook语法简介"><a href="#1-1-Playbook语法简介" class="headerlink" title="1.1 Playbook语法简介"></a>1.1 Playbook语法简介</h3><p>Playbook采用一种可读性很高的且容易被人类阅读的语法的YAML语法编写，<code>YAML: &quot;YAML Ain&#39;t a Markup Language&quot;</code>（YAML不是一种置标语言）。该语言在被开发时，YAML 的意思其实是：”Yet Another Markup Language”（仍是一种置标语言），格式如下所示：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">house:</div><div class="line">  family:</div><div class="line">    name: Doe</div><div class="line">    parents:</div><div class="line">      - John</div><div class="line">      - Jane</div><div class="line">    children:</div><div class="line">      - Paul</div><div class="line">      - Mark</div><div class="line">      - Simone</div><div class="line">  address:</div><div class="line">    number: 34</div><div class="line">    street: Main Street</div><div class="line">    city: Nowheretown</div><div class="line">  zipcode: 12345</div></pre></td></tr></table></figure>
-<p>这里语法报错有的如果按shell脚本直接去写的话就会出错：</p>
-<p>报错： <code>[WARNING]: Consider using unarchive module rather than running unzip</code></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[root@ansible_01 ~]<span class="comment"># ansible-playbook famly.yml</span></div><div class="line"></div><div class="line">---</div><div class="line"></div><div class="line">PLAY [all] *********************************************************************</div><div class="line"></div><div class="line">TASK [setup] *******************************************************************</div><div class="line">ok: [192.168.1.209]</div><div class="line"></div><div class="line">TASK [copy-war-file] ***********************************************************</div><div class="line">ok: [192.168.1.209]</div><div class="line"></div><div class="line">TASK [unzip war.] **************************************************************</div><div class="line">changed: [192.168.1.209]</div><div class="line"> [WARNING]: Consider using unarchive module rather than running unzip</div><div class="line"></div><div class="line">PLAY RECAP *********************************************************************</div><div class="line">192.168.1.209              : ok=3    changed=1    unreachable=0    failed=0</div></pre></td></tr></table></figure>
-<p>原这里famly.yml写这里解压步骤：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">- name : 解压/root/java_war/api.war包在/home/app/newwar/api目录</div><div class="line">   shell : unzip -oq &#123;&#123; famly_war &#125;&#125;  <span class="_">-d</span> &#123;&#123; app_war &#125;&#125;/webapps/</div></pre></td></tr></table></figure>
-<p>修改以后：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">- name: unzip war.</div><div class="line">  unarchive: src=/root/java_war/haozhuo-family.war dest=/srv/</div></pre></td></tr></table></figure>
-<p>经过以上更改后，软件包可以正常在client解压，不再报错。</p>
-<h3 id="2、特点"><a href="#2、特点" class="headerlink" title="2、特点"></a>2、特点</h3><p>YAML的可读性好</p>
-<p>YAML和脚本语言的交互性好</p>
-<p>YAML使用实现语言的数据类型</p>
-<p>YAML有一个一致的信息模型</p>
-<p>YAML易于实现</p>
-<p>YAML可以基于流来处理</p>
-<p>YAML表达能力强，扩展性好</p>
-<p>YAML的语法和其他高阶语言类似，并且可以简单表达清单、散列表、标量等数据结构。其结构（Structure）通过空格来展示，序列（Sequence）里的项用”-“来代表，Map里的键值对用”:”分隔。下面是一个示例。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">- hosts: 10.1.0.1        <span class="comment">#定义主机</span></div><div class="line">  vars:                      <span class="comment">#定义变量</span></div><div class="line">       var1: value</div><div class="line">       var2: value</div><div class="line">  tasks:                    <span class="comment">#定义任务</span></div><div class="line">       - name:           <span class="comment">#任务名称。</span></div><div class="line">   <span class="comment">#这里就可以开始用模块来执行具体的任务了。</span></div><div class="line"></div><div class="line">  handlers:     <span class="comment">#定义触发通知所作的操作。里面也是跟tasks一样，用模块定义任务。</span></div><div class="line">       - name:</div><div class="line"></div><div class="line">  remote_user:             <span class="comment">#远程主机执行任务时的用户。一般都是root，一般也不用指定。</span></div><div class="line"></div><div class="line">- hosts: web</div><div class="line">  vars:</div><div class="line">  tasks:</div><div class="line">  handlers:</div><div class="line">  remote_user:</div></pre></td></tr></table></figure>
-<p>YAML文件扩展名通常为<code>.yaml，如family.yaml</code></p>
-<h3 id="2-playbook的基础组件："><a href="#2-playbook的基础组件：" class="headerlink" title="2.playbook的基础组件："></a>2.playbook的基础组件：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Hosts：运行指定任务的目标主机；</div><div class="line">remote_user：在远程主机以哪个用户身份执行；</div><div class="line">    sudo_user：非管理员需要拥有sudo权限；</div><div class="line">tasks：任务列表</div><div class="line">    模块，模块参数：</div><div class="line">        格式：</div><div class="line">            (1) action: module arguments</div><div class="line">            (2) module: arguments</div></pre></td></tr></table></figure>
-<p>示例1：<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ansible_23.png" alt=""></figure></p>
-<p>vim test.yaml 也可以是 .yml</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">- hosts: tomcat_01   <span class="comment">#运行指定任务的目标主机；</span></div><div class="line">  remote_user: root   <span class="comment">#在远程主机以哪个用户身份执行；root</span></div><div class="line">  tasks:</div><div class="line">  - name: install a group   </div><div class="line">   group: name=mygrp system=<span class="literal">true</span> </div><div class="line">  - name: install a user</div><div class="line">    user: name=user1 group=mygrp system=<span class="literal">true</span>   <span class="comment"># 这里-name: graoup: 都要对齐，不然会提示语法出错。</span></div><div class="line">    </div><div class="line">    </div><div class="line">    </div><div class="line"></div><div class="line"> - hosts: websrvs      </div><div class="line">   remote_user: root</div><div class="line">   tasks:</div><div class="line">    - name: install httpd package</div><div class="line">      yum: name=httpd</div><div class="line">    - name: start httpd service </div><div class="line">      service: name=httpd state=started</div></pre></td></tr></table></figure>
-<h3 id="3-运行playbook，使用ansible-playbook命令"><a href="#3-运行playbook，使用ansible-playbook命令" class="headerlink" title="3.运行playbook，使用ansible-playbook命令"></a>3.运行playbook，使用ansible-playbook命令</h3><p>(1)检测语法</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible-playbook –syntax-check /path/to/playbook.yaml</div></pre></td></tr></table></figure>
-<p>(2)测试运行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ansible-playbook -C /path/to/playbook.yaml</div><div class="line"></div><div class="line">    --list-hosts</div><div class="line">    --list-tasks</div><div class="line">    --list-tags</div></pre></td></tr></table></figure>
-<p>这里简单结合shell演变写安装nginx:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">- name: copy nginx package</div><div class="line">  copy: src=nginx-1.10.0-1.el7.ngx.x86_64.rpm dest=/tmp/nginx-1.10.0-1.el7.ngx.x86_64.rpm</div><div class="line"></div><div class="line">- name: install nginx package</div><div class="line">  yum: name=/tmp/nginx-1.10.0-1.el7.ngx.x86_64.rpm  state=present</div><div class="line"></div><div class="line">- name: install nginx.conf file</div><div class="line">  template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf</div><div class="line">  tags: ngxconf</div><div class="line">  notify: reload nginx service</div><div class="line"></div><div class="line">- name: install default.conf file</div><div class="line">  template: src=default.conf.j2 dest=/etc/nginx/conf.d/default.conf</div><div class="line">  tags: ngxconf</div><div class="line">  notify: reload nginx service</div><div class="line"></div><div class="line">- name: start nginx service</div><div class="line">  service: name=nginx enabled=<span class="literal">true</span> state=started</div></pre></td></tr></table></figure>
-<p>自动化部署Tomcat服务。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">- hosts: all</div><div class="line"></div><div class="line">  environment:</div><div class="line">     LC_ALL: zh_CN.UTF-8</div><div class="line">     LANG : zh_CN.UTF-8</div><div class="line"></div><div class="line">  vars:</div><div class="line"><span class="comment">#jenkins-打包目录</span></div><div class="line">    TESTWAR: /root/java_war/haozhuo-family.war</div><div class="line"><span class="comment">#生产环境中项目的tomcat所在的位置</span></div><div class="line">    OLDHOME: /srv/tomcat/tomcat_family/webapps/ROOT</div><div class="line"><span class="comment">#生产环境中老版本项目所在webapps备份目录的位置</span></div><div class="line">    backupwebapps: /srv/tomcat/tomcat_family/warbackup</div><div class="line"><span class="comment">#从jenkins-打包环境获取的新版本war包所在的位置</span></div><div class="line">    NEWWAR: /root/java_war/</div><div class="line"><span class="comment">#生产环境中项目war包的名字</span></div><div class="line">    WARNAME: haozhuo-family.war</div><div class="line"><span class="comment">#kill服务type路径</span></div><div class="line">    DOWNFILE: /srv/tomcat/tomcat_family</div><div class="line"></div><div class="line">  tasks:</div><div class="line">  - name: copy-war-file</div><div class="line">    copy: src=&#123;&#123; TESTWAR &#125;&#125; dest=&#123;&#123; NEWWAR &#125;&#125;</div><div class="line">  - name: mkdir-bakwar-file</div><div class="line">    file: path=&#123;&#123; backupwebapps &#125;&#125; state=directory owner=tomcat group=tomcat mode=755</div><div class="line">  - name: bakwar-file</div><div class="line">    shell: <span class="string">"cp -r &#123;&#123; OLDHOME &#125;&#125; &#123;&#123; backupwebapps &#125;&#125;"</span></div><div class="line">  - name: unzip war.</div><div class="line">    unarchive: src=&#123;&#123; NEWWAR &#125;&#125;/&#123;&#123; WARNAME &#125;&#125; dest=&#123;&#123; OLDHOME &#125;&#125;</div><div class="line">  - name: stop-tomcat-service</div><div class="line">    shell: <span class="string">"ps -ef |grep &#123;&#123; DOWNFILE &#125;&#125; |grep -v grep |awk '&#123;print <span class="variable">$2</span>&#125;' |xargs kill -9"</span></div><div class="line">    ignore_errors: yes</div><div class="line">    async: 0</div><div class="line">  - name: start-tomcat-service-nohup</div><div class="line">    shell: <span class="built_in">chdir</span>=&#123;&#123; DOWNFILE &#125;&#125;/bin nohup ./startup.sh &amp;</div></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># tree /etc/ansible/</span></div><div class="line">.</div><div class="line">├── ansible.cfg</div><div class="line">├── group_vars                                  <span class="comment"># here we assign variables to particular groups</span></div><div class="line">│   └── tomcat-servers                          <span class="comment"># this filename must the same with the group in the 'hosts'</span></div><div class="line">├── hosts</div><div class="line">├── roles</div><div class="line">│   ├── selinux</div><div class="line">│   └── tomcat</div><div class="line">│       ├── files</div><div class="line">│       │   └── tomcat-initscript.sh            <span class="comment"># &lt;-- script files for use with the script resource</span></div><div class="line">│       ├── handlers</div><div class="line">│       │   └── main.yml                        <span class="comment"># &lt;-- handlers file</span></div><div class="line">│       ├── tasks</div><div class="line">│       │   └── main.yml                        <span class="comment"># &lt;-- tasks file can include smaller files if warranted</span></div><div class="line">│       └── templates                           <span class="comment"># &lt;-- files for use with the template resource</span></div><div class="line">│           ├── iptables-save</div><div class="line">│           ├── server.xml</div><div class="line">│           └── tomcat-users.xml</div><div class="line">├── app2.retry</div><div class="line">└── app2.yml                                    <span class="comment"># master playbook</span></div></pre></td></tr></table></figure>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
 		<h1><a href="/2017/01/26/OpenLDAP/OpenLDAP入门了解学习笔记(一)/">OpenLDAP入门了解学习笔记(一)</a></h1>
 	
 	<div class="article__infos">
@@ -481,6 +403,52 @@ phpmailer.smtp-password: xxxx
 
 	<article>
 	
+		<h1><a href="/2016/12/02/Web服务技术/tomcat/记录tomcat进程CPU使用率高排查故障经验/">记录tomcat进程CPU使用率高排查故障经验</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-12-02</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Java/">Java</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Java/">Java</a> <a class="article__tag-link" href="/tags/performance-tuning/">performance tuning</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="1、故障现象"><a href="#1、故障现象" class="headerlink" title="1、故障现象"></a>1、故障现象</h3><p>运营同事反馈APP其中体检商城购买订单系统运行缓慢，访问出现超时，多次重启系统后问题依然存在，使用top命令查看服务器情况，发现CPU占用率过高。</p>
+<h3 id="2、CPU占用过高问题定位"><a href="#2、CPU占用过高问题定位" class="headerlink" title="2、CPU占用过高问题定位"></a>2、CPU占用过高问题定位</h3><h5 id="2-1、定位问题进程"><a href="#2-1、定位问题进程" class="headerlink" title="2.1、定位问题进程"></a>2.1、定位问题进程</h5><p>使用top命令查看资源占用情况，发现pid为14063的进程占用了大量的CPU资源，CPU占用率高达229.1%，内存占用率也达到了29.8%</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@account-tomcat-01 ~]$ top</div><div class="line">top - 14:51:10 up 233 days, 11:40,  2 users,  load average: 6.85, 5.62, 3.97</div><div class="line">Tasks: 192 total,   2 running, 190 sleeping,   0 stopped,   0 zombie</div><div class="line">%Cpu(s): 97.3 us,  0.3 sy,  0.0 ni,  2.5 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</div><div class="line">KiB Mem : 16268652 total,  5114392 free,  6907028 used,  4247232 buff/cache</div><div class="line">KiB Swap:  4063228 total,  3989708 free,    73520 used.  8751512 avail Mem </div><div class="line">  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND                                                                                               </div><div class="line"></div><div class="line">14063 root       20   0 9260488 4.627g  11976 S 229.1 29.8 117:41.66 java</div></pre></td></tr></table></figure>
+<h5 id="2-2、定位问题线程"><a href="#2-2、定位问题线程" class="headerlink" title="2.2、定位问题线程"></a>2.2、定位问题线程</h5><p>使用<code>ps -mp pid -o THREAD,tid,time</code>命令查看该进程的线程情况，发现该进程的多个线程占用率很高</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">[root@account-tomcat-01 ~]$ ps -mp 14063 -o THREAD,tid,time </div><div class="line">USER     %CPU PRI SCNT WCHAN  USER SYSTEM   TID     TIME</div><div class="line">        361   -    - -         -      -     - 02:05:58</div><div class="line">root       0.0  19    - futex_    -      - 14063 00:00:00</div><div class="line">root       0.0  19    - poll_s    -      - 14064 00:00:00</div><div class="line">root      44.5  19    - -         -      - 14065 00:15:30</div><div class="line">root      44.5  19    - -         -      - 14066 00:15:30</div><div class="line">root      44.4  19    - -         -      - 14067 00:15:29</div><div class="line">root      44.5  19    - -         -      - 14068 00:15:30</div><div class="line">root      44.5  19    - -         -      - 14069 00:15:30</div><div class="line">root      44.5  19    - -         -      - 14070 00:15:30</div><div class="line">root      44.5  19    - -         -      - 14071 00:15:30</div><div class="line">root      44.6  19    - -         -      - 14072 00:15:32</div><div class="line">root       2.2  19    - futex_    -      - 14073 00:00:46</div><div class="line">root       0.0  19    - futex_    -      - 14074 00:00:00</div><div class="line">root       0.0  19    - futex_    -      - 14075 00:00:00</div><div class="line">root       0.0  19    - futex_    -      - 14076 00:00:00</div><div class="line">root       0.7  19    - futex_    -      - 14077 00:00:15</div></pre></td></tr></table></figure>
+<p>从输出信息可以看出，14065~14072之间的线程CPU占用率都很高<br>2.3、查看问题线程堆栈</p>
+<p>挑选TID为14065的线程，查看该线程的堆栈情况，先将线程id转为16进制，使用printf “%x\n” tid命令进行转换</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[root@account-tomcat-<span class="number">01</span> ~]$ printf <span class="string">"%x\n"</span> <span class="number">14065</span></div><div class="line"><span class="number">36</span>f1</div><div class="line">再使用jstack命令打印线程堆栈信息，命令格式：jstack pid |grep tid -A <span class="number">30</span></div><div class="line"></div><div class="line">[root@root-web-<span class="number">01</span> ~]$ jstack <span class="number">14063</span> |grep <span class="number">36</span>f1 -A <span class="number">30</span></div><div class="line"><span class="string">"GC task thread#0 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa35001e800</span> <span class="attr">nid=0x36f1</span> runnable </div><div class="line"><span class="string">"GC task thread#1 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa350020800</span> <span class="attr">nid=0x36f2</span> runnable </div><div class="line"><span class="string">"GC task thread#2 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa350022800</span> <span class="attr">nid=0x36f3</span> runnable </div><div class="line"><span class="string">"GC task thread#3 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa350024000</span> <span class="attr">nid=0x36f4</span> runnable </div><div class="line"><span class="string">"GC task thread#4 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa350026000</span> <span class="attr">nid=0x36f5</span> runnable </div><div class="line"><span class="string">"GC task thread#5 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa350028000</span> <span class="attr">nid=0x36f6</span> runnable </div><div class="line"><span class="string">"GC task thread#6 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa350029800</span> <span class="attr">nid=0x36f7</span> runnable </div><div class="line"><span class="string">"GC task thread#7 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa35002b800</span> <span class="attr">nid=0x36f8</span> runnable </div><div class="line"><span class="string">"VM Periodic Task Thread"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa3500a8800</span> <span class="attr">nid=0x3700</span> waiting on condition </div><div class="line"></div><div class="line">JNI global references: <span class="number">392</span></div></pre></td></tr></table></figure>
+<p>从输出信息可以看出，此线程是JVM的gc线程。此时可以基本确定是内存不足或内存泄露导致gc线程持续运行，导致CPU占用过高。</p>
+<p>所以接下来我们要找的内存方面的问题</p>
+<p>3.1、使用jstat -gcutil命令查看进程的内存情况</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[root@account-tomcat-01 ~]$ jstat -gcutil 14063 2000 10</div><div class="line"></div><div class="line">  S0     S1     E      O      P     YGC     YGCT    FGC    FGCT     GCT   </div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   218 1484.830 1506.747</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   218 1484.830 1506.747</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   219 1496.567 1518.484</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   219 1496.567 1518.484</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   219 1496.567 1518.484</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   219 1496.567 1518.484</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   219 1496.567 1518.484</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   220 1505.439 1527.355</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   220 1505.439 1527.355</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   220 1505.439 1527.355</div></pre></td></tr></table></figure>
+<p>从输出信息可以看出，Eden区内存占用100%，Old区内存占用99.99%，Full GC的次数高达220次，并且频繁Full GC，Full GC的持续时间也特别长，平均每次Full GC耗时6.8秒（1505.439/220）。根据这些信息，基本可以确定是程序代码上出现了问题，可能存在不合理创建对象的地方。</p>
+<p>生产java应用，CPU使用率一直很高，经常达到100%，通过以下步骤完美解决，分享一下。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">1.jps 获取Java进程的PID。</div><div class="line"></div><div class="line">2.top -H -p PID 查看对应进程的哪个线程占用CPU过高。</div><div class="line">2.1 使用 ps -mp pid -o THREAD,tid,time 命令查看该进程的线程情况，发现该进程的多个线程占用率很高。</div><div class="line"></div><div class="line">3.jstack pid &gt;&gt; java.txt 导出CPU占用高进程的线程栈。</div><div class="line">使用jstack命令查看进程的堆栈情况</div><div class="line"></div><div class="line">4.echo “obase=16; PID” | bc 将线程的PID转换为16进制。</div><div class="line"></div><div class="line">5.在第二步导出的Java.txt中查找转换成为16进制的线程PID。找到对应的线程栈。</div><div class="line"></div><div class="line">6.分析负载高的线程栈都是什么业务操作。优化程序并处理问题。</div></pre></td></tr></table></figure>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
 		<h1><a href="/2016/12/02/运维安全/gitlab网站被黑redis被劫持6379端口需要提交认证，如何挽救？/">gitlab网站被黑redis被劫持6379端口需要提交认证，如何挽救？</a></h1>
 	
 	<div class="article__infos">
@@ -603,18 +571,18 @@ phpmailer.smtp-password: xxxx
 
 	<article>
 	
-		<h1><a href="/2016/11/14/日志分析平台/Graylog/graylog 升级2.1 集中日志解决方案/">graylog 升级2.1 集中日志解决方案</a></h1>
+		<h1><a href="/2016/11/24/Web服务技术/申请证书Https/免费 Https 证书（Let&#39;S Encrypt）申请与配置 /">免费 Https证书（Let&#39;S Encrypt）申请与配置</a></h1>
 	
 	<div class="article__infos">
-		<span class="article__date">2016-11-14</span><br />
+		<span class="article__date">2016-11-24</span><br />
 		
 			<span class="article__category">
-				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
+				<a class="article-category-link" href="/categories/nginx/">nginx</a>
 			</span><br />
 		
 		
 			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Graylog/">Graylog</a>
+			  	<a class="article__tag-link" href="/tags/Nginx/">Nginx</a> <a class="article__tag-link" href="/tags/Web-Service/">Web Service</a>
 			</span>
 		
 	</div>
@@ -622,121 +590,23 @@ phpmailer.smtp-password: xxxx
 	
 
 	
-		<h1 id="graylog-升级2-1-集中日志解决方案"><a href="#graylog-升级2-1-集中日志解决方案" class="headerlink" title="graylog 升级2.1 集中日志解决方案"></a>graylog 升级2.1 集中日志解决方案</h1><p>参考官网：<a href="http://docs.graylog.org/en/2.1/pages/upgrade/graylog-2.1.html" target="_blank" rel="external">升级到Graylog的2.1.x</a></p>
-<h3 id="一：为什么需要集中日志解决方案？"><a href="#一：为什么需要集中日志解决方案？" class="headerlink" title="一：为什么需要集中日志解决方案？"></a>一：为什么需要集中日志解决方案？</h3><p>在公司服务机子部署越来越多的情况下，让我们来想想会遇到的问题：</p>
-<ul>
-<li>开发人员不能登录线上服务器查看详细日志，经过运维周转费时费力</li>
-<li>日志数据分散在多个系统，难以查找</li>
-<li>日志数据量大，查询速度慢</li>
-<li>一个调用会涉及多个系统，难以在这些系统的日志中快速定位数据</li>
-<li>数据不够实时</li>
-<li>很难对数据进行挖掘，分析，业务告警，审计</li>
-<li>这些问题的存在让开发以及运维人员很是头痛，严重影响效率！</li>
-</ul>
-<h3 id="二：什么是graylog技术栈？"><a href="#二：什么是graylog技术栈？" class="headerlink" title="二：什么是graylog技术栈？"></a>二：什么是graylog技术栈？</h3><p>为了解决上述问题，我们需要一个日志的集中管理方案，graylog技术栈：</p>
-<ul>
-<li>java （jdk1.8.0_66/）环境</li>
-<li>Collector-sidecar（收集日志）或者syslog</li>
-<li>Mongodb（存储日志源文件）</li>
-<li>Elasticsearch（提供搜索日志）</li>
-<li>Graylog2.1.1（搜索和视图展示日志，告警和权限）</li>
-</ul>
-<p>有了这些，我们就能把日志先收集起来，进行我们想要的分析之后，web的形式展示出来，提供查询！</p>
-<h3 id="三：graylog的安装部署"><a href="#三：graylog的安装部署" class="headerlink" title="三：graylog的安装部署"></a>三：graylog的安装部署</h3><p>安装环境：linux centOS系统安装，已安装JDK1.8版本，安装启动顺序</p>
-<p>1.安装部署mongodb<br>2.安装部署elasticsearch<br>3.安装部署graylog<br>4.安装部署Graylog Collector Sidecar</p>
-<hr>
-<p> <strong>1：安装部署mongodb</strong> <strong>Java也安装</strong>  参考我博文有介绍。 </p>
-<p> <strong>2：安装部署elasticsearch</strong></p>
-<p><strong>(1)下载jar包</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">wget https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/2.3.5/elasticsearch-2.3.5.tar.gz</div><div class="line"></div><div class="line">如果报错</div><div class="line">执行</div><div class="line"></div><div class="line">wget --no-check-certificate</div><div class="line"></div><div class="line">https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/2.3.5/elasticsearch-2.3.5.tar.gz</div></pre></td></tr></table></figure>
-<p><strong>(2)解压jar包</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tar -zxvf elasticsearch-2.3.5.tar.gz -C /opt/</div></pre></td></tr></table></figure>
-<p><strong>(3)修改elasticsearch.yml配置文件</strong></p>
-<p> 这里需要修改配置文件：配置前先创建几个目录文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mkdir /home/data/es-data -p</div><div class="line">mkdir /home/data/es-work -p</div></pre></td></tr></table></figure>
-<p>elasticsearch-2.3.5安装目录conf下执行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">vim elasticsearch-2.3.5/config/elasticsearch.yml</div><div class="line"> </div><div class="line">cluster.name: graylog              <span class="comment">#集群名称建议命名graylog，便于识别区分</span></div><div class="line">node.name: elasticsearch-node-1     <span class="comment"># elasticsearch集群节点名称</span></div><div class="line">network.host: 192.168.1.234    <span class="comment"># 绑定节点IP</span></div><div class="line">http.port: 9200         <span class="comment"># 外部访问端口，默认，也可以安全考虑修改</span></div><div class="line">path.logs: /home/data/logs</div><div class="line">path.data: /home/data/es-data</div><div class="line">discovery.zen.ping.multicast.enabled: <span class="literal">false</span>   <span class="comment">#多播发现方式关闭，因为graylog采用单播方式发现elasticsearch集群方式</span></div><div class="line">discovery.zen.ping.unicast.hosts                   <span class="comment">#多个节点用逗号隔开</span></div><div class="line">discovery.zen.minimum_master_nodes: 3    <span class="comment"># elasticsearch集群节点，最少选举数，这个数一定要设置为整个集群节点个数的一半加1，即N/2+1，必须为奇数</span></div></pre></td></tr></table></figure>
-<p><strong>(4)启动elasticsearch服务</strong></p>
-<p>新建一个elasticsearch用户，出于安全考虑，elasticsearch服务不能使用root用户启动</p>
-<p>创建elasticsearch用户组及elasticsearch用户，执行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">groupadd elasticsearch</div><div class="line">useradd elasticsearch -g elasticsearch -p elasticsearch</div></pre></td></tr></table></figure>
-<p>其中-g使用户属于某个组，-p为新用户使用加密密码）<br>更改elasticsearch-2.3.5文件夹及内部文件的所属用户及组为elasticsearch:elasticsearch</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">chown -R elasticsearch:elasticsearch  /home/data/</div><div class="line">chown -R elasticsearch:elasticsearch  elasticsearch-2.3.5</div></pre></td></tr></table></figure>
-<p>切换用户</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">su elasticsearch</div></pre></td></tr></table></figure>
-<p>在elasticsearch-2.3.5/bin目录下执行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[elasticsearch@graylog bin]$ ps -ef | grep elasticsearch</div><div class="line">root     18265 16004  0 14:27 pts/1    00:00:00 su elasticsearch</div><div class="line">502      18405     1 62 14:27 pts/1    00:00:13 /srv/jdk1.8.0_66/bin/java -Xms256m -Xmx1g -Djava.awt.headless=<span class="literal">true</span> -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=75 -XX:+UseCMSInitiatingOccupancyOnly -XX:+HeapDumpOnOutOfMemoryError -XX:+DisableExplicitGC -Dfile.encoding=UTF-8 -Djna.nosys=<span class="literal">true</span> -Des.path.home=/opt/elasticsearch-2.3.5 -cp /opt/elasticsearch-2.3.5/lib/elasticsearch-2.3.5.jar:/opt/elasticsearch-2.3.5/lib/* org.elasticsearch.bootstrap.Elasticsearch start <span class="_">-d</span></div><div class="line">502      18530 18266  0 14:27 pts/1    00:00:00 grep --color=auto ela</div></pre></td></tr></table></figure>
-<p><strong>(5)检查elasticsearch服务状态</strong></p>
-<p>执行如下命令测试Elasticsearch是否正常运行：</p>
-<p>$ curl -XGET ‘<a href="http://localhost:9200/_cluster/health?pretty=true" target="_blank" rel="external">http://localhost:9200/_cluster/health?pretty=true</a>‘</p>
-<p>输出的信息如下表示Elasticsearch安装成功：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">[elasticsearch@graylog bin]$ curl -XGET <span class="string">'http://192.168.1.234:9200/_cluster/health?pretty=true'</span></div><div class="line">&#123;</div><div class="line">  <span class="string">"cluster_name"</span> : <span class="string">"graylog"</span>,</div><div class="line">  <span class="string">"status"</span> : <span class="string">"yellow"</span>,</div><div class="line">  <span class="string">"timed_out"</span> : <span class="literal">false</span>,</div><div class="line">  <span class="string">"number_of_nodes"</span> : 1,</div><div class="line">  <span class="string">"number_of_data_nodes"</span> : 1,</div><div class="line">  <span class="string">"active_primary_shards"</span> : 30,</div><div class="line">  <span class="string">"active_shards"</span> : 30,</div><div class="line">  <span class="string">"relocating_shards"</span> : 0,</div><div class="line">  <span class="string">"initializing_shards"</span> : 0,</div><div class="line">  <span class="string">"unassigned_shards"</span> : 30,</div><div class="line">  <span class="string">"delayed_unassigned_shards"</span> : 0,</div><div class="line">  <span class="string">"number_of_pending_tasks"</span> : 0,</div><div class="line">  <span class="string">"number_of_in_flight_fetch"</span> : 0,</div><div class="line">  <span class="string">"task_max_waiting_in_queue_millis"</span> : 0,</div><div class="line">  <span class="string">"active_shards_percent_as_number"</span> : 50.0</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="3：安装部署graylog-2-1版本"><a href="#3：安装部署graylog-2-1版本" class="headerlink" title="3：安装部署graylog-2.1版本"></a>3：安装部署graylog-2.1版本</h3><p><strong>(1)下载安装包</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wget https://packages.graylog2.org/releases/graylog/graylog-2.1.1.tgz</div></pre></td></tr></table></figure>
-<p><strong>(2)解压安装包</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tar -zxvf graylog-2.1.1.tgz -C /opt/.</div></pre></td></tr></table></figure>
-<p><strong>(3)修改配置文件</strong></p>
-<p>修改安装目录下 graylog.conf.example 文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vim graylog.conf.example</div></pre></td></tr></table></figure>
-<p>web_listen_uri 值是graylog启动成功后，web服务访问地址</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">web_listen_uri = http://192.168.1.234:9000/</div></pre></td></tr></table></figure>
-<p>rest_listen_uri 的值，是graylog启动成功后，api访问地址</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rest_listen_uri = http://192.168.1.234:9000/api/</div></pre></td></tr></table></figure>
-<p>root_timezone = UTC  #设置时区，否则默认使用的是UTC时间也就是世界时间 这里是必须改下的，因为后期收集日志显示时间是有变化的。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">root_timezone = Asia/Shanghai</div></pre></td></tr></table></figure>
-<p>其中 password_secret 的值用命令生成</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">yum install -y pwgen</div><div class="line">pwgen -N 1 <span class="_">-s</span> 96       H1R5v17kWtyDxj2PzxLMxu41D6HDt9JzhfZcj6QlCURVddgkLAdnUmpkdIscmmu4ELKsTrHwKvPmxFKSYyTn0YlqebbpQqyr</div><div class="line"></div><div class="line">    password_secret = H1R5v17kWtyDxj2PzxLMxu41D6HDt9JzhfZcj6QlCURVddgkLAdnUmpkdIscmmu4ELKsTrHwKvPmxFKSYyTn0YlqebbpQqyr</div></pre></td></tr></table></figure>
-<p>其中root_password_sha2 的值使用命令生成</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="built_in">echo</span> -n Ihaozhuo_b313 | sha256sum  (这里对密码123456哈希加密)</div><div class="line"></div><div class="line"><span class="built_in">fc</span>88c28d48b0cb97f3fb5286cc35c520409ef037acd30ec687f0c0bd3d5a5115 </div><div class="line">   </div><div class="line">root_password_sha2 = <span class="built_in">fc</span>88c28d48b0cb97f3fb5286cc35c520409ef037acd30ec687f0c0bd3d5a5115</div></pre></td></tr></table></figure>
-<p>elasticsearch_cluster_name 值必须是elasticsearch配置文件中的cluster_name</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">elasticsearch_cluster_name = graylog</div></pre></td></tr></table></figure>
-<p>elasticsearch_discovery_zen_ping_unicast_hosts 填写elasticsearch地址，如果是多个，用逗号隔开</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">elasticsearch_discovery_zen_ping_unicast_hosts = 192.168.1.234:9300</div></pre></td></tr></table></figure>
-<p>elasticsearch_discovery_zen_ping_multicast_enabled = false 多播模式关闭</p>
-<p>由于我们只有一个Elasticsearch shard，需要把elasticsearch_shards参数设置为1：<br>elasticsearch集群分片数量</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">elasticsearch_shards = 1</div></pre></td></tr></table></figure>
-<p>elasticsearch绑定的节点IP</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">299 elasticsearch_network_host = 192.168.1.234</div><div class="line">300 elasticsearch_network_bind_host = 192.168.1.234</div><div class="line">301 elasticsearch_network_publish_host = 192.168.1.234</div></pre></td></tr></table></figure>
-<p>mongodb安装服务的ip地址</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mongodb_uri = mongodb://192.168.1.234/graylog</div></pre></td></tr></table></figure>
-<p>这里mongodb是安装在我同一台服务器上面的。如果要把mongodb单独服务器跑连接方式配置文件里面也有例子说明：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mongodb_uri =mongodb://graylog:123456@160.17.2.251:27017/graylog2             <span class="comment">#连接到mongodb的服务器地址为160.17.2.251:27017，账号为graylog，密码为123456 数据库为graylog2</span></div></pre></td></tr></table></figure>
-<p> 设置告警邮件发送者信息</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"> <span class="comment"># Email transport</span></div><div class="line">transport_email_enabled = <span class="literal">false</span></div><div class="line">transport_email_hostname = smtp.exmail.qq.com</div><div class="line">transport_email_port = 465</div><div class="line">transport_email_use_auth = <span class="literal">true</span></div><div class="line">transport_email_use_tls = <span class="literal">true</span></div><div class="line">transport_email_use_ssl = <span class="literal">true</span></div><div class="line">transport_email_auth_username = chengyangyang@qq.cn</div><div class="line">transport_email_auth_password = beneTqq</div><div class="line">transport_email_subject_prefix = [graylog]</div><div class="line">transport_email_from_email = chengyangyang@qq.cn</div></pre></td></tr></table></figure>
-<p><strong>(4)复制配置文件</strong></p>
-<p> 因为graylog安装bin目录下，默认启动配置文件</p>
-<p>配置文件路径：<code>/etc/graylog/server/server.conf</code></p>
-<p>所以需要将<code>graylog.conf.example</code> 复制到<code>/etc/graylog/server/</code>目录下，并且改名 <code>server.conf</code></p>
-<p>执行命令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mkdir -p /etc/graylog/server/ </div><div class="line">cp graylog.conf.example /etc/graylog/server/server.conf</div></pre></td></tr></table></figure>
-<p><strong>(5)启动graylog</strong></p>
-<p>在graylog安装bin目录下执行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./graylogctl start</div></pre></td></tr></table></figure>
-<p>查看日志，在graylog安装目录下执行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tail -200f /<span class="built_in">log</span>/graylog-server.log</div></pre></td></tr></table></figure>
-<p>如果报错：</p>
-<p>原因：</p>
-<p>在mongodb版本2.6之后，是需要日志journaling设置的，而默认情况下是关闭的</p>
-<p>解决办法：</p>
-<p>在mongodb启动命令加上 –journal</p>
-<p>最后启动命令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./mongod --dbpath=/usr/<span class="built_in">local</span>/mongodb/data/ --fork --logpath=/usr/<span class="built_in">local</span>/mongodb/logs --storageEngine=mmapv1 --journal</div></pre></td></tr></table></figure>
-<p>重启mongodb后，重启graylog服务即可！</p>
-<p><strong>(6)启动graylog(报错二)</strong></p>
-<p>查看日志，在graylog安装目录下执行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">tail -200f /<span class="built_in">log</span>/graylog-server.log</div></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;com.mongodb.MongoSocketOpenException: Exception opening socket&#125;, caused by &#123;java.net.ConnectException: 拒绝连接&#125;&#125;]&#125;. Waiting <span class="keyword">for</span> 30000 ms before timing out</div><div class="line">2016-11-22 15:10:29,355 INFO : org.graylog2.bootstrap.CmdLineTool - Loaded plugin: Elastic Beats Input 1.1.1 [org.graylog.plugins.beats.BeatsInputPlugin]</div><div class="line">2016-11-22 15:10:29,357 INFO : org.graylog2.bootstrap.CmdLineTool - Loaded plugin: Collector 1.1.1 [org.graylog.plugins.collector.CollectorPlugin]</div><div class="line">2016-11-22 15:10:29,357 INFO : org.graylog2.bootstrap.CmdLineTool - Loaded plugin: Enterprise Integration Plugin 1.1.1 [org.graylog.plugins.enterprise_integration.EnterpriseIntegrationPlugin]</div><div class="line">2016-11-22 15:10:29,358 INFO : org.graylog2.bootstrap.CmdLineTool - Loaded plugin: MapWidgetPlugin 1.1.1 [org.graylog.plugins.map.MapWidgetPlugin]</div><div class="line">2016-11-22 15:10:29,359 INFO : org.graylog2.bootstrap.CmdLineTool - Loaded plugin: Pipeline Processor Plugin 1.1.1 [org.graylog.plugins.pipelineprocessor.ProcessorPlugin]</div><div class="line">2016-11-22 15:10:29,359 INFO : org.graylog2.bootstrap.CmdLineTool - Loaded plugin: Anonymous Usage Statistics 2.1.1 [org.graylog.plugins.usagestatistics.UsageStatsPlugin]</div><div class="line">2016-11-22 15:10:29,487 INFO : org.graylog2.bootstrap.CmdLineTool - Running with JVM arguments: -Djava.library.path=./../lib/sigar -Xms1g -Xmx1g -XX:NewRatio=1 -XX:+ResizeTLAB -XX:+UseConcMarkSweepGC -XX:+CMSConcurrentMTEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:-OmitStackTraceInFastThrow</div></pre></td></tr></table></figure>
-<p>提示mongodb 拒绝连接。 这个时候需要看下端口地址是否是IP地址还是127.0.0.1 如果不是需要修改下在重启服务就可以了。</p>
-<p><strong>查看启动服务端口：</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[root@graylog graylog-2.1.1]<span class="comment"># netstat -ntulp</span></div><div class="line">Active Internet connections (only servers)</div><div class="line">Proto Recv-Q Send-Q Local Address               Foreign Address             State       PID/Program name</div><div class="line">tcp        0      0 127.0.0.1:27017             0.0.0.0:*                   LISTEN      22308/mongod</div><div class="line">tcp        0      0 0.0.0.0:22                  0.0.0.0:*                   LISTEN      1974/sshd</div><div class="line">tcp        0      0 127.0.0.1:25                0.0.0.0:*                   LISTEN      1287/master</div><div class="line">tcp        0      0 ::ffff:192.168.1.234:9350   :::*                        LISTEN      23642/java</div><div class="line">tcp        0      0 ::ffff:192.168.1.234:9000   :::*                        LISTEN      23642/java</div><div class="line">tcp        0      0 ::ffff:192.168.1.234:9200   :::*                        LISTEN      18405/java</div><div class="line">tcp        0      0 ::ffff:192.168.1.234:9300   :::*                        LISTEN      18405/java</div><div class="line">tcp        0      0 :::22                       :::*                        LISTEN      1974/sshd</div><div class="line">tcp        0      0 ::1:25                      :::*                        LISTEN      1287/master</div></pre></td></tr></table></figure>
-<p><strong>(6)访问graylog</strong></p>
-<p>graylog启动成功后，浏览器访问：<strong>graylog安装IP:9000</strong></p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog10.png" alt=""></figure></p>
-<h3 id="四：总结"><a href="#四：总结" class="headerlink" title="四：总结"></a>四：总结</h3><p>到此，基础的集中日志管理graylog安装完毕！，后续将继续介绍：</p>
-<p>安装部署Graylog Collector Sidecar 收集应用日志</p>
-<p>采用syslog收集日志方式</p>
-<p>graylog一些使用，包括日志截取，告警等。</p>
-<p>之前也实践过ELK技术栈，后来选型graylog，是基于graylog带有的权限管理，和告警功能比较完善！</p>
+		<h1 id="免费-Https-证书（Let’S-Encrypt）申请与配置"><a href="#免费-Https-证书（Let’S-Encrypt）申请与配置" class="headerlink" title="免费 Https 证书（Let’S Encrypt）申请与配置"></a>免费 Https 证书（Let’S Encrypt）申请与配置</h1><p>之前要申请免费的 https 证书操作步骤相当麻烦，今天看到有人在讨论，就搜索了一下。发现现在申请步骤简单多了。</p>
+<h2 id="1-下载-certbot"><a href="#1-下载-certbot" class="headerlink" title="1. 下载 certbot"></a>1. 下载 certbot</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git <span class="built_in">clone</span> https://github.com/certbot/certbot</div><div class="line"><span class="built_in">cd</span> certbot</div><div class="line">./certbot-auto --help</div></pre></td></tr></table></figure>
+<p>解压打开执行就会有相关提示</p>
+<h2 id="2-生成免费证书"><a href="#2-生成免费证书" class="headerlink" title="2. 生成免费证书"></a>2. 生成免费证书</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">./certbot-auto certonly --webroot --agree-tos -v -t --email 邮箱地址 -w 网站根目录 <span class="_">-d</span> 网站域名</div><div class="line">./certbot-auto certonly --webroot --agree-tos -v -t --email keeliizhou@gmail.com -w /path/to/your/web/root <span class="_">-d</span> ihaozhuo.com</div></pre></td></tr></table></figure>
+<p>注意 这里 默认会自动生成 /网站根目录/.well-known/acme-challenge，然后 shell 脚本会对应的访问 网站域名<code>/.well-known/acme-challenge</code></p>
+<p>如果返回正常就确认了你对这个网站的所有权，就能顺利生成</p>
+<h2 id="3-获取证书"><a href="#3-获取证书" class="headerlink" title="3. 获取证书"></a>3. 获取证书</h2><p>如果上面的步骤正常 shell 脚本会展示如下信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">- Congratulations! Your certificate and chain have been saved at</div><div class="line">/etc/letsencrypt/live/网站域名/fullchain.pem</div><div class="line">...</div></pre></td></tr></table></figure>
+<h2 id="4-生成-dhparams"><a href="#4-生成-dhparams" class="headerlink" title="4. 生成 dhparams"></a>4. 生成 dhparams</h2><p>使用 openssl 工具生成 dhparams</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">openssl dhparam -out /etc/ssl/certs/dhparams.pem 2048</div></pre></td></tr></table></figure>
+<h2 id="5-配置-Nginx"><a href="#5-配置-Nginx" class="headerlink" title="5. 配置 Nginx"></a>5. 配置 Nginx</h2><p>打开 nginx server 配置文件加入如下设置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">listen 443</div><div class="line"></div><div class="line">ssl on;</div><div class="line">ssl_certificate /etc/letsencrypt/live/网站域名/fullchain.pem;</div><div class="line">ssl_certificate_key /etc/letsencrypt/live/网站域名/privkey.pem;</div><div class="line">ssl_dhparam /etc/ssl/certs/dhparams.pem;</div><div class="line">ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;</div><div class="line">ssl_ciphers HIGH:!aNULL:!MD5;</div></pre></td></tr></table></figure>
+<p>然后重启 nginx 服务就可以了</p>
+<h2 id="6-强制跳转-https"><a href="#6-强制跳转-https" class="headerlink" title="6. 强制跳转 https"></a>6. 强制跳转 https</h2><p>https 默认是监听 443 端口的，没开启 https 访问的话一般默认是 80 端口。如果你确定网站 80 端口上的站点都支持 https 的话加入下面的配件可以自动重定向到 https</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">    listen 80;</div><div class="line">    server_name your.domain.com;</div><div class="line">    <span class="built_in">return</span> 301 https://<span class="variable">$server_name</span><span class="variable">$request_uri</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="7-证书更新"><a href="#7-证书更新" class="headerlink" title="7. 证书更新"></a>7. 证书更新</h2><p>免费证书只有 90 天的有效期，到时需要手动更新 renew。刚好 Let’s encrypt 旗下还有一个 Let’s monitor 免费服务，注册账号添加需要监控的域名，系统会在证书马上到期时发出提醒邮件，非常方便。收到邮件后去后台执行 renew 即可，如果提示成功就表示 renew 成功</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./certbot-auto renew</div></pre></td></tr></table></figure>
 
 	
 
@@ -749,18 +619,18 @@ phpmailer.smtp-password: xxxx
 
 	<article>
 	
-		<h1><a href="/2016/11/13/日志分析平台/Graylog/Graylog—日志分析平台完美代替Elasticsearch/">Graylog——日志分析平台完美代替Elasticsearch</a></h1>
+		<h1><a href="/2016/11/23/Web服务技术/申请证书Https/解决Https请求跨域CDN资源http网站出现访问失败-证书显示不安全/">解决Https请求跨域CDN资源http网站出现访问失败-证书显示不安全</a></h1>
 	
 	<div class="article__infos">
-		<span class="article__date">2016-11-13</span><br />
+		<span class="article__date">2016-11-23</span><br />
 		
 			<span class="article__category">
-				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
+				<a class="article-category-link" href="/categories/nginx/">nginx</a>
 			</span><br />
 		
 		
 			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Graylog/">Graylog</a>
+			  	<a class="article__tag-link" href="/tags/Nginx/">Nginx</a> <a class="article__tag-link" href="/tags/Web-Service/">Web Service</a>
 			</span>
 		
 	</div>
@@ -768,194 +638,16 @@ phpmailer.smtp-password: xxxx
 	
 
 	
-		<p>摘要: 提起日志聚合工具，有开源界的ELK，商业界的Splunk，但我要介绍开源的后起之秀Graylog，可以说是龙头老大Splunk的开源版。</p>
-<h1 id="Graylog——日志分析平台完美代替Elasticsearch"><a href="#Graylog——日志分析平台完美代替Elasticsearch" class="headerlink" title="Graylog——日志分析平台完美代替Elasticsearch"></a>Graylog——日志分析平台完美代替Elasticsearch</h1><p>先看看 推荐！<a href="https://my.oschina.net/HeAlvin/blog/378262" target="_blank" rel="external">国外程序员整理的系统管理员资源大全</a> 中，国外程序员整理的日志聚合工具的列表：</p>
-<p><strong>日志管理工具：收集，解析，可视化</strong></p>
-<ul>
-<li>Elasticsearch - 一个基于Lucene的文档存储，主要用于日志索引、存储和分析。</li>
-<li>Fluentd - 日志收集和发出</li>
-<li>Flume -分布式日志收集和聚合系统</li>
-<li>Graylog2 -具有报警选项的可插入日志和事件分析服务器</li>
-<li>Heka -流处理系统，可用于日志聚合</li>
-<li>Kibana - 可视化日志和时间戳数据</li>
-<li>Logstash -管理事件和日志的工具</li>
-<li>Octopussy -日志管理解决方案（可视化/报警/报告）</li>
-</ul>
-<p>Graylog与ELK方案的对比</p>
-<ul>
-<li>ELK： Logstash -&gt; Elasticsearch -&gt; Kibana （使用了一些插件head ，marvel）</li>
-<li>Graylog： Graylog Collector -&gt; Graylog Server(封装Elasticsearch) -&gt; Graylog Web</li>
-</ul>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Graylog.png" alt=""></figure></p>
-<p>做为运维，公司内部使用elk处理日志发现很多问题。</p>
-<p>顺便截图了几张：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog-elk.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog-elk1.png" alt=""></figure></p>
-<p>之前试过Logstash + Elasticsearch + Kibana的方案，发现有几个缺点：</p>
-<ol>
-<li>不能处理多行日志，比如Mysql慢查询，Tomcat/Jetty应用的Java异常打印</li>
-<li>不能保留原始日志，只能把原始日志分字段保存，这样搜索日志结果是一堆Json格式文本，无法阅读。</li>
-<li>不复合正则表达式匹配的日志行，被全部丢弃。</li>
-<li>kibana结合使用经常会出现卡死。资源消耗非常大。</li>
-</ol>
-<p>本着解决以上3个缺点的原则，再次寻找替代方案。 首先找到了商业日志工具Splunk，号称日志界的Google，意思是全文搜索日志的能力，不光能解决以上3个缺点，还提供搜索单词高亮显示，不同错误级别日志标色等吸引人的特性，但是免费版有500M限制，付费版据说要3万美刀，只能放弃，继续寻找。 最后找到了Graylog，第一眼看到Graylog，只是系统日志syslog的采集工具，一点也没吸引到我。但后来深入了解后，才发现Graylog简直就是开源版的Splunk。 我自己总结的Graylog吸引人的地方：</p>
-<ol>
-<li>一体化方案，安装方便，不像ELK有3个独立系统间的集成问题。</li>
-<li>采集原始日志，并可以事后再添加字段，比如http_status_code，response_time等等。</li>
-<li>自己开发采集日志的脚本，并用curl/nc发送到Graylog Server，发送格式是自定义的GELF，Flunted和Logstash都有相应的输出GELF消息的插件。自己开发带来很大的自由度。实际上只需要用inotifywait监控日志的modify事件，并把日志的新增行用curl/netcat发送到Graylog Server就可。</li>
-<li>搜索结果高亮显示，就像google一样。</li>
-<li>搜索语法简单，比如： source:mongo AND reponse_time_ms:&gt;5000，避免直接输入elasticsearch搜索json语法</li>
-<li>搜索条件可以导出为elasticsearch的搜索json文本，方便直接开发调用elasticsearch rest api的搜索脚本。</li>
-</ol>
-<p>Graylog图解</p>
-<p>Graylog开源版官网： <a href="https://www.graylog.org/" target="_blank" rel="external">https://www.graylog.org/</a></p>
-<p>来几张官网的截图：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog2.png" alt=""></figure></p>
-<p><figure class="figure"><img src="https://www.graylog.org/assets/itops_full-87fe2811ab676116142c145affa95b902635b1d6da99718057e8ae9d45c15007.png" alt=""></figure></p>
-<p><figure class="figure"><img src="https://www.graylog.org/assets/overview_dashboard-3817012f923d4a00e9bde1c0547796319cf0396149464f434cfc2ae83a9da826.png" alt=""></figure></p>
-<p>Graylog是强大的日志管理、分析工具。它基于 Elasticsearch, Java和MongoDB。</p>
-<p>Graylog可以收集监控多种不同应用的日志。但是为了示范说明，我只收集syslog。并且，我将会把用到的组件全部安装到一个单独的服务器上。对于大型、生产系统你可以把组件分开安装在不同的服务器上，这样可以提高效率。</p>
-<h3 id="Graylog的组件"><a href="#Graylog的组件" class="headerlink" title="Graylog的组件"></a>Graylog的组件</h3><p>Graylog有4个基本组件：</p>
-<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Graylog <span class="built_in">Server</span>：这个服务负责接收和处理日志/消息，并且和其他组件沟通。</div><div class="line">Elasticsearch：存储所有的日志，它的性能依赖内存和硬盘IO。</div><div class="line">MongoDB：存储元数据，负载不高。</div><div class="line">graylog-Web接口：用户接口。</div></pre></td></tr></table></figure>
-<p>下面是Graylog组件之间的关系图：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog3.png" alt=""></figure></p>
-<p>下面来自我公司内部分享的PPT拍图：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Graylog4-ppt.png" alt=""></figure></p>
-<p>生产环境 我参考网上一些博客画的图：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog5.png" alt=""></figure></p>
-<h3 id="系统要求："><a href="#系统要求：" class="headerlink" title="系统要求："></a>系统要求：</h3><ul>
-<li>CentOS 6.7</li>
-<li>内存至少2GB</li>
-<li>有root权限</li>
-<li>服务器ip是192.168.1.234，已安装 1.8.0_77-b03</li>
-</ul>
-<p>这里我只是举例单一模式跑服务。</p>
-<h3 id="安装MongoDB"><a href="#安装MongoDB" class="headerlink" title="安装MongoDB"></a>安装MongoDB</h3><p>MongoDB的安装非常简单，执行如下命令导入MongoDB GPG密钥到rpm：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="string">[root@graylog</span> <span class="string">yum.repos.d]#</span> <span class="string">vim</span> <span class="string">/etc/yum.repos.d/mongodb-org-3.0.repo</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="string">[mongodb-org-3.0]</span></div><div class="line"><span class="string">name=MongoDB</span> <span class="string">Repository</span></div><div class="line"><span class="string">baseurl=http://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.0/x86_64/</span></div><div class="line"><span class="string">gpgcheck=0</span></div><div class="line"><span class="string">enabled=1</span></div><div class="line"><span class="meta">---</span></div><div class="line"></div><div class="line"><span class="string">[root@graylog</span> <span class="string">yum.repos.d]#</span> <span class="string">yum</span> <span class="string">install</span> <span class="bullet">-y</span> <span class="string">mongodb-org</span></div><div class="line"></div><div class="line"><span class="string">[root@graylog</span> <span class="string">yum.repos.d]#</span> <span class="string">vi</span> <span class="string">/etc/yum.conf</span></div><div class="line"><span class="string">最后一行添加：</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="string">exclude=mongodb-org,mongodb-org-server,mongodb-org-shell,mongodb-org-mongos,mongodb-org-tools</span></div><div class="line"><span class="meta">---</span></div><div class="line"></div><div class="line"><span class="string">[root@graylog</span> <span class="string">yum.repos.d]#</span> <span class="string">service</span> <span class="string">mongod</span> <span class="string">start</span></div><div class="line"><span class="string">[root@graylog</span> <span class="string">yum.repos.d]#</span> <span class="string">chkconfig</span> <span class="string">mongod</span> <span class="string">on</span></div><div class="line"></div><div class="line"><span class="string">[root@graylog</span> <span class="string">yum.repos.d]#</span> <span class="string">vi</span> <span class="string">/etc/security/limits.conf</span></div><div class="line"><span class="string">最后一行添加：</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="string">*</span>                <span class="string">soft</span>    <span class="string">nproc</span>           <span class="number">65536</span></div><div class="line"><span class="string">*</span>                <span class="string">hard</span>    <span class="string">nproc</span>           <span class="number">65536</span></div><div class="line"><span class="string">mongod</span>           <span class="string">soft</span>    <span class="string">nproc</span>           <span class="number">65536</span></div><div class="line"></div><div class="line"><span class="string">*</span>                <span class="string">soft</span>    <span class="string">nofile</span>          <span class="number">131072</span></div><div class="line"><span class="string">*</span>                <span class="string">hard</span>    <span class="string">nofile</span>          <span class="number">131072</span></div><div class="line"><span class="meta">---</span></div><div class="line"></div><div class="line"><span class="string">[root@graylog</span> <span class="string">~]#</span> <span class="string">vi</span> <span class="string">/etc/init.d/mongod</span></div><div class="line"><span class="string">ulimit</span> <span class="bullet">-f</span> <span class="string">unlimited</span> <span class="string">行前插入：</span></div><div class="line"><span class="meta">---</span></div><div class="line">  <span class="string">if</span> <span class="string">test</span> <span class="bullet">-f</span> <span class="string">/sys/kernel/mm/transparent_hugepage/enabled;</span> <span class="string">then</span></div><div class="line">    <span class="string">echo</span> <span class="string">never</span> <span class="string">&gt; /sys/kernel/mm/transparent_hugepage/enabled</span></div><div class="line">  fi</div><div class="line">  if test -f /sys/kernel/mm/transparent_hugepage/defrag; then</div><div class="line">    echo never &gt; /sys/kernel/mm/transparent_hugepage/defrag</div><div class="line">  fi</div><div class="line">---</div><div class="line">[root@graylog ~]# /etc/init.d/mongod restart</div></pre></td></tr></table></figure>
-<h3 id="安装Elasticsearch"><a href="#安装Elasticsearch" class="headerlink" title="安装Elasticsearch"></a>安装Elasticsearch</h3><p>Graylog目前为止只能使用Elasticsearch 2.0以前的版本，所以，在这一步中，我将安装Elasticsearch 1.7.x。</p>
-<p>添加Elasticsearch GPG密钥：</p>
-<pre><code>$ sudo rpm --import http://packages.elastic.co/GPG-KEY-elasticsearch
-</code></pre><p>创建Elasticsearch源：</p>
-<pre><code>$ sudo vim /etc/yum.repos.d/elasticsearch.repo
-</code></pre><p>写入如下内容：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="section">[elasticsearch-1.7]</span></div><div class="line"><span class="attr">name</span>=Elasticsearch repository for <span class="number">1.7</span>.x packages</div><div class="line"><span class="attr">baseurl</span>=http://packages.elastic.co/elasticsearch/<span class="number">1.7</span>/centos</div><div class="line"><span class="attr">gpgcheck</span>=<span class="number">1</span></div><div class="line"><span class="attr">gpgkey</span>=http://packages.elastic.co/GPG-KEY-elasticsearch</div><div class="line"><span class="attr">enabled</span>=<span class="number">1</span></div></pre></td></tr></table></figure>
-<p>安装Elasticsearch：</p>
-<pre><code>$ sudo yum -y install elasticsearch
-</code></pre><p>配置前先创建几个目录文件</p>
-<pre><code>mkdir /data/es-data -p
-mkdir /data/es-work -p
-</code></pre><p>Elasticsearch安装完成之后，编辑配置文件：</p>
-<pre><code>sudo vim /etc/elasticsearch/elasticsearch.yml
-
- node.data: true  # 数据存放true
-</code></pre><p>找到cluster.name一行，取消这一行的注释，并把值改为graylog-development：</p>
-<pre><code>cluster.name: graylog-development
-
-
- path.data: /data/es-data     es数据存放目录  这里需要自己新建目录
-
- path.work: /data/es-work   
-</code></pre><p>你也许想要限制外部访问Elasticsearch（端口9200），这样可以提高系统的安全性。找到network.host一行，取消注释，并把值改为localhost：</p>
-<pre><code>network.host: 192.168.1.234
-</code></pre><p>保存退出文件。</p>
-<p>重启Elasticsearch：</p>
-<pre><code>$ service elasticsearch start
-</code></pre><p>设置开机启动：</p>
-<pre><code>$ chkconfig --add elasticsearch
-</code></pre><p>执行如下命令测试Elasticsearch是否正常运行：</p>
-<pre><code>$ curl -XGET &apos;http://localhost:9200/_cluster/health?pretty=true&apos;
-</code></pre><p>输出的信息如下表示Elasticsearch安装成功：</p>
-<figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">drwxr-xr-x. <span class="number">2</span> root   root  <span class="number">4096</span> <span class="number">9</span>月  <span class="number">23</span> <span class="number">2011</span> src</div><div class="line">[root<span class="symbol">@ELK</span> <span class="keyword">local</span>]<span class="meta">#  curl -XGET <span class="string">'http://192.168.1.234:9200/_cluster/health?pretty=true'</span></span></div><div class="line">&#123;</div><div class="line">  <span class="string">"cluster_name"</span> : <span class="string">"graylog-development"</span>,</div><div class="line">  <span class="string">"status"</span> : <span class="string">"yellow"</span>,</div><div class="line">  <span class="string">"timed_out"</span> : <span class="literal">false</span>,</div><div class="line">  <span class="string">"number_of_nodes"</span> : <span class="number">1</span>,</div><div class="line">  <span class="string">"number_of_data_nodes"</span> : <span class="number">1</span>,</div><div class="line">  <span class="string">"active_primary_shards"</span> : <span class="number">37</span>,</div><div class="line">  <span class="string">"active_shards"</span> : <span class="number">37</span>,</div><div class="line">  <span class="string">"relocating_shards"</span> : <span class="number">0</span>,</div><div class="line">  <span class="string">"initializing_shards"</span> : <span class="number">0</span>,</div><div class="line">  <span class="string">"unassigned_shards"</span> : <span class="number">37</span>,</div><div class="line">  <span class="string">"delayed_unassigned_shards"</span> : <span class="number">0</span>,</div><div class="line">  <span class="string">"number_of_pending_tasks"</span> : <span class="number">0</span>,</div><div class="line">  <span class="string">"number_of_in_flight_fetch"</span> : <span class="number">0</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>安装Graylag</p>
-<p>Graylog的最新版是1.1.4，下载链接如下：<br><a href="https://packages.graylog2.org/repo/el/6Server/1.1/x86_64/graylog-server-1.1.4-1.noarch.rpm" target="_blank" rel="external">https://packages.graylog2.org/repo/el/6Server/1.1/x86_64/graylog-server-1.1.4-1.noarch.rpm</a><br><a href="https://packages.graylog2.org/repo/el/6Server/1.1/x86_64/graylog-web-1.1.4-1.noarch.rpm" target="_blank" rel="external">https://packages.graylog2.org/repo/el/6Server/1.1/x86_64/graylog-web-1.1.4-1.noarch.rpm</a></p>
-<p>现在Graylog的所有依赖软件安装完成，这一步我们来安装graylog-server。</p>
-<p>首先，下载Graylog RPM软件包：</p>
-<pre><code>$ cd 
-$ sudo rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-1.3-repository-el7_latest.rpm
-</code></pre><p>安装graylog-server：</p>
-<pre><code>yum -y install graylog-server
-</code></pre><p>安装pwgen，我们使用它生成随机密码：</p>
-<pre><code>yum -y install epel-release
-yum -y install pwgen
-</code></pre><p>现在我们来设置Graylog管理员的密钥。配置文件位于/etc/graylog/server/server.conf目录，需要修改password_secret参数：</p>
-<pre><code>$ SECRET=$(pwgen -s 96 1)
-$ sudo -E sed -i -e &apos;s/password_secret =.*/password_secret = &apos;$SECRET&apos;/&apos; /etc/graylog/server/server.conf
-</code></pre><p>执行完上面命令之后，password_secret参数的样子：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog6.png" alt=""></figure></p>
-<p>这一步，设置管理员密码。由于密码使用sha哈希算法，我们需要把明文密码转换为hash，然后赋值给root_password_sha2参数。例如，我要设置的管理员密码是 Ihaozhuo_b313，它对应的hash为：</p>
-<pre><code>$ echo -n Ihaozhuo_b313 | sha256sum | awk &apos;{print $1}&apos;
-</code></pre><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog7.png" alt=""></figure></p>
-<p>编辑/etc/graylog/server/server.conf，设置root_password_sha2参数：</p>
-<pre><code>$ sudo vim /etc/graylog/server/server.conf
-</code></pre><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog8.png" alt=""></figure></p>
-<p>现在Graylog管理员密码为Ihaozhuo_b313。</p>
-<p>配置rest_transport_uri参数，设置Graylog web接口和服务器的沟通方式。由于我们把所有组件都安装到了单独的一个服务器上，需要把值设置为<strong>127.0.0.1</strong> 或 <strong>localhost</strong>。找到rest_transport_uri一行，取消注释，并把值设置为：</p>
-<pre><code>rest_transport_uri = http://192.168.1.234:12900/
-</code></pre><p>由于我们只有一个Elasticsearch shard，需要把elasticsearch_shards参数设置为1：</p>
-<pre><code>elasticsearch_shards = 1
-</code></pre><p>更改elasticsearch_cluster_name参数，应该和前面Elasticsearch的<strong>cluster.name</strong>参数相对应：</p>
-<pre><code>elasticsearch_cluster_name = graylog-development
-</code></pre><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog9.png" alt=""></figure></p>
-<p>取消下面两行的注释，检测Elasticsearch：</p>
-<pre><code>172 elasticsearch_discovery_zen_ping_multicast_enabled = false
-173 elasticsearch_discovery_zen_ping_unicast_hosts = 192.168.1.234:9300
-</code></pre><p>启动graylog-server：</p>
-<pre><code>/etc/init.d/graylog-web restart
-</code></pre><h3 id="安装Graylog-Web"><a href="#安装Graylog-Web" class="headerlink" title="安装Graylog Web"></a>安装Graylog Web</h3><p>安装Graylog Web：</p>
-<pre><code>$ sudo yum -y install graylog-web
-</code></pre><p>安装完成之后配置Graylog Web的密钥，配置文件位于/etc/graylog/web/web.conf，更改application.secret参数：</p>
-<pre><code>$ SECRET=$(pwgen -s 96 1)
-$ sudo -E sed -i -e &apos;s/application\.secret=&quot;&quot;/application\.secret=&quot;&apos;$SECRET&apos;&quot;/&apos; /etc/graylog/web/web.conf
-</code></pre><p>配置graylog2-server.uris参数，它的值应该和Graylog的rest_listen_uri参数相对应：</p>
-<pre><code>$ sudo vim /etc/graylog/web/web.conf
-
-graylog2-server.uris=&quot;http://127.0.0.1:12900/&quot;
-</code></pre><p>重启graylog-web：</p>
-<pre><code>/etc/init.d/graylog-web restart
-</code></pre><h3 id="配置Graylog服务器接收其他服务器的syslog日志"><a href="#配置Graylog服务器接收其他服务器的syslog日志" class="headerlink" title="配置Graylog服务器接收其他服务器的syslog日志"></a>配置Graylog服务器接收其他服务器的syslog日志</h3><h4 id="登录Graylog-Web"><a href="#登录Graylog-Web" class="headerlink" title="登录Graylog Web"></a>登录Graylog Web</h4><p>使用浏览器访问Graylog服务器的域名或IP：<strong><a href="http://graylog_public_IP_domain:9000/" target="_blank" rel="external">http://graylog_public_IP_domain:9000/</a></strong>。</p>
-<p>你应该能看到一个登录界面，使用admin做为用户名和前面设置的密码登录。</p>
-<p>登录之后：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog10.png" alt=""></figure></p>
-<p>上面的红数字1是通知（you have a node without any running inputs），下面设置通过UDP接收syslog。</p>
-<p>创建syslog UDP输入</p>
-<p>添加要接收的其他服务器syslog日志：System-&gt;Inputs-&gt;Syslog UDP-&gt;Launch new input。</p>
-<p>在弹出的窗口上输入如下信息：</p>
-<ul>
-<li>Title: syslog</li>
-<li>Port: 8514</li>
-<li>Bind address: 这里写Graylog-server服务器主机IP</li>
-</ul>
-<p>点击Launch</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog11.png" alt=""></figure></p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog12.png" alt=""></figure></p>
-<p>如果你需要收集多个服务器的日志，重复上面步骤。</p>
-<p>现在，我们的Graylog服务器已经做好了接收其他服务器发来日志的准备。下面我们还需要配置其他服务器，让这些服务器给Graylog服务器发送日志。</p>
-<h4 id="配置其他服务器给Graylog服务器发送syslog"><a href="#配置其他服务器给Graylog服务器发送syslog" class="headerlink" title="配置其他服务器给Graylog服务器发送syslog"></a>配置其他服务器给Graylog服务器发送syslog</h4><p>参考官网：<a href="https://marketplace.graylog.org/addons/a47beb3b-0bd9-4792-a56a-33b27b567856" target="_blank" rel="external">从Linux系统日志发送到Graylog</a></p>
-<p>SSH登录“其他服务器”，创建rsyslog配置文件90-graylog.conf：</p>
-<pre><code>sudo vim /etc/rsyslog.d/90-graylog.conf
-</code></pre><p>添加如下代码，把 graylog_server_IP 替换为Graylog服务器ip地址：</p>
-<pre><code>$template GRAYLOGRFC5424,&quot;&lt;%pri%&gt;%protocol-version% %timestamp:::date-rfc3339%    %HOSTNAME% %app-name% %procid% %msg%\n&quot;
-*.* @graylog_server_IP:8514;GRAYLOGRFC5424
-</code></pre><p>重启rsyslog服务使生效：</p>
-<pre><code>/etc/init.d/rsyslog restart
-</code></pre><p>配置完成之后，回到Graylog Web，点击Sources，查看是否有新添加rsyslog。</p>
-<h4 id="Graylog使用http协议发送："><a href="#Graylog使用http协议发送：" class="headerlink" title="Graylog使用http协议发送："></a>Graylog使用http协议发送：</h4><p>添加要接收的其他服务器syslog日志：System-&gt;Inputs-&gt;GELF HTTP-&gt;Launch new input。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog14.png" alt=""></figure></p>
-<p>然后在服务器上面发送下面命令。</p>
-<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="string">[root@graylog-development ~]</span># curl -XPOST http://<span class="number">192.168.1.234:12201</span>/gelf -p0 -d '&#123;<span class="string">"short_message"</span>:<span class="string">"Hello there"</span>, <span class="string">"host"</span>:<span class="string">"example.org"</span>, <span class="string">"facility"</span>:<span class="string">"test"</span>, <span class="string">"_foo"</span>:<span class="string">"bar"</span>&#125;'</div><div class="line"><span class="string">[root@graylog-development ~]</span># curl -XPOST http://<span class="number">192.168.1.234:12201</span>/gelf -p0 -d '&#123;<span class="string">"short_message"</span>:<span class="string">"测试"</span>, <span class="string">"host"</span>:<span class="string">"example.org"</span>, <span class="string">"facility"</span>:<span class="string">"test"</span>, <span class="string">"_foo"</span>:<span class="string">"bar"</span>&#125;'</div></pre></td></tr></table></figure>
-<p>这里定义192.168.1.234 是graylog-server服务器地址 12201 端口是之前创建好的。</p>
-<h3 id="搜素Graylog"><a href="#搜素Graylog" class="headerlink" title="搜素Graylog"></a>搜素Graylog</h3><p>假如你要搜索hello：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog13.png" alt=""></figure></p>
-<p>上面安装配置了基本的Graylog服务器。</p>
-<h3 id="时区和高亮设置"><a href="#时区和高亮设置" class="headerlink" title="时区和高亮设置"></a>时区和高亮设置</h3><p>admin帐号的时区：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="string">[root@graylog</span> <span class="string">~]#</span> <span class="string">vi</span> <span class="string">/etc/graylog/server/server.conf</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="number">30</span> <span class="string">root_timezone</span> <span class="string">=</span> <span class="string">Asia/Shanghai</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="string">[root@graylog</span> <span class="string">~]#</span> <span class="string">/etc/init.d/graylog-server</span> <span class="string">restart</span></div></pre></td></tr></table></figure>
-<p>其他帐号的默认时区：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="string">[root@graylog</span> <span class="string">~]#</span> <span class="string">vi</span> <span class="string">/etc/graylog/web/web.conf</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="number">18</span> <span class="string">timezone="Asia/Shanghai"</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="string">[root@graylog</span> <span class="string">~]#</span> <span class="string">/etc/init.d/graylog-web</span> <span class="string">restart</span></div></pre></td></tr></table></figure>
-<p>允许查询结果高亮：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="string">[root@graylog</span> <span class="string">~]#</span> <span class="string">vi</span> <span class="string">/etc/graylog/server/server.conf</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="number">147</span> <span class="string">allow_highlighting</span> <span class="string">=</span> <span class="literal">true</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="string">[root@graylog</span> <span class="string">~]#</span> <span class="string">/etc/init.d/graylog-server</span> <span class="string">restart</span></div></pre></td></tr></table></figure>
-<h3 id="移动数据目录"><a href="#移动数据目录" class="headerlink" title="移动数据目录"></a>移动数据目录</h3><figure class="highlight livescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">移动elasticsearch的数据目录</div><div class="line">[root@graylog ~]<span class="comment"># sudo /etc/init.d/elasticsearch stop</span></div><div class="line">[root@graylog ~]<span class="comment"># sudo cp -rp /var/lib/elasticsearch/ /data/</span></div><div class="line">[root@graylog ~]<span class="comment"># sudo vi /etc/sysconfig/elasticsearch</span></div><div class="line">+<span class="number">16</span> DATA_DIR=/data/elasticsearch</div><div class="line">[root@graylog ~]<span class="comment"># sudo /etc/init.d/elasticsearch start</span></div><div class="line"></div><div class="line">移动mongo的数据目录</div><div class="line">[root@graylog ~]<span class="comment"># sudo /etc/init.d/mongod stop</span></div><div class="line">[root@graylog ~]<span class="comment"># sudo cp -rp /var/lib/mongo /data/</span></div><div class="line">[root@graylog ~]<span class="comment"># sudo vi /etc/mongod.conf</span></div><div class="line">---</div><div class="line"><span class="number">13</span> dbpath=/<span class="keyword">var</span>/lib/mongo<span class="function"></span></div><div class="line">-&gt;</div><div class="line"><span class="number">13</span> dbpath=/data/mongo</div><div class="line">---</div><div class="line">[mtagent@access2 ~]$ sudo /etc/init.d/mongod start</div></pre></td></tr></table></figure>
-<h4 id="其余参考文档"><a href="#其余参考文档" class="headerlink" title="其余参考文档"></a>其余参考文档</h4><p><a href="http://docs.graylog.org/en/1.3/" target="_blank" rel="external">参考官网</a></p>
-<p><a href="http://blog.topspeedsnail.com/archives/4066" target="_blank" rel="external">Centos7 搭建graylog</a></p>
-<p><a href="https://my.oschina.net/fitnessefan/blog/464351?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">Graylog——日志聚合工具中的后起之秀</a></p>
+		<h1 id="解决Https请求跨域CDN资源http网站出现访问失败-证书显示不安全"><a href="#解决Https请求跨域CDN资源http网站出现访问失败-证书显示不安全" class="headerlink" title="解决Https请求跨域CDN资源http网站出现访问失败-证书显示不安全"></a>解决Https请求跨域CDN资源http网站出现访问失败-证书显示不安全</h1><p>这里讲如何解决跨域http资源请求证书出现问题， 上一篇我解决网站如何申请免费证书，实现申请免费证书在Nginx上面实现https访问。</p>
+<p>可是我一开始没有这么顺利实现我想要的效果，因为的确证书是有了访问可以https可是请求跨域http服务就出现问题了。<br>这里我是在又拍云做CDN加速的，所以这里说明下如果你的公司网站比如说：ihaozhuo.com<br>那么请求的时候<a href="https://ihaozhuo.com" target="_blank" rel="external">https://ihaozhuo.com</a> 出现我下面同样的问题:</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Nginx4.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Nginx5.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Nginx6.png" alt=""></figure></p>
+<h4 id="这是我显示的错误图片当初截图留下记录成文档了。"><a href="#这是我显示的错误图片当初截图留下记录成文档了。" class="headerlink" title="这是我显示的错误图片当初截图留下记录成文档了。"></a>这是我显示的错误图片当初截图留下记录成文档了。</h4><p>这里我也做了HTTPS安全检测：<a href="https://www.ssllabs.com/ssltest" target="_blank" rel="external">https://www.ssllabs.com/ssltest</a> </p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Nginx-ssl.png" alt=""></figure></p>
+<h3 id="如何解决："><a href="#如何解决：" class="headerlink" title="如何解决："></a>如何解决：</h3><p>这里我问前端的代码静态资源上面请求upyun的http去访问，这里我们在upyun对请求域名设置https方法：</p>
+<p>upyun对应的服务列表设置里面选择https设置</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Nginx7.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Nginx8.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Nginx9.png" alt=""></figure></p>
+<p>配置好以后就可以生效了。</p>
+<p>这里需要把地址给到前端让他们在代码上面修改下HTTPS 更新下服务重启就出现访问正常了。<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Nginx10.png" alt=""></figure></p>
 
 	
 

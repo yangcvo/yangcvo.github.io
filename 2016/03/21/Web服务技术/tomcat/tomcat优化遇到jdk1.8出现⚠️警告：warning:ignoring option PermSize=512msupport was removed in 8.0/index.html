@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-03-21</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/tomcat/">tomcat</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Java-Tomcat-notes/">Java+Tomcat notes</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h4 id="tomcat性能优化：Java-HotSpot-TM-64-Bit-Server-VM-warning-ignoring-option-PermSize-512m-support-was-removed-in-8-0"><a href="#tomcat性能优化：Java-HotSpot-TM-64-Bit-Server-VM-warning-ignoring-option-PermSize-512m-support-was-removed-in-8-0" class="headerlink" title="tomcat性能优化：Java HotSpot(TM) 64-Bit Server VM warning: ignoring option PermSize=512m; support was removed in 8.0"></a>tomcat性能优化：Java HotSpot(TM) 64-Bit Server VM warning: ignoring option PermSize=512m; support was removed in 8.0</h4><p>这个提示应该是升级JDK1.8以上 在Java的8命令行标志<code>MaxPermSize</code>已被删除。其原因是，持久代从热点堆中取出并转移到本机内存。所以为了消除这种信息编辑java_OPTS环境用户变量。</p>
+<p>在网上查询到：</p>
+<p>-XX：<code>MaxPermSize =size</code>设置最大永久代空间的大小（以字节为单位）。此选项是不赞成使用JDK 8，并通过-XX取代：MaxMetaspaceSize选项。</p>
+<p>-XX：<code>PermSize = size</code>设置分配给永久代如果超过触发垃圾收集的空间（以字节为单位）。该选项已被否决JDK 8，并通过-XX取代：<code>MetaspaceSize</code>选项。</p>
+<p>我所在</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">JAVA_OPTS==<span class="string">"-Xmx512m -XX:MaxPermSize=256m"</span></div></pre></td></tr></table></figure>
+<p>在我的系统的.bashrc，将其更改为</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">JAVA_OPTS=<span class="string">"-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms1024m -Xmx1024m -XX:NewSize=512m -XX:MaxNewSize=512m  -XX:+DisableExplicitGC"</span></div></pre></td></tr></table></figure>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/03/21/Web服务技术/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2018 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

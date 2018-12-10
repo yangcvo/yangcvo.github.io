@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>免费 Https证书（Let&#39;S Encrypt）申请与配置 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>免费 Https证书（Let&#39;S Encrypt）申请与配置</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-11-24</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/nginx/">nginx</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Nginx/">Nginx</a> <a class="article__tag-link" href="/tags/Web-Service/">Web Service</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h1 id="免费-Https-证书（Let’S-Encrypt）申请与配置"><a href="#免费-Https-证书（Let’S-Encrypt）申请与配置" class="headerlink" title="免费 Https 证书（Let’S Encrypt）申请与配置"></a>免费 Https 证书（Let’S Encrypt）申请与配置</h1><p>之前要申请免费的 https 证书操作步骤相当麻烦，今天看到有人在讨论，就搜索了一下。发现现在申请步骤简单多了。</p>
+<h2 id="1-下载-certbot"><a href="#1-下载-certbot" class="headerlink" title="1. 下载 certbot"></a>1. 下载 certbot</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git <span class="built_in">clone</span> https://github.com/certbot/certbot</div><div class="line"><span class="built_in">cd</span> certbot</div><div class="line">./certbot-auto --help</div></pre></td></tr></table></figure>
+<p>解压打开执行就会有相关提示</p>
+<h2 id="2-生成免费证书"><a href="#2-生成免费证书" class="headerlink" title="2. 生成免费证书"></a>2. 生成免费证书</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">./certbot-auto certonly --webroot --agree-tos -v -t --email 邮箱地址 -w 网站根目录 <span class="_">-d</span> 网站域名</div><div class="line">./certbot-auto certonly --webroot --agree-tos -v -t --email keeliizhou@gmail.com -w /path/to/your/web/root <span class="_">-d</span> ihaozhuo.com</div></pre></td></tr></table></figure>
+<p>注意 这里 默认会自动生成 /网站根目录/.well-known/acme-challenge，然后 shell 脚本会对应的访问 网站域名<code>/.well-known/acme-challenge</code></p>
+<p>如果返回正常就确认了你对这个网站的所有权，就能顺利生成</p>
+<h2 id="3-获取证书"><a href="#3-获取证书" class="headerlink" title="3. 获取证书"></a>3. 获取证书</h2><p>如果上面的步骤正常 shell 脚本会展示如下信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">- Congratulations! Your certificate and chain have been saved at</div><div class="line">/etc/letsencrypt/live/网站域名/fullchain.pem</div><div class="line">...</div></pre></td></tr></table></figure>
+<h2 id="4-生成-dhparams"><a href="#4-生成-dhparams" class="headerlink" title="4. 生成 dhparams"></a>4. 生成 dhparams</h2><p>使用 openssl 工具生成 dhparams</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">openssl dhparam -out /etc/ssl/certs/dhparams.pem 2048</div></pre></td></tr></table></figure>
+<h2 id="5-配置-Nginx"><a href="#5-配置-Nginx" class="headerlink" title="5. 配置 Nginx"></a>5. 配置 Nginx</h2><p>打开 nginx server 配置文件加入如下设置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">listen 443</div><div class="line"></div><div class="line">ssl on;</div><div class="line">ssl_certificate /etc/letsencrypt/live/网站域名/fullchain.pem;</div><div class="line">ssl_certificate_key /etc/letsencrypt/live/网站域名/privkey.pem;</div><div class="line">ssl_dhparam /etc/ssl/certs/dhparams.pem;</div><div class="line">ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;</div><div class="line">ssl_ciphers HIGH:!aNULL:!MD5;</div></pre></td></tr></table></figure>
+<p>然后重启 nginx 服务就可以了</p>
+<h2 id="6-强制跳转-https"><a href="#6-强制跳转-https" class="headerlink" title="6. 强制跳转 https"></a>6. 强制跳转 https</h2><p>https 默认是监听 443 端口的，没开启 https 访问的话一般默认是 80 端口。如果你确定网站 80 端口上的站点都支持 https 的话加入下面的配件可以自动重定向到 https</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">    listen 80;</div><div class="line">    server_name your.domain.com;</div><div class="line">    <span class="built_in">return</span> 301 https://<span class="variable">$server_name</span><span class="variable">$request_uri</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="7-证书更新"><a href="#7-证书更新" class="headerlink" title="7. 证书更新"></a>7. 证书更新</h2><p>免费证书只有 90 天的有效期，到时需要手动更新 renew。刚好 Let’s encrypt 旗下还有一个 Let’s monitor 免费服务，注册账号添加需要监控的域名，系统会在证书马上到期时发出提醒邮件，非常方便。收到邮件后去后台执行 renew 即可，如果提示成功就表示 renew 成功</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./certbot-auto renew</div></pre></td></tr></table></figure>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/11/24/Web服务技术/申请证书Https/免费 Https 证书（Let'S Encrypt）申请与配置 /" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2018 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

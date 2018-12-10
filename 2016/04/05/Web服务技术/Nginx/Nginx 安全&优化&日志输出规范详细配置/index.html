@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Nginx 安全&amp;优化&amp;日志输出规范详细配置 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>Nginx 安全&amp;优化&amp;日志输出规范详细配置</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-04-05</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Nginx/">Nginx</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Nginx/">Nginx</a> <a class="article__tag-link" href="/tags/Web-Service/">Web Service</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<p>##1.Nginx日志审计</p>
+<h4 id="①-参考配置操作"><a href="#①-参考配置操作" class="headerlink" title="① 参考配置操作"></a>① 参考配置操作</h4><p><strong>(1)编辑 nginx.conf 配置文件</strong></p>
+<p>将 error_log 前的“#”去掉，记录错误日志<br>将 access_log 前的“#”去掉，记录访问日志<br>(2)设置 access_log，修改配置文件如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">log_format formatname <span class="string">'$remote_addr - $remote_user [$time_local] '</span></div><div class="line"><span class="string">' "$request" $status $body_bytes_sent "$http_referer" '</span></div><div class="line"><span class="string">' "$http_user_agent" "$http_x_forwarded_for"'</span>; access_log</div><div class="line">logs/access.log formantname;      <span class="comment">#formatname 是设置配置文件格式的名称</span></div></pre></td></tr></table></figure>
+<h4 id="②-备注事项"><a href="#②-备注事项" class="headerlink" title="②  备注事项"></a>②  备注事项</h4><p>查看 nginx.conf 配置文件中，error_log、access_log 前的“#”是否去掉<br>0x02 服务<br>1  限制 IP 访问<br>对网站或敏感目录的访问 IP 进行限制<br>① 参考配置操作<br>(1)修改配置文件</p>
+<pre><code>vi /usr/local/nginx/conf/nginx.conf
+</code></pre><p>具体设置如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">location / &#123;</div><div class="line">deny 192.168.1.1; <span class="comment">#拒绝 IP</span></div><div class="line">allow 192.168.1.0/24; <span class="comment">#允许 IP</span></div><div class="line">allow 10.1.1.0/16; <span class="comment">#允许 IP</span></div><div class="line">deny all; <span class="comment">#拒绝其他所有 IP</span></div></pre></td></tr></table></figure>
+<p><strong>(2)重新启动 nginx 服务</strong></p>
+<p>② 备注事项<br>根据应用场景，设置合适的 IP 地址，检查配置文件  <code>#more /usr/local/nginx/conf/nginx.conf</code>中的 </p>
+<h2 id="2-控制超时时间"><a href="#2-控制超时时间" class="headerlink" title="2.控制超时时间"></a>2.控制超时时间</h2><p>控制超时时间，提高服务器性能，降低客户端的等待时间</p>
+<h4 id="①-建议配置"><a href="#①-建议配置" class="headerlink" title="① 建议配置"></a>① 建议配置</h4><p><strong>(1)修改配置文件</strong></p>
+<pre><code>vim /usr/local/nginx/conf/nginx.conf
+</code></pre><p>具体设置如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">client_body_timeout 10; <span class="comment">#设置客户端请求主体读取超时时间</span></div><div class="line">client_header_timeout 10; <span class="comment">#设置客户端请求头读取超时时间</span></div><div class="line">keepalive_timeout 5 5; <span class="comment">#第一个参数指定客户端连接保持活动的超时时间，第二个参数是可选的，它指定了消息头保持活动的有效时间</span></div><div class="line">send_timeout 10; <span class="comment">#指定响应客户端的超时时间</span></div><div class="line">(2)重新启动 nginx 服务</div><div class="line">② 备注事项</div><div class="line">需要根据应用场景的需要选择合适的参数值。</div><div class="line">1 、符合性判定依据</div><div class="line">超时后，服务器返回相应的消息。</div><div class="line">2 、参考检测方法</div><div class="line">检查配置文件   <span class="comment">#more /usr/local/nginx/conf/nginx.conf</span></div><div class="line">3  下载限制并发和速度</div><div class="line">限制客户端下载速度，保证服务器负载正常</div><div class="line">① 建议配置</div><div class="line">例如网站存放路径为/usr/<span class="built_in">local</span>/nsfocus/ ，服务器名称为：down.nsfocus.com</div><div class="line">(1)修改配置文件</div><div class="line"><span class="comment">#vi /usr/local/nginx/conf/nginx.conf</span></div><div class="line">具体设置如下：</div><div class="line">limit_zone one <span class="variable">$binary_remote_addr</span> 10m;</div><div class="line">server</div><div class="line">&#123;</div><div class="line">listen 80;</div><div class="line">server_name down.nsfocus.com;</div><div class="line">index index.html index.htm index.PHP;</div><div class="line">oot /usr/<span class="built_in">local</span>/nsfocus;</div><div class="line"><span class="comment">#Zone limit;</span></div><div class="line">location / &#123;</div><div class="line">limit_conn one 1;</div><div class="line">limit_rate 20k;</div><div class="line">&#125;</div><div class="line">.....</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>(2)重新启动 nginx 服务</strong></p>
+<p>下载时，不会超过设计的并发连接数和速度限制，同时检查 nginx.conf 文件中的配置</p>
+<blockquote>
+<p>其他事项</p>
+</blockquote>
+<h2 id="3-卸载不需要的模块"><a href="#3-卸载不需要的模块" class="headerlink" title="3.卸载不需要的模块"></a>3.卸载不需要的模块</h2><p>卸载不需要的 nginx 模块, 最大限度地将 nginx 加载的模块最小化</p>
+<h4 id="①-建议配置-1"><a href="#①-建议配置-1" class="headerlink" title="① 建议配置"></a>① 建议配置</h4><p><strong>(1)检查需要禁用的模块</strong></p>
+<p>在编译 nginx 服务器时，使用下面的命令查看哪些模块应该启用，哪些模应<br>该禁用：</p>
+<pre><code># ./configure --help | less
+</code></pre><p>一旦处选了要禁用的模块，需要与相关人员沟通确认，并经过测试不影响业<br>务运行。</p>
+<p><strong>(2)例如，要禁用 autoindex 和 SSI 模块，命令如下：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ./configure --without-http_autoindex_module --without-http_ssi_module</span></div><div class="line"><span class="comment"># make</span></div><div class="line"><span class="comment"># make install</span></div></pre></td></tr></table></figure>
+<h4 id="②-备注事项-1"><a href="#②-备注事项-1" class="headerlink" title="② 备注事项"></a>② 备注事项</h4><p>Nginx 不包含不必要的模块或者输入 ./configure –help | less 进行检查</p>
+<p>##4.防盗链设置<br>防止其他网站盗链本网站资源</p>
+<h4 id="①-建议配置-2"><a href="#①-建议配置-2" class="headerlink" title="① 建议配置"></a>① 建议配置</h4><p><strong>(1)修改配置文件</strong></p>
+<pre><code>#vi /usr/local/nginx/conf/nginx.conf
+</code></pre><p>具体设置如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">location ~* ^.+\.(gif|jpg|png|swf|flv|rar|zip)$ &#123;</div><div class="line">valid_referers none blocked server_names *.nsfocus.com</div><div class="line">http://localhost baidu.com;</div><div class="line"><span class="keyword">if</span> (<span class="variable">$invalid_referer</span>) &#123;</div><div class="line">rewrite ^/ [img]http://www.ihaozhuo.com/images/default/logo.gif[/img];</div><div class="line"><span class="comment"># return 403;</span></div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>根据应用场景，设置合适的域名<br>(2)Nginx -t 检查配置是否有没有问题。 重新启动 nginx 服务</p>
+<h4 id="②-备注事项-2"><a href="#②-备注事项-2" class="headerlink" title="② 备注事项"></a>② 备注事项</h4><p>从非法网站访问所保护的资源，出现设置的页面。同时检查配置文件 <code>#more /usr/local/nginx/conf/nginx.conf</code></p>
+<p>##5.自定义错误信息<br>1)修改 src/http/ngx_http_special_response.c，自己定制错误信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">## messages with just a carriage return.</span></div><div class="line">static char ngx_http_error_400_page[] = CRLF;</div><div class="line">static char ngx_http_error_404_page[] = CRLF;</div><div class="line">static char ngx_http_error_413_page[] = CRLF;</div><div class="line">static char ngx_http_error_502_page[] = CRLF;</div><div class="line">static char ngx_http_error_504_page[] = CRLF;</div><div class="line">常见错误：</div><div class="line">400 bad request</div><div class="line">404 NOT FOUND</div><div class="line">413 Request Entity Too Large</div><div class="line">502 Bad Gateway</div><div class="line">504 Gateway Time-out</div></pre></td></tr></table></figure>
+<p>(2)重新启动 nginx 服务</p>
+<h4 id="②-备注事项-3"><a href="#②-备注事项-3" class="headerlink" title="② 备注事项"></a>② 备注事项</h4><p>URL 地址栏中输入 <a href="http://ip:8800/manager12345，访问出错时，返回自定义的错误页面" target="_blank" rel="external">http://ip:8800/manager12345，访问出错时，返回自定义的错误页面</a></p>
+<h2 id="6-隐藏-nginx-服务信息头"><a href="#6-隐藏-nginx-服务信息头" class="headerlink" title="6.隐藏 nginx 服务信息头"></a>6.隐藏 nginx 服务信息头</h2><h4 id="①-建议配置-3"><a href="#①-建议配置-3" class="headerlink" title="① 建议配置"></a>① 建议配置</h4><p>修改 nginx解压路径<code>/src/http/ngx_http_header_filter_module.c</code>文件的第48<br>和 49 行内容，自定义头信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">static char ngx_http_server_string[] = “Server:XXXXX.com” CRLF;</div><div class="line">static char ngx_http_server_full_string[] = “Server:XXXXX.com” CRLF;</div></pre></td></tr></table></figure>
+<p>添加如下代码到 <code>nginx.conf</code>配置文件，禁止错误页面中显示 nginx 版本号：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">server_tokens off</div></pre></td></tr></table></figure>
+<h4 id="②-备注事项-4"><a href="#②-备注事项-4" class="headerlink" title="② 备注事项"></a>② 备注事项</h4><p>服务信息头显示设置的内容，检查 http 服务信息头内容</p>
+<h2 id="6-补丁更新"><a href="#6-补丁更新" class="headerlink" title="6.补丁更新"></a>6.补丁更新</h2><p>安装系统补丁，修补漏洞</p>
+<p><strong>1.参考配置操作</strong><br>手动安装补丁或安装最新版本软件，所安装的补丁，应首先在经过测试验证；安装前，要做好数据备份。<br><strong>2.查看版本和编译器信息</strong></p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/04/05/Web服务技术/Nginx/Nginx 安全&优化&日志输出规范详细配置/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2018 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

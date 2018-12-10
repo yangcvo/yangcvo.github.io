@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>NGINX解决办法-503-Service.Temporarily.Unavailable | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>NGINX解决办法-503-Service.Temporarily.Unavailable</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-05-24</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/nginx/">nginx</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Nginx/">Nginx</a> <a class="article__tag-link" href="/tags/Web-Service/">Web Service</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="503-Service-Temporarily-Unavailable-解决办法-nginx"><a href="#503-Service-Temporarily-Unavailable-解决办法-nginx" class="headerlink" title="503 Service Temporarily Unavailable 解决办法-nginx"></a>503 Service Temporarily Unavailable 解决办法-nginx</h3><p>因为最近公司微信抽奖活动项目环境  - ginx做负载均衡限制某个IP同一时间段的访问次数。</p>
+<p>就是防止有人同一个IP不断请求，网站刷新后经常出现<code>503 Service Temporarily Unavailable</code>错误，有时有可以，联想到最近在<code>nginx.conf</code>里做了单ip访问次数限制.</p>
+<p><code>(limit_req_zone $binary_remote_addr zone=allips:10m rate=20r/s;)</code> 把这个数量放大后在刷新发现问题解决。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">vim nginx.conf</div><div class="line"></div><div class="line">http &#123;</div><div class="line">    limit_req_zone <span class="variable">$binary_remote_addr</span> zone=allips:10m rate=20r/s;</div><div class="line">   </div><div class="line">    添加上面那条语句就行。</div><div class="line"> </div><div class="line">    include       mime.types;</div><div class="line">    default_type  application/octet-stream;</div></pre></td></tr></table></figure>
+<p><code>（还顺便把这个改大了 limit_req zone=allips burst=50 nodelay;   ）</code><br>为了证实该问题，反复改动该数量测试发现问题确实在这。这个数量设得太小有问题，通过fiddler发现web页面刷新一下，因为页面上引用的js,css,图片都算一个连接。所以单个页面刷新下就有可能刷爆这个限制，超过这个限制就会提示<code>503 Service Temporarily Unavailable。</code></p>
+<p>这里添加下只能设置什么IP网段可以访问www.jollychic.com。其他的全部拒绝访问80端口这个域名www.jollychic.com。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">   <span class="section">server</span> &#123;</div><div class="line">        <span class="attribute">listen</span>       <span class="number">80</span>;</div><div class="line">        <span class="attribute">allow</span>   <span class="number">218.17.158.2</span>;</div><div class="line"><span class="attribute">allow</span> <span class="number">127.0.0.0</span>/<span class="number">24</span>;</div><div class="line"><span class="attribute">allow</span> <span class="number">192.168.0.0</span>/<span class="number">16</span>;</div><div class="line"><span class="attribute">allow</span> <span class="number">58.251.130.1</span>;</div><div class="line"><span class="attribute">allow</span> <span class="number">183.239.167.3</span>;</div><div class="line"><span class="attribute">allow</span> <span class="number">61.145.164.1</span>;</div><div class="line"><span class="attribute">deny</span>    all;</div><div class="line"><span class="attribute">server_name</span>  www.jollychic.com;</div><div class="line">        <span class="attribute">location</span> / &#123;</div><div class="line">                <span class="attribute">proxy_pass</span> http://www.jollychic.com;</div><div class="line"><span class="attribute">proxy_set_header</span>  X-Real-IP  <span class="variable">$remote_addr</span>;</div><div class="line"><span class="attribute">limit_req</span> zone=allips burst=<span class="number">50</span> nodelay;    </div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/05/24/Web服务技术/Nginx/nginx解决办法-503-Service.Temporarily.Unavailable/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2018 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

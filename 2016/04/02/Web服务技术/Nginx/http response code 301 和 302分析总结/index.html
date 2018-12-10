@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Http response code 301 和 302分析总结 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>Http response code 301 和 302分析总结</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-04-02</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Nginx/">Nginx</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Nginx/">Nginx</a> <a class="article__tag-link" href="/tags/Web-Service/">Web Service</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="http-response-code-301-和-302-了解多少呢。"><a href="#http-response-code-301-和-302-了解多少呢。" class="headerlink" title="http response code 301 和 302 了解多少呢。"></a>http response code 301 和 302 了解多少呢。</h3><h4 id="一．官方说法"><a href="#一．官方说法" class="headerlink" title="一．官方说法"></a>一．官方说法</h4><p>最近Nginx访问出现301和302这里就对301 302认真做了一次总结。</p>
+<figure class="highlight basic"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="number">301</span>，<span class="number">302</span> 都是HTTP状态的编码，都代表着某个URL发生了转移，不同之处在于： </div><div class="line"><span class="symbol">301 </span>redirect: <span class="number">301</span> 代表永久性转移(Permanently Moved)。</div><div class="line"><span class="symbol">302 </span>redirect: <span class="number">302</span> 代表暂时性转移(Temporarily Moved )。</div></pre></td></tr></table></figure>
+<p>这是很官方的说法，那么它们的区别到底是什么呢？</p>
+<h4 id="二．现实中的差异"><a href="#二．现实中的差异" class="headerlink" title="二．现实中的差异"></a>二．现实中的差异</h4><ul>
+<li><p>对于用户301，302对用户来说没有区别，他们看到效果只是一个跳转，浏览器中旧的URL变成了新的URL。页面跳到了这个新的url指向的地方。</p>
+</li>
+<li><p>对于引擎及站长</p>
+</li>
+<li><p>302</p>
+</li>
+</ul>
+<p>302转向可能会有URL规范化及网址劫持的问题。可能被搜索引擎判为可疑转向，甚至认为是作弊。<br>网址规范化</p>
+<p>请参见：<a href="http://www.chinamyhosting.com/seoblog/2006/04/10/url-canonicalization/" target="_blank" rel="external">网址劫持</a></p>
+<p>302重定向和网址劫持（URL hijacking）有什么关系呢？这要从搜索引擎如何处理302转向说起。</p>
+<p>从定义来说，从网址A做一个302重定向到网址B时，主机服务器的隐含意思是网址A随时有可能改主意，重新显示本身的内容或转向其他的地方。大部分的搜索引擎在大部分情况下，当收到302重定向时，一般只要去抓取目标网址就可以了，也就是说网址B。<br>实际上如果搜索引擎在遇到302转向时，百分之百的都抓取目标网址B的话，就不用担心网址URL劫持了。问题就在于，有的时候搜索引擎，尤其是Google，并不能总是抓取目标网址。为什么呢？比如说，有的时候A网址很短，但是它做了一个302重定向到B网址，而B网址是一个很长的乱七八糟的URL网址，甚至还有可能包含一些问号之类的参数。很自然的，A网址更加用户友好，而B网址既难看，又不用户友好。这时Google很有可能会仍然显示网址A。<br>由于搜索引擎排名算法只是程序而不是人，在遇到302重定向的时候，并不能像人一样的去准确判定哪一个网址更适当，这就造成了网址URL劫持的可能性。也就是说，一个不道德的人在他自己的网址A做一个302重定向到你的网址B，出于某种原因， Google搜索结果所显示的仍然是网址A，但是所用的网页内容却是你的网址B上的内容，这种情况就叫做网址URL劫持。你辛辛苦苦所写的内容就这样被别人偷走了。</p>
+<p>301</p>
+<p> 当网页A用301重定向转到网页B时，搜索引擎可以肯定网页A永久的改变位置，或者说实际上不存在了，搜索引擎就会把网页B当作唯一有效目标。<br>301的好处是:</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">第一， 没有网址规范化问题。</div><div class="line">第二， 也很重要的，网页<span class="keyword">A</span>的PR网页级别会传到网页B。</div></pre></td></tr></table></figure>
+<h4 id="三．Apache中实现301、302"><a href="#三．Apache中实现301、302" class="headerlink" title="三．Apache中实现301、302"></a>三．Apache中实现301、302</h4><ul>
+<li>方法一，url rewrite，mod_rewrite</li>
+</ul>
+<p>[plain] </p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">view</span> plain <span class="keyword">copy</span></div><div class="line">Rewriteengine <span class="keyword">on</span>  </div><div class="line">RewriteCond %&#123;HTTP_HOST&#125; ^cmp.soso.<span class="keyword">com</span> [NC]  </div><div class="line">RewriteRule ^/js/(.*) http://www.soso.<span class="keyword">com</span>/js/$<span class="number">1</span>  [R=<span class="number">301</span>]  </div><div class="line">ServerName cmp.soso.<span class="keyword">com</span></div></pre></td></tr></table></figure>
+<p>将cmp.soso.com中js目录的下所有访问重定向到<a href="http://www.soso.com/js/，指定跳转返回码为301。" target="_blank" rel="external">http://www.soso.com/js/，指定跳转返回码为301。</a><br>对于[R=301]的详解：<br>‘redirect|R [=code]’ (强制重定向 redirect)<br>以<a href="http://thishost[:thisport]/(使新的URL成为一个URI" target="_blank" rel="external">http://thishost[:thisport]/(使新的URL成为一个URI</a>) 为前缀的Substitution可以强制性执行一个外部重定向。 如果code没有指定，则产生一个HTTP响应代码302(临时性移动)。 如果需要使用在300-400范围内的其他响应代码，只需在此指定这个数值即可， 另外，还可以使用下列符号名称之一: temp (默认的), permanent, seeother. 用它可以把规范化的URL反馈给客户端，如,<code>重写``/~&#39;&#39;为 ``/u/&#39;&#39;，或对/u/user加上斜杠</code>，等等。</p>
+<p>注意: 在使用这个标记时，必须确保该替换字段是一个有效的URL! 否则，它会指向一个无效的位置! 并且要记住，此标记本身只是对URL加上 <a href="http://thishost[:thisport]/的前缀，`重写操作仍然会继续`。" target="_blank" rel="external">http://thishost[:thisport]/的前缀，`重写操作仍然会继续`。</a> 通常，你会希望停止重写操作而立即重定向，则还需要使用’L’标记.</p>
+<ul>
+<li>方法二 Redirect ，涉及模块：mod_alias</li>
+</ul>
+<p>例：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[plain] view plain copy</div><div class="line"><span class="params">&lt;VirtualHost <span class="number">10.1</span><span class="number">.146</span><span class="number">.163</span>:<span class="number">80</span>&gt;</span>  </div><div class="line">   DocumentRoot <span class="meta-keyword">/home/</span>qmhball<span class="meta-keyword">/web/</span>mybranches/stat_3276<span class="meta-keyword">/oa/</span>  </div><div class="line">   ServerName oalogin.com  </div><div class="line">   Redirect <span class="number">301</span> /login.php http:<span class="comment">//www.soso.com  </span></div><div class="line"><span class="params">&lt;/VirtualHost&gt;</span></div></pre></td></tr></table></figure>
+<p>将oalogin.com下对login.php的访问重定向到<a href="http://www.soso.com，返回码301。" target="_blank" rel="external">http://www.soso.com，返回码301。</a><br>如果没有指定redirect的返回参数（例中的301），则默认重定向是”临时性的”(HTTP status 302)。</p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/04/02/Web服务技术/Nginx/http response code 301 和 302分析总结/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2018 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

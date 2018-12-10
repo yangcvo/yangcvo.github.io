@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Nginx基础篇-日志管理和切割 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>Nginx基础篇-日志管理和切割</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-03-29</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Nginx/">Nginx</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Nginx/">Nginx</a> <a class="article__tag-link" href="/tags/Web-Service/">Web Service</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h2><p>公司日志查看有时候不太规范，官网web服务日志这边整理了下Nginx日志输出优化。 </p>
+<h2 id="一、日志分类"><a href="#一、日志分类" class="headerlink" title="一、日志分类"></a>一、日志分类</h2><p>Nginx日志主要分为两种，访问日志和错误日志。两种日志可以在http和server模块中配置，nginx有一个非常灵活的日志记录模式。每个级别的配置可以有各自独立的访问日志。日志格式通过log_format命令来定义</p>
+<h3 id="1、访问日志"><a href="#1、访问日志" class="headerlink" title="1、访问日志"></a>1、访问日志</h3><p>访问日志主要记录客户端访问Nginx的每一个请求<code>log_format</code>用来设置日志格式，只能在http模块下设置 log_format name   name(格式名称)   type(格式样式)</p>
+<p>下面是默认的nginx日志格式：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">log_format</span>  main  <span class="string">'<span class="variable">$remote_addr</span> - <span class="variable">$remote_user</span> [<span class="variable">$time_local</span>]"<span class="variable">$request</span>" '</span></div><div class="line">                      <span class="string">'<span class="variable">$status</span> <span class="variable">$body_bytes_sent</span>"<span class="variable">$http_referer</span>" '</span></div><div class="line">                     <span class="string">'"<span class="variable">$http_user_agent</span>" "<span class="variable">$http_x_forwarded_for</span>"'</span>;</div></pre></td></tr></table></figure>
+<p>字段含义：</p>
+<pre><code>  $remote_addr远程客户端的IP地址。
+  $remote_user远程客户端用户名称，如果网站设置了用户验证的话就会有，否则空白
+  [$time_local]访问的时间与时区比如18/Jul/2012:17:00:01+0800时间信息最后的&quot;+0800&quot;表示服务器所处时区位于UTC之后的8小时。
+  $request记录请求的url和http协议
+  $status记录请求返回的http状态码.
+  $body_bytes_sent记录发送给客户端的文件主体内容的大小
+  $http_referer记录 记录从哪个页面链接访问过来的。
+  $http_user_agent记录客户端浏览器信息
+  $http_x_forwarded_for客户端的真实ip。当nginx前面有代理服务器时，$remote_addr获取到的只能是nginx上一级的IP，而反向代理服务器在转发请求的http头信息中可以增加x_forwarded_for信息用以记录原有客户端的IP地址和原来客户端的请求的服务器地址，$http_x_forwarded_for参数就是承接上一级传递的客户端IP参数。从而就获取到了客户端的真实IP。
+
+
+
+access_log 指令用来指定日志文件的存放路径，可以在http、server、location中设置
+  举例说明如下
+  access_log  logs/access.log  main;
+  如果想关闭日志可以如下
+  access_log off;
+</code></pre><h3 id="2、错误日志"><a href="#2、错误日志" class="headerlink" title="2、错误日志"></a>2、错误日志</h3><p>错误日志主要记录客户端访问Nginx出错时的日志格式，不支持自定义。<br>由指令error_log来指定具体格式如下</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">error_log</span>  path(存放路径)  level(日志等级)【<span class="literal">debug</span> | <span class="literal">info</span> | <span class="literal">notice</span> | <span class="literal">warn</span> | <span class="literal">error</span> |<span class="literal">crit</span>】</div></pre></td></tr></table></figure>
+<p>如果不指定路径的话默认是在logs下。</p>
+<h3 id="3-生产环境下常用的日志格式："><a href="#3-生产环境下常用的日志格式：" class="headerlink" title="3.生产环境下常用的日志格式："></a>3.生产环境下常用的日志格式：</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">log_format</span>  main  <span class="string">'<span class="variable">$http_host</span>-<span class="variable">$http_x_forwarded_for</span>  <span class="variable">$&#123;request_time&#125;</span>s- [<span class="variable">$time_local</span>] "<span class="variable">$request</span>"'</span></div><div class="line">                      <span class="string">'<span class="variable">$status</span> <span class="variable">$body_bytes_sent</span>"<span class="variable">$http_referer</span>" "<span class="variable">$http_user_agent</span>" <span class="variable">$remote_addr</span> '</span> ;</div></pre></td></tr></table></figure>
+<h2 id="二、日志管理"><a href="#二、日志管理" class="headerlink" title="二、日志管理"></a>二、日志管理</h2><p>1.nginx日志切割</p>
+<p>实现思路：每天定时把日志移动到备份目录，然后重新reload或者restart。这样会在原来的logs下生成新的日志文件。(提示：当日志文件被移动到备份目录后，在没有restart的之前，nginx依然会向原来的日志文件中记录访问请求，只有等restart的之后生成了新文件，才重新记录到新的日志文件中)<br>实现脚本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"><span class="comment">#created by yangc</span></div><div class="line">  </div><div class="line"><span class="comment">#Log Dir</span></div><div class="line">DIR_LOG=<span class="string">"/var/log/nginx/"</span></div><div class="line">weblog=(</div><div class="line">weixin1.ihaozhuo.com</div><div class="line">)</div><div class="line">DATE=`date <span class="_">-d</span><span class="string">"yesterday"</span> +<span class="string">"%Y%m%d"</span>`</div><div class="line">  </div><div class="line"><span class="keyword">if</span> [ ! <span class="_">-d</span><span class="string">"<span class="variable">$&#123;DIR_LOG&#125;</span>/cut_log/<span class="variable">$&#123;DATE&#125;</span>"</span> ];<span class="keyword">then</span></div><div class="line">   mkdir -p <span class="variable">$&#123;DIR_LOG&#125;</span>/cut_log/<span class="variable">$&#123;DATE&#125;</span></div><div class="line"><span class="keyword">fi</span></div><div class="line">DIR=<span class="string">"<span class="variable">$&#123;DIR_LOG&#125;</span>/cut_log/<span class="variable">$&#123;DATE&#125;</span>"</span>                                                                 </div><div class="line">NGINX_LOG=<span class="string">"<span class="variable">$&#123;DIR_LOG&#125;</span>/current"</span></div><div class="line">  </div><div class="line"><span class="keyword">for</span>  <span class="built_in">log</span> <span class="keyword">in</span> <span class="variable">$&#123;weblog[@]&#125;</span>; <span class="keyword">do</span></div><div class="line">mv <span class="variable">$&#123;NGINX_LOG&#125;</span>/<span class="variable">$log</span> <span class="variable">$DIR</span></div><div class="line"><span class="keyword">done</span></div><div class="line">  </div><div class="line"><span class="built_in">kill</span> -USR1 `cat /usr/<span class="built_in">local</span>/nginx/logs/nginx.pid`</div><div class="line">sleep 130</div><div class="line">find <span class="variable">$&#123;DIR_LOG&#125;</span>/cut_log/* -typed -mtime +7 -exec rm -rf &#123;&#125; \;</div><div class="line">sleep 130</div></pre></td></tr></table></figure>
+<p>2.nginx不记录某些文件或目录的访问日志<br>方法：先用location 定义不记录日志的文件或目录，然后在其下面用 access_log off; 进行关闭日志即可<br>例如：</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">location</span> <span class="title">~*.\checkstatus</span>.html &#123;</div><div class="line">       access_logoff;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/03/29/Web服务技术/Nginx/nginx基础篇-日志管理和切割/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2018 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

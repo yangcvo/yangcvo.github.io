@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>Nginx+Keepalived实现高可用Web负载均衡 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>Nginx+Keepalived实现高可用Web负载均衡</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-05-22</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/nginx/">nginx</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Nginx/">Nginx</a> <a class="article__tag-link" href="/tags/Web-Service/">Web Service</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="Nginx-Keepalived实现高可用Web负载均衡"><a href="#Nginx-Keepalived实现高可用Web负载均衡" class="headerlink" title="Nginx+Keepalived实现高可用Web负载均衡"></a>Nginx+Keepalived实现高可用Web负载均衡</h2><h2 id="一、需求场景："><a href="#一、需求场景：" class="headerlink" title="一、需求场景："></a>一、需求场景：</h2><p>通过之前的一篇文章：</p>
+<p>Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用的负载均衡，但是单个的Nginx会存在单点隐患，如果Nginx挂掉，那么全部的Tomcat应用都将变得不可用，所以实现Nginx的高可用是必不可少的一步。</p>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Nginx1.png" alt=""></figure></p>
+<h3 id="二、说明"><a href="#二、说明" class="headerlink" title="二、说明"></a>二、说明</h3><ul>
+<li>高可用 HA（High Availability），简单讲就是：我某个应用挂了，自动有另外应用起来接着扛着，致使整个服务对外来看是没有中断过的。这里的重点就是不中断，致使公司整个业务能不断进行中，把影响减到最小，赚得更多。</li>
+<li><p>因为要不中断，所以我们就需要用到了 Keepalived。Keepalived 一般不会单独使用，基本都是跟负载均衡软件（LVS、HAProxy、Nginx）一起工作来达到集群的高可用效果。</p>
+</li>
+<li><p>Keepalived 有双主、主备方案</p>
+</li>
+<li>常用词：<ul>
+<li>心跳：Master 会主动给 Backup 发送心跳检测包以及对外的网络功能，而 Backup 负责接收 Master 的心跳检测包，随时准备接管主机。为什么叫心跳不知道，但是挺形象的，心跳同步。</li>
+<li>选举：Keepalived 配置的时候可以指定各台主机优先级，Master 挂了，各台 Backup 要选举出一个新的 Master。</li>
+</ul>
+</li>
+<li>Keepalived<ul>
+<li>官网：<a href="http://www.keepalived.org/" target="_blank" rel="external">http://www.keepalived.org/</a></li>
+<li>官网下载：<a href="http://www.keepalived.org/download.html" target="_blank" rel="external">http://www.keepalived.org/download.html</a></li>
+<li>官网文档：<a href="http://www.keepalived.org/documentation.html" target="_blank" rel="external">http://www.keepalived.org/documentation.html</a></li>
+</ul>
+</li>
+</ul>
+<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Nginx1.png" alt=""></figure></p>
+<h3 id="三、搭建"><a href="#三、搭建" class="headerlink" title="三、搭建"></a>三、搭建</h3><ul>
+<li><p>软件版本：</p>
+<ul>
+<li>Nginx：<strong>1.8.1</strong></li>
+<li>Keepalived：<strong>1.2.20</strong></li>
+<li>JDK：<strong>8u72</strong></li>
+<li>Tomcat：<strong>8.0.32</strong></li>
+</ul>
+</li>
+<li><p>部署环境（下文中以第几台来代表这些主机）：</p>
+<ul>
+<li>虚拟 IP（VIP）：192.168.1.50</li>
+<li>第一台主机：Nginx 1 + Keepalived 1 == 192.168.1.120（Master）</li>
+<li>第二台主机：Nginx 2 + Keepalived 2 == 192.168.1.121（Backup)</li>
+<li>第三台主机：Tomcat 1 == 192.168.1.122（Web 1）</li>
+<li>第四台主机：Tomcat 2 == 192.168.1.123（Web 2）</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>所有机子进行时间校准：<a href="NTP.md">NTP（Network Time Protocol）介绍</a></li>
+<li>第三、第四台主机部署：<ul>
+<li>JDK 的安装：<a href="JDK-Install.md">JDK 安装</a></li>
+<li>Tomcat 的安装：<a href="Tomcat-Install-And-Settings.md">Tomcat 安装和配置、优化</a></li>
+</ul>
+</li>
+<li>第一、二台主机部署（两台部署内容一样）：<ul>
+<li>Nginx 的安装：<a href="Nginx-Install-And-Settings.md">Nginx 安装和配置</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="四、Keepalived安装"><a href="#四、Keepalived安装" class="headerlink" title="四、Keepalived安装"></a>四、Keepalived安装</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">安装依赖：</div><div class="line"><span class="comment"># sudo yum install -y gcc openssl-devel popt-devel</span></div><div class="line"></div><div class="line">上传或下载 keepalived &amp; 解压包：<span class="built_in">cd</span> /opt/setups/; </div><div class="line"><span class="comment"># tar zxvf keepalived-1.2.20.tar.gz</span></div><div class="line"></div><div class="line">编译：</div><div class="line"><span class="comment"># cd /opt/setups/keepalived-1.2.20 ; </span></div><div class="line"><span class="comment"># ./configure --prefix=/usr/local/keepalived</span></div><div class="line"></div><div class="line">编译安装：</div><div class="line"><span class="comment"># make &amp;&amp; make install</span></div><div class="line"></div><div class="line">Keepalived 设置服务和随机启动复制配置文件到启动脚本目录：</div><div class="line"><span class="comment"># cp /usr/program/keepalived/etc/rc.d/init.d/keepalived /etc/init.d/keepalived</span></div><div class="line"><span class="comment"># cp /usr/local/keepalived/etc/sysconfig/keepalived /etc/sysconfig/</span></div><div class="line"><span class="comment"># ln -s /usr/local/sbin/keepalived /usr/sbin/</span></div><div class="line"><span class="comment"># ln -s /usr/local/keepalived/sbin/keepalived /sbin/</span></div><div class="line"></div><div class="line">设置keepalived服务开机启动： </div><div class="line"><span class="comment"># chkconfig keepalived on</span></div><div class="line"></div><div class="line">增加权限</div><div class="line"><span class="comment"># chmod +x /etc/init.d/keepalived</span></div></pre></td></tr></table></figure>
+<h3 id="Keepalived-配置"><a href="#Keepalived-配置" class="headerlink" title="Keepalived 配置"></a>Keepalived 配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">添加环境变量：vim /etc/profile</div><div class="line">KEEPALIVED_HOME=/usr/<span class="built_in">local</span>/keepalived</div><div class="line">PATH=<span class="variable">$PATH</span>:<span class="variable">$KEEPALIVED_HOME</span>/sbin</div><div class="line"><span class="built_in">export</span> KEEPALIVED_HOME</div><div class="line"><span class="built_in">export</span> PATH</div></pre></td></tr></table></figure>
+<ul>
+<li>刷新环境变量：<code>source /etc/profile</code></li>
+<li>检测环境变量：<code>keepalived -v</code></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">vim /usr/<span class="built_in">local</span>/keepalived/etc/sysconfig/keepalived</div><div class="line">把 14 行的：KEEPALIVED_OPTIONS=<span class="string">"-D"</span>，改为：</div><div class="line">KEEPALIVED_OPTIONS=<span class="string">"-D -f /usr/local/keepalived/etc/keepalived/keepalived.conf"</span></div></pre></td></tr></table></figure>
+<p>第一、二台主机配置（两台在 Keepalived 配置上稍微有不一样）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">健康监测脚本（我个人放在：/opt/bash 目录下）：[nginx_check.sh](Keepalived-Settings/nginx_check.sh)</div><div class="line"></div><div class="line">健康监测脚本添加执行权限：</div><div class="line">chmod 755 /opt/bash/nginx_check.sh</div><div class="line"></div><div class="line">运行监测脚本，看下是否有问题：</div><div class="line">sh /opt/bash/nginx_check.sh，如果没有报错，则表示改脚本没有问题.</div><div class="line"></div><div class="line">这个脚本很重要，如果脚本没法用，在启用 Keepalived 的时候可能会报：Keepalived_vrrp[5684]: pid 5959 exited with status 1</div></pre></td></tr></table></figure>
+<p>nginx 配置（两台一样配置）：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">worker_processes</span>  <span class="number">1</span>;</div><div class="line">   </div><div class="line">   <span class="section">events</span> &#123;</div><div class="line">       <span class="attribute">worker_connections</span>  <span class="number">1024</span>;</div><div class="line">   &#125;</div><div class="line">   </div><div class="line">   <span class="section">http</span> &#123;</div><div class="line">       <span class="attribute">include</span>       mime.types;</div><div class="line">       <span class="attribute">default_type</span>  application/octet-stream;</div><div class="line">   </div><div class="line">       <span class="attribute">sendfile</span>        <span class="literal">on</span>;</div><div class="line">       <span class="attribute">keepalive_timeout</span>  <span class="number">65</span>;</div><div class="line">       </div><div class="line">       <span class="comment"># （重点）</span></div><div class="line">       <span class="attribute">upstream</span> tomcatCluster &#123;</div><div class="line">           <span class="attribute">server</span> <span class="number">192.168.1.122:8080</span> weight=<span class="number">1</span>;</div><div class="line">           <span class="attribute">server</span> <span class="number">192.168.1.123:8080</span> weight=<span class="number">1</span>;</div><div class="line">       &#125;</div><div class="line">       </div><div class="line">       <span class="comment"># （重点）</span></div><div class="line">       <span class="section">server</span> &#123;</div><div class="line">           <span class="attribute">listen</span>       <span class="number">80</span>;</div><div class="line">           <span class="attribute">server_name</span>  <span class="number">192.168.1.50</span>;</div><div class="line">   </div><div class="line">           <span class="attribute">location</span> / &#123;</div><div class="line">               <span class="attribute">proxy_pass</span>   http://tomcatCluster;</div><div class="line">               <span class="attribute">index</span>  index.html index.htm;</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<h3 id="4-1-修改keepalived配置文件"><a href="#4-1-修改keepalived配置文件" class="headerlink" title="4.1 修改keepalived配置文件"></a>4.1 修改keepalived配置文件</h3><p>cat /etc/init.d/keepalived</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">! Configuration File <span class="keyword">for</span> keepalivedglobal_defs &#123;</div><div class="line">keepalived 自带的邮件提醒需要开启 sendmail 服务。建议用独立的监控或第三方 SMTP</div><div class="line">router_id edu-proxy-01 <span class="comment">## 标识本节点的字条串,通常为 hostname &#125;</span></div><div class="line"></div><div class="line">keepalived 会定时执行脚本并对脚本执行的结果进行分析,动态调整 vrrp_instance 的优先级。如果 脚本执行结果为 0,并且 weight 配置的值大于 0,则优先级相应的增加。如果脚本执行结果非 0,并且 weight 配置的值小于 0,则优先级相应的减少。其他情况,维持原本配置的优先级,即配置文件中 priority 对应 的值。</div><div class="line"></div><div class="line">vrrp_script chk_nginx &#123;script <span class="string">"/etc/keepalived/nginx_check.sh"</span> </div><div class="line"></div><div class="line">interval 2 <span class="comment">## 检测时间间隔weight -20 ## 如果条件成立,权重-20&#125;</span></div><div class="line">检测 nginx 状态的脚本路径</div><div class="line">定义虚拟路由,VI_1 为虚拟路由的标示符,自己定义名称</div><div class="line"></div><div class="line">vrrp_instance VI_1 &#123;state MASTER </div><div class="line"></div><div class="line"><span class="comment">## 主节点为 MASTER,对应的备份节点为 BACKUPinterface eth1 </span></div><div class="line"><span class="comment">## 绑定虚拟 IP 的网络接口,与本机 IP 地址所在的网络接口相同,我的是 eth1 virtual_router_id 51 </span></div><div class="line"><span class="comment">## 虚拟路由的 ID 号,两个节点设置必须一样,可选 IP 最后一段使用, 相同的 VRID 为一个组,他将决定多播的 MAC 地址，eth1值的获取可以在机器上执行ifconfig命令得到mcast_src_ip 192.168.1.51</span></div><div class="line"><span class="comment">## 本机 IP 地址priority 100 </span></div><div class="line"><span class="comment">## 节点优先级,值范围 0-254,MASTER 要比 BACKUP 高 nopreempt </span></div><div class="line"><span class="comment">## 优先级高的设置 nopreempt 解决异常恢复后再次抢占的问题 advert_int 1 </span></div><div class="line"><span class="comment">## 组播信息发送间隔,两个节点设置必须一样,默认 1s </span></div><div class="line"><span class="comment">## 设置验证信息,两个节点必须一致authentication &#123; auth_type PASSauth_pass 1111 </span></div><div class="line"><span class="comment">## 真实生产,按需求对应该过来 &#125;</span></div><div class="line">将 track_script 块加入 instance 配置块.</div><div class="line">track_script &#123;chk_nginx </div><div class="line"><span class="comment">## 执行 Nginx 监控的服务&#125;</span></div><div class="line">虚拟 IP 池, 两个节点设置必须一样</div><div class="line">virtual_ipaddress &#123;192.168.1.50 </div><div class="line"><span class="comment">## 虚拟 ip,可以定义多个&#125; &#125;</span></div></pre></td></tr></table></figure>
+<p>Keepalived 配置文件编辑（第一、二台配置稍微不同，不同点具体看下面重点说明）</p>
+<p>编辑：<code>vim /usr/local/keepalived/etc/keepalived/keepalived.conf</code></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div></pre></td><td class="code"><pre><div class="line">! Configuration File for keepalived   </div><div class="line">    # 全局配置</div><div class="line">    global_defs &#123;</div><div class="line">    # 邮箱通知配置，keepalived 在发生切换时需要发送 email 到的对象，一行一个</div><div class="line">    	notification_email &#123;</div><div class="line">    	#acassen@firewall.loc</div><div class="line">    	#failover@firewall.loc</div><div class="line">    	#sysadmin@firewall.loc</div><div class="line">    	&#125;</div><div class="line">    	# 指定发件人</div><div class="line">    	#notification_email_from Alexandre.Cassen@firewall.loc</div><div class="line">    	# 指定smtp服务器地址</div><div class="line">    	#smtp_server 192.168.200.1</div><div class="line">    	# 指定smtp连接超时时间，单位秒</div><div class="line">    	#smtp_connect_timeout 30</div><div class="line">    	</div><div class="line">    	router_id LVS_DEVEL</div><div class="line">    	vrrp_skip_check_adv_addr</div><div class="line">    	vrrp_strict</div><div class="line">&#125;</div><div class="line">    </div><div class="line">    # （重点）脚本监控实现</div><div class="line">    vrrp_script check_nginx &#123;</div><div class="line">    # 运行脚本</div><div class="line">    	script "/opt/bash/nginx_check.sh"</div><div class="line">    # 时间间隔，2秒</div><div class="line">    interval 2</div><div class="line">    # 权重</div><div class="line">    weight 2</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    </div><div class="line">    vrrp_instance VI_1 &#123;</div><div class="line">    # （重点）Backup 机子这里是设置为：BACKUP</div><div class="line">    state MASTER</div><div class="line">    interface eth0</div><div class="line">    virtual_router_id 51</div><div class="line">    # （重点）Backup 机子要小于当前 Master 设置的 100，建议设置为 99</div><div class="line">    priority 100</div><div class="line">    # Master 与 Backup 负载均衡器之间同步检查的时间间隔，单位是秒</div><div class="line">    advert_int 1</div><div class="line">    authentication &#123;</div><div class="line">    auth_type PASS</div><div class="line">    auth_pass 1111</div><div class="line">    &#125;</div><div class="line">    	</div><div class="line">    	# （重点）配置虚拟 IP 地址，如果有多个则一行一个</div><div class="line">    	virtual_ipaddress &#123;</div><div class="line">    		192.168.1.50</div><div class="line">    	&#125;</div><div class="line">    	</div><div class="line">    	# （重点）脚本监控调用</div><div class="line">    	track_script &#123;</div><div class="line">    		check_nginx</div><div class="line">    	&#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h3 id="附录："><a href="#附录：" class="headerlink" title="附录："></a>附录：</h3><p>192.168.31.146（MASTER节点）的keepalived.conf</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">! Configuration File <span class="keyword">for</span> keepalived</div><div class="line">global_defs &#123;</div><div class="line">   router_id dreyer-zk-03</div><div class="line">&#125;</div><div class="line">vrrp_script chk_nginx &#123;</div><div class="line">    script <span class="string">"/etc/keepalived/nginx_check.sh"</span></div><div class="line">    interval 2</div><div class="line">    weight -20</div><div class="line">&#125;</div><div class="line">vrrp_instance VI_1 &#123;</div><div class="line">    state MASTER</div><div class="line">    interface eth0</div><div class="line">    virtual_router_id 146</div><div class="line">    mcast_src_ip 192.168.1.120</div><div class="line">    priority 100</div><div class="line">    nopreempt</div><div class="line">    advert_int 1</div><div class="line">    authentication &#123;</div><div class="line">        auth_type PASS</div><div class="line">        auth_pass 1111</div><div class="line">    &#125;</div><div class="line">    track_script &#123;</div><div class="line">        chk_nginx</div><div class="line">    &#125;</div><div class="line">    virtual_ipaddress &#123;</div><div class="line">        192.168.31.111</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>192.168.31.154（BACKUP节点）的keepalived.conf</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">! Configuration File <span class="keyword">for</span> keepalived</div><div class="line">global_defs &#123;</div><div class="line">   router_id dreyer-zk-01</div><div class="line">&#125;</div><div class="line">vrrp_script chk_nginx &#123;</div><div class="line">    script <span class="string">"/etc/keepalived/nginx_check.sh"</span></div><div class="line">    interval 2</div><div class="line">    weight -20</div><div class="line">&#125;</div><div class="line">vrrp_instance VI_1 &#123;</div><div class="line">    state BACKUP</div><div class="line">    interface eth0</div><div class="line">    virtual_router_id 146</div><div class="line">    mcast_src_ip 192.168.1.121</div><div class="line">    priority 90</div><div class="line">    advert_int 1</div><div class="line">    authentication &#123;</div><div class="line">        auth_type PASS</div><div class="line">        auth_pass 1111</div><div class="line">    &#125;</div><div class="line">    track_script &#123;</div><div class="line">        chk_nginx</div><div class="line">    &#125;</div><div class="line">    virtual_ipaddress &#123;</div><div class="line">        192.168.31.111</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="nginx-check-sh（Nginx状态检测脚本）"><a href="#nginx-check-sh（Nginx状态检测脚本）" class="headerlink" title="nginx_check.sh（Nginx状态检测脚本）"></a>nginx_check.sh（Nginx状态检测脚本）</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line">A=ps -C nginx –no-header |wc -lif [ <span class="variable">$A</span> <span class="_">-eq</span> 0 ];<span class="keyword">then</span></div><div class="line">    /usr/<span class="built_in">local</span>/nginx/sbin/nginx</div><div class="line">    sleep 2</div><div class="line">    <span class="keyword">if</span> [ps -C nginx --no-header |wc <span class="_">-l</span><span class="_">-eq</span> 0 ];<span class="keyword">then</span></div><div class="line">        killall keepalived</div><div class="line">    <span class="keyword">fi</span></div><div class="line"><span class="keyword">fi</span></div></pre></td></tr></table></figure>
+<p>脚本大意为：检查是否有nginx进程，如果没有，那么就启动nginx，启动后睡眠2秒，再检查是否有nginx的进程，如果没有的话，那么就杀掉keepalived的全部进程（杀掉进程后keepalived才能进行重新选举）</p>
+<h3 id="启动各自服务"><a href="#启动各自服务" class="headerlink" title="启动各自服务"></a>启动各自服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">四台机子都停掉防火墙：service iptables stop</div><div class="line"></div><div class="line">先启动两台 Tomcat：</div><div class="line"></div><div class="line">sh /usr/program/tomcat8/bin/startup.sh </div><div class="line">tail -200f /usr/program/tomcat8/logs/catalina.out</div><div class="line"></div><div class="line">检查两台 Tomcat 是否可以单独访问，最好给首页加上不同标识，好方便等下确认是否有负载.</div><div class="line">    </div><div class="line">   http://192.168.1.122:8080</div><div class="line">	 http://192.168.1.123:8080</div><div class="line"></div><div class="line">启动两台 Nginx 服务：/usr/<span class="built_in">local</span>/nginx/sbin/nginx </div><div class="line">启动两台 Keepalived 服务：service keepalived start</div><div class="line"></div><div class="line">查看 Master 和 Backup 两台主机的对应日志：</div><div class="line">tail <span class="_">-f</span> /var/<span class="built_in">log</span>/messages</div></pre></td></tr></table></figure>
+<h3 id="高可用测试"><a href="#高可用测试" class="headerlink" title="高可用测试"></a>高可用测试</h3><h3 id="模拟-Keepalived-挂掉"><a href="#模拟-Keepalived-挂掉" class="headerlink" title="模拟 Keepalived 挂掉"></a>模拟 Keepalived 挂掉</h3><p>关闭Master主机的Keepalived，查看 <code>Master</code> 和 <code>Backup</code>两台主机的对应日志：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tail <span class="_">-f</span> /var/<span class="built_in">log</span>/messages</div></pre></td></tr></table></figure>
+<p>关闭服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">service keepalived stop</div></pre></td></tr></table></figure>
+<p>如果第二台机接管了，则表示成功<br>重新开启 Master 主机的 Keepalived，查看 Master 和 Backup 两台主机的对应日志：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tail <span class="_">-f</span> /var/<span class="built_in">log</span>/messages</div></pre></td></tr></table></figure>
+<p>重启服务：<code>service keepalived restart</code></p>
+<ul>
+<li>如果第一台机重新接管了，则表示成功</li>
+<li>模拟 Nginx 挂掉</li>
+<li>关闭 Master 主机的 Nginx，查看 Master 和 Backup 两台主机的对应日志：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tail <span class="_">-f</span> /var/<span class="built_in">log</span>/messages</div></pre></td></tr></table></figure>
+<p>关闭服务：<code>/usr/local/nginx/sbin/nginx -s stop</code><br>如果第二台机接管了，则表示成功<br>重新开启 Master 主机的 Nginx，查看 Master 和 Backup 两台主机的对应日志： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tail -f /var/log/messages</div></pre></td></tr></table></figure>
+<ul>
+<li>重启 Nginx 服务：<code>/usr/local/nginx/sbin/nginx -s reload</code></li>
+<li>重启 Keepalived 服务：<code>service keepalived restart</code></li>
+<li>如果第一台机重新接管了，则表示成功</li>
+<li>可以优化的地方，改为双主热备，监控脚本上带有自启动相关细节，后续再进行。</li>
+<li><p>日志中常用的几句话解释：</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">- `Entering to MASTER STATE`，变成 Master 状态</div><div class="line">	- `Netlink reflector reports IP 192.168.1.50 added`，一般变为 Master 状态，都要重新加入虚拟 IP，一般叫法叫做：虚拟 IP 重新漂移到 Master 机子上</div><div class="line">- `Entering BACKUP STATE`，变成 Backup 状态</div><div class="line">	- `Netlink reflector reports IP 192.168.1.50 removed`，一般变为 Backup 状态，都要移出虚拟 IP，一般叫法叫做：虚拟 IP 重新漂移到 Master 机子上</div><div class="line">- `VRRP_Script(check_nginx) succeeded`，监控脚本执行成功</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="资料"><a href="#资料" class="headerlink" title="资料"></a>资料</h2><ul>
+<li><a href="http://xutaibao.blog.51cto.com/7482722/1669123" target="_blank" rel="external">http://xutaibao.blog.51cto.com/7482722/1669123</a></li>
+<li><a href="https://m.oschina.net/blog/301710" target="_blank" rel="external">https://m.oschina.net/blog/301710</a></li>
+<li><a href="http://blog.csdn.net/u010028869/article/details/50612571" target="_blank" rel="external">http://blog.csdn.net/u010028869/article/details/50612571</a></li>
+<li><a href="http://blog.csdn.net/wanglei_storage/article/details/51175418" target="_blank" rel="external">http://blog.csdn.net/wanglei_storage/article/details/51175418</a></li>
+</ul>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/05/22/Web服务技术/Nginx/Nginx+Keepalived实现高可用Web负载均衡 /" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2018 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

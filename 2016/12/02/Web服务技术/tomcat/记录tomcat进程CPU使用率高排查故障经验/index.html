@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>记录tomcat进程CPU使用率高排查故障经验 | Yancy&#39;s blog</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/" class="header__link">Home</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/archives" class="header__link">ARCHIVES</a>
+			
+				<a href="/about/About" class="header__link">ABOUT</a>
+			
+				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
+		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>记录tomcat进程CPU使用率高排查故障经验</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2016-12-02</span><br />
+		
+			<span class="article__category">
+				<a class="article-category-link" href="/categories/Java/">Java</a>
+			</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Java/">Java</a> <a class="article__tag-link" href="/tags/performance-tuning/">performance tuning</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="1、故障现象"><a href="#1、故障现象" class="headerlink" title="1、故障现象"></a>1、故障现象</h3><p>运营同事反馈APP其中体检商城购买订单系统运行缓慢，访问出现超时，多次重启系统后问题依然存在，使用top命令查看服务器情况，发现CPU占用率过高。</p>
+<h3 id="2、CPU占用过高问题定位"><a href="#2、CPU占用过高问题定位" class="headerlink" title="2、CPU占用过高问题定位"></a>2、CPU占用过高问题定位</h3><h5 id="2-1、定位问题进程"><a href="#2-1、定位问题进程" class="headerlink" title="2.1、定位问题进程"></a>2.1、定位问题进程</h5><p>使用top命令查看资源占用情况，发现pid为14063的进程占用了大量的CPU资源，CPU占用率高达229.1%，内存占用率也达到了29.8%</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@account-tomcat-01 ~]$ top</div><div class="line">top - 14:51:10 up 233 days, 11:40,  2 users,  load average: 6.85, 5.62, 3.97</div><div class="line">Tasks: 192 total,   2 running, 190 sleeping,   0 stopped,   0 zombie</div><div class="line">%Cpu(s): 97.3 us,  0.3 sy,  0.0 ni,  2.5 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</div><div class="line">KiB Mem : 16268652 total,  5114392 free,  6907028 used,  4247232 buff/cache</div><div class="line">KiB Swap:  4063228 total,  3989708 free,    73520 used.  8751512 avail Mem </div><div class="line">  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND                                                                                               </div><div class="line"></div><div class="line">14063 root       20   0 9260488 4.627g  11976 S 229.1 29.8 117:41.66 java</div></pre></td></tr></table></figure>
+<h5 id="2-2、定位问题线程"><a href="#2-2、定位问题线程" class="headerlink" title="2.2、定位问题线程"></a>2.2、定位问题线程</h5><p>使用<code>ps -mp pid -o THREAD,tid,time</code>命令查看该进程的线程情况，发现该进程的多个线程占用率很高</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">[root@account-tomcat-01 ~]$ ps -mp 14063 -o THREAD,tid,time </div><div class="line">USER     %CPU PRI SCNT WCHAN  USER SYSTEM   TID     TIME</div><div class="line">        361   -    - -         -      -     - 02:05:58</div><div class="line">root       0.0  19    - futex_    -      - 14063 00:00:00</div><div class="line">root       0.0  19    - poll_s    -      - 14064 00:00:00</div><div class="line">root      44.5  19    - -         -      - 14065 00:15:30</div><div class="line">root      44.5  19    - -         -      - 14066 00:15:30</div><div class="line">root      44.4  19    - -         -      - 14067 00:15:29</div><div class="line">root      44.5  19    - -         -      - 14068 00:15:30</div><div class="line">root      44.5  19    - -         -      - 14069 00:15:30</div><div class="line">root      44.5  19    - -         -      - 14070 00:15:30</div><div class="line">root      44.5  19    - -         -      - 14071 00:15:30</div><div class="line">root      44.6  19    - -         -      - 14072 00:15:32</div><div class="line">root       2.2  19    - futex_    -      - 14073 00:00:46</div><div class="line">root       0.0  19    - futex_    -      - 14074 00:00:00</div><div class="line">root       0.0  19    - futex_    -      - 14075 00:00:00</div><div class="line">root       0.0  19    - futex_    -      - 14076 00:00:00</div><div class="line">root       0.7  19    - futex_    -      - 14077 00:00:15</div></pre></td></tr></table></figure>
+<p>从输出信息可以看出，14065~14072之间的线程CPU占用率都很高<br>2.3、查看问题线程堆栈</p>
+<p>挑选TID为14065的线程，查看该线程的堆栈情况，先将线程id转为16进制，使用printf “%x\n” tid命令进行转换</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[root@account-tomcat-<span class="number">01</span> ~]$ printf <span class="string">"%x\n"</span> <span class="number">14065</span></div><div class="line"><span class="number">36</span>f1</div><div class="line">再使用jstack命令打印线程堆栈信息，命令格式：jstack pid |grep tid -A <span class="number">30</span></div><div class="line"></div><div class="line">[root@root-web-<span class="number">01</span> ~]$ jstack <span class="number">14063</span> |grep <span class="number">36</span>f1 -A <span class="number">30</span></div><div class="line"><span class="string">"GC task thread#0 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa35001e800</span> <span class="attr">nid=0x36f1</span> runnable </div><div class="line"><span class="string">"GC task thread#1 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa350020800</span> <span class="attr">nid=0x36f2</span> runnable </div><div class="line"><span class="string">"GC task thread#2 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa350022800</span> <span class="attr">nid=0x36f3</span> runnable </div><div class="line"><span class="string">"GC task thread#3 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa350024000</span> <span class="attr">nid=0x36f4</span> runnable </div><div class="line"><span class="string">"GC task thread#4 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa350026000</span> <span class="attr">nid=0x36f5</span> runnable </div><div class="line"><span class="string">"GC task thread#5 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa350028000</span> <span class="attr">nid=0x36f6</span> runnable </div><div class="line"><span class="string">"GC task thread#6 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa350029800</span> <span class="attr">nid=0x36f7</span> runnable </div><div class="line"><span class="string">"GC task thread#7 (ParallelGC)"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa35002b800</span> <span class="attr">nid=0x36f8</span> runnable </div><div class="line"><span class="string">"VM Periodic Task Thread"</span> <span class="attr">prio=10</span> <span class="attr">tid=0x00007fa3500a8800</span> <span class="attr">nid=0x3700</span> waiting on condition </div><div class="line"></div><div class="line">JNI global references: <span class="number">392</span></div></pre></td></tr></table></figure>
+<p>从输出信息可以看出，此线程是JVM的gc线程。此时可以基本确定是内存不足或内存泄露导致gc线程持续运行，导致CPU占用过高。</p>
+<p>所以接下来我们要找的内存方面的问题</p>
+<p>3.1、使用jstat -gcutil命令查看进程的内存情况</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[root@account-tomcat-01 ~]$ jstat -gcutil 14063 2000 10</div><div class="line"></div><div class="line">  S0     S1     E      O      P     YGC     YGCT    FGC    FGCT     GCT   </div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   218 1484.830 1506.747</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   218 1484.830 1506.747</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   219 1496.567 1518.484</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   219 1496.567 1518.484</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   219 1496.567 1518.484</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   219 1496.567 1518.484</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   219 1496.567 1518.484</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   220 1505.439 1527.355</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   220 1505.439 1527.355</div><div class="line">  0.00   0.00 100.00  99.99  26.31     42   21.917   220 1505.439 1527.355</div></pre></td></tr></table></figure>
+<p>从输出信息可以看出，Eden区内存占用100%，Old区内存占用99.99%，Full GC的次数高达220次，并且频繁Full GC，Full GC的持续时间也特别长，平均每次Full GC耗时6.8秒（1505.439/220）。根据这些信息，基本可以确定是程序代码上出现了问题，可能存在不合理创建对象的地方。</p>
+<p>生产java应用，CPU使用率一直很高，经常达到100%，通过以下步骤完美解决，分享一下。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">1.jps 获取Java进程的PID。</div><div class="line"></div><div class="line">2.top -H -p PID 查看对应进程的哪个线程占用CPU过高。</div><div class="line">2.1 使用 ps -mp pid -o THREAD,tid,time 命令查看该进程的线程情况，发现该进程的多个线程占用率很高。</div><div class="line"></div><div class="line">3.jstack pid &gt;&gt; java.txt 导出CPU占用高进程的线程栈。</div><div class="line">使用jstack命令查看进程的堆栈情况</div><div class="line"></div><div class="line">4.echo “obase=16; PID” | bc 将线程的PID转换为16进制。</div><div class="line"></div><div class="line">5.在第二步导出的Java.txt中查找转换成为16进制的线程PID。找到对应的线程栈。</div><div class="line"></div><div class="line">6.分析负载高的线程栈都是什么业务操作。优化程序并处理问题。</div></pre></td></tr></table></figure>
+
+	
+
+	
+		<span class="different-posts"><a href="/2016/12/02/Web服务技术/tomcat/记录tomcat进程CPU使用率高排查故障经验/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<h5>Hi there,</h5>
+	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+</div>
+
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2018 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>
