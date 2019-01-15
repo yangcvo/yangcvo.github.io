@@ -1,63 +1,198 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
+<!-- Head tag -->
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta name="theme-color" content="#33474d">
-	<title>Ansible小结（二）ansible架构 | Yancy&#39;s blog</title>
-	<link rel="stylesheet" href="/css/style.css" />
-	
-      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
-    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Ansible小结（二）ansible架构 - Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2016/03/07/自动化+Jenkins/Ansible/ansible小结（二）ansible架构 /">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body>
 
-	<header class="header">
-		<nav class="header__nav">
-			
-				<a href="/" class="header__link">Home</a>
-			
-				<a href="/tags" class="header__link">Tags</a>
-			
-				<a href="/archives" class="header__link">ARCHIVES</a>
-			
-				<a href="/about/About" class="header__link">ABOUT</a>
-			
-				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
-			
-				<a href="/atom.xml" class="header__link">RSS</a>
-			
-		</nav>
-		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
-		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
-	</header>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
 
-	<main>
-		<article>
-	
-		<h1>Ansible小结（二）ansible架构</h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-03-07</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/automation/">automation</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Ansible/">Ansible</a>
-			</span>
-		
-	</div>
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
+        </div>
 
-	
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
 
-	
-		<p>Ansible 是一个模型驱动的配置管理器，支持多节点发布、远程任务执行。默认使用 SSH 进行远程连接。无需在被管理节点上安装附加软件，可使用各种编程语言进行扩展。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ansible_01.png" alt=""></figure></p>
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Ansible" title="Ansible">Ansible</a>
+                        
+                    </div>
+                    <h1>Ansible小结（二）ansible架构</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2016-03-07
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>Ansible 是一个模型驱动的配置管理器，支持多节点发布、远程任务执行。默认使用 SSH 进行远程连接。无需在被管理节点上安装附加软件，可使用各种编程语言进行扩展。</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/ansible_01.png" alt=""></p>
 <p>上图为ansible的基本架构，从上图可以了解到其由以下部分组成：</p>
 <figure class="highlight coq"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">核心：ansible</div><div class="line">核心模块（Core <span class="keyword">Modules</span>）：这些都是ansible自带的模块 </div><div class="line">扩展模块（Custom <span class="keyword">Modules</span>）：如果核心模块不足以完成某种功能，可以添加扩展模块</div><div class="line">插件（Plugins）：完成模块功能的补充</div><div class="line">剧本（Playbooks）：ansible的任务配置文件，将多个任务定义在剧本中，由ansible自动执行</div><div class="line">连接插件（Connectior Plugins）：ansible基于连接插件连接到各个主机上，虽然ansible是使用ssh连接到各个主机的，但是它还支持其他的连接方法，所以需要有连接插件</div><div class="line">主机群（Host Inventory）：定义ansible管理的主机</div></pre></td></tr></table></figure>
 <p>二、ansible工作原理</p>
@@ -79,52 +214,272 @@
 <h4 id="6、ansible-pull"><a href="#6、ansible-pull" class="headerlink" title="6、ansible-pull"></a>6、ansible-pull</h4><p>该指令使用需要谈到ansible的另一种模式－－－pull 模式，这和我们平常经常用的push模式刚好相反，其适用于以下场景：你有数量巨大的机器需要配置，即使使用非常高的线程还是要花费很多时间；你要在一个没有网络连接的机器上运行Anisble，比如在启动之后安装。这部分也会单独做一节来讲。</p>
 <h4 id="7、ansible-vault"><a href="#7、ansible-vault" class="headerlink" title="7、ansible-vault"></a>7、ansible-vault</h4><p>ansible-vault主要应用于配置文件中含有敏感信息，又不希望他能被人看到，vault可以帮你加密/解密这个配置文件，属高级用法。主要对于playbooks里比如涉及到配置密码或其他变量时，可以通过该指令加密，这样我们通过cat看到的会是一个密码串类的文件，编辑的时候需要输入事先设定的密码才能打开。这种playbook文件在执行时，需要加上 –ask-vault-pass参数，同样需要输入密码后才能正常执行。具体该部分可以参查官方博客。</p>
 <h4 id="注：上面七个指令，用的最多的只有两个ansible-和ansible-playbook-，这两个一定要掌握，其他五个属于拓展或高级部分。"><a href="#注：上面七个指令，用的最多的只有两个ansible-和ansible-playbook-，这两个一定要掌握，其他五个属于拓展或高级部分。" class="headerlink" title="注：上面七个指令，用的最多的只有两个ansible 和ansible-playbook ，这两个一定要掌握，其他五个属于拓展或高级部分。"></a>注：上面七个指令，用的最多的只有两个ansible 和ansible-playbook ，这两个一定要掌握，其他五个属于拓展或高级部分。</h4>
-	
 
-	
-		<span class="different-posts"><a href="/2016/03/07/自动化+Jenkins/Ansible/ansible小结（二）ansible架构 /" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+                <hr>
 
-	
+                
 
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/03/07/自动化+Jenkins/Ansible/Ansible 小结（一）ansible的安装 /" data-toggle="tooltip" data-placement="top" title="Ansible 小结（一）ansible的安装">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/03/07/自动化+Jenkins/Ansible/Ansible小结（三）ansible.cfg与默认配置 /" data-toggle="tooltip" data-placement="top" title="Ansible小结（三）ansible.cfg与默认配置">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Ansible" title="Ansible">Ansible</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
 </article>
 
-	</main>
-
-	<footer class="footer">
-	<div class="footer-content">
-		
-	      <div class="footer__element">
-	<h5>Hi there,</h5>
-	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
-</div>
 
 
-	    
-	      <div class="footer__element">
-	<h5>Check out</h5>
-	<ul class="footer-links">
-		<li class="footer-links__link"><a href="/archives">Archive</a></li>
-		
-		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
-	    
-		<li class="footer-links__link"><a href="/about">about page</a></li>
-		<li class="footer-links__link"><a href="/tags">Tags</a></li>
-		<li class="footer-links__link"><a href="/categories">Categories</a></li>
-	</ul>
-</div>
-
-	    
-
-		<div class="footer-credit">
-			<span>© 2019 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
-		</div>
-
-	</div>
 
 
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
 </footer>
 
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
 
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
 

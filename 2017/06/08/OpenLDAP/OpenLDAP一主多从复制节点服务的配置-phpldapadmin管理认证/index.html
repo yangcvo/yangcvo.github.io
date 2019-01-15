@@ -1,63 +1,198 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
+<!-- Head tag -->
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta name="theme-color" content="#33474d">
-	<title>OpenLDAP一主多从复制节点服务的配置-phpldapadmin管理认证 | Yancy&#39;s blog</title>
-	<link rel="stylesheet" href="/css/style.css" />
-	
-      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
-    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          OpenLDAP一主多从复制节点服务的配置-phpldapadmin管理认证 - Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2017/06/08/OpenLDAP/OpenLDAP一主多从复制节点服务的配置-phpldapadmin管理认证/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body>
 
-	<header class="header">
-		<nav class="header__nav">
-			
-				<a href="/" class="header__link">Home</a>
-			
-				<a href="/tags" class="header__link">Tags</a>
-			
-				<a href="/archives" class="header__link">ARCHIVES</a>
-			
-				<a href="/about/About" class="header__link">ABOUT</a>
-			
-				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
-			
-				<a href="/atom.xml" class="header__link">RSS</a>
-			
-		</nav>
-		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
-		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
-	</header>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
 
-	<main>
-		<article>
-	
-		<h1>OpenLDAP一主多从复制节点服务的配置-phpldapadmin管理认证</h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-06-08</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/OpenLDAP/">OpenLDAP</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/OpenLDAP/">OpenLDAP</a>
-			</span>
-		
-	</div>
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
+        </div>
 
-	
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
 
-	
-		<h4 id="OpenLDAP主从复制节点配置线上版本"><a href="#OpenLDAP主从复制节点配置线上版本" class="headerlink" title="OpenLDAP主从复制节点配置线上版本"></a>OpenLDAP主从复制节点配置线上版本</h4><p>公司服务器上搭建了一个OpenLDAP服务，为了避免出现单点，需要给LDAP做主从要从国外从服务器实时同步。这里我也升级了Openldap 配置一主多从方法。<br>于是上openldap官网上查了一下openldap的复制功能。</p>
-<p><figure class="figure"><img src="https://devopsideas.com/wp-content/uploads/2017/09/Openldap-7-800x445.jpg" alt=""></figure></p>
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#OpenLDAP" title="OpenLDAP">OpenLDAP</a>
+                        
+                    </div>
+                    <h1>OpenLDAP一主多从复制节点服务的配置-phpldapadmin管理认证</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2017-06-08
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h4 id="OpenLDAP主从复制节点配置线上版本"><a href="#OpenLDAP主从复制节点配置线上版本" class="headerlink" title="OpenLDAP主从复制节点配置线上版本"></a>OpenLDAP主从复制节点配置线上版本</h4><p>公司服务器上搭建了一个OpenLDAP服务，为了避免出现单点，需要给LDAP做主从要从国外从服务器实时同步。这里我也升级了Openldap 配置一主多从方法。<br>于是上openldap官网上查了一下openldap的复制功能。</p>
+<p><img src="https://devopsideas.com/wp-content/uploads/2017/09/Openldap-7-800x445.jpg" alt=""></p>
 <a id="more"></a>
 <h4 id="OpenLDAP软件2-3管理员指南"><a href="#OpenLDAP软件2-3管理员指南" class="headerlink" title="OpenLDAP软件2.3管理员指南"></a><a href="http://www.openldap.org/doc/admin23/" target="_blank" rel="external">OpenLDAP软件2.3管理员指南</a></h4><p><a href=""></a></p>
 <ul>
@@ -118,7 +253,7 @@
 <p>下载：<a href="https://sourceforge.net/projects/phpldapadmin/files/phpldapadmin-php5/1.2.3/phpldapadmin-1.2.3.tgz" target="_blank" rel="external">phpldapadmin</a></p>
 <p>或者这里用我下载好的链接wget.</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#1. 下载安装</span></div><div class="line">    <span class="built_in">cd</span> /var/www/html/</div><div class="line">    wget http://oak0aohum.bkt.clouddn.com/phpldapadmin-1.2.3.tgz</div><div class="line">    tar -zxvf phpldapadmin-1.2.3.tgz</div><div class="line">    mv phpldapadmin-1.2.3 phpldapadmin</div><div class="line">    <span class="built_in">cd</span> phpldapadmin/config/</div><div class="line">    cp config.php.example config.php</div><div class="line">    vim config.php</div><div class="line"></div><div class="line"><span class="comment">#2. 修改配置文件：vim /var/www/html/phpldapadmin/config/config.php</span></div><div class="line">/*</div><div class="line"><span class="variable">$servers</span>-&gt;newServer(<span class="string">'ldap_pla'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'name'</span>,<span class="string">'LDAP Server'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'host'</span>,<span class="string">'192.168.17.145'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'port'</span>,389);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'base'</span>,array(<span class="string">'dc=jollychic,dc=com'</span>));</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'login'</span>,<span class="string">'auth_type'</span>,<span class="string">'cookie'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'login'</span>,<span class="string">'bind_id'</span>,<span class="string">'cn=Manager,dc=jollychic,dc=com'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'login'</span>,<span class="string">'bind_pass'</span>,<span class="string">'&#123;SSHA&#125;SlPVguw1zrxCkTnGXLM2jZpDZio9Btyt'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'tls'</span>,<span class="literal">false</span>);</div><div class="line"></div><div class="line"><span class="comment">#apache-http修改</span></div><div class="line"></div><div class="line">    vim /etc/httpd/conf/httpd.conf</div><div class="line">    &lt;Directory <span class="string">"/var/www/html/phpldapadmin"</span>&gt;</div><div class="line">    DirectoryIndex index.html index.html.var index.php</div><div class="line"><span class="comment">#重启服务。</span></div><div class="line"> service httpd restart</div><div class="line"></div><div class="line"><span class="comment">#防火墙端口开启</span></div><div class="line"> -A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT</div><div class="line"></div><div class="line"><span class="comment">#重启iptables </span></div><div class="line">service iptables restart</div></pre></td></tr></table></figure>
-<h4 id="登录PHPldapadmin"><a href="#登录PHPldapadmin" class="headerlink" title="登录PHPldapadmin"></a>登录PHPldapadmin</h4><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/openldapsalve1.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/openldapsalve2.png" alt=""></figure></p>
+<h4 id="登录PHPldapadmin"><a href="#登录PHPldapadmin" class="headerlink" title="登录PHPldapadmin"></a>登录PHPldapadmin</h4><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/openldapsalve1.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/openldapsalve2.png" alt=""></p>
 <h3 id="slave1-Centos6-6安装OpenLDAP"><a href="#slave1-Centos6-6安装OpenLDAP" class="headerlink" title="slave1 | Centos6.6安装OpenLDAP"></a>slave1 | Centos6.6安装OpenLDAP</h3><p><code>OpenLDAP slave1服务器|  openldap-slave1 | 192.168.3.15</code></p>
 <p>前面安装全部一样，只需要在slave配置上面做下修改：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># syncprov配置</span></div><div class="line"><span class="comment"># #######################################################################</span></div><div class="line">overlay syncprov</div><div class="line">syncprov-checkpoint 100 10</div><div class="line">syncprov-sessionlog 100</div><div class="line"></div><div class="line">syncrepl rid=123</div><div class="line">    provider=ldap://192.168.17.145:389</div><div class="line">    <span class="built_in">type</span>=refreshAndPersist</div><div class="line">    searchbase=<span class="string">"dc=jollychic,dc=com"</span></div><div class="line">    interval=00:00:00:10</div><div class="line">    schemachecking=off</div><div class="line">    searchbase=<span class="string">"dc=jollychic,dc=com"</span></div><div class="line">    bindmethod=simple</div><div class="line">    scope=sub</div><div class="line">    binddn=<span class="string">"cn=Manager,dc=jollychic,dc=com"</span></div><div class="line">    retry=<span class="string">"60 +"</span></div><div class="line">    attrs=<span class="string">"*,+"</span></div><div class="line">    credentials=se12pa</div><div class="line">    </div><div class="line">mirrormode on</div></pre></td></tr></table></figure>
@@ -128,9 +263,9 @@
 <p>解释说明：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># syncrepl特有的索引  </span></div><div class="line">index entryCSN eq  </div><div class="line">index entryUUID eq  </div><div class="line">   </div><div class="line"><span class="comment"># syncrepl参数  </span></div><div class="line">syncrepl rid=203  </div><div class="line">provider=ldap://IP地址:端口 <span class="comment">#提供者的IP和端口号  provider项填写主服务器的ldap地址</span></div><div class="line">bindmethod=simple <span class="comment">#认证方式，默认选择简单认证  </span></div><div class="line">interval=00:00:00:00 <span class="comment">#同步时间间隔 天：小时：分钟：秒  interval表示从服务器多久跟主服务器进行一次数据同步</span></div><div class="line">binddn=<span class="string">"cn=Manager,dc=jollychic,dc=com"</span> <span class="comment">#登陆的ldap账号  </span></div><div class="line">credentials=登陆密码  </div><div class="line">searchbase=<span class="string">"dc=jollychic,dc=com"</span> <span class="comment">#同步的根路径  </span></div><div class="line">filter=<span class="string">"(objectClass=*)"</span>  </div><div class="line">scope=sub  </div><div class="line">attrs=<span class="string">"*,+"</span>  </div><div class="line"><span class="built_in">type</span>=refreshAndPersist <span class="comment">#同步方式：有refreshAndPersist和  </span></div><div class="line">retry=<span class="string">"60 10 600 +"</span>  <span class="comment"># retry表示失败重试策略</span></div></pre></td></tr></table></figure>
 <h3 id="PS-在phpldapadmin添加从LDAP服务器、便于管理"><a href="#PS-在phpldapadmin添加从LDAP服务器、便于管理" class="headerlink" title="PS:在phpldapadmin添加从LDAP服务器、便于管理"></a>PS:在phpldapadmin添加从LDAP服务器、便于管理</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">/* A convenient name that will appear <span class="keyword">in</span> the tree viewer and throughout</div><div class="line">   phpLDAPadmin to identify this LDAP server to users. */</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'name'</span>,<span class="string">'My LDAP Server'</span>);</div><div class="line"></div><div class="line"><span class="variable">$servers</span>-&gt;newServer(<span class="string">'ldap_pla'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'name'</span>,<span class="string">'192.168.3.15:389'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'host'</span>,<span class="string">'192.168.3.15'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'port'</span>,<span class="string">'389'</span>);</div><div class="line"></div><div class="line"><span class="variable">$servers</span>-&gt;newServer(<span class="string">'ldap_pla'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'name'</span>,<span class="string">'192.168.3.82:389'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'host'</span>,<span class="string">'192.168.3.82'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'port'</span>,<span class="string">'389'</span>);</div></pre></td></tr></table></figure>
-<h3 id="登录测试数据是否同步："><a href="#登录测试数据是否同步：" class="headerlink" title="登录测试数据是否同步："></a>登录测试数据是否同步：</h3><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/openldapsalve3.png" alt=""></figure></p>
-<h3 id="slave1-数据同步成功图："><a href="#slave1-数据同步成功图：" class="headerlink" title="slave1 数据同步成功图："></a>slave1 数据同步成功图：</h3><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/openldapsalve4.png" alt=""></figure></p>
-<h3 id="slave2-数据同步成功图："><a href="#slave2-数据同步成功图：" class="headerlink" title="slave2 数据同步成功图："></a>slave2 数据同步成功图：</h3><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/openldapsalve5.png" alt=""></figure></p>
+<h3 id="登录测试数据是否同步："><a href="#登录测试数据是否同步：" class="headerlink" title="登录测试数据是否同步："></a>登录测试数据是否同步：</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/openldapsalve3.png" alt=""></p>
+<h3 id="slave1-数据同步成功图："><a href="#slave1-数据同步成功图：" class="headerlink" title="slave1 数据同步成功图："></a>slave1 数据同步成功图：</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/openldapsalve4.png" alt=""></p>
+<h3 id="slave2-数据同步成功图："><a href="#slave2-数据同步成功图：" class="headerlink" title="slave2 数据同步成功图："></a>slave2 数据同步成功图：</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/openldapsalve5.png" alt=""></p>
 <p>遇到故障问题：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@ldap-master ~]<span class="comment"># ldapsearch -x -LLL</span></div><div class="line">No such object (32)</div><div class="line"></div><div class="line">打开并修改为如下两行即可</div><div class="line">vim /etc/openldap/ldap.conf</div><div class="line"><span class="comment">#-----------------------------------------------------------------</span></div><div class="line">BASE dc=jollychic,dc=com</div><div class="line">URI ldap://192.168.17.145</div><div class="line"><span class="comment">#-----------------------------------------------------------------</span></div></pre></td></tr></table></figure>
 <p>测试结果，主从配置成功。</p>
@@ -138,52 +273,272 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@LDAP openldap]<span class="comment"># ldapadd -x -D "cn=Manager,dc=jollychic,dc=com" -W -f /tmp/jolly.ldif</span></div><div class="line">Enter LDAP Password:</div><div class="line">adding new entry <span class="string">"dc=jollychic,dc=com"</span></div><div class="line">ldap_add: Server is unwilling to perform (53)</div><div class="line">	additional info: shadow context; no update referral</div></pre></td></tr></table></figure>
 <p>参考：<a href="https://itsecureadmin.com/2013/01/ldapmodify-fails-with-server-is-unwilling-to-perform-53/" target="_blank" rel="external">https://itsecureadmin.com/2013/01/ldapmodify-fails-with-server-is-unwilling-to-perform-53/</a></p>
 
-	
 
-	
-		<span class="different-posts"><a href="/2017/06/08/OpenLDAP/OpenLDAP一主多从复制节点服务的配置-phpldapadmin管理认证/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+                <hr>
 
-	
+                
 
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/06/29/Bigdata-hadoop/Kafka/如何手动更新Kafka中某个Topic的偏移量/" data-toggle="tooltip" data-placement="top" title="Bigdata-如何手动更新Kafka中某个Topic的偏移量">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/06/05/Bigdata-hadoop/Kafka/Zabbix-Monitoring Kafka Consumer | kafka的监控和告警/" data-toggle="tooltip" data-placement="top" title="Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#OpenLDAP" title="OpenLDAP">OpenLDAP</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
 </article>
 
-	</main>
-
-	<footer class="footer">
-	<div class="footer-content">
-		
-	      <div class="footer__element">
-	<h5>Hi there,</h5>
-	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
-</div>
 
 
-	    
-	      <div class="footer__element">
-	<h5>Check out</h5>
-	<ul class="footer-links">
-		<li class="footer-links__link"><a href="/archives">Archive</a></li>
-		
-		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
-	    
-		<li class="footer-links__link"><a href="/about">about page</a></li>
-		<li class="footer-links__link"><a href="/tags">Tags</a></li>
-		<li class="footer-links__link"><a href="/categories">Categories</a></li>
-	</ul>
-</div>
-
-	    
-
-		<div class="footer-credit">
-			<span>© 2019 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
-		</div>
-
-	</div>
 
 
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
 </footer>
 
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
 
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
 

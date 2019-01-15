@@ -1,63 +1,202 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
+<!-- Head tag -->
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta name="theme-color" content="#33474d">
-	<title>Monitor Kafka with Prometheus +Grafana | Yancy&#39;s blog</title>
-	<link rel="stylesheet" href="/css/style.css" />
-	
-      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
-    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Monitor Kafka with Prometheus +Grafana - Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2017/08/04/Bigdata-hadoop/Kafka/Monitor Kafka with Prometheus +Grafana/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body>
 
-	<header class="header">
-		<nav class="header__nav">
-			
-				<a href="/" class="header__link">Home</a>
-			
-				<a href="/tags" class="header__link">Tags</a>
-			
-				<a href="/archives" class="header__link">ARCHIVES</a>
-			
-				<a href="/about/About" class="header__link">ABOUT</a>
-			
-				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
-			
-				<a href="/atom.xml" class="header__link">RSS</a>
-			
-		</nav>
-		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
-		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
-	</header>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
 
-	<main>
-		<article>
-	
-		<h1>Monitor Kafka with Prometheus +Grafana</h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-08-04</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Bigdata-Hadoop/">Bigdata Hadoop</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Grafana/">Grafana</a> <a class="article__tag-link" href="/tags/Kafka/">Kafka</a> <a class="article__tag-link" href="/tags/Prometheus/">Prometheus</a>
-			</span>
-		
-	</div>
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
+        </div>
 
-	
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
 
-	
-		<h3 id="Monitoring-Kafka-with-Prometheus"><a href="#Monitoring-Kafka-with-Prometheus" class="headerlink" title="Monitoring Kafka with Prometheus"></a>Monitoring Kafka with Prometheus</h3><p>We’ve previously looked at how to monitor Cassandra with <a href="https://www.robustperception.io/monitoring-cassandra-with-prometheus/" target="_blank" rel="external">Prometheus</a>. Let’s see the process for getting metrics from another popular Java application, <a href="https://kafka.apache.org/" target="_blank" rel="external">Kafka.</a></p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-overview.png" alt=""></figure></p>
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Kafka" title="Kafka">Kafka</a>
+                        
+                          <a class="tag" href="/tags/#Prometheus" title="Prometheus">Prometheus</a>
+                        
+                          <a class="tag" href="/tags/#Grafana" title="Grafana">Grafana</a>
+                        
+                    </div>
+                    <h1>Monitor Kafka with Prometheus +Grafana</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2017-08-04
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="Monitoring-Kafka-with-Prometheus"><a href="#Monitoring-Kafka-with-Prometheus" class="headerlink" title="Monitoring Kafka with Prometheus"></a>Monitoring Kafka with Prometheus</h3><p>We’ve previously looked at how to monitor Cassandra with <a href="https://www.robustperception.io/monitoring-cassandra-with-prometheus/" target="_blank" rel="external">Prometheus</a>. Let’s see the process for getting metrics from another popular Java application, <a href="https://kafka.apache.org/" target="_blank" rel="external">Kafka.</a></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-overview.png" alt=""></p>
 <a id="more"></a>
 <p>we download Kafka, the JMX exporter and the config file:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">wget http://ftp.heanet.ie/mirrors/www.apache.org/dist/kafka/0.10.1.0/kafka_2.11-0.10.1.0.tgz</div><div class="line">tar -xzf kafka _ *。tgz</div><div class="line"><span class="built_in">cd</span> kafka_ *</div><div class="line"></div><div class="line">wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.6/jmx_prometheus_javaagent-0.6.jar</div><div class="line">wget https://raw.githubusercontent.com/prometheus/jmx_exporter/master/example_configs/kafka-0-8-2.yml</div><div class="line"></div><div class="line">Download the good files and put them under the Kafka directory:</div><div class="line">[hadoop@hadoop6 kafka_2.10-0.9.0.1]$ ll</div><div class="line">drwxr-xr-x 3 hadoop hadoop    4096 9月  27 13:34 bin</div><div class="line">drwxr-xr-x 2 hadoop hadoop    4096 9月  27 21:18 config</div><div class="line">-rw-rw-r-- 1 hadoop hadoop 1225418 2月   5 2016 jmx_prometheus_javaagent-0.6.jar</div><div class="line">-rw-rw-r-- 1 hadoop hadoop    2824 9月  26 17:48 kafka-0-8-2.yml</div><div class="line">drwxr-xr-x 2 hadoop hadoop    4096 9月  27 13:31 libs</div><div class="line">-rw-r--r-- 1 hadoop hadoop   11358 2月  12 2016 LICENSE</div><div class="line">drwxrwxr-x 2 hadoop hadoop  266240 9月  27 21:19 logs</div><div class="line">-rw-r--r-- 1 hadoop hadoop     162 2月  12 2016 NOTICE</div><div class="line">drwxrwxr-x 5 hadoop hadoop    4096 9月  27 15:56 prometheus-1.2.1.linux-amd64</div><div class="line">drwxr-xr-x 2 hadoop hadoop    4096 2月  12 2016 site-docs</div></pre></td></tr></table></figure>
@@ -68,8 +207,8 @@
 <p>Following run access: <a href="http://localhost:9090/graph" target="_blank" rel="external">http://localhost:9090/graph</a></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[hadoop@hadoop8 prometheus-1.2.1.linux-amd64]$ ./prometheus</div><div class="line">INFO[0000] Starting prometheus (version=1.2.1, branch=master, revision=dd66f2e94b2b662804b9aa1b6a50587b990ba8b7)  <span class="built_in">source</span>=main.go:75</div><div class="line">INFO[0000] Build context (go=go1.7.1, user=root@fd9b0daff6bd, date=20161010-15:58:23)  <span class="built_in">source</span>=main.go:76</div><div class="line">INFO[0000] Loading configuration file prometheus.yml     <span class="built_in">source</span>=main.go:247</div><div class="line">INFO[0000] Loading series map and head chunks...         <span class="built_in">source</span>=storage.go:354</div><div class="line">INFO[0000] 49 series loaded.                             <span class="built_in">source</span>=storage.go:359</div><div class="line">WARN[0000] No AlertManagers configured, not dispatching any alerts  <span class="built_in">source</span>=notifier.go:176</div><div class="line">INFO[0000] Listening on :9090                            <span class="built_in">source</span>=web.go:240</div><div class="line">INFO[0000] Starting target manager...                    <span class="built_in">source</span>=targetmanager.go:76</div></pre></td></tr></table></figure>
 <p>The Prometheus platform monitors all data from the Kafka index:<br>This function is very powerful, late will explain what each representative means:</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-monitor02.png" alt=""></figure></p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-monitor03.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-monitor02.png" alt=""></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-monitor03.png" alt=""></p>
 <p>Install <a href="http://docs.grafana.org/installation/rpm/#install-stable" target="_blank" rel="external">open source Grafana monitoring</a>, combine <a href="https://prometheus.io/docs/visualization/grafana/" target="_blank" rel="external">prometheus.io</a> to obtain Prometheus platform data.</p>
 <h3 id="Installing-Grafana"><a href="#Installing-Grafana" class="headerlink" title="Installing Grafana"></a>Installing Grafana</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Download and unpack Grafana from binary tar (adjust version as appropriate).</span></div><div class="line">curl -L -O https://grafanarel.s3.amazonaws.com/builds/grafana-2.5.0.linux-x64.tar.gz</div><div class="line">tar zxf grafana-2.5.0.linux-x64.tar.gz</div><div class="line"></div><div class="line"><span class="comment"># Start Grafana.</span></div><div class="line"><span class="built_in">cd</span> grafana-2.5.0/</div><div class="line">./bin/grafana-server web</div></pre></td></tr></table></figure>
 <h3 id="Using"><a href="#Using" class="headerlink" title="Using"></a>Using</h3><p>By default, Grafana will be listening on <a href="http://localhost:3000" target="_blank" rel="external">http://localhost:3000</a>. The default login is “admin” / “admin”.</p>
@@ -85,59 +224,283 @@
 <li>The following shows an example data source configuration:</li>
 </ol>
 <p>Reference address: <a href="https://prometheus.io/docs/visualization/grafana/" target="_blank" rel="external">GRAFANA SUPPORT FOR PROMETHEUS</a></p>
-<p><figure class="figure"><img src="https://prometheus.io/assets/grafana_configuring_datasource-cb0e78b7cfa.png" alt=""></figure></p>
+<p><img src="https://prometheus.io/assets/grafana_configuring_datasource-cb0e78b7cfa.png" alt=""></p>
 <p>Finally load the <a href="https://grafana.com/dashboards/721" target="_blank" rel="external">Kafka Overview</a> dashboard from grafana.net into your Grafana to get the above console!</p>
 <p>If you want to run Kafka inside docker, there’s <a href="https://www.robustperception.io/monitoring-kafka-in-a-docker-container-using-prometheus/" target="_blank" rel="external">another blog post</a> covering that.</p>
 <p>Reference address: <a href="https://www.robustperception.io/monitoring-kafka-with-prometheus/" target="_blank" rel="external">monitoring-kafka-with-prometheus</a></p>
 <h3 id="Communicative-learning"><a href="#Communicative-learning" class="headerlink" title="Communicative learning:"></a>Communicative learning:</h3><p>🐧  Linux shell_ senior operation and maintenance faction: QQ group <code>459096184</code> circle (system operation and maintenance - application operation and maintenance - automation operation and maintenance - virtualization technology research, welcome to join)<br>🐧  BigData-Exchange School:QQ group <code>521621407</code> circles (big data Yun Wei) (Hadoop developer) (big data research enthusiasts) welcome to join</p>
 <p>Bidata have internal WeChat exchange group, learn from each other, join QQ group has links.</p>
 
-	
 
-	
-		<span class="different-posts"><a href="/2017/08/04/Bigdata-hadoop/Kafka/Monitor Kafka with Prometheus +Grafana/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+                <hr>
 
-	
+                
 
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/08/18/Web服务技术/tomcat/tomcat Java heap space 内存溢出/" data-toggle="tooltip" data-placement="top" title="tomcat Java heap space 内存溢出">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/08/01/Bigdata-hadoop/Kafka/Kafka-node模块实现调用js发送数据/" data-toggle="tooltip" data-placement="top" title="Bigdata-Kafka-node模块实现调用js发送数据">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Kafka" title="Kafka">Kafka</a>
+                        
+                          <a class="tag" href="/tags/#Prometheus" title="Prometheus">Prometheus</a>
+                        
+                          <a class="tag" href="/tags/#Grafana" title="Grafana">Grafana</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
 </article>
 
-	</main>
-
-	<footer class="footer">
-	<div class="footer-content">
-		
-	      <div class="footer__element">
-	<h5>Hi there,</h5>
-	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
-</div>
 
 
-	    
-	      <div class="footer__element">
-	<h5>Check out</h5>
-	<ul class="footer-links">
-		<li class="footer-links__link"><a href="/archives">Archive</a></li>
-		
-		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
-	    
-		<li class="footer-links__link"><a href="/about">about page</a></li>
-		<li class="footer-links__link"><a href="/tags">Tags</a></li>
-		<li class="footer-links__link"><a href="/categories">Categories</a></li>
-	</ul>
-</div>
-
-	    
-
-		<div class="footer-credit">
-			<span>© 2019 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
-		</div>
-
-	</div>
 
 
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
 </footer>
 
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
 
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
 

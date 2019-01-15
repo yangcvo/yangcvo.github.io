@@ -1,983 +1,782 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
+<!-- Head tag -->
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta name="theme-color" content="#33474d">
-	<title>Yancy&#39;s blog</title>
-	<link rel="stylesheet" href="/css/style.css" />
-	
-      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
-    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/page/11/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body>
 
-	<header class="header">
-		<nav class="header__nav">
-			
-				<a href="/" class="header__link">Home</a>
-			
-				<a href="/tags" class="header__link">Tags</a>
-			
-				<a href="/archives" class="header__link">ARCHIVES</a>
-			
-				<a href="/about/About" class="header__link">ABOUT</a>
-			
-				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
-			
-				<a href="/atom.xml" class="header__link">RSS</a>
-			
-		</nav>
-		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
-		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
-	</header>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
 
-	<main>
-		
-	<span class="different-posts different-posts_earlier">📖 <a href="/page/10">earlier posts</a> 📖</span>
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
 
 
-
-
-	<article>
-	
-		<h1><a href="/2016/03/27/Web服务技术/Nginx/确保nginx安全的几个技巧/">确保Nginx安全的几个技巧</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-03-27</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Nginx/">Nginx</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Nginx/">Nginx</a> <a class="article__tag-link" href="/tags/Web-Service/">Web Service</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<ol>
-<li>在配置文件中设置自定义缓存以限制缓冲区溢出攻击的可能性</li>
-</ol>
-<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">client_body_buffer_size <span class="number">1</span>K;</div><div class="line">client_header_buffer_size <span class="number">1</span>k;</div><div class="line">client_max_body_size <span class="number">1</span>k;</div><div class="line">large_client_header_buffers <span class="number">2</span> <span class="number">1</span>k;</div></pre></td></tr></table></figure>
-<ol>
-<li>将timeout设低来防止DOS攻击<br>所有这些声明都可以放到主配置文件中。</li>
-</ol>
-<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">client_body_timeout <span class="number">10</span>;</div><div class="line">client_header_timeout <span class="number">10</span>;</div><div class="line">keepalive_timeout <span class="number">5</span> <span class="number">5</span>;</div><div class="line">send_timeout <span class="number">10</span>;</div></pre></td></tr></table></figure>
-<ol>
-<li>限制用户连接数来预防DOS攻击</li>
-</ol>
-<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">limit_zone slimits $<span class="keyword">binary_remote_addr </span><span class="number">5</span>m<span class="comment">;</span></div><div class="line">limit_conn slimits <span class="number">5</span><span class="comment">;</span></div></pre></td></tr></table></figure>
-<p>个人觉得在防止DDOS攻击这方面，设置这些没太大用处，特别是第三点，很扰乱用户体验度的。</p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/03/26/Web服务技术/Nginx/Nginx+Tomcat实现反向代理优化与配置 /">Nginx+Tomcat实现反向代理优化与配置</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-03-26</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Nginx/">Nginx</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Nginx/">Nginx</a> <a class="article__tag-link" href="/tags/Web-Service/">Web Service</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h1 id="Nginx-Tomcat实现反向代理"><a href="#Nginx-Tomcat实现反向代理" class="headerlink" title="Nginx+Tomcat实现反向代理"></a>Nginx+Tomcat实现反向代理</h1><h4 id="什么是反向代理"><a href="#什么是反向代理" class="headerlink" title="什么是反向代理"></a>什么是反向代理</h4><p><strong>反向代理</strong>（Reverse Proxy）方式是指用代理服务器来接受 internet 上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给 internet 上请求连接的客户端，此时代理服务器对外就表现为一个反向代理服务器。</p>
-<p>举个例子，一个用户访问 <a href="http://www.example.com/readme" target="_blank" rel="external">http://www.example.com/readme</a>，但是 www.example.com 上并不存在 readme 页面，它是偷偷从另外一台服务器上取回来，然后作为自己的内容返回给用户。但是用户并不知情这个过程。对用户来说，就像是直接从 www.example.com 获取 readme 页面一样。这里所提到的 www.example.com 这个域名对应的服务器就设置了反向代理功能。</p>
-<p>反向代理服务器，对于客户端而言它就像是原始服务器，并且客户端不需要进行任何特别的设置。客户端向反向代理的命名空间(name-space)中的内容发送普通请求，接着反向代理将判断向何处(原始服务器)转交请求，并将获得的内容返回给客户端，就像这些内容原本就是它自己的一样。如下图所示：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Nginx3.png" alt=""></figure></p>
-<h4 id="反向代理典型应用场景"><a href="#反向代理典型应用场景" class="headerlink" title="反向代理典型应用场景"></a>反向代理典型应用场景</h4><p>反向代理的典型用途是将防火墙后面的服务器提供给 Internet 用户访问，加强安全防护。反向代理还可以为后端的多台服务器提供负载均衡，或为后端较慢的服务器提供 <strong>缓冲</strong> 服务。另外，反向代理还可以启用高级 URL 策略和管理技术，从而使处于不同 web 服务器系统的 web 页面同时存在于同一个 URL 空间下。</p>
-<p>Nginx 的其中一个用途是做 HTTP 反向代理，下面简单介绍 Nginx 作为反向代理服务器的方法。</p>
-<blockquote>
-<p>场景描述：访问本地服务器上的 README.md 文件 <a href="http://localhost/README.md" target="_blank" rel="external">http://localhost/README.md</a>，本地服务器进行反向代理，从 <a href="https://github.com/moonbingbing/openresty-best-practices/blob/master/README.md" target="_blank" rel="external">https://github.com/moonbingbing/openresty-best-practices/blob/master/README.md</a> 获取页面内容。</p>
-</blockquote>
-<p>nginx.conf 配置示例：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">worker_processes 1;</div><div class="line"></div><div class="line">pid logs/nginx.pid;</div><div class="line">error_log logs/error.log warn;</div><div class="line"></div><div class="line">events &#123;</div><div class="line">    worker_connections 3000;</div><div class="line">&#125;</div><div class="line"></div><div class="line">http &#123;</div><div class="line">    include mime.types;</div><div class="line">    server_tokens off;</div><div class="line"></div><div class="line">	## 下面配置反向代理的参数</div><div class="line">    server &#123;</div><div class="line">        listen    80;</div><div class="line"></div><div class="line">        ## 1. 用户访问 http://ip:port，则反向代理到 https://github.com</div><div class="line">        location / &#123;</div><div class="line">            proxy_pass  https://github.com;</div><div class="line">            proxy_redirect     off;        ##proxy_redirect 其作用是对发送给客户端的 URL 进行修改。</div><div class="line">            proxy_set_header   Host             $host;</div><div class="line">            proxy_set_header   X-Real-IP        $remote_addr;</div><div class="line">            proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;</div><div class="line">            ##后端的 Web 服务器可以通过 X-Forwarded-For 获取用户真实 IP</div><div class="line">        &#125;</div><div class="line">#以下是一些反向代理的配置,可选。proxy_set_header Host $host;注意:“proxy_set_header”当我们的 RS 有多个虚拟主机(相同的 ip,相同的端口)的时候如 www、bbs、blog,代理服务器怎么知道将请求发到哪呢,这个时候 nginx 代 理就会查找 proxy_set_header 参数,将请求发送到相应域名的虚拟主机上。</div><div class="line">client_max_body_size 10m; #允许客户端请求的最大单文件字节数 </div><div class="line">client_body_buffer_size 128k; #缓冲区代理缓冲用户端请求的最大字节数, </div><div class="line">proxy_connect_timeout 90; #nginx 跟后端服务器连接超时时间(代理连接超时)</div><div class="line">proxy_send_timeout 90; #后端服务器数据回传时间(代理发送超时) </div><div class="line">proxy_read_timeout 90; #连接成功后,后端服务器响应时间(代理接收超时) </div><div class="line">proxy_buffer_size 4k; #设置代理服务器(nginx)保存用户头信息的缓冲区大小 </div><div class="line">proxy_buffers 4 32k; #proxy_buffers 缓冲区,网页平均在 32k 以下的设置 </div><div class="line">proxy_busy_buffers_size 64k; #高负荷下缓冲大小(proxy_buffers*2) </div><div class="line">proxy_temp_file_write_size 64k;</div><div class="line"></div><div class="line"></div><div class="line">        ## 2.用户访问 http://ip:port/README.md，则反向代理到</div><div class="line">        ##   https://github.com/.../README.md</div><div class="line">        location /README.md &#123;</div><div class="line">            proxy_set_header  X-Real-IP  $remote_addr;</div><div class="line">            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</div><div class="line">            proxy_pass https://github.com/moonbingbing/openresty-best-practices/blob/master/README.md;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>成功启动 nginx 后，我们打开浏览器，验证下反向代理的效果。在浏览器地址栏中输入 <code>localhost/README.md</code>，返回的结果是我们 github 源代码.</p>
-<p>我们只需要配置一下 nginx.conf 文件，不用写任何 web 页面，就可以偷偷地从别的服务器上读取一个页面返回给用户。</p>
-<p>下面我们来看一下 nginx.conf 里用到的配置项：</p>
-<p>（1）location</p>
-<p>location 项对请求 URI 进行匹配，location 后面配置了匹配规则。例如上面的例子中，如果请求的 URI 是 <code>localhost/</code>，则会匹配 <code>location /</code> 这一项；如果请求的 URI 是 <code>localhost/README.md</code>，则会匹配 <code>location /README.md</code> 这项。</p>
-<p>上面这个例子只是针对一个确定的 URI 做了反向代理，有的读者会有疑惑：如果对每个页面都进行这样的配置，那将会大量重复，能否做 <strong>批量</strong> 配置呢？此时需要配合使用 location 的正则匹配功能。具体实现方法可参考本书的 <a href="../ngx/match_uri.md">URL 匹配章节</a>。</p>
-<p>（2）proxy_pass</p>
-<p>proxy_pass 后面跟着一个 URL，用来将请求反向代理到 URL 参数指定的服务器上。例如我们上面例子中的 <code>proxy_pass https://github.com</code>，则将匹配的请求反向代理到 <code>https://github.com</code>。</p>
-<p>（3）proxy_set_header</p>
-<p>默认情况下，反向代理不会转发原始请求中的 Host 头部，如果需要转发，就需要加上这句：<code>proxy_set_header Host $host;</code></p>
-<p>除了上面提到的常用配置项，还有 proxy_redirect、proxy_set_body、proxy_limit_rate 等参数，具体用法可以到<a href="http://nginx.org/en/docs/http/ngx_http_proxy_module.html" target="_blank" rel="external">Nginx 官网</a>查看。</p>
-<p>缓存指令依赖代理缓冲区(buffers),如果 proxy_buffers 设置为 off,缓存不会生效。</p>
-<h4 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a>正向代理</h4><p>既然有反向代理，自然也有正向代理。简单来说，正向代理就像一个跳板，例如一个用户访问不了某网站（例如 <code>www.google.com</code>），但是他能访问一个代理服务器，这个代理服务器能访问 <code>www.google.com</code>，于是用户可以先连上代理服务器，告诉它需要访问的内容，代理服务器去取回来返回给用户。例如一些常见的翻墙工具、游戏代理就是利用正向代理的原理工作的，我们需要在这些正向代理工具上配置服务器的 IP 地址等信息。</p>
-
-	
-
-	
-
-</article>
+    <!-- Main Content -->
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>Yancy&#39;s blog</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
 
 
 
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        
 
-	<article>
-	
-		<h1><a href="/2016/03/26/Web服务技术/Nginx/ Nginx 和 apache 对比 /">Nginx-反向代理</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-03-26</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Nginx/">Nginx</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Nginx/">Nginx</a> <a class="article__tag-link" href="/tags/Web-Service/">Web Service</a>
-			</span>
-		
-	</div>
+<!-- USE SIDEBAR -->
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                post-container
+            ">
+            
+                <!-- Main Content -->
 
-	
 
-	
-		<h1 id="Nginx-和-apache-对比"><a href="#Nginx-和-apache-对比" class="headerlink" title="Nginx 和 apache 对比"></a>Nginx 和 apache 对比</h1><h2 id="个人理解："><a href="#个人理解：" class="headerlink" title="个人理解："></a>个人理解：</h2><p>存在就是理由,一般来说,需要性能的 web 服务,用 nginx 。如果不需要性能只求稳定, 那就 apache 吧。后者的各种功能模块实现得比前者,例如 ssl 的模块就比前者好,可配 置项多。</p>
-<p>这里要注意一点,epoll(freebsd 上是 kqueue )网络 IO 模型是 nginx 处理性能 高的根本理由,但并不是所有的情况下都是 epoll 大获全胜的,如果本身提供静态服务的 就只有寥寥几个文件,apache 的 select 模型或许比 epoll 更高性能。当然,这只是根据 网络 IO 模型的原理作的一个假设,真正的应用还是需要实测了再说的。</p>
-<p>2、作为 Web 服务器:相比 Apache,Nginx 使用更少的资源,支持更多的并发连接, 体现更高的效率,这点使 Nginx 尤其受到虚拟主机提供商的欢迎。在高连接并发的情况下, Nginx 是 Apache 服务器不错的替代品: Nginx 在美国是做虚拟主机生意的老板们经常选择 的软件平台之一. 能够支持高达 50,000 个并发连接数的响应, 感谢 Nginx 为我们选择了 epoll and kqueue 作为开发模型.</p>
-<p>Nginx 作为负载均衡服务器: <code>Nginx</code>既可以在内部直接支持 <code>Rails</code>和<code>PHP</code> 程序对外进行 服务, 也可以支持作为 HTTP 代理 服务器对外进行服务. Nginx 采用 C 进行编写, 不论是 系统资源开销还是 CPU 使用效率都比 Perlbal 要好很多.</p>
-<p>作为邮件代理服务器: Nginx 同时也是一个非常优秀的邮件代理服务器(最早开发这个产品 的目的之一也是作为邮件代理服务器), Last.fm 描述了成功并且美妙的使用经验.</p>
-<p>Nginx 是一个安装非常的简单 , 配置文件非常简洁(还能够支持 perl 语法),<code>Bugs</code>非常少的服务器:<br><code>Nginx</code>启动特别容易, 并且几乎可以做到<code>7*24</code>不间断运行,即使运行数个月 也不需要重新启动. 你还能够不间断服务的情况下进行软件版本的升级 .</p>
-<h2 id="Apache-与-Nginx-的优缺点比较"><a href="#Apache-与-Nginx-的优缺点比较" class="headerlink" title="Apache 与 Nginx 的优缺点比较"></a>Apache 与 Nginx 的优缺点比较</h2><blockquote>
-<p>1、nginx 相对于 apache 的优点:</p>
-</blockquote>
-<p>轻量级,同样起 web 服务,比 apache <code>占用更少的内存及资源</code><br>抗并发,nginx 处理请求是异步非阻塞的,而 apache 则是阻塞型的,在高并发下<br> Nginx<code>能保持低资源低消耗高性能</code> <code>高度模块化的设计,编写模块相对简单</code></p>
-<p>社区活跃,各种高性能模块出品迅速 </p>
-<blockquote>
-<p>2、 apache 相对于 nginx 的优点: </p>
-</blockquote>
-<p><code>rewrite ,比 nginx 的 rewrite 强大</code><br> <code>模块超多</code>,基本想到的都可以找到少 bug ,<br> <code>nginx 的 bug 相对较多</code> (现在 bug 方面应该没多大区别)<br> <code>超稳定</code></p>
-<blockquote>
-<p>3、Nginx 配置简洁, Apache 复杂</p>
-</blockquote>
-<ul>
-<li>Nginx 静态处理性能比 Apache 高 3 倍以上</li>
-<li>Apache 对 PHP 支持比较简单,Nginx 需要配合其他后端用</li>
-<li>Apache 的组件比 Nginx 多现在 Nginx 才是 Web 服务器的首选</li>
+<div class="post-preview">
+
+    <a href="/2016/03/27/Web服务技术/Nginx/确保nginx安全的几个技巧/">
+        <h2 class="post-title">
+            确保Nginx安全的几个技巧
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+在配置文件中设置自定义缓存以限制缓冲区溢出攻击的可能性
+
+1234client_body_buffer_size 1K;client_header_buffer_size 1k;client_max_body_size 1k;large_client_header_buffers 2 1k;
+
+将timeout设低来防止DOS攻击所有这些声明都可以放到主配置文件中。
+
+1234client......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-27
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/26/Web服务技术/Nginx/ Nginx 和 apache 对比 /">
+        <h2 class="post-title">
+            Nginx-反向代理
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Nginx 和 apache 对比个人理解：存在就是理由,一般来说,需要性能的 web 服务,用 nginx 。如果不需要性能只求稳定, 那就 apache 吧。后者的各种功能模块实现得比前者,例如 ssl 的模块就比前者好,可配 置项多。
+这里要注意一点,epoll(freebsd 上是 kqueue )网络 IO 模型是 nginx 处理性能 高的根本理由,但并不是所有的情况下都是 ep......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-26
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/26/Web服务技术/Nginx/Nginx+Tomcat实现反向代理优化与配置 /">
+        <h2 class="post-title">
+            Nginx+Tomcat实现反向代理优化与配置
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Nginx+Tomcat实现反向代理什么是反向代理反向代理（Reverse Proxy）方式是指用代理服务器来接受 internet 上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给 internet 上请求连接的客户端，此时代理服务器对外就表现为一个反向代理服务器。
+举个例子，一个用户访问 http://www.example.com/readme，但是 w......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-26
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/21/shell编程入门到简单/shell入门到简单 学习总结1-12章/">
+        <h2 class="post-title">
+            shell入门到简单 学习总结1-12章
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            TOC[TOC]
+第一章Shell前言：Shell本身是一种用C语言编写的程序，从用户的角度来看，Shell是用户与Linux操作系统沟通的桥梁。用户既可以输入命令执行，又可以利用 Shell脚本编程，完成更加复杂的操作。在Linux GUI日益完善的今天在运维领域Shell编程仍然起着不可忽视的作用。深入地了解和熟练地掌握Shell编程，是每一个Linux用户的必修。
+
+1.1 Linux......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-21
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/21/Web服务技术/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/">
+        <h2 class="post-title">
+            tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            tomcat性能优化：Java HotSpot(TM) 64-Bit Server VM warning: ignoring option PermSize=512m; support was removed in 8.0这个提示应该是升级JDK1.8以上 在Java的8命令行标志MaxPermSize已被删除。其原因是，持久代从热点堆中取出并转移到本机内存。所以为了消除这种信息编辑java......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-21
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/15/运维笔记/个人记录💥-走上全栈运维工程师学习笔记/">
+        <h2 class="post-title">
+            个人记录💥-走上全栈运维工程师学习笔记
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            个人运维💥学习笔记：1234567从2014年初就开始慢慢记录自己所接触和学习到的东西，慢慢的积累，整理出很多学习的好文章，在这里我并且记录下来。这是我现在维护的个人笔记库和博客不同，它们大多都不是直接来源于我的原创，而是我一边阅读一边整理加工而成的笔记列表.我的目的是将零散的知识点放在一个集中的地方.  第一：方便我自己查看和学习，可以更好的找到我想要的文档。 第二：可以给自己学习结果每......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-15
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/10/自动化+Jenkins/Ansible/ansible 脚本(Playbook基本语法)远程控制/">
+        <h2 class="post-title">
+            Ansible 脚本(Playbook基本语法)远程控制
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            ansible 脚本(Playbook基本语法)远程控制Playbook基本语法
+
+本节列举了写第一个Playbook，你必须了解基本语法。随着你面临的机器越多，配属的需求越复杂，你可能需要了解后面介绍的一些稍微复杂逻辑语句。
+
+
+执行Playbook语法
+
+这里先
+vim deploy.yml
+12345678910111213141516171819deploy.yml文件---- ho......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-10
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/09/自动化+Jenkins/Ansible/ansible小结(五)常用模块/">
+        <h2 class="post-title">
+            Ansible小结 (五) 常用模块
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            ansible命令总结使用：在上一篇中介绍了commands部分模块，本篇承接上篇介绍下常用的模块。根据官方的分类，将模块按功能分类为：
+1云模块、命令模块、数据库模块、文件模块、资产模块、消息模块、监控模块、网络模块、通知模块、包管理模块、源码控制模块、系统模块、单元模块、web设施模块、windows模块
+具体可以参看官方页面
+这里从官方分类的模块里选择最常用的一些模块进行介绍（comm......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-09
+    </p>
+
+</div>
+<hr>
+
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+        <li class="previous">
+            <a href="/page/10/">&larr; Newer Posts</a>
+        </li>
+    
+    
+        <li class="next">
+            <a href="/page/12/">Older Posts &rarr;</a>
+        </li>
+    
 </ul>
-<blockquote>
-<p>4、最核心的区别在于 apache 是同步多进程模型,一个连接对应一个进程;nginx 是异步 的,多个连接(万级别)可以对应一个进程</p>
-<p>5、nginx 处理静态文件好,耗费内存少.但无疑 apache 仍然是目前的主流,有很多丰富的特 性.所以还需要搭配着来.当然如果能确定 nginx 就适合需求,那么使用 nginx 会是更经济的方 式.</p>
-<p>6、从个人过往的使用情况来看,nginx 的负载能力比 apache 高很多。最新的服务器也改 用 nginx 了。而且 nginx 改完配置能-t 测试一下配置有没有问题,apache 重启的时候发现 配置出错了,会很崩溃,改的时候都会非常小心翼翼现在看有好多集群站,前端 nginx 抗 并发,后端 apache 集群,配合的也不错。</p>
-<p>7、nginx 处理动态请求是比较弱,一般动态请求要 apache 去做,nginx 只适合静态和反 向。<br>8、nginx 是很不錯的前端服务器,负载性能很好, apache 对 php 等语言的支持很好,此外 apache 有强大的支持网路,发展时间相对 nginx 更久,bug 少但是 apache 有先天不 支持多核心处理负载的缺点,建议使用 nginx 做前端,后端用 apache。大型网站建议用 nginx 自代的集群功能.<br>9、Nginx 优于 apache 的主要两点:</p>
-</blockquote>
-<ul>
-<li>1.Nginx 本身就是一个反向代理服务器</li>
-<li>2.Nginx 支持 7 层负载均衡;其他的当然,Nginx 可能会比 apache 支持更高的并发。 10、你对 web server 的需求决定你的选择。大部分情况下 nginx 都优于 APACHE,比如 说静态文件处理、PHP-CGI 的支持、反向代理功能、前端 Cache、维持连接等等。在 Apache+PHP(prefork)模式下,如果 PHP 处理慢或者前端压力很大的情况下,很容易 出现 Apache 进程数飙升,从而拒绝服务的现象。</li>
-</ul>
-<blockquote>
-<p>11、可以看一下 nginx lua 模块:<a href="https://github.com/" target="_blank" rel="external">https://github.com/</a></p>
-</blockquote>
-<ul>
-<li>chaoslaw…apache 比 nginx 多的 模块,可直接用 lua 实现 apache 是最流行的,why?大多数人懒得更新到 nginx 或者学新事物</li>
-</ul>
-<blockquote>
-<p>12、对于 nginx,我喜欢它配置文件写的很简洁,正则配置让很多事情变得简单运行效率 高,占用资源少,代理功能强大,很适合做前端响应服务器</p>
-<p>13、Apache 在处理动态有优势,Nginx 并发性比较好,CPU 内存占用低,如果 rewrite 频繁,那还是Apache吧</p>
-</blockquote>
-
-	
-
-	
-
-</article>
 
 
 
+                <!-- 如果开启评论功能 -->
+                
 
-	<article>
-	
-		<h1><a href="/2016/03/21/shell编程入门到简单/shell入门到简单 学习总结1-12章/">shell入门到简单 学习总结1-12章</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-03-21</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Shell-programming/">Shell programming</a>
-			</span>
-		
-	</div>
+            </div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                            
+                            <a href="/tags/#Bigdata Hadoop" title="Bigdata Hadoop" rel="3">Bigdata Hadoop</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Node.js" title="Node.js" rel="4">Node.js</a>
+                            
+                        
+                            
+                            <a href="/tags/#OpenLDAP" title="OpenLDAP" rel="5">OpenLDAP</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Operation safety" title="Operation safety" rel="4">Operation safety</a>
+                            
+                        
+                            
+                            <a href="/tags/#Automation Deploy" title="Automation Deploy" rel="2">Automation Deploy</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="2">Performance monitoring</a>
+                            
+                        
+                            
+                            <a href="/tags/#Operation and maintenance Road" title="Operation and maintenance Road" rel="2">Operation and maintenance Road</a>
+                            
+                        
+                            
+                            <a href="/tags/#Kafka" title="Kafka" rel="16">Kafka</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Zabbix" title="Zabbix" rel="2">Zabbix</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Countly" title="Countly" rel="2">Countly</a>
+                            
+                        
+                            
+                            <a href="/tags/#ZooKeeper" title="ZooKeeper" rel="4">ZooKeeper</a>
+                            
+                        
+                            
+                            <a href="/tags/#Web Service" title="Web Service" rel="17">Web Service</a>
+                            
+                        
+                            
+                            <a href="/tags/#Nginx" title="Nginx" rel="17">Nginx</a>
+                            
+                        
+                            
+                            <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="4">Java+Tomcat notes</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Zabbix monitoring" title="Zabbix monitoring" rel="15">Zabbix monitoring</a>
+                            
+                        
+                            
+                            <a href="/tags/#Elasticsearch" title="Elasticsearch" rel="5">Elasticsearch</a>
+                            
+                        
+                            
+                            <a href="/tags/#Kibana" title="Kibana" rel="2">Kibana</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#logstash" title="logstash" rel="2">logstash</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Graylog" title="Graylog" rel="2">Graylog</a>
+                            
+                        
+                            
+                            <a href="/tags/#Ansible" title="Ansible" rel="9">Ansible</a>
+                            
+                        
+                            
+                            <a href="/tags/#Jenkins" title="Jenkins" rel="2">Jenkins</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
+                            
+                        
+                    </div>
+                </section>
+                
 
-	
+                <!-- Short About -->
+                <section class="visible-md visible-lg">
+                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
+                    <div class="short-about">
 
-	
-		<h2 id="TOC"><a href="#TOC" class="headerlink" title="TOC"></a>TOC</h2><p>[TOC]</p>
-<h2 id="第一章Shell前言："><a href="#第一章Shell前言：" class="headerlink" title="第一章Shell前言："></a>第一章Shell前言：</h2><p>Shell本身是一种用C语言编写的程序，从用户的角度来看，Shell是用户与Linux操作系统沟通的桥梁。用户既可以输入命令执行，又可以利用 Shell脚本编程，完成更加复杂的操作。在Linux GUI日益完善的今天在运维领域Shell编程仍然起着不可忽视的作用。深入地了解和熟练地掌握Shell编程，是每一个Linux用户的必修。</p>
-		<p><a class="article__read-more-link" href="/2016/03/21/shell编程入门到简单/shell入门到简单 学习总结1-12章/">...read more</a></p>
-	
+                        
+                            <img src="/img/avatar.jpg" />
+                        
 
-	
+                        
+                            <p>Yancy，运维技术专家，客居杭州。喜欢学习研究新技术，然后中途弃坑。擅长CDN自动化运维，更擅长让应用高可用无人监听状态。不会玩虚拟化只会用KVM,Docker,Openstack，没有vim全家桶就写不出代码，没有Google 和 StackOverflow 就解决不了技术问题。</p>
+                        
 
-</article>
+                        <!-- SNS Link -->
+                        <ul class="list-inline">
+                            
+                            
+                                <li>
+                                    <a target="_blank" href="https://twitter.com/yancyoo">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+                            
+                                <li>
+                                    <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa  fa-stack-1x fa-inverse">知</i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
 
+                            
+                                <li>
+                                    <a target="_blank" href="http://weibo.com/yangcvo">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
 
+                            
 
+                            
+                                <li>
+                                    <a target="_blank"  href="https://github.com/yangcvo">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+                            
+                            
+                            
+                        </ul>
+                    </div>
+                </section>
+                
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
 
-	<article>
-	
-		<h1><a href="/2016/03/21/Web服务技术/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/">tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-03-21</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/tomcat/">tomcat</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Java-Tomcat-notes/">Java+Tomcat notes</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h4 id="tomcat性能优化：Java-HotSpot-TM-64-Bit-Server-VM-warning-ignoring-option-PermSize-512m-support-was-removed-in-8-0"><a href="#tomcat性能优化：Java-HotSpot-TM-64-Bit-Server-VM-warning-ignoring-option-PermSize-512m-support-was-removed-in-8-0" class="headerlink" title="tomcat性能优化：Java HotSpot(TM) 64-Bit Server VM warning: ignoring option PermSize=512m; support was removed in 8.0"></a>tomcat性能优化：Java HotSpot(TM) 64-Bit Server VM warning: ignoring option PermSize=512m; support was removed in 8.0</h4><p>这个提示应该是升级JDK1.8以上 在Java的8命令行标志<code>MaxPermSize</code>已被删除。其原因是，持久代从热点堆中取出并转移到本机内存。所以为了消除这种信息编辑java_OPTS环境用户变量。</p>
-<p>在网上查询到：</p>
-<p>-XX：<code>MaxPermSize =size</code>设置最大永久代空间的大小（以字节为单位）。此选项是不赞成使用JDK 8，并通过-XX取代：MaxMetaspaceSize选项。</p>
-<p>-XX：<code>PermSize = size</code>设置分配给永久代如果超过触发垃圾收集的空间（以字节为单位）。该选项已被否决JDK 8，并通过-XX取代：<code>MetaspaceSize</code>选项。</p>
-<p>我所在</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">JAVA_OPTS==<span class="string">"-Xmx512m -XX:MaxPermSize=256m"</span></div></pre></td></tr></table></figure>
-<p>在我的系统的.bashrc，将其更改为</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">JAVA_OPTS=<span class="string">"-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms1024m -Xmx1024m -XX:NewSize=512m -XX:MaxNewSize=512m  -XX:+DisableExplicitGC"</span></div></pre></td></tr></table></figure>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/03/15/运维笔记/个人记录💥-走上全栈运维工程师学习笔记/">个人记录💥-走上全栈运维工程师学习笔记</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-03-15</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/运维笔记/">运维笔记</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Operation-and-maintenance-Road/">Operation and maintenance Road</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h2 id="个人运维💥学习笔记："><a href="#个人运维💥学习笔记：" class="headerlink" title="个人运维💥学习笔记："></a>个人运维💥学习笔记：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">从2014年初就开始慢慢记录自己所接触和学习到的东西，慢慢的积累，整理出很多学习的好文章，在这里我并且记录下来。</div><div class="line">这是我现在维护的个人笔记库和博客不同，它们大多都不是直接来源于我的原创，而是我一边阅读一边整理加工而成的笔记列表.</div><div class="line">我的目的是将零散的知识点放在一个集中的地方. </div><div class="line"> 第一：方便我自己查看和学习，可以更好的找到我想要的文档。</div><div class="line"> 第二：可以给自己学习结果每年做一个总结。</div><div class="line"> </div><div class="line"> 每3个月都会更新记录。</div></pre></td></tr></table></figure>
-<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
-<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
-<h3 id="Linux-系统"><a href="#Linux-系统" class="headerlink" title="Linux 系统"></a>Linux 系统</h3><p><code>Centos源</code></p>
-<ul>
-<li><a href="http://distrowatch.com/table.php?distribution=centos" target="_blank" rel="external">centos源码包更新下载地址</a></li>
-<li><a href="https://wiki.centos.org/Download" target="_blank" rel="external">centos 镜像下载地址</a></li>
-</ul>
-<p><code>硬盘分区</code></p>
-<ul>
-<li><a href="http://www.unix-ninja.com/p/Formatting_Ext4_volumes_beyond_the_16TB_limit" target="_blank" rel="external">格式化的ext4量超过16TB的限制(1)</a></li>
-<li><a href="http://blog.ronnyegner-consulting.de/2011/08/18/ext4-and-the-16-tb-limit-now-solved/" target="_blank" rel="external">格式化的ext4量超过16TB的限制(2)</a></li>
-</ul>
-<p><code>FileZilla</code></p>
-<ul>
-<li><a href="https://filezilla-project.org/download.php?type=client" target="_blank" rel="external">filezilla下载地址</a></li>
-</ul>
-<p><code>PXE</code></p>
-<ul>
-<li><a href="http://jiarh.blog.51cto.com/3467177/1734985" target="_blank" rel="external">pxe 无人值守安装操作系统</a></li>
-<li><a href="http://www.zyops.com/autoinstall-kickstart" target="_blank" rel="external">PXE 安装</a></li>
-</ul>
-<p><code>YUM库</code></p>
-<ul>
-<li><a href="http://www.zyops.com/autodeploy-yum" target="_blank" rel="external">自动化部署-搭建YUM仓库</a></li>
-</ul>
-<p><code>rpm</code></p>
-<ul>
-<li><a href="http://www.zyops.com/autodeploy-rpm" target="_blank" rel="external">定制化RPM包</a></li>
-</ul>
-<p><code>DNS</code></p>
-<ul>
-<li><a href="http://www.zyops.com/aliyun-dns-analysis" target="_blank" rel="external">DNS域名解析原理</a></li>
-</ul>
-<p><code>开源epel</code></p>
-<ul>
-<li><a href="http://mirrors.ustc.edu.cn/" target="_blank" rel="external">开源epel下载包</a></li>
-<li><a href="http://mirrors.sohu.com/" target="_blank" rel="external">开源站点</a></li>
-<li><a href="http://ftp.linux.ncsu.edu/pub/epel/6/x86_64/" target="_blank" rel="external">linux_epel</a> </li>
-<li><a href="http://rpm.pbone.net/index.php3/stat/3/srodzaj/1/search/epel-release" target="_blank" rel="external">rpm-epel包</a></li>
-<li><a href="https://dl.fedoraproject.org/pub/epel/" target="_blank" rel="external">epel rpm软件包</a></li>
-</ul>
-<p><code>samba</code></p>
-<ul>
-<li><a href="http://blog.csdn.net/liuaigui/article/details/5077935" target="_blank" rel="external">samba配置方法</a></li>
-</ul>
-<p><code>iperf</code></p>
-<ul>
-<li><a href="http://heylinux.com/archives/3825.html" target="_blank" rel="external">使用iperf检测主机间网络带宽</a></li>
-</ul>
-<h3 id="虚拟化"><a href="#虚拟化" class="headerlink" title="虚拟化"></a>虚拟化</h3><p><code>Docker</code></p>
-<ul>
-<li><a href="http://www.infoq.com/cn/articles/docker-command-line-quest/" target="_blank" rel="external">Docker 命令学习</a></li>
-<li><a href="http://www.tuicool.com/articles/7V7vYn" target="_blank" rel="external">Docker操作使用</a></li>
-<li><a href="http://openskill.cn/article/22" target="_blank" rel="external">Docker 入门学习</a></li>
-<li><a href="http://yuedu.baidu.com/ebook/d817967416fc700abb68fca1?pn=1&amp;pa=1" target="_blank" rel="external">Docker 入门之战电子书</a></li>
-<li><a href="http://blog.csdn.net/birdben/article/details/49873725" target="_blank" rel="external">Docker实战（1)-(15)</a></li>
-<li><a href="http://www.cnblogs.com/hslzju/p/5839913.html" target="_blank" rel="external">SSH远程登陆docker容器</a></li>
-<li><a href="http://www.cnblogs.com/hslzju/p/5839983.html" target="_blank" rel="external">部署Jenkins+docker集成环境</a></li>
-</ul>
-<p><code>Esxi</code></p>
-<ul>
-<li><a href="http://www.josephturley.com/vsphere-5-5-client-download/" target="_blank" rel="external">vsphere客户端下载</a></li>
-<li><a href="http://www.josephturley.com/vsphere-web-client-download/" target="_blank" rel="external">vsphere web客户端</a></li>
-<li><a href="http://www.josephturley.com/vsphere-5-5-client-download/" target="_blank" rel="external">vsphere web客户端下载</a></li>
-<li><a href="http://www.prolved.com/vsphere-client-downloads/" target="_blank" rel="external">vSphere Client下载</a></li>
-</ul>
-<p><code>KVM</code></p>
-<h3 id="容器平台"><a href="#容器平台" class="headerlink" title="容器平台"></a>容器平台</h3><p><code>Docker</code></p>
-<blockquote>
-<p>Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。</p>
-</blockquote>
-<p><code>Rocket</code></p>
-<blockquote>
-<p>Rocket （也叫 rkt）是 CoreOS 推出的一款容器引擎，和 Docker 类似，帮助开发者打包应用和依赖包到可移植容器中，简化搭环境等部署工作。</p>
-</blockquote>
-<p><code>Ubuntu（LXC）</code></p>
-<blockquote>
-<p>LXD 是 ubuntu 基于 LXC 技术的重构，容器天然支持非特权和分布式。LXD 与 Docker 的思路不同，Docker 是 PAAS，LXD 是 IAAS。LXC 项目由一个 Linux 内核补丁和一些 userspace 工具组成。这些 userspace 工具使用由补丁增加的内核新特性，提供一套简化的工具来维护容器。</p>
-</blockquote>
-<h3 id="微服务平台"><a href="#微服务平台" class="headerlink" title="微服务平台"></a>微服务平台</h3><p><code>OpenShift</code></p>
-<blockquote>
-<p>OpenShift 是由红帽推出的一款面向开源开发人员开放的平台即服务(PaaS)。 OpenShift通过为开发人员提供在语言、框架和云上的更多的选择，使开发人员可以构建、测试、运行和管理他们的应用。</p>
-</blockquote>
-<p><code>Cloud Foundry</code></p>
-<blockquote>
-<p>Cloud Foundry 是VMware于2011年4月12日推出的业界第一个开源PaaS云平台，它支持多种框架、语言、运行时环境、云平台及应用服务，使开发 人员能够在几秒钟内进行应用程序的部署和扩展，无需担心任何基础架构的问题。</p>
-</blockquote>
-<p><code>Kubernetes</code></p>
-<blockquote>
-<p>Kubernetes 是来自 Google 云平台的开源容器集群管理系统。基于 Docker 构建一个容器的调度服务。该系统可以自动在一个容器集群中选择一个工作容器供使用。其核心概念是 Container Pod。</p>
-</blockquote>
-<p><code>Mesosphere</code></p>
-<blockquote>
-<p>Apache Mesos 是一个集群管理器，提供了有效的、跨分布式应用或框架的资源隔离和共享，可以运行Hadoop、MPI、Hypertable、Spark。</p>
-</blockquote>
-<h3 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h3><p><code>MySQL</code></p>
-<ul>
-<li><a href="http://www.phperz.com/article/15/0801/144981.html" target="_blank" rel="external">mysql 教程</a></li>
-<li><a href="http://dev.mysql.com/downloads/repo/yum/" target="_blank" rel="external">MySQL官方软件包下载地址</a></li>
-<li><a href="http://www.aiplaypc.com/371.html" target="_blank" rel="external">MySQL主从配置文档</a></li>
-<li><a href="http://heylinux.com/archives/1004.html" target="_blank" rel="external">MySQL主从复制(Master-Slave)与读写分离（MySQL-Proxy）实践</a></li>
-<li><a href="http://openskill.cn/article/244" target="_blank" rel="external">Mysql架构的演化</a></li>
-</ul>
-<p><code>mongodb</code></p>
-<ul>
-<li><a href="http://www.yiibai.com/mongodb/mongodb_quick_guide.html" target="_blank" rel="external">MongoDB快速入门</a></li>
-<li><a href="http://www.runoob.com/mongodb/mongodb-tutorial.html" target="_blank" rel="external">MongoDB 教程</a></li>
-<li><a href="http://heylinux.com/archives/1950.html" target="_blank" rel="external">安装配置MongoDB</a></li>
-<li><a href="https://www.mongodb.com/download-center?jmp=nav#community" target="_blank" rel="external">MongoDB安装包官网地址</a></li>
-<li><a href="http://limingnihao.iteye.com/blog/1938262" target="_blank" rel="external">第1章 MongoDB的安装</a></li>
-<li><a href="http://limingnihao.iteye.com/blog/1938383" target="_blank" rel="external">第2章 MongoDB的增删改查</a></li>
-<li><a href="http://limingnihao.iteye.com/blog/1940438" target="_blank" rel="external">第3章 MongoDB的Java驱动</a></li>
-</ul>
-<p><code>Robomongo</code></p>
-<ul>
-<li><a href="https://robomongo.org/" target="_blank" rel="external">官网</a>   MongoDB的一个客户端GUI工具</li>
-<li><a href="http://app.robomongo.org/download.html" target="_blank" rel="external">下载地址</a></li>
-</ul>
-<h3 id="云☁️服务"><a href="#云☁️服务" class="headerlink" title="云☁️服务"></a>云☁️服务</h3><p><code>CDN</code></p>
-<ul>
-<li><a href="http://www.cedexis.com/reports/#?report=cdn_response_time&amp;country=CN&amp;date=2015-09-29" target="_blank" rel="external">CDN测试排行</a></li>
-<li><a href="http://www.infoq.com/cn/articles/find-the-same-in-the-variable-from-CDN-to-cloud-computing/" target="_blank" rel="external">CDN变化</a></li>
-<li><p><a href="http://www.17ce.com/" target="_blank" rel="external">网站测速</a></p>
-<p><code>OpenStack</code></p>
-</li>
-</ul>
-<ul>
-<li><a href="https://www.ibm.com/developerworks/community/blogs/132cfa78-44b0-4376-85d0-d3096cd30d3f/entry/%E5%86%99%E5%9C%A8%E6%9C%80%E5%89%8D%E9%9D%A2_%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%8E%A9%E8%BD%AC_OpenStack_1?lang=en" target="_blank" rel="external">每天5分钟玩转 OpenStack</a></li>
-<li><a href="https://docs.openstack.org/ocata/install-guide-rdo/" target="_blank" rel="external">Red Hat Enterprise Linux和CentOS的OpenStack安装指南</a>  </li>
-<li><a href="http://xmodulo.com/manage-vms-openstack-command-line-tools.html" target="_blank" rel="external">如何使用OpenStack命令行工具管理虚拟机</a></li>
-</ul>
-<h3 id="大数据运维"><a href="#大数据运维" class="headerlink" title="大数据运维"></a>大数据运维</h3><p><code>HBase 集群安装部署</code> <a href="http://wuchong.me/blog/2015/04/05/hbase-cluster-deploy/" target="_blank" rel="external">HBase 集群安装部署</a></p>
-<h3 id="编程script"><a href="#编程script" class="headerlink" title="编程script"></a>编程script</h3><p><code>shell</code></p>
-<ul>
-<li><a href="http://c.biancheng.net/cpp/shell/" target="_blank" rel="external">shell学习网站</a></li>
-<li><a href="http://man.linuxde.net/" target="_blank" rel="external">Linux命令大全</a></li>
-</ul>
-<p><code>Python</code></p>
-<ul>
-<li><a href="http://edu.51cto.com/lesson/id-48608.html?edu_recommend_adid=174?edu_recommend_adid=174" target="_blank" rel="external">python 学习视频</a></li>
-<li><a href="http://www.pythondoc.com/pythontutorial3/index.html" target="_blank" rel="external">Python 入门指南</a></li>
-<li><a href="http://www.jobui.com/mianshiti/it/python/" target="_blank" rel="external">Python面试题</a></li>
-<li><a href="http://www.pythondoc.com/" target="_blank" rel="external">python中文大本营</a></li>
-<li><p><a href="https://bitbucket.org/rootart/bandersnatch/src/069c46166d9ed8cc236daa7eac39c2bb2f224644/src/bandersnatch/?at=default" target="_blank" rel="external">bandersnatch</a></p>
-<p><code>pip</code></p>
-</li>
-<li><p><a href="http://rfyiamcool.blog.51cto.com/1030776/1290456?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">构建快速部署的python pip环境及pypi本地源环境</a></p>
-</li>
-<li><a href="http://blog.csdn.net/tantexian/article/details/37724633" target="_blank" rel="external">CentOS 6.5 PYPI本地源制作</a></li>
-</ul>
-<h3 id="Web服务"><a href="#Web服务" class="headerlink" title="Web服务"></a>Web服务</h3><p><code>NGINX</code></p>
-<ul>
-<li><a href="http://www.phperz.com/article/15/0903/153754.html" target="_blank" rel="external">nginx 教程</a></li>
-<li><a href="http://www.bysocket.com/?p=282" target="_blank" rel="external">图解http协议</a></li>
-<li><a href="http://www.nginx.cn/591.html" target="_blank" rel="external">nginx 配置入门</a></li>
-<li><a href="https://segmentfault.com/a/1190000002990165" target="_blank" rel="external">nginx 入门2</a></li>
-<li><a href="http://blog.jobbole.com/89287/" target="_blank" rel="external">nginx 优化</a></li>
-<li><a href="https://blog.martinfjordvald.com/2011/04/optimizing-nginx-for-high-traffic-loads/" target="_blank" rel="external">nginx  优化2</a></li>
-<li><a href="https://www.nginx.com/resources/wiki/start/topics/examples/redhatnginxinit/" target="_blank" rel="external">nginx yum安装 脚本下载地址</a></li>
-</ul>
-<p><code>tomcat</code></p>
-<ul>
-<li><a href="http://www.zyops.com/java-tomcat" target="_blank" rel="external">JAVA企业级应用TOMCAT实战</a></li>
-<li><a href="http://www.zyops.com/java-tomcat" target="_blank" rel="external">tomcat 集群</a></li>
-<li><a href="http://www.zyops.com/java-tomcat" target="_blank" rel="external">tomcat 监控</a></li>
-<li><a href="http://www.zyops.com/java-tomcat" target="_blank" rel="external">jvm 调优</a></li>
-</ul>
-<p><code>负载均衡</code></p>
-<p><a href="https://www.shiyanlou.com/courses/652" target="_blank" rel="external">LVS 集群负载均衡实战</a></p>
-<h3 id="开源的分布式版本控制系统"><a href="#开源的分布式版本控制系统" class="headerlink" title="开源的分布式版本控制系统"></a>开源的分布式版本控制系统</h3><p><code>Git</code></p>
-<ul>
-<li><a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000" target="_blank" rel="external">git教程</a></li>
-</ul>
-<p><code>Gitlab</code></p>
-<ul>
-<li><a href="https://www.gitlab.cc/downloads/#centos6" target="_blank" rel="external">gitlab官网</a></li>
-</ul>
-<h3 id="mail"><a href="#mail" class="headerlink" title="mail"></a>mail</h3><p><code>zimbra</code></p>
-<ul>
-<li><a href="http://aba.qzu.cn/archives/251.html" target="_blank" rel="external">Centos6.2下安装zimbra 7.2</a></li>
-<li><a href="http://www.csdn.net/tag/zimbra" target="_blank" rel="external">zimbra</a></li>
-</ul>
-<h3 id="自动化运维"><a href="#自动化运维" class="headerlink" title="自动化运维"></a>自动化运维</h3><p><code>ansible</code></p>
-<blockquote>
-<p>Ansible 提供一种最简单的方式用于发布、管理和编排计算机系统的工具，你可在数分钟内搞定。Ansible 是一个模型驱动的配置管理器，支持多节点发布、远程任务执行。默认使用 SSH 进行远程连接。无需在被管理节点上安装附加软件，可使用各种编程语言进行扩展。</p>
-<ul>
-<li><a href="http://www.aikaiyuan.com/6299.html" target="_blank" rel="external">ansible指南</a></li>
-</ul>
-</blockquote>
-<p><code>saltstack</code></p>
-<blockquote>
-<p>Saltstack 可以看做是func的增强版+Puppet的弱化版。使用Python编写。非常好用,快速可以基于EPEL部署。Salt 是一个开源的工具用来管理你的基础架构，可轻松管理成千上万台服务器。</p>
-</blockquote>
-<ul>
-<li><a href="https://blog.cunss.com/?p=255" target="_blank" rel="external">saltstack指南</a></li>
-<li><a href="https://docs.saltstack.com/en/getstarted/fundamentals/remotex.html" target="_blank" rel="external">salt官网入门基础</a></li>
-<li><a href="http://setjs.com/?p=226" target="_blank" rel="external">salt使用总结</a></li>
-<li><a href="http://www.saltstack.cn/kb/managing-firewall-with-salt/#managing-firewall-with-salt" target="_blank" rel="external">基于Salt管理iptables防火墙规则</a></li>
-</ul>
-<p><code>Django</code></p>
-<ul>
-<li><a href="http://www.ziqiangxuetang.com/django/django-intro.html" target="_blank" rel="external">基础教程</a></li>
-</ul>
-<h3 id="APP持续集成部署平台"><a href="#APP持续集成部署平台" class="headerlink" title="APP持续集成部署平台"></a>APP持续集成部署平台</h3><p><code>Jenkins</code></p>
-<ul>
-<li><a href="https://my.oschina.net/u/1242185/blog/323241?fromerr=YKc8u9du" target="_blank" rel="external">enkins安装配置</a></li>
-<li><a href="https://hengyunabc.github.io/deploy-system-build-with-jenkins-ansible-supervisor/?spm=5176.blog6068.yqblogcon1.3.A6PSop" target="_blank" rel="external">jenkins 发布系统</a></li>
-<li><a href="http://pkg.jenkins-ci.org/redhat/" target="_blank" rel="external">jenkins rpm 软件包</a></li>
-<li><a href="https://www.jqlinux.com/archives/662" target="_blank" rel="external">jenkins简单使用</a></li>
-<li><a href="http://www.cnblogs.com/mouseIT/p/5024718.html" target="_blank" rel="external">Jenkins将项目发送到tomcat</a></li>
-<li><a href="https://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+on+Red+Hat+distributions" target="_blank" rel="external">centos7安装文档</a></li>
-<li><a href="https://segmentfault.com/a/1190000004639325" target="_blank" rel="external">CentOS 安装 Jenkins</a></li>
-</ul>
-<h3 id="日志分析平台"><a href="#日志分析平台" class="headerlink" title="日志分析平台"></a>日志分析平台</h3><p><code>ELK</code> </p>
-<p> <code>Logstash</code></p>
-<blockquote>
-<p>Logstash 是一个应用程序日志、事件的传输、处理、管理和搜索的平台。你可以用它来统一对应用程序日志进行收集管理，提供 Web 接口用于查询和统计。</p>
-</blockquote>
-<ul>
-<li><a href="https://wsgzao.github.io/post/elk/" target="_blank" rel="external">ELK 搭建日志分析平台</a></li>
-<li><a href="http://kibana.logstash.es/content/logstash/get_start/index.html" target="_blank" rel="external">ELK 中文执指南</a></li>
-<li><a href="http://www.ttlsa.com/elk/elk-kibana-install-and-plugin-management/" target="_blank" rel="external">elk 插件管理</a></li>
-<li><a href="http://www.sojson.com/blog/85" target="_blank" rel="external">elk 插件使用</a></li>
-<li><a href="https://github.com/yangcvo/ELK_config" target="_blank" rel="external">elk 脚本</a></li>
-</ul>
-<p><code>Graylog</code></p>
-<ul>
-<li><a href="http://blog.topspeedsnail.com/archives/4066" target="_blank" rel="external">CentOS 7安装配置Graylog</a></li>
-<li><a href="https://my.oschina.net/fitnessefan/blog/464351?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">Graylog——日志聚合工具中的后起之秀</a></li>
-<li><a href="http://docs.graylog.org/en/1.3/pages/extractors.html" target="_blank" rel="external">Graylog 入门到精通文档</a></li>
-</ul>
-<h3 id="开源监控，警告-amp-分析"><a href="#开源监控，警告-amp-分析" class="headerlink" title="开源监控，警告&amp;分析"></a>开源监控，警告&amp;分析</h3><p><code>zabbix</code></p>
-<ul>
-<li><a href="http://www.zabbix.net.cn/viewforum.php?f=13&amp;sid=2c1c952dbc2384612a1e22de916601b9" target="_blank" rel="external">zabbix学习论坛</a></li>
-<li><a href="http://www.ttlsa.com/zabbix/follow-ttlsa-to-study-zabbix/" target="_blank" rel="external">zabbix入门</a></li>
-<li><a href="http://dl528888.blog.51cto.com/2382721/1428561" target="_blank" rel="external">zabbix优化web事件打开速度</a></li>
-<li><a href="http://canghai.coding.io/2015/07/29/monitoring-mysql-with-zabbix/" target="_blank" rel="external">zabbix监控MySQL</a></li>
-<li><a href="https://share.zabbix.com/official-templates" target="_blank" rel="external">zabbix官方模块</a></li>
-<li><a href="http://docs.grafana.org/v2.0/installation/" target="_blank" rel="external">grafana 二次开源安装</a></li>
-<li><a href="https://github.com/alexanderzobnin/grafana-zabbix" target="_blank" rel="external">grafana-zabbix插件-官方网站</a></li>
-<li><a href="http://play.grafana.org/" target="_blank" rel="external">grafana演示站点</a></li>
-<li><a href="http://www.iyunv.com/thread-25966-1-1.html" target="_blank" rel="external">zabbix监控软件的使用排错</a></li>
-<li><a href="http://www.zabbix.com/download.php" target="_blank" rel="external">zabbix软件包下载地址</a></li>
-<li><a href="https://www.zabbix.com/documentation/3.0/manual/introduction/whatsnew300" target="_blank" rel="external">什么3.0.0的zabbix的新功能</a></li>
-<li><a href="https://github.com/bushvin/zabbix-kvm-res" target="_blank" rel="external">通过ZABBIX KVM监控</a></li>
-<li>个人github上面有整理比较详细的监控文档</li>
-<li><a href="https://blog.cactifans.com/2015/07/24/monitoring-tomcat-with-zabbix/" target="_blank" rel="external">1. zabbix通过jmx监控tomcat</a></li>
-<li><a href="http://www.cnblogs.com/Eivll0m/p/5446311.html" target="_blank" rel="external">2. zabbix通过jmx监控tomcat</a></li>
-<li><a href="https://share.zabbix.com" target="_blank" rel="external">zabbix官网模板</a></li>
-</ul>
-<p><code>zabbix开源监控区别</code></p>
-<ul>
-<li><a href="http://www.sysopen.cn/20150524/" target="_blank" rel="external">Nagios、cacti、zabbix的对比？</a></li>
-</ul>
-<p><code>Nagios</code></p>
-<blockquote>
-<p>Nagios 是一个监视系统运行状态和网络信息的监视系统。Nagios能监视所指定的本地或远程主机以及服务，同时提供异常通知功能等。</p>
-</blockquote>
-<p><code>Ganglia</code></p>
-<blockquote>
-<p>Ganglia 是一个跨平台可扩展的，高 性能计算系统下的分布式监控系统，如集群和网格。它是基于分层设计，它使用广泛的技术，如XML数据代表，便携数据传输，RRDtool用于数据存储和可视化。</p>
-</blockquote>
-<p><code>Graphite</code></p>
-<blockquote>
-<p>Graphite 是一个用于采集网站实时信息并进行统计的开源项目，可用于采集多种网站服务运行状态信息。Graphite服务平均每分钟有4800次更新操作。</p>
-</blockquote>
-<p><code>Kibana</code></p>
-<blockquote>
-<p>Kibana 是一个为 Logstash 和 ElasticSearch 提供的日志分析的 Web 接口。可使用它对日志进行高效的搜索、可视化、分析等各种操作。</p>
-</blockquote>
-<h3 id="团队技术平台和项目管理平台-amp-测试平台"><a href="#团队技术平台和项目管理平台-amp-测试平台" class="headerlink" title="团队技术平台和项目管理平台&amp;测试平台"></a>团队技术平台和项目管理平台&amp;测试平台</h3><p><code>confluence团队项目协作平台</code></p>
-<ul>
-<li><a href="https://www.teambition.com" target="_blank" rel="external">teambition</a></li>
-<li><a href="https://www.atlassian.com/software/confluence/" target="_blank" rel="external">confluence</a></li>
-</ul>
-<p><code>teambition 公司技术团队工作记录跟踪迭代平台</code></p>
-<ul>
-<li><a href="https://www.teambition.com" target="_blank" rel="external">teambition</a></li>
-</ul>
-<p><code>jira-敏捷项目管理工具</code></p>
-<ul>
-<li><a href="https://my.atlassian.com/products/index" target="_blank" rel="external">jira-敏捷项目管理工具</a></li>
-</ul>
-<p><code>创业公司禅道项目管理系统</code></p>
-<ul>
-<li><a href="http://www.zentao.net/download/79930.html" target="_blank" rel="external">禅道项目管理软件</a></li>
-</ul>
-<p><code>APP推广统计数据分析</code></p>
-<ul>
-<li><a href="www.talkingdata.com">talkingdata</a></li>
-</ul>
-<p><code>RAP是一个可视化接口管理工具 通过分析接口结构</code></p>
-<ul>
-<li><a href="http://rap.taobao.org/org/index.do" target="_blank" rel="external">RAP 接口管理工具</a></li>
-</ul>
-<h3 id="统一的账号管理认证平台"><a href="#统一的账号管理认证平台" class="headerlink" title="统一的账号管理认证平台"></a>统一的账号管理认证平台</h3><p><code>openLDAP</code></p>
-<ul>
-<li><a href="http://blog.csdn.net/hitabc141592/article/details/22931179" target="_blank" rel="external">openldap 部署1</a></li>
-<li><a href="http://jianshi-dlw.iteye.com/blog/1557846" target="_blank" rel="external">openldap 部署2</a></li>
-<li><a href="https://www.howtoforge.com/setting-up-an-openvpn-server-with-authentication-against-openldap-on-ubuntu-10.04-lts#-install-openvpn" target="_blank" rel="external">LDAP 认证</a></li>
-<li><a href="http://wiki.yepn.net/lam" target="_blank" rel="external">Samba+LDAP+LAM管理工具应用</a></li>
-<li><p><a href="http://blog.blackroom.cn/blog/2013/04/05/samba-web-modify-password/" target="_blank" rel="external">让Samba用户通过WEB页面修改密码</a></p>
-<p><code>OpenLDAP + ProFTPD</code></p>
-</li>
-<li><p><a href="http://www.pudgecon.com/blog/2013/08/23/install-openldap-and-proftpd-on-ubuntu-12-dot-04/" target="_blank" rel="external">Install OpenLDAP and ProFTPD on Ubuntu 12.04</a></p>
-</li>
-</ul>
-<h3 id="公司VPN"><a href="#公司VPN" class="headerlink" title="公司VPN"></a>公司VPN</h3><p><code>OpenVPN Server</code></p>
-<ul>
-<li><a href="http://heylinux.com/archives/3499.html" target="_blank" rel="external">CentOS 6上部署OpenVPN Server</a></li>
-<li><a href="https://docs.ucloud.cn/software/vpn/OpenVPN4CentOS.html" target="_blank" rel="external">OpenVPN for CentOS</a></li>
-<li><a href="https://www.unixmen.com/setup-openvpn-server-client-centos-6-5/" target="_blank" rel="external">centos 安装部署openvpn </a></li>
-<li><p><a href="https://www.digitalocean.com/community/tutorials/how-to-setup-and-configure-an-openvpn-server-on-centos-6" target="_blank" rel="external">部署参考</a></p>
-<ul>
-<li>openVPN <a href="https://www.tunnelblick.net/" target="_blank" rel="external">Tunnelblick工具下载</a></li>
-</ul>
-</li>
-</ul>
-<h3 id="翻墙"><a href="#翻墙" class="headerlink" title="翻墙"></a>翻墙</h3><p><code>ssh隧道翻墙</code></p>
-<ul>
-<li><a href="http://www.cenhq.com/2015/12/18/ssh-tunnel-over-the-wall/" target="_blank" rel="external">ssh隧道翻墙</a></li>
-</ul>
-<h3 id="node-js-后台"><a href="#node-js-后台" class="headerlink" title="node.js 后台"></a>node.js 后台</h3><ul>
-<li><a href="http://blog.csdn.net/nsrainbow/article/details/33740915" target="_blank" rel="external">如何卸载node.js</a> </li>
-</ul>
-<h3 id="海外代理服务器平台"><a href="#海外代理服务器平台" class="headerlink" title="海外代理服务器平台"></a>海外代理服务器平台</h3><p><code>服务器供应商</code></p>
-<ul>
-<li><a href="http://www.capitalonline.net/zh-cn/" target="_blank" rel="external">服务器</a></li>
-</ul>
-<h3 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h3><p><code>windows 防火墙</code></p>
-<ul>
-<li><a href="http://heylinux.com/archives/category/windows" target="_blank" rel="external">Windows Server 2008上的防火墙配置脚本</a></li>
-</ul>
-<p><code>Windows系统中文换英文</code></p>
-<ul>
-<li><a href="http://heylinux.com/archives/1667.html" target="_blank" rel="external">Windows 7中文旗舰版与英文版自由切换</a></li>
-</ul>
-<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><ul>
-<li><a href="http://openstf.io/" target="_blank" rel="external">openstf</a></li>
-<li><a href="http://www.open-open.com/lib/view/open1437967814581.html" target="_blank" rel="external">stf环境搭建</a></li>
-<li><a href="https://www.sdk.cn/news/2794" target="_blank" rel="external">macaca 自动化测试</a></li>
-<li><a href="https://xudafeng.github.io/slide/archives/macaca/#/" target="_blank" rel="external">移动时代的自动化</a></li>
-</ul>
-<h3 id="war包仓库"><a href="#war包仓库" class="headerlink" title="war包仓库"></a>war包仓库</h3><p><code>Maven私服nexus</code></p>
-<ul>
-<li><a href="http://www.cnblogs.com/dingyingsi/p/3776557.html" target="_blank" rel="external">Centos 基础开发环境搭建之Maven私服nexus</a></li>
-</ul>
-<h3 id="wkhtmltox-HTML效果转PDF格式"><a href="#wkhtmltox-HTML效果转PDF格式" class="headerlink" title="wkhtmltox-HTML效果转PDF格式"></a>wkhtmltox-HTML效果转PDF格式</h3><ul>
-<li>参考我博客的wkhtmltox</li>
-</ul>
-<h3 id="博客"><a href="#博客" class="headerlink" title="博客"></a>博客</h3><p><code>Ghost</code></p>
-<ul>
-<li><a href="http://support.ghost.org/how-to-upgrade/" target="_blank" rel="external">官方-Ghost升级方法</a></li>
-<li><a href="https://wiki.bitnami.com/Applications/BitNami_Ghost" target="_blank" rel="external">一键安装Ghost博客</a></li>
-<li><a href="https://bitnami.com/stack/ghost/installer#linux" target="_blank" rel="external">bitnami 下载一键安装Ghost脚本包</a></li>
-<li><a href="https://segmentfault.com/a/1190000002397419" target="_blank" rel="external">vps 安装 Ghost 博客系统记录</a></li>
-<li><a href="http://www.open-open.com/news/view/144e24e" target="_blank" rel="external">15个免费的Ghost博客主题</a></li>
-<li><a href="https://github.com/yangcvo/Ghost" target="_blank" rel="external">我自己整理的Ghost 20种博客主题</a></li>
-<li><a href="http://www.ghostchina.com/" target="_blank" rel="external">Ghost中文官方版</a></li>
-<li><a href="https://github.com/yangcvo/Ghost" target="_blank" rel="external">Ghost英文文档安装</a></li>
-<li><a href="https://github.com/yangcvo/Ghost" target="_blank" rel="external">Ghost博客安装，使用，更新一条龙教程 - 中文版</a><br>在我github上面都有的，我安装的是7.0的。</li>
-<li><a href="https://github.com/yangcvo/Ghost" target="_blank" rel="external">Ghost修改端口方法文档</a></li>
-<li>Ghost20种主题主题包下载：<a href="https://github.com/yangcvo/Ghost/tree/master/Ghost-theme" target="_blank" rel="external">Ghost20种主题包</a></li>
-<li><a href="https://www.bokeyy.com/post/ghost-install-in-vps-solution-in-china.html" target="_blank" rel="external">Ghost 博客安装中文全攻略</a></li>
-<li><a href="http://docs.ghost.org/zh/themes/" target="_blank" rel="external">Ghost主题变更</a></li>
-</ul>
-<p><code>Wordpress</code></p>
-<ul>
-<li><a href="https://wordpress.org/showcase/" target="_blank" rel="external">官网</a></li>
-<li><a href="https://cn.wordpress.org/" target="_blank" rel="external">中文官网WordPress</a> 访问有点慢。</li>
-<li><a href="http://www.wpdaxue.com/tutorials/page/2" target="_blank" rel="external">非常有益的我是参考了建站网站有很详细说Wordpass</a></li>
-<li><a href="http://www.wpdaxue.com/tutorials/page/2" target="_blank" rel="external">wordpass大学</a></li>
-<li><a href="https://zh-cn.forums.wordpress.org/forum/plugins" target="_blank" rel="external">Wordpress下载插件-中文网站</a><br>非常好的一位博主很详细讲了WordPress的安装过程和主题更换，插件使用等等WordPress先生</li>
-<li><a href="http://www.wpsir.cn/archives/tag/wordpress%E5%AE%89%E8%A3%85" target="_blank" rel="external">WordPress</a></li>
-<li><a href="http://www.wpsir.cn/archives/768" target="_blank" rel="external">如何搭建WordPress博客?</a></li>
-<li><a href="https://bbs.aliyun.com/read/259101.html?spm=5176.7189909.5.41.yW4V0H" target="_blank" rel="external">阿里云视频-如何在ECS上快递搭建一个WordPress站点</a></li>
-<li><a href="http://www.wpdaxue.com/install-wordpress-theme-and-plugin.html" target="_blank" rel="external">WordPress入门 之 安装主题和插件</a></li>
-</ul>
-<p><code>hexo</code></p>
-<p>这个是我现在的博客用的效果。</p>
-<h3 id="网上书店-非常不错"><a href="#网上书店-非常不错" class="headerlink" title="网上书店-非常不错"></a>网上书店-非常不错</h3><ul>
-<li><a href="https://www.packtpub.com/all" target="_blank" rel="external">packt</a></li>
-</ul>
-<h3 id="已学习视频"><a href="#已学习视频" class="headerlink" title="已学习视频"></a>已学习视频</h3><p><code>Linux</code></p>
-<ul>
-<li><a href="http://edu.51cto.com/course/course_id-549.html" target="_blank" rel="external">从0开始一步步实战深入学习Linux运维视频课程(三)</a>  2014-03-28 看完 –现在这需要付费，我当初看的时候免费的，给你们个链接 越过去：<a href="http://edu.51cto.com/lesson/id-11907.html" target="_blank" rel="external">http://edu.51cto.com/lesson/id-11907.html</a></li>
-</ul>
-<p><code>MySQL</code></p>
-<ul>
-<li><p><a href="https://ke.qq.com/course/134105" target="_blank" rel="external">企业Mysql实战系列入门篇</a> 2014年3月5日看完</p>
-</li>
-<li><p><a href="http://down.51cto.com/zt/535#0-sqq-1-75870-9737f6f9e09dfaf5d3fd14d775bfee85" target="_blank" rel="external">Mysql从入门到精通视频教程（共29集）</a>  2015年11月3日看完</p>
-</li>
-</ul>
-<p>还有些网上分享的视频，存放在百度云。有数据库优化12篇视频。还有数据库架构</p>
-<p><code>Docker</code></p>
-<p><a href="https://ke.qq.com/user/tasks/index.html?cid=132963#tid=100148647&amp;fr=2" target="_blank" rel="external">实战企业Docker虚拟化系列</a>  2016年3月23日看完</p>
-<p><code>Python</code></p>
-<p><a href="https://ke.qq.com/course/139441" target="_blank" rel="external">学会Python编程基础篇</a>  2016-02-13 学完</p>
-<p><code>监控</code></p>
-<p><a href="http://edu.51cto.com/course/course_id-460.html" target="_blank" rel="external">企业级高级监控系统cacti+nagios【马哥linux视频课程】</a><br><a href="http://edu.51cto.com/course/course_id-6907.html" target="_blank" rel="external">Zabbix监控平台应用实战视频课程</a> 收费 需要可@我 2016-09-10 学完</p>
-<h3 id="Ubuntu"><a href="#Ubuntu" class="headerlink" title="Ubuntu"></a>Ubuntu</h3><p><a href="http://www.lupaworld.com/article-221573.html" target="_blank" rel="external">Ubuntu上可使用的15个桌面环境</a> 很早就玩过了。</p>
-<p><a href="http://mirrors.163.com/ubuntu-releases/14.04/" target="_blank" rel="external">Ubuntu iso镜像下载地址</a></p>
-<h3 id="平面设计"><a href="#平面设计" class="headerlink" title="平面设计"></a>平面设计</h3><p><code>PS</code></p>
-<ul>
-<li><a href="http://wenku.baidu.com/course/view/994e6037ee06eff9aef8078d?cid=5" target="_blank" rel="external">Photoshop学习教程</a></li>
-</ul>
-<h6 id="陆续更新-（Update-time-：2016：12：11）"><a href="#陆续更新-（Update-time-：2016：12：11）" class="headerlink" title="@@ 陆续更新 ~~  （Update time ：2016：12：11）"></a>@@ 陆续更新 ~~  （Update time ：2016：12：11）</h6>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/03/10/自动化+Jenkins/Ansible/ansible 脚本(Playbook基本语法)远程控制/">Ansible 脚本(Playbook基本语法)远程控制</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-03-10</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/automation/">automation</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Ansible/">Ansible</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h1 id="ansible-脚本-Playbook基本语法-远程控制"><a href="#ansible-脚本-Playbook基本语法-远程控制" class="headerlink" title="ansible 脚本(Playbook基本语法)远程控制"></a>ansible 脚本(Playbook基本语法)远程控制</h1><p>Playbook基本语法</p>
-<blockquote>
-<p>本节列举了写第一个Playbook，你必须了解基本语法。<br>随着你面临的机器越多，配属的需求越复杂，你可能需要了解后面介绍的一些稍微复杂逻辑语句。</p>
-</blockquote>
-<ul>
-<li>执行Playbook语法</li>
-</ul>
-<p>这里先</p>
-<p>vim deploy.yml</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">deploy.yml文件</div><div class="line">---</div><div class="line">- hosts: tomcat_D1</div><div class="line">  vars:</div><div class="line">    http_port: 80</div><div class="line">    max_clients: 200</div><div class="line">  user: root</div><div class="line">  tasks:</div><div class="line">  - name: ensure apache is at the latest version</div><div class="line">    yum: name=httpd state=latest</div><div class="line">  - name: write the apache config file</div><div class="line">    template: src=/srv/httpd.j2 dest=/etc/httpd.conf</div><div class="line">    notify:</div><div class="line">    - restart apache</div><div class="line">  - name: start httpd </div><div class="line">    service: name=httpd state=started</div><div class="line">  handlers:</div><div class="line">    - name: restart apache</div><div class="line">      service: name=httpd state=restarted</div></pre></td></tr></table></figure>
-<h4 id="执行Playbook语法"><a href="#执行Playbook语法" class="headerlink" title="执行Playbook语法"></a>执行Playbook语法</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ansible-playbook deploy.yml</div></pre></td></tr></table></figure>
-<p>查看输出的细节 1</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible-playbook playbook<span class="selector-class">.yml</span> --list-hosts</div></pre></td></tr></table></figure>
-<p>查看该脚本影响哪些hosts</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible-playbook playbook<span class="selector-class">.yml</span> --list-hosts</div></pre></td></tr></table></figure>
-<p>并行执行脚本</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible-playbook playbook<span class="selector-class">.yml</span> -f <span class="number">10</span></div></pre></td></tr></table></figure>
-<h4 id="完整的playbook脚本示例"><a href="#完整的playbook脚本示例" class="headerlink" title="完整的playbook脚本示例"></a>完整的playbook脚本示例</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">最基本的playbook脚本分为三个部分:</div><div class="line">在什么机器上以什么身份执行</div><div class="line">hosts</div><div class="line">users</div><div class="line">...</div><div class="line">执行的任务是都有什么</div><div class="line">tasks</div><div class="line">善后的任务都有什么</div><div class="line">handlers</div></pre></td></tr></table></figure>
-<p>这里我写了个tomcat发布，yml文件：<br>参考：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">- hosts: tomcat-system_01</div><div class="line">  environment:</div><div class="line">    LC_ALL: zh_CN.UTF-8</div><div class="line">    LANG : zh_CN.UTF-8</div><div class="line">  tasks:</div><div class="line">  - name  : cpfile-system</div><div class="line">    copy  : src=/root/.jenkins/workspace/yjk_master/haozhuo/haozhuo-system/target/haozhuo-system.war dest=/root/java_war/haozhuo-system.war</div><div class="line">  - name  : restart</div><div class="line">    shell : /root/update/system.sh</div><div class="line">    async : 0</div><div class="line">  - name  : shutdown</div><div class="line">    shell : /srv/tomcat/tomcat_system/bin/shutdown.sh</div><div class="line">    async : 0</div><div class="line">  - name  : start</div><div class="line">    shell : <span class="built_in">chdir</span>=/srv/tomcat/tomcat_system/bin nohup ./startup.sh &amp;</div><div class="line">    async : 0</div></pre></td></tr></table></figure>
-<p>参考官网：<a href="https://ansible-book.gitbooks.io/ansible-first-book/content/playbookji_ben_yu_fa.html" target="_blank" rel="external">https://ansible-book.gitbooks.io/ansible-first-book/content/playbookji_ben_yu_fa.html</a></p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/03/09/自动化+Jenkins/Ansible/ansible小结(五)常用模块/">Ansible小结 (五) 常用模块</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-03-09</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/automation/">automation</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Ansible/">Ansible</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h1 id="ansible命令总结使用："><a href="#ansible命令总结使用：" class="headerlink" title="ansible命令总结使用："></a>ansible命令总结使用：</h1><p>在上一篇中介绍了commands部分模块，本篇承接上篇介绍下常用的模块。根据官方的分类，将模块按功能分类为：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">云模块、命令模块、数据库模块、文件模块、资产模块、消息模块、监控模块、网络模块、通知模块、包管理模块、源码控制模块、系统模块、单元模块、web设施模块、windows模块</div></pre></td></tr></table></figure>
-<p>具体可以参看<a href="http://docs.ansible.com/list_of_all_modules.html" target="_blank" rel="external">官方页面</a></p>
-<p>这里从官方分类的模块里选择<code>最常用的一些模块</code>进行介绍（commands模块上一篇已经介绍，这里不再提）。</p>
-<h3 id="一、ping模块"><a href="#一、ping模块" class="headerlink" title="一、ping模块"></a>一、ping模块</h3><h6 id="测试主机是否是通的，用法很简单，不涉及参数："><a href="#测试主机是否是通的，用法很简单，不涉及参数：" class="headerlink" title="测试主机是否是通的，用法很简单，不涉及参数："></a>测试主机是否是通的，用法很简单，不涉及参数：</h6><figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">ansible tomcat_B1 -m <span class="built_in">ping</span></div><div class="line"></div><div class="line">[root<span class="symbol">@ansible</span> ~]<span class="meta"># ansible tomcat_C1 -m ping</span></div><div class="line"><span class="number">192.168</span><span class="number">.1</span><span class="number">.177</span> | SUCCESS =&gt; &#123;</div><div class="line">    <span class="string">"changed"</span>: <span class="literal">false</span>,</div><div class="line">    <span class="string">"ping"</span>: <span class="string">"pong"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="二、setup模块"><a href="#二、setup模块" class="headerlink" title="二、setup模块"></a>二、setup模块</h3><p>setup模块，主要用于获取主机信息，在playbooks里经常会用到的一个参数<code>gather_facts</code>就与该模块相关。setup模块下经常使用的一个参数是filter参数，具体使用示例如下（由于输出结果较多，这里只列命令不写结果）：</p>
-<h6 id="查看主机内存信息"><a href="#查看主机内存信息" class="headerlink" title="查看主机内存信息"></a>查看主机内存信息</h6><figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[root<span class="symbol">@ansible</span> ~]<span class="meta"># ansible tomcat_C1 -m setup -a <span class="string">'filter=ansible_*_mb'</span></span></div></pre></td></tr></table></figure>
-<h6 id="查看地接口为eth0-2的网卡信息"><a href="#查看地接口为eth0-2的网卡信息" class="headerlink" title="查看地接口为eth0-2的网卡信息"></a>查看地接口为eth0-2的网卡信息</h6><figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root<span class="symbol">@ansible</span> ~]<span class="meta"># ansible tomcat_C1 -m setup -a <span class="string">'filter=ansible_eth[0-2]'</span> </span></div><div class="line">[root<span class="symbol">@ansible</span> ~]<span class="meta"># ansible all -m setup --tree /tmp/facts</span></div></pre></td></tr></table></figure>
-<p>  //将所有主机的信息输入到/tmp/facts目录下，每台主机的信息输入到主机名文件中（/etc/ansible/hosts里的主机名）</p>
-<h3 id="三、file模块"><a href="#三、file模块" class="headerlink" title="三、file模块"></a>三、file模块</h3><p>file模块主要用于远程主机上的文件操作，file模块包含如下选项： </p>
-<ul>
-<li>force：需要在两种情况下强制创建软链接，一种是源文件不存在但之后会建立的情况下；另一种是目标软链接已存在,需要先取消之前的软链，然后创建新的软链，有两个选项：yes|no </li>
-<li>group：定义文件/目录的属组 </li>
-<li>mode：定义文件/目录的权限</li>
-<li>owner：定义文件/目录的属主</li>
-<li>path：必选项，定义文件/目录的路径</li>
-<li>recurse：递归的设置文件的属性，只对目录有效</li>
-<li>src：要被链接的源文件的路径，只应用于state=link的情况</li>
-<li>dest：被链接到的路径，只应用于state=link的情况 </li>
-<li>state：  directory：如果目录不存在，创建目录</li>
-<li>file：即使文件不存在，也不会被创建</li>
-<li>link：创建软链接</li>
-<li>hard：创建硬链接</li>
-<li>touch：如果文件不存在，则会创建一个新的文件，如果文件或目录已存在，则更新其最后修改时间</li>
-<li>absent：删除目录、文件或者取消链接文件<br>使用示例：</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ansible <span class="built_in">test</span> -m file <span class="_">-a</span> <span class="string">"src=/etc/fstab dest=/tmp/fstab state=link"</span></div><div class="line">ansible <span class="built_in">test</span> -m file <span class="_">-a</span> <span class="string">"path=/tmp/fstab state=absent"</span></div><div class="line">ansible <span class="built_in">test</span> -m file <span class="_">-a</span> <span class="string">"path=/tmp/test state=touch"</span></div><div class="line">ansible <span class="built_in">test</span> -m file <span class="_">-a</span> <span class="string">"path=/tmp/test state=directory"</span> ansible <span class="built_in">test</span> -m file <span class="_">-a</span> <span class="string">"path=/tmp/testd state=directory owner=root group=root mode=777"</span></div></pre></td></tr></table></figure>
-<h3 id="四、copy模块"><a href="#四、copy模块" class="headerlink" title="四、copy模块"></a>四、copy模块</h3><h5 id="复制文件到远程主机，copy模块包含如下选项："><a href="#复制文件到远程主机，copy模块包含如下选项：" class="headerlink" title="复制文件到远程主机，copy模块包含如下选项："></a>复制文件到远程主机，copy模块包含如下选项：</h5><ul>
-<li><code>backup</code>：在覆盖之前将原文件备份，备份文件包含时间信息。有两个选项：yes|no </li>
-<li><code>content</code>：用于替代”src”,可以直接设定指定文件的值 </li>
-<li><code>dest</code>：必选项。要将源文件复制到的远程主机的绝对路径，如果源文件是一个目录，那么该路径也必须是个目录 </li>
-<li><code>directory_mode</code>：递归的设定目录的权限，默认为系统默认权限</li>
-<li><code>force</code>：如果目标主机包含该文件，但内容不同，如果设置为yes，则强制覆盖，如果为no，则只有当目标主机的目标位置不存在该文件时，才复制。默认为yes</li>
-<li><code>others</code>：所有的file模块里的选项都可以在这里使用</li>
-<li><code>src</code>：要复制到远程主机的文件在本地的地址，可以是绝对路径，也可以是相对路径。如果路径是一个目录，它将递归复制。在这种情况下，如果路径使用”/“来结尾，则只复制目录里的内容，如果没有使用”/“来结尾，则包含目录在内的整个内容全部复制，类似于rsync。 </li>
-<li><code>validate</code>：The validation command to run before copying into place. The path to the file to validate is passed in via ‘%s’ which must be present as in the visudo example below.</li>
-</ul>
-<p>示例如下：</p>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ansible test -m <span class="keyword">copy</span><span class="bash"> <span class="_">-a</span> <span class="string">"src=/srv/myfiles/foo.conf dest=/etc/foo.conf owner=foo group=foo mode=0644"</span></span></div><div class="line">ansible test -m <span class="keyword">copy</span><span class="bash"> <span class="_">-a</span> <span class="string">"src=/mine/ntp.conf dest=/etc/ntp.conf owner=root group=root mode=644 backup=yes"</span></span></div><div class="line">ansible test -m <span class="keyword">copy</span><span class="bash"> <span class="_">-a</span> <span class="string">"src=/mine/sudoers dest=/etc/sudoers validate='visudo -cf %s'"</span></span></div></pre></td></tr></table></figure>
-<p>这里在举个例子：</p>
-<p>目的：把主控端/opt/目录下面logstash.tar.gz文件拷贝到到指定节点上/srv/下面<br>    命令：<code>ansible cluster1:children -m copy -a &quot;src=/opt/logstash.tar.gz dest=/srv/. owner=root group=root mode=644&quot;</code></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">root@salt ~]<span class="comment"># ansible cluster1:children -m copy -a "src=/opt/logstash.tar.gz dest=/srv/. 10.47.59.190 | SUCCESS =&gt; &#123;</span></div><div class="line">    <span class="string">"changed"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="string">"checksum"</span>: <span class="string">"9d15ea324f39d08cb379f59ffee9fa7ad2a62ab8"</span>,</div><div class="line">    <span class="string">"dest"</span>: <span class="string">"/srv/./logstash.tar.gz"</span>,</div><div class="line">    <span class="string">"gid"</span>: 0,</div><div class="line">    <span class="string">"group"</span>: <span class="string">"root"</span>,</div><div class="line">    <span class="string">"md5sum"</span>: <span class="string">"c151602e79a336ca363928dea68d2567"</span>,</div><div class="line">    <span class="string">"mode"</span>: <span class="string">"0644"</span>,</div><div class="line">    <span class="string">"owner"</span>: <span class="string">"root"</span>,</div><div class="line">    <span class="string">"size"</span>: 84431108,</div><div class="line">    <span class="string">"src"</span>: <span class="string">"/root/.ansible/tmp/ansible-tmp-1483939085.93-201327709717575/source"</span>,</div><div class="line">    <span class="string">"state"</span>: <span class="string">"file"</span>,</div><div class="line">    <span class="string">"uid"</span>: 0</div><div class="line">&#125;</div><div class="line">10.47.106.105 | SUCCESS =&gt; &#123;</div><div class="line">    <span class="string">"changed"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="string">"checksum"</span>: <span class="string">"9d15ea324f39d08cb379f59ffee9fa7ad2a62ab8"</span>,</div><div class="line">    <span class="string">"dest"</span>: <span class="string">"/srv/./logstash.tar.gz"</span>,</div><div class="line">    <span class="string">"gid"</span>: 0,</div><div class="line">    <span class="string">"group"</span>: <span class="string">"root"</span>,</div><div class="line">    <span class="string">"md5sum"</span>: <span class="string">"c151602e79a336ca363928dea68d2567"</span>,</div><div class="line">    <span class="string">"mode"</span>: <span class="string">"0644"</span>,</div><div class="line">    <span class="string">"owner"</span>: <span class="string">"root"</span>,</div><div class="line">    <span class="string">"size"</span>: 84431108,</div><div class="line">    <span class="string">"src"</span>: <span class="string">"/root/.ansible/tmp/ansible-tmp-1483939088.11-46151538408374/source"</span>,</div><div class="line">    <span class="string">"state"</span>: <span class="string">"file"</span>,</div><div class="line">    <span class="string">"uid"</span>: 0</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="批量控制解压文件"><a href="#批量控制解压文件" class="headerlink" title="批量控制解压文件"></a>批量控制解压文件</h4><p>批量解压命令：</p>
-<p><code>ansible cluster1:children -m shell -a  &quot;tar -zxvf /srv/logstash.tar.gz&quot; -C /srv/.</code></p>
-<h3 id="五、yum模块"><a href="#五、yum模块" class="headerlink" title="五、yum模块"></a>五、yum模块</h3><h5 id="yum安装使用："><a href="#yum安装使用：" class="headerlink" title="yum安装使用："></a>yum安装使用：</h5><p>使用yum包管理器来管理软件包，其选项有： </p>
-<ul>
-<li>config_file：yum的配置文件 </li>
-<li>disable_gpg_check：关闭gpg_check </li>
-<li>disablerepo：不启用某个源 </li>
-<li>enablerepo：启用某个源</li>
-<li>name：要进行操作的软件包的名字，也可以传递一个url或者一个本地的rpm包的路径<br>state：状态（present，absent，latest）</li>
-</ul>
-<p>示例如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible tomcat_D1 <span class="_">-s</span> -m yum <span class="_">-a</span> <span class="string">"name=wget state=latest"</span></div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ansible_02.png" alt=""></figure></p>
-<figure class="highlight prolog"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[root@ansible playbook]# ansible tomcat_D1 -s -<span class="symbol">C</span> -m yum -a <span class="string">"name=kernel state=latest"</span></div><div class="line"><span class="number">192.168</span><span class="number">.1</span><span class="number">.178</span> | <span class="symbol">SUCCESS</span> =&gt; &#123;</div><div class="line">    <span class="string">"changed"</span>: true,</div><div class="line">    <span class="string">"changes"</span>: &#123;</div><div class="line">        <span class="string">"installed"</span>: [],</div><div class="line">        <span class="string">"updated"</span>: [</div><div class="line">            [</div><div class="line">                <span class="string">"kernel"</span>,</div><div class="line">                <span class="string">"2.6.32-642.4.2.el6.x86_64 from updates"</span></div><div class="line">            ]</div><div class="line">        ]</div><div class="line">    &#125;,</div><div class="line">    <span class="string">"msg"</span>: <span class="string">""</span>,</div><div class="line">    <span class="string">"rc"</span>: <span class="number">0</span>,</div><div class="line">    <span class="string">"results"</span>: []</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="六-service模块"><a href="#六-service模块" class="headerlink" title="六 service模块"></a>六 service模块</h3><p>用于管理服务 该模块包含如下选项：</p>
-<ul>
-<li>arguments：给命令行提供一些选项 </li>
-<li>enabled：是否开机启动 yes|no name：必选项，服务名称</li>
-<li>pattern：定义一个模式，如果通过status指令来查看服务的状态时，没有响应，就会通过ps指令在进程中根据该模式进行查找，如果匹配到，则认为该服务依然在运行</li>
-<li>runlevel：运行级别 </li>
-<li>sleep：如果执行了restarted，在则stop和start之间沉睡几秒钟 </li>
-<li>state：对当前服务执行启动，停止、重启、重新加载等操作（started,stopped,restarted,reloaded） </li>
-</ul>
-<p>示例如下：</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ansible test -m service -<span class="selector-tag">a</span> <span class="string">"name=httpd state=started enabled=yes"</span> </div><div class="line">ansible test -m service -<span class="selector-tag">a</span> <span class="string">"name=foo pattern=/usr/bin/foo state=started"</span> </div><div class="line">ansible test -m service -<span class="selector-tag">a</span> <span class="string">"name=network state=restarted args=eth0"</span></div><div class="line">ansible cluster2:children -m service -<span class="selector-tag">a</span> <span class="string">"name=logstash pattern=/etc/init.d/logstash state=started"</span></div></pre></td></tr></table></figure>
-<p>参考：<a href="http://www.361way.com/ansible-modules/4415.html" target="_blank" rel="external">http://www.361way.com/ansible-modules/4415.html</a></p>
-<h3 id="七-shell-模块"><a href="#七-shell-模块" class="headerlink" title="七 shell 模块"></a>七 shell 模块</h3><p>这里我写个例子：</p>
-<p>批量更改组的机器的用户名密码。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[root@salt ansible]<span class="comment"># ansible cluster1:children -m shell -a "echo "Ihaozhuo" | passwd --stdin "root" "</span></div><div class="line">10.43.59.190 | SUCCESS | rc=0 &gt;&gt;</div><div class="line">更改用户 root 的密码 。</div><div class="line">passwd： 所有的身份验证令牌已经成功更新。</div><div class="line"></div><div class="line">10.23.2.106 | SUCCESS | rc=0 &gt;&gt;</div><div class="line">更改用户 root 的密码 。</div><div class="line">passwd： 所有的身份验证令牌已经成功更新。</div><div class="line"></div><div class="line">10.23.232.85 | SUCCESS | rc=0 &gt;&gt;</div><div class="line">更改用户 root 的密码 。</div><div class="line">passwd： 所有的身份验证令牌已经成功更新。</div><div class="line"></div><div class="line">10.23.232.131 | SUCCESS | rc=0 &gt;&gt;</div><div class="line">更改用户 root 的密码 。</div><div class="line">passwd： 所有的身份验证令牌已经成功更新。</div></pre></td></tr></table></figure>
-<p>查看分组上机器所有端口：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">[root@salt ansible]<span class="comment"># ansible zk1:children -m shell -a "netstat -ntulp"</span></div><div class="line">10.37.238.75 | SUCCESS | rc=0 &gt;&gt;</div><div class="line">Active Internet connections (only servers)</div><div class="line">Proto Recv-Q Send-Q Local Address               Foreign Address             State       PID/Program name</div><div class="line">tcp        0      0 0.0.0.0:2181                0.0.0.0:*                   LISTEN      12497/java</div><div class="line">tcp        0      0 0.0.0.0:56521               0.0.0.0:*                   LISTEN      12497/java</div><div class="line">tcp        0      0 0.0.0.0:22                  0.0.0.0:*                   LISTEN      1251/sshd</div><div class="line">tcp        0      0 0.0.0.0:4888                0.0.0.0:*                   LISTEN      12497/java</div><div class="line">tcp        0      0 127.0.0.1:15770             0.0.0.0:*                   LISTEN      1434/aegis_quartz</div><div class="line">udp        0      0 118.178.240.129:123         0.0.0.0:*                               1262/ntpd</div><div class="line">udp        0      0 10.27.238.75:123            0.0.0.0:*                               1262/ntpd</div><div class="line">udp        0      0 127.0.0.1:123               0.0.0.0:*                               1262/ntpd</div><div class="line">udp        0      0 0.0.0.0:123                 0.0.0.0:*                               1262/ntpd</div><div class="line"></div><div class="line">10.37.100.200 | SUCCESS | rc=0 &gt;&gt;</div><div class="line">Active Internet connections (only servers)</div><div class="line">Proto Recv-Q Send-Q Local Address               Foreign Address             State       PID/Program name</div><div class="line">tcp        0      0 0.0.0.0:58367               0.0.0.0:*                   LISTEN      11232/java</div><div class="line">tcp        0      0 10.47.100.200:10050         0.0.0.0:*                   LISTEN      646/zabbix_agentd</div><div class="line">tcp        0      0 0.0.0.0:2181                0.0.0.0:*                   LISTEN      11232/java</div><div class="line">tcp        0      0 0.0.0.0:22                  0.0.0.0:*                   LISTEN      1243/sshd</div><div class="line">tcp        0      0 0.0.0.0:4888                0.0.0.0:*                   LISTEN      11232/java</div><div class="line">tcp        0      0 127.0.0.1:15770             0.0.0.0:*                   LISTEN      1436/aegis_quartz</div><div class="line">udp        0      0 120.27.152.77:123           0.0.0.0:*                               1254/ntpd</div><div class="line">udp        0      0 10.47.100.200:123           0.0.0.0:*                               1254/ntpd</div><div class="line">udp        0      0 127.0.0.1:123               0.0.0.0:*                               1254/ntpd</div><div class="line">udp        0      0 0.0.0.0:123                 0.0.0.0:*                               1254/ntpd</div></pre></td></tr></table></figure>
-<p>shell 模块 可以用的最多。查看目录执行文件等等。</p>
-<p>ansible修改线上服务器上的密码</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">ansible cluster1:children -m shell <span class="_">-a</span> <span class="string">"echo "</span>Ihaozhuo_b3314<span class="string">" | passwd --stdin "</span>root<span class="string">" "</span></div><div class="line"></div><div class="line">ansible cluster2:children -m shell <span class="_">-a</span> <span class="string">"echo "</span>Ihaozhuo_b3314<span class="string">" | passwd --stdin "</span>root<span class="string">" "</span></div><div class="line"></div><div class="line">ansible cluster3:children -m shell <span class="_">-a</span> <span class="string">"echo "</span>Ihaozhuo_b3314<span class="string">" | passwd --stdin "</span>root<span class="string">" "</span></div><div class="line"></div><div class="line">ansible zk1:children -m shell <span class="_">-a</span> <span class="string">"echo "</span>Ihaozhuo_b3314<span class="string">" | passwd --stdin "</span>root<span class="string">" "</span></div><div class="line"></div><div class="line">ansible  kafka1:children -m shell <span class="_">-a</span> <span class="string">"echo "</span>Ihaozhuo_b3314<span class="string">" | passwd --stdin "</span>root<span class="string">" "</span></div><div class="line"></div><div class="line">ansible  es1:children -m shell <span class="_">-a</span> <span class="string">"echo "</span>Ihaozhuo_b3314<span class="string">" | passwd --stdin "</span>root<span class="string">" "</span></div><div class="line"></div><div class="line">ansible  ihaozhuo1:children -m shell <span class="_">-a</span> <span class="string">"echo "</span>Ihaozhuo_b3314<span class="string">" | passwd --stdin "</span>root<span class="string">" "</span></div><div class="line"></div><div class="line">ansible  monitor1:children -m shell <span class="_">-a</span> <span class="string">"echo "</span>Ihaozhuo_b3314<span class="string">" | passwd --stdin "</span>root<span class="string">" "</span></div></pre></td></tr></table></figure>
-<h2 id="2、Ansible-总结举例常用模块学习"><a href="#2、Ansible-总结举例常用模块学习" class="headerlink" title="2、Ansible 总结举例常用模块学习"></a>2、Ansible 总结举例常用模块学习</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">shell &gt; ansible-doc <span class="_">-l</span>    <span class="comment"># 列出 Ansible 支持的模块</span></div><div class="line">shell &gt; ansible-doc ping  <span class="comment"># 查看该模块帮助信息</span></div></pre></td></tr></table></figure>
-<blockquote>
-<p>远程命令模块（ command / raw / script / shell ）</p>
-</blockquote>
-<p>command 作为 Ansible 的默认模块，可以运行远程权限范围所有的 shell 命令，不支持管道符。</p>
-<p>例：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">shell &gt; ansible Client -m <span class="built_in">command</span> <span class="_">-a</span> <span class="string">"free -m"</span>               <span class="comment"># 查看 Client 分组主机内存使用情况</span></div></pre></td></tr></table></figure>
-<p>raw模块 [类似于command模块、支持管道传递]</p>
-<p>例：</p>
-<figure class="highlight nsis"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible Client -m raw -a <span class="string">"ifconfig eth0 |sed -n 2p |awk '&#123;print \<span class="variable">$2</span>&#125;' |awk -F: '&#123;print \<span class="variable">$2</span>&#125;'"</span></div></pre></td></tr></table></figure>
-<p>script 的功能是在远程主机执行主控端存储的 shell 脚本文件，相当于 scp + shell 组合。</p>
-<p>例：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">shell &gt; ansible Client -m script <span class="_">-a</span> <span class="string">"/home/test.sh 12 34"</span>    <span class="comment"># 远程执行本地脚本</span></div></pre></td></tr></table></figure>
-<p>shell 的功能是执行远程主机上的 shell 脚本文件，支持管道符。</p>
-<p>例：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">shell &gt; ansible Client -m shell <span class="_">-a</span> <span class="string">"/home/test.sh"</span>           <span class="comment"># 执行远程脚本</span></div></pre></td></tr></table></figure>
-<blockquote>
-<p>copy 模块（实现主控端向目标主机拷贝文件，类似于 scp 功能）</p>
-</blockquote>
-<p>例：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">shell &gt; ansible Client -m copy <span class="_">-a</span> <span class="string">"src=/home/test.sh desc=/tmp/ owner=root group=root mode=0755"</span>   </div><div class="line"><span class="comment"># 向 Client 组中主机拷贝 test.sh 到 /tmp 下，属主、组为 root ，权限为 0755</span></div></pre></td></tr></table></figure>
-<blockquote>
-<p>stat 模块（获取远程文件状态信息，atime/ctime/mtime/md5/uid/gid 等信息）</p>
-</blockquote>
-<p>例：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">shell &gt; ansible Client -m <span class="built_in">stat</span> <span class="_">-a</span> <span class="string">"path=/etc/syctl.conf"</span></div></pre></td></tr></table></figure>
-<blockquote>
-<p>get_url 模块（实现在远程主机下载指定 URL 到本地，支持 sha256sum 文件校验）</p>
-</blockquote>
-<p>例：</p>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">shell</span><span class="bash"> &gt; ansible Client -m get_utl <span class="_">-a</span> <span class="string">"url=http://www.baidu.com dest=/tmp/index.html mode=0440 force=yes"</span></span></div></pre></td></tr></table></figure>
-<blockquote>
-<p>yum 模块（软件包管理）</p>
-</blockquote>
-<p>例：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">shell &gt; ansible Client -m yum <span class="_">-a</span> <span class="string">"name=curl state=latest"</span></div></pre></td></tr></table></figure>
-<blockquote>
-<p>cron 模块（远程主机 crontab 配置）</p>
-</blockquote>
-<p>例：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">shell &gt; ansible Client -m cron <span class="_">-a</span> <span class="string">"name='check dirs' hour='5,2' job='ls -alh &gt; /dev/null'"</span></div><div class="line"></div><div class="line">效果：</div><div class="line"></div><div class="line"><span class="comment"># Ansible: check dirs</span></div><div class="line">* 5,2 * * * ls -alh &gt; /dev/null</div></pre></td></tr></table></figure>
-<blockquote>
-<p>mount 模块（远程主机分区挂载）</p>
-</blockquote>
-<p>例：</p>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">shell</span><span class="bash"> &gt; ansible Client -m mount <span class="_">-a</span> <span class="string">"name=/mnt/data src=/dev/sd0 fstype=ext4 opts=ro state=present"</span></span></div></pre></td></tr></table></figure>
-<blockquote>
-<p>service 模块（远程主机系统服务管理）</p>
-</blockquote>
-<p>例：</p>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">shell</span><span class="bash"> &gt; ansible Client -m service <span class="_">-a</span> <span class="string">"name=nginx state=stoped"</span></span></div><div class="line"><span class="keyword">shell</span><span class="bash"> &gt; ansible Client -m service <span class="_">-a</span> <span class="string">"name=nginx state=restarted"</span></span></div><div class="line"><span class="keyword">shell</span><span class="bash"> &gt; ansible Client -m service <span class="_">-a</span> <span class="string">"name=nginx state=reloaded"</span></span></div></pre></td></tr></table></figure>
-<blockquote>
-<p>user 服务模块（远程主机用户管理）</p>
-</blockquote>
-<p>例：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">shell &gt; ansible Client -m user <span class="_">-a</span> <span class="string">"name=wang comment='user wang'"</span></div><div class="line">shell &gt; ansible Client -m user <span class="_">-a</span> <span class="string">"name=wang state=absent remove=yes"</span>    <span class="comment"># 添加删除用户</span></div></pre></td></tr></table></figure>
-
-	
-
-	
-
-</article>
-
-
-
-
-
-	<span class="different-posts">📖 <a href="/page/12">more posts</a> 📖</span>
-
-
-
-	</main>
-
-	<footer class="footer">
-	<div class="footer-content">
-		
-	      <div class="footer__element">
-	<h5>Hi there,</h5>
-	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+        
+    </div>
 </div>
 
 
-	    
-	      <div class="footer__element">
-	<h5>Check out</h5>
-	<ul class="footer-links">
-		<li class="footer-links__link"><a href="/archives">Archive</a></li>
-		
-		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
-	    
-		<li class="footer-links__link"><a href="/about">about page</a></li>
-		<li class="footer-links__link"><a href="/tags">Tags</a></li>
-		<li class="footer-links__link"><a href="/categories">Categories</a></li>
-	</ul>
-</div>
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
 
-	    
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
 
-		<div class="footer-credit">
-			<span>© 2019 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
-		</div>
+                
 
-	</div>
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
 
+                
 
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
 </footer>
 
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
 
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
 

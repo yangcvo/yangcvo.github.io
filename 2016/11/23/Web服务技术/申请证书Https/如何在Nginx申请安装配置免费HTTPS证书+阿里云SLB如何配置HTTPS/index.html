@@ -1,62 +1,199 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
+<!-- Head tag -->
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta name="theme-color" content="#33474d">
-	<title>如何在Nginx申请安装配置免费HTTPS证书+阿里云SLB如何配置HTTPS | Yancy&#39;s blog</title>
-	<link rel="stylesheet" href="/css/style.css" />
-	
-      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
-    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          如何在Nginx申请安装配置免费HTTPS证书+阿里云SLB如何配置HTTPS - Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2016/11/23/Web服务技术/申请证书Https/如何在Nginx申请安装配置免费HTTPS证书+阿里云SLB如何配置HTTPS/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body>
 
-	<header class="header">
-		<nav class="header__nav">
-			
-				<a href="/" class="header__link">Home</a>
-			
-				<a href="/tags" class="header__link">Tags</a>
-			
-				<a href="/archives" class="header__link">ARCHIVES</a>
-			
-				<a href="/about/About" class="header__link">ABOUT</a>
-			
-				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
-			
-				<a href="/atom.xml" class="header__link">RSS</a>
-			
-		</nav>
-		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
-		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
-	</header>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
 
-	<main>
-		<article>
-	
-		<h1>如何在Nginx申请安装配置免费HTTPS证书+阿里云SLB如何配置HTTPS</h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-11-23</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/nginx/">nginx</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Nginx/">Nginx</a> <a class="article__tag-link" href="/tags/Web-Service/">Web Service</a>
-			</span>
-		
-	</div>
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
+        </div>
 
-	
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
 
-	
-		<h2 id="如何在Nginx申请安装配置免费HTTPS证书"><a href="#如何在Nginx申请安装配置免费HTTPS证书" class="headerlink" title="如何在Nginx申请安装配置免费HTTPS证书"></a>如何在Nginx申请安装配置免费HTTPS证书</h2><p>HTTPS在各大互联网站已经成为标配，就连某度也在前不久全面启用HTTPS，很多小网站也配置了HTTPS，这是未来的一种趋势.HTTPS的好处多多，可以防止各种攻击劫持，运营商广告植入，客户传输信息泄露等问题。为了让HTTPS能够全面普及，让我们加密项目应运而生，它由互联网安全研究小组ISRG（互联网安全研究小组）提供服务，很早之前我就在关注 <a href="https://letsencrypt.org/" target="_blank" rel="external">Let’s Encrypt</a>这个免费、自动化、开放的证书签发服务。<br>ISRG是来自美国加利福尼亚州的一个公益组织.Let’s Encrypt得到了Mozilla，Cisco和Chrome等众多公司和机构的支持。</p>
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Web Service" title="Web Service">Web Service</a>
+                        
+                          <a class="tag" href="/tags/#Nginx" title="Nginx">Nginx</a>
+                        
+                    </div>
+                    <h1>如何在Nginx申请安装配置免费HTTPS证书+阿里云SLB如何配置HTTPS</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2016-11-23
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="如何在Nginx申请安装配置免费HTTPS证书"><a href="#如何在Nginx申请安装配置免费HTTPS证书" class="headerlink" title="如何在Nginx申请安装配置免费HTTPS证书"></a>如何在Nginx申请安装配置免费HTTPS证书</h2><p>HTTPS在各大互联网站已经成为标配，就连某度也在前不久全面启用HTTPS，很多小网站也配置了HTTPS，这是未来的一种趋势.HTTPS的好处多多，可以防止各种攻击劫持，运营商广告植入，客户传输信息泄露等问题。为了让HTTPS能够全面普及，让我们加密项目应运而生，它由互联网安全研究小组ISRG（互联网安全研究小组）提供服务，很早之前我就在关注 <a href="https://letsencrypt.org/" target="_blank" rel="external">Let’s Encrypt</a>这个免费、自动化、开放的证书签发服务。<br>ISRG是来自美国加利福尼亚州的一个公益组织.Let’s Encrypt得到了Mozilla，Cisco和Chrome等众多公司和机构的支持。</p>
 <p>申请 <code>Let&#39;s Encrypt</code> 证书不但免费，还非常简单，虽然每次只有 90 天的有效期，但可以通过脚本定期更新，配好之后一劳永逸。本教程亲测有效，希望对正在寻找免费HTTPS方案的你有一定的帮助，本文记录本站申请过程和遇到的问题。</p>
 <p>按照我们的加密官方提供的工具安装HTTPS的话与过于复杂，于是有好心人提供了更为轻巧的工具安装，极致纤巧诞生了，它的代码量在200行内，只需依赖的Python和OpenSSL的。</p>
 <h3 id="第一步：创建Let’s-Encrypt加密账号"><a href="#第一步：创建Let’s-Encrypt加密账号" class="headerlink" title="第一步：创建Let’s Encrypt加密账号"></a>第一步：创建Let’s Encrypt加密账号</h3><p>首先创建一个目录，例如 <code>ssl</code>用来存放各种临时文件和最后的证书文件。进入这个目录，创建一个<code>RSA</code>私钥用于 Let’s Encrypt 识别你的身份：</p>
@@ -93,7 +230,7 @@
 <p>如果修改没有用，可以到我这里下载Github下载<a href="https://github.com/yangcvo/Let-s-Encrypt" target="_blank" rel="external">acme_tiny.py</a></p>
 <p><strong>6）然后保存再次获取网站证书</strong></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[root@ihaozhuo1 ssl]<span class="comment"># python acme_tiny.py --account-key ./account.key --csr ./domain.csr --acme-dir /var/www/challenges/ &gt; ./signed.crt</span></div><div class="line">Parsing account key...</div><div class="line">Parsing CSR...</div><div class="line">Registering account...</div><div class="line">Already registered!</div><div class="line">Verifying ihaozhuo.com...</div><div class="line">ihaozhuo.com verified!</div><div class="line">Verifying www.ihaozhuo.com...</div><div class="line">www.ihaozhuo.com verified!</div><div class="line">Signing certificate...</div><div class="line">Certificate signed!</div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zhengshu2.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zhengshu2.png" alt=""></p>
 <p>㊗️ 如果看到如上内容，那么恭喜你，你的网站证书已经成功获取了。这时候查看目录下面有如下几个文件：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@ihaozhuo1 ssl]<span class="comment"># ll</span></div><div class="line">总用量 36</div><div class="line">-rw-r--r-- 1 root root 3243 3月  30 16:42 account.key</div><div class="line">drwxr-xr-x 4 root root 4096 3月  30 17:31 acme-tiny</div><div class="line">-rw-r--r-- 1 root root 9159 3月  30 19:23 acme_tiny.py</div><div class="line">-rw-r--r-- 1 root root 1639 3月  30 17:00 domain.csr</div><div class="line">-rw-r--r-- 1 root root 3243 3月  30 16:53 domain.key</div><div class="line">-rw-r--r-- 1 root root 2159 3月  30 22:11 signed.crt</div></pre></td></tr></table></figure>
 <p>到目前为止我们已经成功申请到Let’sENcrpyt的网站证书，对于Nginx用户我们还需要把Let’s ENcrpyt的中间证书加入到刚刚生成的signed.crt文件中。具体操作：</p>
@@ -103,7 +240,7 @@
 <p>注意⚠️ ：为了不影响现在正在运行的网站，在配置HTTPS的时候最好将你现在配置好的文件全部备份起来，这样你在启动HTTPS出现问题可以能够快速恢复回来。</p>
 <p>Nginx配置文件加入以下配置：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">server &#123;</div><div class="line">    listen 80;</div><div class="line">    server_name ihaozhuo.com, www.ihaozhuo.com;</div><div class="line"></div><div class="line">    location /.well-known/acme-challenge/ &#123;</div><div class="line">        <span class="built_in">alias</span> /var/www/challenges/;</div><div class="line">        try_files <span class="variable">$uri</span> =404;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ...the rest of your config</div><div class="line">&#125;</div><div class="line"></div><div class="line">server &#123;</div><div class="line">    listen 443;</div><div class="line">    server_name ihaozhuo.com, www.ihaozhuo.com;</div><div class="line"></div><div class="line">    ssl on;</div><div class="line">    ssl_certificate /srv/ssl/chained.pem;</div><div class="line">    ssl_certificate_key /srv/ssl/domain.key;</div><div class="line">    ssl_session_timeout 5m;</div><div class="line">    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;</div><div class="line">    ssl_ciphers ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA;</div><div class="line">    ssl_session_cache shared:SSL:50m;</div><div class="line">    ssl_prefer_server_ciphers on;</div><div class="line"></div><div class="line">    ...the rest of your config</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在Chrome浏览器里面你可以访问https开头的，但没有看到绿色锁标记，这是因为你网站有请求<code>http://xxx</code>资源，这个问题我遇到以后查了很多，因为我网站很早之前就有了，里面配置的地址都是http要修改过来非常麻烦，所以申请证书一开始域名下来就要申请这是最好的，如果你情况已经跟我一样，那你需要把所有的<code>http://xxxx</code> 资源全部切换成：<a href="https://xxx" target="_blank" rel="external">https://xxx</a> 的资源，这样绿色的锁才会出现。<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zhengshu.png" alt=""></figure></p>
+<p>在Chrome浏览器里面你可以访问https开头的，但没有看到绿色锁标记，这是因为你网站有请求<code>http://xxx</code>资源，这个问题我遇到以后查了很多，因为我网站很早之前就有了，里面配置的地址都是http要修改过来非常麻烦，所以申请证书一开始域名下来就要申请这是最好的，如果你情况已经跟我一样，那你需要把所有的<code>http://xxxx</code> 资源全部切换成：<a href="https://xxx" target="_blank" rel="external">https://xxx</a> 的资源，这样绿色的锁才会出现。<br><img src="http://7xrthw.com1.z0.glb.clouddn.com/zhengshu.png" alt=""></p>
 <h3 id="第六步：定期更新"><a href="#第六步：定期更新" class="headerlink" title="第六步：定期更新"></a>第六步：定期更新</h3><p>访问查看下网站详细信息：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">[root@ihaozhuo1 conf]<span class="comment">#  curl -v https://www.ihaozhuo.com/home.html</span></div><div class="line">* About to connect() to www.ihaozhuo.com port 443 (<span class="comment">#0)</span></div><div class="line">*   Trying 120.27.185.86...</div><div class="line">* Connected to www.ihaozhuo.com (120.27.185.86) port 443 (<span class="comment">#0)</span></div><div class="line">* Initializing NSS with certpath: sql:/etc/pki/nssdb</div><div class="line">*   CAfile: /etc/pki/tls/certs/ca-bundle.crt</div><div class="line">  CApath: none</div><div class="line">* Server certificate:</div><div class="line">* 	subject: CN=ihaozhuo.com</div><div class="line">* 	start date: 3月 30 13:51:00 2017 GMT</div><div class="line">* 	expire date: 6月 28 13:51:00 2017 GMT</div><div class="line">* 	common name: ihaozhuo.com</div><div class="line">* 	issuer: CN=Let<span class="string">'s Encrypt Authority X3,O=Let'</span>s Encrypt,C=US</div><div class="line">* NSS error -8179 (SEC_ERROR_UNKNOWN_ISSUER)</div><div class="line">* Peer<span class="string">'s Certificate issuer is not recognized.</span></div><div class="line">* Closing connection 0</div><div class="line">curl: (60) Peer's Certificate issuer is not recognized.</div><div class="line">More details here: http://curl.haxx.se/docs/sslcerts.html</div><div class="line"></div><div class="line">curl performs SSL certificate verification by default, using a <span class="string">"bundle"</span></div><div class="line"> of Certificate Authority (CA) public keys (CA certs). If the default</div><div class="line"> bundle file isn<span class="string">'t adequate, you can specify an alternate file</span></div><div class="line"> using the --cacert option.</div><div class="line">If this HTTPS server uses a certificate signed by a CA represented in</div><div class="line"> the bundle, the certificate verification probably failed due to a</div><div class="line"> problem with the certificate (it might be expired, or the name might</div><div class="line"> not match the domain name in the URL).</div><div class="line">If you'd like to turn off curl<span class="string">'s verification of the certificate, use</span></div><div class="line"> the -k (or --insecure) option.</div></pre></td></tr></table></figure>
 <p>Let’s Encrypt 签发的证书只有90天有效期，但可以通过脚本定期更新。你可以创建了一个自动更新脚本<code>renew_cert.sh</code>，内容如下：</p>
@@ -117,56 +254,278 @@
 <h2 id="阿里云SLB如何配置HTTPS"><a href="#阿里云SLB如何配置HTTPS" class="headerlink" title="阿里云SLB如何配置HTTPS"></a>阿里云SLB如何配置HTTPS</h2><p>使用阿里云很简单，不需要太多的配置不过个人还是喜欢Nginx去做代理访问。</p>
 <p>公司后期更新了本地的Nginx去做负载均衡直接使用SLB ，这里记录下申请了证书以后只需要<code>chained.pem</code>和私钥<code>domain.key</code>。</p>
 <p>在SLB负载均衡左侧有证书管理-创建证书-选择服务器证书。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Nginx-ssl2.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/Nginx-ssl2.png" alt=""></p>
 <p>然后在负载均衡上面设置下监听端口选择下对应证书就可以了。 </p>
 <h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><p><a href="https://github.com/diafygi/acme-tiny" target="_blank" rel="external">GitHub 安装教程 </a></p>
 
-	
 
-	
-		<span class="different-posts"><a href="/2016/11/23/Web服务技术/申请证书Https/如何在Nginx申请安装配置免费HTTPS证书+阿里云SLB如何配置HTTPS/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+                <hr>
 
-	
+                
 
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/11/23/Web服务技术/申请证书Https/解决Https请求跨域CDN资源http网站出现访问失败-证书显示不安全/" data-toggle="tooltip" data-placement="top" title="解决Https请求跨域CDN资源http网站出现访问失败-证书显示不安全">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/11/14/日志分析平台/Graylog/graylog 升级2.1 集中日志解决方案/" data-toggle="tooltip" data-placement="top" title="graylog 升级2.1 集中日志解决方案">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Web Service" title="Web Service">Web Service</a>
+                        
+                          <a class="tag" href="/tags/#Nginx" title="Nginx">Nginx</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
 </article>
 
-	</main>
-
-	<footer class="footer">
-	<div class="footer-content">
-		
-	      <div class="footer__element">
-	<h5>Hi there,</h5>
-	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
-</div>
 
 
-	    
-	      <div class="footer__element">
-	<h5>Check out</h5>
-	<ul class="footer-links">
-		<li class="footer-links__link"><a href="/archives">Archive</a></li>
-		
-		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
-	    
-		<li class="footer-links__link"><a href="/about">about page</a></li>
-		<li class="footer-links__link"><a href="/tags">Tags</a></li>
-		<li class="footer-links__link"><a href="/categories">Categories</a></li>
-	</ul>
-</div>
-
-	    
-
-		<div class="footer-credit">
-			<span>© 2019 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
-		</div>
-
-	</div>
 
 
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
 </footer>
 
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
 
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
 

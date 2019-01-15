@@ -1,62 +1,197 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
+<!-- Head tag -->
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta name="theme-color" content="#33474d">
-	<title>HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群 | Yancy&#39;s blog</title>
-	<link rel="stylesheet" href="/css/style.css" />
-	
-      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
-    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群 - Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2017/05/08/Bigdata-hadoop/HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群 /">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body>
 
-	<header class="header">
-		<nav class="header__nav">
-			
-				<a href="/" class="header__link">Home</a>
-			
-				<a href="/tags" class="header__link">Tags</a>
-			
-				<a href="/archives" class="header__link">ARCHIVES</a>
-			
-				<a href="/about/About" class="header__link">ABOUT</a>
-			
-				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
-			
-				<a href="/atom.xml" class="header__link">RSS</a>
-			
-		</nav>
-		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
-		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
-	</header>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
 
-	<main>
-		<article>
-	
-		<h1>HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群</h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-05-08</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Bigdata-Hadoop/">Bigdata Hadoop</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Ambari/">Ambari</a>
-			</span>
-		
-	</div>
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
+        </div>
 
-	
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
 
-	
-		<h2 id="HORTONW0RKS数据平台搭建Ambari管理监控Hadoop集群"><a href="#HORTONW0RKS数据平台搭建Ambari管理监控Hadoop集群" class="headerlink" title="HORTONW0RKS数据平台搭建Ambari管理监控Hadoop集群"></a>HORTONW0RKS数据平台搭建Ambari管理监控Hadoop集群</h2><p><strong> 题外话 </strong></p>
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Ambari" title="Ambari">Ambari</a>
+                        
+                    </div>
+                    <h1>HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2017-05-08
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="HORTONW0RKS数据平台搭建Ambari管理监控Hadoop集群"><a href="#HORTONW0RKS数据平台搭建Ambari管理监控Hadoop集群" class="headerlink" title="HORTONW0RKS数据平台搭建Ambari管理监控Hadoop集群"></a>HORTONW0RKS数据平台搭建Ambari管理监控Hadoop集群</h2><p><strong> 题外话 </strong></p>
 <p>我现在在一家上市公司旗下控股子公司负责运维部门，负责IT网络安全办公：主要做的应用运维和网络运维，兼大数据运维。<br>最近跟新来的架构师聊了下Hadoop监控方面：HORTONW0RKS数据平台搭建Ambari监控Hadoop集群.</p>
 <p><strong>HORTONW0RKS数据平台（HDP ®）</strong><br>HDP是业内唯一真正安全的企业级开源的<code>Apache的Hadoop™ ®</code>分配基于集中式架构。HDP解决了静态数据的完整需求，为实时客户应用提供支持，并提供可加速决策和创新的可靠分析。</p>
 <p>使用Hortonworks Sandbox试用最新的HDP功能，或者为生产环境设置HDP，安装和配置群集。<br>查看官网文档：<a href="https://hortonworks.com/downloads/#data-platform" target="_blank" rel="external">HORTONWORKS CONNECTED DATA PLATFORMS DOWNLOADS</a></p>
@@ -80,7 +215,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">安装：postgresql-libs-8.4.20-3.el6_6.x86_64 1/4</div><div class="line">安装：postgresql-8.4.20-3.el6_6.x86_64 2/4</div><div class="line">安装：postgresql-server-8.4.20-3.el6_6.x86_64 3/4</div><div class="line">安装：ambari-server-2.4.2.0-1470.x86_64 4/4</div><div class="line">验证：ambari-server-2.4.2.0-1470.x86_64 1/4</div><div class="line">验证：postgresql-8.4.20-3.el6_6.x86_64 2/4</div><div class="line">验证：postgresql-server-8.4.20-3.el6_6.x86_64 3/4</div><div class="line">验证：postgresql-libs-8.4.20-3.el6_6.x86_64 4/4</div><div class="line"></div><div class="line">安装：</div><div class="line">  ambari-server.x86_64 0：2.4.2.0-1470  安装这里的时候会有点慢，因为是访问国外网站下载资源。</div><div class="line"></div><div class="line">已安装依赖关系：</div><div class="line"> postgresql.x86_64 0：8.4.20-3.el6_6           </div><div class="line"> postgresql-libs.x86_64 0：8.4.20-3.el6_6        </div><div class="line"> postgresql-server.x86_64 0：8.4.20-3.el6_6</div></pre></td></tr></table></figure>
 <p>❗️❗️【注意】</p>
 <p>接受有关信任<code>Hortonworks GPG</code>密钥的警告。该键将自动下载并用于验证Hortonworks的软​​件包。您将看到以下消息：</p>
-<p>Importing GPG key 0x07513CAD: Userid: “Jenkins (HDP Builds) <a href="&#x6d;&#97;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#x6a;&#x65;&#x6e;&#107;&#105;&#x6e;&#x40;&#x68;&#x6f;&#x72;&#x74;&#111;&#110;&#119;&#111;&#114;&#107;&#115;&#46;&#x63;&#x6f;&#x6d;">&#x6a;&#x65;&#x6e;&#107;&#105;&#x6e;&#x40;&#x68;&#x6f;&#x72;&#x74;&#111;&#110;&#119;&#111;&#114;&#107;&#115;&#46;&#x63;&#x6f;&#x6d;</a>“ From :<code>http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins</code></p>
+<p>Importing GPG key 0x07513CAD: Userid: “Jenkins (HDP Builds) <a href="&#109;&#x61;&#105;&#x6c;&#x74;&#111;&#58;&#x6a;&#101;&#110;&#107;&#105;&#110;&#x40;&#x68;&#x6f;&#114;&#116;&#x6f;&#x6e;&#119;&#x6f;&#114;&#107;&#x73;&#x2e;&#x63;&#x6f;&#x6d;">&#x6a;&#101;&#110;&#107;&#105;&#110;&#x40;&#x68;&#x6f;&#114;&#116;&#x6f;&#x6e;&#119;&#x6f;&#114;&#107;&#x73;&#x2e;&#x63;&#x6f;&#x6d;</a>“ From :<code>http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos6/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins</code></p>
 <p>❗️❗️【注意】</p>
 <p>在具有有限Internet访问或没有Internet访问的群集上部署HDP时，应使用其他方法提供对位的访问。<br>有关设置本地存储库的详细信息，请参阅使用本地存储库。</p>
 <p><code>Ambari</code>服务器默认使用嵌入式<code>PostgreSQL</code>数据库。当您安装<code>Ambari</code>服务器时，PostgreSQL软件包和依赖关系必须可用于安装。这些包通常作为操作系统存储库的一部分提供。请确认您具有适用于<code>postgresql-server</code>软件包的相应存储库。</p>
@@ -133,12 +268,12 @@
 </ul>
 <h3 id="2-启动Ambari安装向导"><a href="#2-启动Ambari安装向导" class="headerlink" title="2.启动Ambari安装向导"></a>2.启动Ambari安装向导</h3><p>从<code>Ambari Welcome</code>页面，选择启动安装向导。</p>
 <p>提供集群，管理谁可以访问群集，以及自定义视图为Ambari用户。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Ambariwelcome.png" alt=""></figure></p>
-<p><figure class="figure"><img src="http://docs.hortonworks.com/HDPDocuments/Ambari-2.4.2.0/bk_ambari-installation/content/figures/2/figures/170AmbariWelcome.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/Ambariwelcome.png" alt=""></p>
+<p><img src="http://docs.hortonworks.com/HDPDocuments/Ambari-2.4.2.0/bk_ambari-installation/content/figures/2/figures/170AmbariWelcome.png" alt=""></p>
 <h3 id="3-命名您的群集"><a href="#3-命名您的群集" class="headerlink" title="3.命名您的群集"></a>3.命名您的群集</h3><p>在Name your cluster，键入要创建的集群的名称。名称中不要使用空格或特殊字符。</p>
 <p>选择Next。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_02.png" alt=""></figure></p>
-<h3 id="4-选择版本"><a href="#4-选择版本" class="headerlink" title="4.选择版本"></a>4.选择版本</h3><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_03.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_02.png" alt=""></p>
+<h3 id="4-选择版本"><a href="#4-选择版本" class="headerlink" title="4.选择版本"></a>4.选择版本</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_03.png" alt=""></p>
 <p>这里我选择<code>redhat6</code> 其他的都<code>remove</code>掉。</p>
 <p>在此步骤中，您将选择群集的软件版本和交付方式。使用公共存储库需要Internet连接。使用本地存储库需要您在网络中可用的存储库中配置软件。</p>
 <ul>
@@ -162,7 +297,7 @@
 </ul>
 <p>跳过存储库基本URL验证（高级）： 当您单击下一步时，Ambari将尝试连接到存储库基本URL，并验证您已输入验证存储库。如果没有，将显示一个错误，您必须在继续之前纠正。</p>
 <p>使用<code>RedHat Satellite/Spacewalk：</code>仅当计划使用本地存储库时，才会启用此选项。当您为软件存储库选择此选项时，您负责配置<code>Satellite/Spacewalk</code>中的存储库通道，并确认所选群集版本的存储库在群集中的主机上可用。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_04.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_04.png" alt=""></p>
 <h3 id="5-安装选项"><a href="#5-安装选项" class="headerlink" title="5.安装选项"></a>5.安装选项</h3><p>为了构建集群，安装向导将提示您有关如何设置它的一般信息。您需要提供每个主机的FQDN。该向导还需要访问在设置无密码SSH中创建的私钥文件  。使用主机名和密钥文件信息，向导可以定位，访问和与群集中的所有主机安全交互。</p>
 <p>使用Target Hosts文本框输入主机名列表，每行一个。您可以使用括号内的范围来表示较大的主机集。例如，对于host01.domain通过host10.domain使用 host[01-10].domain</p>
 <p>⚠️ <strong>安装服务器集群机器一定要系统版本要一致不然安装会提示版本不兼容。</strong></p>
@@ -175,8 +310,8 @@
 <p>如果您不希望Ambari自动安装Ambari代理，请选择<code>Perform manual registration</code>。有关更多信息，请参阅手动安装Ambari代理。</p>
 <p>选择<code>Register and Confirm</code>继续。</p>
 <p>这里提示：The following hostnames are not valid FQDNs: datanode_173.hadoop</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_06.png" alt=""></figure></p>
-<p>这里跳转到安装页面：发现报错提示datanode-173.hadoop主机访问Ambari机器不能访问。<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_07.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_06.png" alt=""></p>
+<p>这里跳转到安装页面：发现报错提示datanode-173.hadoop主机访问Ambari机器不能访问。<br><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_07.png" alt=""></p>
 <h3 id="6-确认主机"><a href="#6-确认主机" class="headerlink" title="6.确认主机"></a>6.确认主机</h3><p><code>Confirm Hosts</code> 提示您确认<code>Ambari</code>已为您的集群找到正确的主机，并检查这些主机以确保它们具有继续安装所需的正确目录，软件包和进程。</p>
 <p>如果选择了错误的主机，您可以通过选择相应的复选框并单击灰色<code>Remove Selected</code>按钮来删除它们。要删除单个主机，请单击Remove“操作”列中的小白色按钮。</p>
 <p>在屏幕底部，您可能会注意到一个黄色框，表示在检查过程中遇到了一些警告。例如，您的主机可能已有<code>wget</code>或的副本 <code>curl</code>。选择<code>Click here to see the warnings</code> 查看检查内容和导致警告的原因的列表。警告页面还提供对python脚本的访问，可以帮助您清除可能遇到的任何问题，让您运行<code>Rerun Checks</code>。</p>
@@ -189,17 +324,17 @@
 <p><strong>最好设置root的无密码登录，因为我们配置的集群都是内网的，没什么安全性问题，使用root操作可以省去一些麻烦，非root用户可能在安装Hadoop组件时不能成功</strong></p>
 <p>下面是我安装这里提示没有找到文件目录查看安装报错操作：</p>
 <pre><code>mkdir /var/lib/ambari-agent/data
-</code></pre><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Ambari_08.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_09.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_10.png" alt=""></figure></p>
+</code></pre><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/Ambari_08.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_09.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_10.png" alt=""></p>
 <h3 id="7-选择服务"><a href="#7-选择服务" class="headerlink" title="7.选择服务"></a>7.选择服务</h3><p>将看到选择要安装到群集中的服务。HDP堆栈包括许多服务。您可以选择立即安装任何其他可用服务，或稍后添加服务。默认情况下，安装向导将选择所有可用的服务进行安装。</p>
 <p>选择<code>none</code>清除所有选择，或选择 <code>all</code>选择所有列出的服务。</p>
 <p>选择或清除单个复选框以定义一组要立即安装的服务。</p>
 <p>选择要立即安装的服务后，选择Next。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_11.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/ambari_11.png" alt=""></p>
 <h3 id="8-分配主站"><a href="#8-分配主站" class="headerlink" title="8.分配主站"></a>8.分配主站</h3><p>Ambari安装向导会将所选服务的主组件分配给集群中的相应主机，并在Assign Masters中显示分配。左列显示服务和当前主机。右列显示主机的当前主组件分配，指示每个主机上安装的CPU内核数量和RAM数量。</p>
 <p>要更改服务的主机分配，请从该服务的下拉菜单中选择主机名。</p>
 <p>要删除ZooKeeper实例，请单击要删除的主机地址旁边的绿色减号图标。</p>
 <p>当您对作业感到满意时，选择Next。</p>
-<p><figure class="figure"><img src="" alt=""></figure></p>
+<p><img src="" alt=""></p>
 <h3 id="9-分配从属和客户端"><a href="#9-分配从属和客户端" class="headerlink" title="9.分配从属和客户端"></a>9.分配从属和客户端</h3><p>Ambari安装向导将从属组件（DataNodes，NodeManager和RegionServers）分配给集群中的相应主机。它还会尝试选择主机以安装适当的客户端集。</p>
 <p>使用<code>all</code>或<code>none</code>可分别选择列中的所有主机或不选择任何主机。</p>
 <p>如果主机旁边有星号，则该主机也运行一个或多个主组件。将鼠标悬停在星号上，以查看该主机上的哪些主组件。</p>
@@ -222,71 +357,291 @@
 <h3 id="11-安装，启动和测试"><a href="#11-安装，启动和测试" class="headerlink" title="11.安装，启动和测试"></a>11.安装，启动和测试</h3><p>安装的进度将显示在屏幕上。Ambari安装，启动，并对每个组件运行一个简单的测试。过程的总体状态显示在屏幕顶部的进度栏中，主机的主机状态显示在主要部分。在此过程中不要刷新浏览器。刷新浏览器可能会中断进度指示器。</p>
 <p>要查看每个主机已完成的任务的具体信息，请单击Message相应主机列中的链接。在 Tasks弹出窗口中，单击单个任务以查看相关的日志文件。您可以使用Show下拉列表选择过滤条件。要查看更大版本的日志内容，请单击Open图标或将内容复制到剪贴板，使用Copy图标。</p>
 <p><strong>安装完成效果图:</strong></p>
-<p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari002.png" alt=""></figure></p>
+<p><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari002.png" alt=""></p>
 <blockquote>
 <p>让我们从左侧栏或下拉菜单中选择Yarn进入YARN信息中心。</p>
 </blockquote>
-<p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari004.png" alt=""></figure></p>
+<p><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari004.png" alt=""></p>
 <blockquote>
 <p>我们将开始更新线程容量调度策略的配置。</p>
 </blockquote>
-<p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari005.png" alt=""></figure></p>
+<p><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari005.png" alt=""></p>
 <p>向下滚动到<code>Scheduler</code>页面的部分。默认容量调度策略只有一个队列。</p>
-<p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari006.png" alt=""></figure></p>
+<p><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari006.png" alt=""></p>
 <p>让我们看看调度策略。向上滚动到页面顶部，然后点击快速链接。然后从下拉列表中选择<code>ResourceManager UI</code>。</p>
-<p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari007.png" alt=""></figure></p>
+<p><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari007.png" alt=""></p>
 <blockquote>
 <p>正如你可以看到，我们只有默认策略。</p>
 </blockquote>
-<p><figure class="figure"><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari008.png" alt=""></figure></p>
+<p><img src="http://hortonassets.s3.amazonaws.com/ambari1_7/ambari008.png" alt=""></p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>安装Ambari官网地址<a href="https://docs.hortonworks.com/HDPDocuments/Ambari-2.4.2.0/bk_ambari-installation/content/download_the_ambari_repo_lnx6.html" target="_blank" rel="external">install Ambari</a><br><a href="https://cwiki.apache.org/confluence/display/AMBARI/Installation+Guide+for+Ambari+2.4.2" target="_blank" rel="external">编译安装Ambari 2.4.2安装指南</a></p>
 
-	
 
-	
-		<span class="different-posts"><a href="/2017/05/08/Bigdata-hadoop/HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群 /" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+                <hr>
 
-	
+                
 
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/05/08/Bigdata-hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/" data-toggle="tooltip" data-placement="top" title="Bigdata-hadoop新增节点集群启动请求异常：Last contact：200">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/05/04/Bigdata-hadoop/zookeeper/Zookeeper 报错：Unable to connect to zookeeper server within timeout: 6000/" data-toggle="tooltip" data-placement="top" title="Zookeeper 报错：Unable to connect to zookeeper server within timeout:6000">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Ambari" title="Ambari">Ambari</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
 </article>
 
-	</main>
-
-	<footer class="footer">
-	<div class="footer-content">
-		
-	      <div class="footer__element">
-	<h5>Hi there,</h5>
-	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
-</div>
 
 
-	    
-	      <div class="footer__element">
-	<h5>Check out</h5>
-	<ul class="footer-links">
-		<li class="footer-links__link"><a href="/archives">Archive</a></li>
-		
-		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
-	    
-		<li class="footer-links__link"><a href="/about">about page</a></li>
-		<li class="footer-links__link"><a href="/tags">Tags</a></li>
-		<li class="footer-links__link"><a href="/categories">Categories</a></li>
-	</ul>
-</div>
-
-	    
-
-		<div class="footer-credit">
-			<span>© 2019 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
-		</div>
-
-	</div>
 
 
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
 </footer>
 
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
 
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
 

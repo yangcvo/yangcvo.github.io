@@ -1,62 +1,197 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
+<!-- Head tag -->
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta name="theme-color" content="#33474d">
-	<title>zabbix+Grafana安装使用监控结合 | Yancy&#39;s blog</title>
-	<link rel="stylesheet" href="/css/style.css" />
-	
-      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
-    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          zabbix+Grafana安装使用监控结合 - Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2016/06/17/性能监控/Zabbix/zabbix-Grafana安装使用结合/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body>
 
-	<header class="header">
-		<nav class="header__nav">
-			
-				<a href="/" class="header__link">Home</a>
-			
-				<a href="/tags" class="header__link">Tags</a>
-			
-				<a href="/archives" class="header__link">ARCHIVES</a>
-			
-				<a href="/about/About" class="header__link">ABOUT</a>
-			
-				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
-			
-				<a href="/atom.xml" class="header__link">RSS</a>
-			
-		</nav>
-		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
-		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
-	</header>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
 
-	<main>
-		<article>
-	
-		<h1>zabbix+Grafana安装使用监控结合</h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-06-17</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
-			</span>
-		
-	</div>
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
+        </div>
 
-	
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
 
-	
-		<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>做运维的很重要的基础工作就是监控去准确定位问题，之前用的是Nagios做过监控，也用过cacti，这个之前在IDC做CDN网络方面用的比较多，监控流量好帮手。</p>
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Zabbix monitoring" title="Zabbix monitoring">Zabbix monitoring</a>
+                        
+                    </div>
+                    <h1>zabbix+Grafana安装使用监控结合</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2016-06-17
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>做运维的很重要的基础工作就是监控去准确定位问题，之前用的是Nagios做过监控，也用过cacti，这个之前在IDC做CDN网络方面用的比较多，监控流量好帮手。</p>
 <p>为什么选择zabbix其实现在是算开源监控比较火的。更重要是几款监控做了对比。</p>
 <p>cacti、zabbix同nagios一样，都是非常优势的开源监控软件。 </p>
 <blockquote>
@@ -134,7 +269,7 @@
 <p><a href="http://192.168.1.220:3000" target="_blank" rel="external">http://192.168.1.220:3000</a></p>
 <p>默认用户名:admin</p>
 <p>默认用户名密码:admin</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-grafana1.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-grafana1.png" alt=""></p>
 <p>登录后一片空白，所以需要安装相应插件。</p>
 <h3 id="grafana-zabbix插件"><a href="#grafana-zabbix插件" class="headerlink" title="grafana-zabbix插件"></a>grafana-zabbix插件</h3><figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">https:</span><span class="comment">//github.com/alexanderzobnin/grafana-zabbix</span></div><div class="line"><span class="symbol">http:</span><span class="comment">//play.grafana-zabbix.org/</span></div><div class="line"><span class="symbol">http:</span><span class="comment">//docs.grafana-zabbix.org/installation/</span></div><div class="line"><span class="symbol">http:</span><span class="comment">//docs.grafana-zabbix.org/installation/configuration/</span></div><div class="line"><span class="symbol">https:</span><span class="comment">//grafana.net/plugins/alexanderzobnin-zabbix-app/installation</span></div></pre></td></tr></table></figure>
 <p>1.安装插件</p>
@@ -147,11 +282,11 @@
 </ul>
 <h3 id="组态-1"><a href="#组态-1" class="headerlink" title="组态"></a>组态</h3><p>启用插件</p>
 <p>转到Grafana侧面板插件，选择应用程序选项卡，然后选择的zabbix，打开配置 选项卡并启用插件。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-grafana2.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-grafana2.png" alt=""></p>
 <p>1.配置zabbix数据源</p>
 <p>启用插件后可以添加的zabbix数据源。</p>
 <p>要添加新的zabbix数据源公开数据源在侧面板中，单击添加数据源，并选择的zabbix从下拉列表中。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-grafana3.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-grafana3.png" alt=""></p>
 <p><a href="http://192.168.1.220/zabbix/api_jsonrpc.php" target="_blank" rel="external">http://192.168.1.220/zabbix/api_jsonrpc.php</a></p>
 <p>注意: api_jsonrpc.php是zabbix的API调用接口</p>
 <p>HTTP设置</p>
@@ -184,9 +319,9 @@
 <li><p>缓存更新间隔：插件缓存提高性能的一些API请求。将该值设置为所需的缓存生存期（此选项影响类的物品列表数据）。<br>然后单击添加 -数据源将被添加，您可以使用检查连接 测试连接按钮。此功能可以帮助找到一些错误，类似于无效的用户名或密码，错误的API网址。</p>
 </li>
 </ul>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-grafana4.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-grafana4.png" alt=""></p>
 <h3 id="导入示例仪表板"><a href="#导入示例仪表板" class="headerlink" title="导入示例仪表板"></a>导入示例仪表板</h3><p>您可以从仪表盘导入示例仪表板选项卡中的插件配置。 </p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-grafana5.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-grafana5.png" alt=""></p>
 <h3 id="请注意有关的zabbix-2-2或更低"><a href="#请注意有关的zabbix-2-2或更低" class="headerlink" title="请注意有关的zabbix 2.2或更低"></a>请注意有关的zabbix 2.2或更低</h3><p>ZABBIX 2.4之前的zabbix API（api_jsonrpc.php）不允许跨域请求（CORS）。你可以得到HTTP错误412（预处理失败）。要修复它添加此代码的版权后，立即api_jsonrpc.php：</p>
 <figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">  标题（“访问控制允许来源：*<span class="string">'）;</span></div><div class="line">  </div><div class="line">标题（“访问控制允许信头：Content-Type的'）;</div><div class="line"></div><div class="line">标题（“访问控制允许的方法：POST<span class="string">'）;</span></div><div class="line"></div><div class="line">标题（“访问控制，最大年龄：1000'）;</div><div class="line"></div><div class="line">如果（<span class="variable">$ </span><span class="number">_</span> SERVER [ <span class="string">'REQUEST_METHOD'</span> ] === <span class="string">'选项'</span>）&#123;</div><div class="line"></div><div class="line">   返回 ;</div><div class="line">   </div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>之前</p>
@@ -199,11 +334,11 @@
 <p>你经过安装和配置<code>Grafana-zabbix</code>数据源，让我们创建一个简单的仪表板。</p>
 <p>下面是自带的模板，自己新建的模板在我github上面有详细的创建步骤。</p>
 <p>入门gafana创建仪表板：<a href="https://github.com/yangcvo/Grafana" target="_blank" rel="external">Grafana-github</a></p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-grafana7.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-grafana7.png" alt=""></p>
 <ul>
 <li>可参考：<a href="https://github.com/alexanderzobnin/grafana-zabbix/wiki/Usage" target="_blank" rel="external">https://github.com/alexanderzobnin/grafana-zabbix/wiki/Usage</a></li>
 </ul>
-<p><figure class="figure"><img src="https://cloud.githubusercontent.com/assets/4932851/8288883/9ec5b240-1921-11e5-9e0f-04d075b885e9.gif" alt=""></figure></p>
+<p><img src="https://cloud.githubusercontent.com/assets/4932851/8288883/9ec5b240-1921-11e5-9e0f-04d075b885e9.gif" alt=""></p>
 <p>zabbix-server2.4服务端编译安装 <a href="http://blog.yangcvo.me/2015/01/18/zabbix-server服务端编译安装/" target="_blank" rel="external">zabbix-server服务端编译安装</a></p>
 <p>zabbix2.4监控80端口状态 : <a href="http://blog.yangcvo.me/2016/07/20/zabbix监控80端口状态/" target="_blank" rel="external">zabbix监控80端口状态</a></p>
 <p>zabbix+Grafana安装使用监控结合 ：<a href="http://blog.yangcvo.me/2016/07/13/zabbix-Grafana安装使用结合/" target="_blank" rel="external">zabbix+Grafana安装使用监控结合</a></p>
@@ -211,52 +346,272 @@
 <p>zabbix的ICMP_Ping模版实现对客户端网络状态的监控 : <a href="http://blog.yangcvo.me/2015/11/18/zabbix的ICMP-Ping模版实现对客户端网络状态的监控/" target="_blank" rel="external">zabbix的ICMP_Ping模版实现对客户端网络状态的监控</a></p>
 <p>zabbix性能监控故障总结 <a href="http://blog.yangcvo.me/2016/02/07/zabbix-故障总结/" target="_blank" rel="external">zabbix性能监控故障总结</a></p>
 
-	
 
-	
-		<span class="different-posts"><a href="/2016/06/17/性能监控/Zabbix/zabbix-Grafana安装使用结合/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+                <hr>
 
-	
+                
 
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/06/18/性能监控/Zabbix/zabbix-server2-4全新升级3-0版本/" data-toggle="tooltip" data-placement="top" title="zabbix-server2.4全新升级3.0版本">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/06/10/自动化+Jenkins/Ansible/Ansible 安装出现 ImportError: No module named _text/" data-toggle="tooltip" data-placement="top" title="Ansible安装出现 ImportError/ No module named _text">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Zabbix monitoring" title="Zabbix monitoring">Zabbix monitoring</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
 </article>
 
-	</main>
-
-	<footer class="footer">
-	<div class="footer-content">
-		
-	      <div class="footer__element">
-	<h5>Hi there,</h5>
-	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
-</div>
 
 
-	    
-	      <div class="footer__element">
-	<h5>Check out</h5>
-	<ul class="footer-links">
-		<li class="footer-links__link"><a href="/archives">Archive</a></li>
-		
-		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
-	    
-		<li class="footer-links__link"><a href="/about">about page</a></li>
-		<li class="footer-links__link"><a href="/tags">Tags</a></li>
-		<li class="footer-links__link"><a href="/categories">Categories</a></li>
-	</ul>
-</div>
-
-	    
-
-		<div class="footer-credit">
-			<span>© 2019 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
-		</div>
-
-	</div>
 
 
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
 </footer>
 
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
 
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
 

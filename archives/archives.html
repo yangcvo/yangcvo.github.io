@@ -1,84 +1,2094 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
+<!-- Head tag -->
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta name="theme-color" content="#33474d">
-	<title>Archives | Yancy&#39;s blog</title>
-	<link rel="stylesheet" href="/css/style.css" />
-	
-      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
-    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Archives - Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/ARCHIVES/archives.html">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body>
 
-	<header class="header">
-		<nav class="header__nav">
-			
-				<a href="/" class="header__link">Home</a>
-			
-				<a href="/tags" class="header__link">Tags</a>
-			
-				<a href="/archives" class="header__link">ARCHIVES</a>
-			
-				<a href="/about/About" class="header__link">ABOUT</a>
-			
-				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
-			
-				<a href="/atom.xml" class="header__link">RSS</a>
-			
-		</nav>
-		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
-		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
-	</header>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
 
-	<main>
-		<article>
-	<h1>Archives</h1>
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
+        </div>
 
-	
-	
-</article>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
 
-	</main>
+                    
 
-	<footer class="footer">
-	<div class="footer-content">
-		
-	      <div class="footer__element">
-	<h5>Hi there,</h5>
-	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/tag-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>Archives</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">Hey, this is Archives.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <!-- 归档列表 -->
+
+            
+
+             <!-- 归档列表 -->
+
+
+
+            
+            <div class="one-tag-list">
+                <span class="fa fa-calendar-times-o listing-seperator" id="2017">
+                    <span class="tag-text">2017</span>
+                </span>
+                <ul>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    11-13
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/11/13/日志分析平台/Elasticsearch/Logstash分享,online生产环境的使用,online日志规范。/" style="color: #0085a1">
+                        <span>
+                            Logstash分享,online生产环境的使用,online日志规范。
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    11-04
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/11/04/Bigdata-hadoop/Kafka/KafKa从0.8.2.1升级到0.9.0.1变化方案与步骤/" style="color: #0085a1">
+                        <span>
+                            KafKa从0.8.2.1升级到0.9.0.1变化方案与步骤
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    09-21
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/09/21/性能监控/Zabbix/ZABBIX monitoring Flume/" style="color: #0085a1">
+                        <span>
+                            ZABBIX monitoring Flume
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    09-14
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/09/14/日志分析平台/Elasticsearch/ELK架构梳理-之ES 2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记/" style="color: #0085a1">
+                        <span>
+                            ELK架构梳理-之ES2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    09-11
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/09/11/Bigdata-hadoop/Kafka/KafKa不懂就学就问就解答笔记/" style="color: #0085a1">
+                        <span>
+                            KafKa不懂就学就问就解答笔记
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    08-27
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/08/27/Bigdata-hadoop/zookeeper/Bigdata-Zookeeper集群日志配置详解和清理自定义启动内存 /" style="color: #0085a1">
+                        <span>
+                            Bigdata-Zookeeper集群日志配置详解和清理自定义启动内存
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    08-18
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/08/18/Web服务技术/tomcat/tomcat Java heap space 内存溢出/" style="color: #0085a1">
+                        <span>
+                            tomcat Java heap space 内存溢出
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    08-04
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/08/04/Bigdata-hadoop/Kafka/Monitor Kafka with Prometheus +Grafana/" style="color: #0085a1">
+                        <span>
+                            Monitor Kafka with Prometheus +Grafana
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    08-01
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/08/01/Bigdata-hadoop/Kafka/Kafka-node模块实现调用js发送数据/" style="color: #0085a1">
+                        <span>
+                            Bigdata-Kafka-node模块实现调用js发送数据
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    07-29
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/07/29/Bigdata-hadoop/countly/Cloudera Manager5及CDH5安装指导/" style="color: #0085a1">
+                        <span>
+                            Bigdata-Cloudera Manager5及CDH5安装指导
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    07-29
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/07/29/Bigdata-hadoop/RabbitMQ/Zabbix 3.0 监控推送rabbitmq队列/" style="color: #0085a1">
+                        <span>
+                            Zabbix 3.0 监控推送rabbitmq队列-消息堆积
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    07-21
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/07/21/Bigdata-hadoop/Kafka/Kafka动态增加Topic的副本(Replication)/" style="color: #0085a1">
+                        <span>
+                            Kafka动态增加Topic的副本(Replication)
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    07-11
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/07/11/Bigdata-hadoop/Kafka/KafKa扩容群集(Topic.partitions迁移)/" style="color: #0085a1">
+                        <span>
+                            KafKa动态扩容群集-(Topic.partitions迁移)
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    07-04
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/07/04/Bigdata-hadoop/Kafka/kafka性能优化–JVM参数配置优化/" style="color: #0085a1">
+                        <span>
+                            Kafka性能优化–JVM参数配置优化
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    06-29
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/06/29/Bigdata-hadoop/Kafka/如何手动更新Kafka中某个Topic的偏移量/" style="color: #0085a1">
+                        <span>
+                            Bigdata-如何手动更新Kafka中某个Topic的偏移量
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    06-08
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/06/08/OpenLDAP/OpenLDAP一主多从复制节点服务的配置-phpldapadmin管理认证/" style="color: #0085a1">
+                        <span>
+                            OpenLDAP一主多从复制节点服务的配置-phpldapadmin管理认证
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    06-05
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/06/05/Bigdata-hadoop/Kafka/Zabbix-Monitoring Kafka Consumer | kafka的监控和告警/" style="color: #0085a1">
+                        <span>
+                            Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    06-01
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/06/01/Bigdata-hadoop/Kafka/Zabbix监控Kafka集群 Brokers服务/" style="color: #0085a1">
+                        <span>
+                            Zabbix监控Kafka集群 Brokers服务
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    05-28
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/05/28/Bigdata-hadoop/Kafka/开源的Kafka集群管理器(Kafka Manager)/" style="color: #0085a1">
+                        <span>
+                            Bigdata-开源的Kafka集群管理器(Kafka Manager)
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    05-27
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/05/27/Bigdata-hadoop/zookeeper/Bigdata-ZooKeeper的配置详解优化/" style="color: #0085a1">
+                        <span>
+                            Bigdata-ZooKeeper的配置详解优化
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    05-26
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/05/26/Bigdata-hadoop/zookeeper/Bigdata-ZooKeeper集群快速搭建配置与扩容/" style="color: #0085a1">
+                        <span>
+                            Bigdata-ZooKeeper集群快速搭建配置与扩容
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    05-25
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/05/25/Bigdata-hadoop/Kafka/Bigdata-开源的Kafka集群管理器(kafka-web-console)/" style="color: #0085a1">
+                        <span>
+                            Bigdata-开源的Kafka集群管理器(kafka-web-console)
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    05-21
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/05/21/性能监控/Zabbix/ZABBIX 3.0 自动发现  (九)/" style="color: #0085a1">
+                        <span>
+                            ZABBIX 3.0 自动发现  (九)
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    05-11
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/05/11/日志分析平台/Elasticsearch/ElasticStack 5.x集群+Kibana-5.5.x+Logstash5.5+kafka2.10版本部署概述/" style="color: #0085a1">
+                        <span>
+                            ElasticStack 5.x集群+Kibana-5.5.x+Logstash5.5+kafka2.10版本部署概述
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    05-08
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/05/08/Bigdata-hadoop/HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群 /" style="color: #0085a1">
+                        <span>
+                            HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    05-08
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/05/08/Bigdata-hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/" style="color: #0085a1">
+                        <span>
+                            Bigdata-hadoop新增节点集群启动请求异常：Last contact：200
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    05-04
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/05/04/Bigdata-hadoop/zookeeper/Zookeeper 报错：Unable to connect to zookeeper server within timeout: 6000/" style="color: #0085a1">
+                        <span>
+                            Zookeeper 报错：Unable to connect to zookeeper server within timeout:6000
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    04-29
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/04/29/Bigdata-hadoop/Kafka/Bigdata-Kafka三款监控工具比较/" style="color: #0085a1">
+                        <span>
+                            Bigdata-Kafka三款监控工具比较
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    04-08
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/04/08/OpenLDAP/OpenLDAP 错误收集/" style="color: #0085a1">
+                        <span>
+                            OpenLDAP 错误收集
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    04-05
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/04/05/运维笔记/【翻译】监控不只是为了处理故障/" style="color: #0085a1">
+                        <span>
+                            【翻译】监控不只是为了处理故障
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-30
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/03/30/日志分析平台/Elasticsearch/研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？/" style="color: #0085a1">
+                        <span>
+                            研究学习 Elasticsearch 5.0.0 功能提升哪些,ES如何弹性迁移日志数据，安装需要什么环境？
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-30
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/03/30/Bigdata-hadoop/Kafka/Kafka日志存储解析与实践数据存储优化/" style="color: #0085a1">
+                        <span>
+                            Kafka日志存储解析与实践数据存储优化
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-29
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/03/29/Bigdata-hadoop/countly/Bigdata-countly搭建与迁移方案/" style="color: #0085a1">
+                        <span>
+                            Bigdata-countly需要迁移
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-29
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/03/29/OpenLDAP/OpenLDAP服务的配置与管理-phpldapadmin管理认证/" style="color: #0085a1">
+                        <span>
+                            OpenLDAP服务的配置与管理-phpldapadmin管理认证
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-28
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/03/28/Bigdata-hadoop/Kafka/Bigdata-Kafka集群快速搭建与增删改查命令讲解/" style="color: #0085a1">
+                        <span>
+                            Bigdata-Kafka集群快速搭建与增删改查命令讲解
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-15
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/03/15/运维笔记/APP自动化部署:开发部署-测试部署-灰度发布:蓝绿部署-生产环境等部署流程方案总结/" style="color: #0085a1">
+                        <span>
+                            APP自动化部署:开发部署-测试部署-灰度发布/蓝绿部署-生产环境等部署流程方案总结
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-14
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/03/14/运维笔记/运维自动化总结-记录帮助公司自动化架构演变过程/" style="color: #0085a1">
+                        <span>
+                            运维自动化总结-记录帮助公司自动化架构演变过程
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-03
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/03/03/OpenLDAP/ OpenLDAP 企业应用方案 -PPT认识LDAP+熟悉操作LDAP命令/" style="color: #0085a1">
+                        <span>
+                            OpenLDAP企业应用方案-PPT认识LDAP+熟悉操作LDAP命令
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    02-11
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/02/11/Bigdata-hadoop/Kafka/kafka10.0.9版本总是在启动一段时间后自动停止/" style="color: #0085a1">
+                        <span>
+                            kafka总是在启动一段时间后自动停止
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    02-10
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/02/10/自动化+Jenkins/Ansible/Ansible-Playbook高级语法运用/" style="color: #0085a1">
+                        <span>
+                            Ansible-Playbook高级语法运用
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    01-26
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/01/26/OpenLDAP/OpenLDAP入门了解学习笔记(一)/" style="color: #0085a1">
+                        <span>
+                            OpenLDAP入门了解学习笔记(一)
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    01-07
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2017/01/07/自动化+Jenkins/Phabricator/Centos7搭建配置phabricator开源的可视化代码审查工具/" style="color: #0085a1">
+                        <span>
+                            Centos7搭建配置phabricator开源的可视化代码审查工具
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+
+                </ul>
+            </div>
+            
+            <div class="one-tag-list">
+                <span class="fa fa-calendar-times-o listing-seperator" id="2016">
+                    <span class="tag-text">2016</span>
+                </span>
+                <ul>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    12-29
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/12/29/日志分析平台/Elasticsearch/搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台/" style="color: #0085a1">
+                        <span>
+                            搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6 Kafka ) Kafka为消息中心的ELK日志平台
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    12-02
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/12/02/Web服务技术/tomcat/记录tomcat进程CPU使用率高排查故障经验/" style="color: #0085a1">
+                        <span>
+                            记录tomcat进程CPU使用率高排查故障经验
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    12-02
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/12/02/运维安全/gitlab网站被黑redis被劫持6379端口需要提交认证，如何挽救？/" style="color: #0085a1">
+                        <span>
+                            gitlab网站被黑redis被劫持6379端口需要提交认证，如何挽救？
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    11-24
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/11/24/Node.js-npm/Node.js-Grunt工具搭建后台管理实践/" style="color: #0085a1">
+                        <span>
+                            Node.js+Grunt工具搭建后台管理实践
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    11-24
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/11/24/Web服务技术/申请证书Https/免费 Https 证书（Let'S Encrypt）申请与配置 /" style="color: #0085a1">
+                        <span>
+                            免费 Https证书（Let'S Encrypt）申请与配置
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    11-23
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/11/23/Web服务技术/申请证书Https/如何在Nginx申请安装配置免费HTTPS证书+阿里云SLB如何配置HTTPS/" style="color: #0085a1">
+                        <span>
+                            如何在Nginx申请安装配置免费HTTPS证书+阿里云SLB如何配置HTTPS
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    11-23
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/11/23/Web服务技术/申请证书Https/解决Https请求跨域CDN资源http网站出现访问失败-证书显示不安全/" style="color: #0085a1">
+                        <span>
+                            解决Https请求跨域CDN资源http网站出现访问失败-证书显示不安全
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    11-14
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/11/14/日志分析平台/Graylog/graylog 升级2.1 集中日志解决方案/" style="color: #0085a1">
+                        <span>
+                            graylog 升级2.1 集中日志解决方案
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    11-13
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/11/13/日志分析平台/Graylog/Graylog—日志分析平台完美代替Elasticsearch/" style="color: #0085a1">
+                        <span>
+                            Graylog——日志分析平台完美代替Elasticsearch
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    11-10
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/11/10/运维笔记/如何解决抽奖的性能问题和秒杀的讨论  /" style="color: #0085a1">
+                        <span>
+                            如何解决秒杀的性能问题和微信推广活动的讨论
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    10-29
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/10/29/自动化+Jenkins/Jenkins/讲如何结合jenkins+ ansible构建发布系统/" style="color: #0085a1">
+                        <span>
+                            讲如何结合jenkins+ ansible构建发布系统
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    10-10
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/10/10/运维笔记/个人总结：为什要学习docker，如何学习Docker/" style="color: #0085a1">
+                        <span>
+                            个人总结：为什要学习docker，如何学习Docker
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    09-24
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/09/24/Node.js-npm/Node.js使用pm2进程守护+keymetrics实时监控Node.js程序/" style="color: #0085a1">
+                        <span>
+                            Node.js使用pm2进程守护+keymetrics实时监控Node.js程序
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    09-21
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/09/21/运维笔记/运维工程师的职责和前景/" style="color: #0085a1">
+                        <span>
+                            运维工程师的职责和前景
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    09-12
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/09/12/自动化+Jenkins/Jenkins/用Ansible + Jenkins+maven＋nginx搞定自动发布，构建程序的持续集成平台/" style="color: #0085a1">
+                        <span>
+                            Ansible + Jenkins+Maven＋Nginx搞定自动发布，构建程序的持续集成平台
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    08-23
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/08/23/Web服务技术/Nginx/Nginx 的启动、停止、平滑重启、信号控制和平滑升级 /" style="color: #0085a1">
+                        <span>
+                            Nginx 的启动、停止、平滑重启、信号控制和平滑升级
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    08-23
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/08/23/Web服务技术/Nginx/企业级Nginx Web服务优化实战/" style="color: #0085a1">
+                        <span>
+                            企业级Nginx Web服务优化实战
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    08-21
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/08/21/性能监控/Zabbix/直播分享的主题是云监控----zabbix&collectd 互相讨论/" style="color: #0085a1">
+                        <span>
+                            直播分享的主题是云监控----zabbix&collectd 互相讨论
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    08-21
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/08/21/Node.js-npm/npm翻墙加速国内镜像/" style="color: #0085a1">
+                        <span>
+                            npm翻墙加速国内镜像
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    08-16
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/08/16/Node.js-npm/Centos7.1+Mac环境安装Node.Js以及彻底删除卸载node.js教程/" style="color: #0085a1">
+                        <span>
+                            Centos7.1+Mac环境安装Node.Js以及彻底删除卸载node.js教程
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    07-21
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/07/21/性能监控/Zabbix/Zabbix 监控 KVM集群/" style="color: #0085a1">
+                        <span>
+                            KVM monitoring through Zabbix
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    06-29
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/06/29/运维安全/ 化解自己的阿里云服务器被黑客攻击-暴力破解/" style="color: #0085a1">
+                        <span>
+                            化解自己的阿里云服务器被黑客攻击-暴力破解
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    06-22
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/06/22/性能监控/Zabbix/zabbix3-0实现微信报警/" style="color: #0085a1">
+                        <span>
+                            zabbix3.0实现微信报警
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    06-21
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/06/21/性能监控/Zabbix/zabbix3-0部署jmx监控tomcat/" style="color: #0085a1">
+                        <span>
+                            zabbix3.0部署jmx监控tomcat
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    06-21
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/06/21/Web服务技术/tomcat/记一次线上tomcat内存不足配置并发优化过程/" style="color: #0085a1">
+                        <span>
+                            记一次线上tomcat内存不足配置并发优化过程
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    06-21
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/06/21/性能监控/Zabbix/zabbix监控tcp连接数/" style="color: #0085a1">
+                        <span>
+                            zabbix监控tcp连接数
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    06-19
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/06/19/性能监控/Zabbix/zabbix-server3-0-3版本环境安装部署/" style="color: #0085a1">
+                        <span>
+                            zabbix-server3.0.3版本环境安装部署
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    06-18
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/06/18/性能监控/Zabbix/zabbix-server2-4全新升级3-0版本/" style="color: #0085a1">
+                        <span>
+                            zabbix-server2.4全新升级3.0版本
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    06-17
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/06/17/性能监控/Zabbix/zabbix-Grafana安装使用结合/" style="color: #0085a1">
+                        <span>
+                            zabbix+Grafana安装使用监控结合
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    06-10
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/06/10/自动化+Jenkins/Ansible/Ansible 安装出现 ImportError: No module named _text/" style="color: #0085a1">
+                        <span>
+                            Ansible安装出现 ImportError/ No module named _text
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    05-24
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/05/24/Web服务技术/Nginx/nginx解决办法-503-Service.Temporarily.Unavailable/" style="color: #0085a1">
+                        <span>
+                            NGINX解决办法-503-Service.Temporarily.Unavailable
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    05-23
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/05/23/Web服务技术/Nginx/Nginx+Tomcat实现负载均衡设置访问控制/" style="color: #0085a1">
+                        <span>
+                            Nginx+Tomcat实现负载均衡设置访问控制
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    05-23
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/05/23/Web服务技术/Nginx/Nginx多种安装与配置文件详解/" style="color: #0085a1">
+                        <span>
+                            Nginx多种安装与配置文件详解
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    05-22
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/05/22/Web服务技术/Nginx/Nginx+Keepalived实现高可用Web负载均衡 /" style="color: #0085a1">
+                        <span>
+                            Nginx+Keepalived实现高可用Web负载均衡
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    04-05
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/04/05/Web服务技术/Nginx/Nginx 安全&优化&日志输出规范详细配置/" style="color: #0085a1">
+                        <span>
+                            Nginx 安全&优化&日志输出规范详细配置
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    04-02
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/04/02/Web服务技术/Nginx/http response code 301 和 302分析总结/" style="color: #0085a1">
+                        <span>
+                            Http response code 301 和 302分析总结
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-29
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/03/29/Web服务技术/Nginx/Nginx基础篇-Nginx.conf配置文件详解/" style="color: #0085a1">
+                        <span>
+                            Nginx基础篇-Nginx.conf配置文件详解
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-29
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/03/29/Web服务技术/Nginx/nginx基础篇-日志管理和切割/" style="color: #0085a1">
+                        <span>
+                            Nginx基础篇-日志管理和切割
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-27
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/03/27/Web服务技术/Nginx/确保nginx安全的几个技巧/" style="color: #0085a1">
+                        <span>
+                            确保Nginx安全的几个技巧
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-26
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/03/26/Web服务技术/Nginx/ Nginx 和 apache 对比 /" style="color: #0085a1">
+                        <span>
+                            Nginx-反向代理
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-26
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/03/26/Web服务技术/Nginx/Nginx+Tomcat实现反向代理优化与配置 /" style="color: #0085a1">
+                        <span>
+                            Nginx+Tomcat实现反向代理优化与配置
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-21
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/03/21/shell编程入门到简单/shell入门到简单 学习总结1-12章/" style="color: #0085a1">
+                        <span>
+                            shell入门到简单 学习总结1-12章
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-21
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/03/21/Web服务技术/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/" style="color: #0085a1">
+                        <span>
+                            tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-15
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/03/15/运维笔记/个人记录💥-走上全栈运维工程师学习笔记/" style="color: #0085a1">
+                        <span>
+                            个人记录💥-走上全栈运维工程师学习笔记
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-10
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/03/10/自动化+Jenkins/Ansible/ansible 脚本(Playbook基本语法)远程控制/" style="color: #0085a1">
+                        <span>
+                            Ansible 脚本(Playbook基本语法)远程控制
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-09
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/03/09/自动化+Jenkins/Ansible/Ansible小结（四）Ad-hoc与commands模块 /" style="color: #0085a1">
+                        <span>
+                            Ansible小结（四）Ad-hoc与commands模块
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-09
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/03/09/自动化+Jenkins/Ansible/ansible小结(五)常用模块/" style="color: #0085a1">
+                        <span>
+                            Ansible小结 (五) 常用模块
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-07
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/03/07/自动化+Jenkins/Ansible/Ansible 小结（一）ansible的安装 /" style="color: #0085a1">
+                        <span>
+                            Ansible 小结（一）ansible的安装
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-07
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/03/07/自动化+Jenkins/Ansible/ Ansible 学习入门 /" style="color: #0085a1">
+                        <span>
+                            Ansible 学习入门
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-07
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/03/07/自动化+Jenkins/Ansible/ansible小结（二）ansible架构 /" style="color: #0085a1">
+                        <span>
+                            Ansible小结（二）ansible架构
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    03-07
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/03/07/自动化+Jenkins/Ansible/Ansible小结（三）ansible.cfg与默认配置 /" style="color: #0085a1">
+                        <span>
+                            Ansible小结（三）ansible.cfg与默认配置
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    02-25
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/02/25/Web服务技术/Nginx/Nginx限制IP访问权限或限制某个IP同一时间段的访问次数/" style="color: #0085a1">
+                        <span>
+                            Nginx限制IP访问权限或限制某个IP同一时间段的访问次数
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    01-30
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/01/30/日志分析平台/Elasticsearch/Elasticsearch5.x版本的索引定时自动清理和检测进程状态自动启动/" style="color: #0085a1">
+                        <span>
+                            Elasticsearch5.x版本的索引定时自动清理和检测进程状态自动启动
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    01-29
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/01/29/日志分析平台/Elasticsearch/logstash如何收集tomcat日志分析/" style="color: #0085a1">
+                        <span>
+                            logstash如何写tomcat,redis,nginx日志收集规则
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    01-21
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2016/01/21/日志分析平台/Elasticsearch/ELK-Elasticsearch-Logstash-Kibana-搭建日志集中分析平台实践/" style="color: #0085a1">
+                        <span>
+                            ELK(Elasticsearch1.7+ + Logstash1.5+ + Kibana4.1)搭建日志集中分析平台实践
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+
+                </ul>
+            </div>
+            
+            <div class="one-tag-list">
+                <span class="fa fa-calendar-times-o listing-seperator" id="2015">
+                    <span class="tag-text">2015</span>
+                </span>
+                <ul>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    12-10
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2015/12/10/自动化+Jenkins/saltstack/服务自动化部署平台之Saltstack总结/" style="color: #0085a1">
+                        <span>
+                            自动化运维工具-服务自动化部署平台之Saltstack总结
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    11-21
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2015/11/21/Web服务技术/tomcat/搭建配置tomcat环境/" style="color: #0085a1">
+                        <span>
+                            搭建配置tomcat环境
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    11-20
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2015/11/20/自动化+Jenkins/saltstack/自动化运维工具--saltstack远程启动tomcat日志乱码 /" style="color: #0085a1">
+                        <span>
+                            自动化运维工具--saltstack远程启动tomcat日志乱码
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    11-01
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2015/11/01/自动化+Jenkins/saltstack/自动化运维工具--Saltstack写sls语法批量部署zabbix_agent/" style="color: #0085a1">
+                        <span>
+                            自动化运维工具--Saltstack写sls语法批量部署zabbix_agent
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    11-01
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2015/11/01/自动化+Jenkins/saltstack/自动化运维工具--SaltStack-分组（使用记录,groups） /" style="color: #0085a1">
+                        <span>
+                            自动化运维工具--SaltStack-分组（使用记录,groups）
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    10-10
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2015/10/10/自动化+Jenkins/saltstack/自动化运维工具--Saltstack安装部署配置使用/" style="color: #0085a1">
+                        <span>
+                            自动化运维工具--Saltstack安装部署配置使用
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    09-10
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2015/09/10/自动化+Jenkins/saltstack/自动化运维工具-Saltstack的详细介绍安装与使用以及语法开发操作/" style="color: #0085a1">
+                        <span>
+                            自动化运维工具-Saltstack的详细介绍安装与使用以及语法开发操作
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    07-23
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2015/07/23/运维笔记/CDN加速助力高并发网站架构/" style="color: #0085a1">
+                        <span>
+                            CDN加速助力高并发网站架构
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    04-01
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2015/04/01/运维安全/使用AIDE做Linux高级入侵检测文件监控/" style="color: #0085a1">
+                        <span>
+                            使用AIDE做Linux高级入侵检测文件监控
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+
+                </ul>
+            </div>
+            
+            <div class="one-tag-list">
+                <span class="fa fa-calendar-times-o listing-seperator" id="2014">
+                    <span class="tag-text">2014</span>
+                </span>
+                <ul>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    10-21
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2014/10/21/性能监控/cacti/了解Cacti监控安装与配置/" style="color: #0085a1">
+                        <span>
+                            了解Cacti监控安装与配置.md
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    10-06
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2014/10/06/性能监控/Zabbix/zabbix监控80端口状态/" style="color: #0085a1">
+                        <span>
+                            zabbix监控80端口状态
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    10-05
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2014/10/05/性能监控/Zabbix/zabbix邮件告警/" style="color: #0085a1">
+                        <span>
+                            zabbix邮件告警
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    10-04
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2014/10/04/性能监控/Zabbix/zabbix-故障总结/" style="color: #0085a1">
+                        <span>
+                            zabbix性能监控故障总结
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    10-03
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2014/10/03/性能监控/Zabbix/zabbix2.4服务端yum-rpm快速安装部署/" style="color: #0085a1">
+                        <span>
+                            zabbix2.4服务端rpm快速安装部署
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    10-01
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2014/10/01/性能监控/Zabbix/zabbix的ICMP-Ping模版实现对客户端网络状态的监控/" style="color: #0085a1">
+                        <span>
+                            zabbix的ICMP_Ping模版实现对客户端网络状态的监控
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    09-13
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2014/09/13/运维安全/httpd进程非常多，查找被攻击的原因/" style="color: #0085a1">
+                        <span>
+                            httpd进程非常多，查找被攻击的原因
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li >
+                    04-19
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <a href="/2014/04/19/性能监控/Somekeping/用最简单易懂的方式安装smokeping/" style="color: #0085a1">
+                        <span>
+                            用最简单的方式安装smokeping
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+
+                </ul>
+            </div>
+            
+
+
+        </div>
+    </div>
 </div>
 
 
-	    
-	      <div class="footer__element">
-	<h5>Check out</h5>
-	<ul class="footer-links">
-		<li class="footer-links__link"><a href="/archives">Archive</a></li>
-		
-		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
-	    
-		<li class="footer-links__link"><a href="/about">about page</a></li>
-		<li class="footer-links__link"><a href="/tags">Tags</a></li>
-		<li class="footer-links__link"><a href="/categories">Categories</a></li>
-	</ul>
-</div>
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
 
-	    
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
 
-		<div class="footer-credit">
-			<span>© 2019 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
-		</div>
+                
 
-	</div>
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
 
+                
 
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
 </footer>
 
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
 
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
 

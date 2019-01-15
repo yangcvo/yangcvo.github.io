@@ -1,62 +1,197 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
+<!-- Head tag -->
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta name="theme-color" content="#33474d">
-	<title>搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6 Kafka ) Kafka为消息中心的ELK日志平台 | Yancy&#39;s blog</title>
-	<link rel="stylesheet" href="/css/style.css" />
-	
-      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
-    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6 Kafka ) Kafka为消息中心的ELK日志平台 - Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2016/12/29/日志分析平台/Elasticsearch/搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body>
 
-	<header class="header">
-		<nav class="header__nav">
-			
-				<a href="/" class="header__link">Home</a>
-			
-				<a href="/tags" class="header__link">Tags</a>
-			
-				<a href="/archives" class="header__link">ARCHIVES</a>
-			
-				<a href="/about/About" class="header__link">ABOUT</a>
-			
-				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
-			
-				<a href="/atom.xml" class="header__link">RSS</a>
-			
-		</nav>
-		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
-		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
-	</header>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
 
-	<main>
-		<article>
-	
-		<h1>搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6 Kafka ) Kafka为消息中心的ELK日志平台</h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-12-29</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Elasticsearch/">Elasticsearch</a>
-			</span>
-		
-	</div>
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
+        </div>
 
-	
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
 
-	
-		<h3 id="搭建-ElasticSearch-2-x-Logstash-2-x-Kibana-4-5-x-zookeeper3-4-6-Kafka为消息中心的ELK日志平台"><a href="#搭建-ElasticSearch-2-x-Logstash-2-x-Kibana-4-5-x-zookeeper3-4-6-Kafka为消息中心的ELK日志平台" class="headerlink" title="搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台"></a>搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台</h3><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>ELK是业界标准的日志采集,存储索引,展示分析系统解决方案</p>
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Elasticsearch" title="Elasticsearch">Elasticsearch</a>
+                        
+                    </div>
+                    <h1>搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6 Kafka ) Kafka为消息中心的ELK日志平台</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2016-12-29
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="搭建-ElasticSearch-2-x-Logstash-2-x-Kibana-4-5-x-zookeeper3-4-6-Kafka为消息中心的ELK日志平台"><a href="#搭建-ElasticSearch-2-x-Logstash-2-x-Kibana-4-5-x-zookeeper3-4-6-Kafka为消息中心的ELK日志平台" class="headerlink" title="搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台"></a>搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台</h3><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>ELK是业界标准的日志采集,存储索引,展示分析系统解决方案</p>
 <p>logstash提供了灵活多样的插件支持不同的input/output</p>
 <p>主流使用redis/kafka作为日志/消息的中间环节</p>
 <p>如果已有kafka的环境了,使用kafka比使用redis更佳</p>
@@ -186,58 +321,278 @@
 <h3 id="logstash-客户端安装："><a href="#logstash-客户端安装：" class="headerlink" title="logstash 客户端安装："></a>logstash 客户端安装：</h3><h5 id="源码安装"><a href="#源码安装" class="headerlink" title="源码安装"></a>源码安装</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line">我这里源码包安装</div><div class="line"><span class="comment"># wget https://download.elasticsearch.org/logstash/logstash/logstash-2.4.0.tar.gz</span></div><div class="line"><span class="comment">#curl -O https://download.elastic.co/logstash/logstash/logstash-2.4.0.tar.gz</span></div><div class="line"><span class="comment">#tar -zxvf logstash-2.4.0.tar.gz</span></div><div class="line"><span class="comment">#mv logstash-2.4.0 /usr/local/</span></div><div class="line"><span class="comment">#ln -s /usr/local/logstash-2.4.0/ /usr/local/logstash</span></div><div class="line"></div><div class="line">下载启动脚本</div><div class="line">生产都是运行在后台的，我这里源码安装没有init脚本启动。 去Github下载  https://github.com/benet1006/ELK_config.git</div><div class="line"><span class="comment">#cp logstash.init /etc/init.d/logstash</span></div><div class="line"><span class="comment">#chmod +x /etc/init.d/logstash</span></div><div class="line">这个脚本我做过修改。</div><div class="line"></div><div class="line"><span class="comment">#启动logstash服务</span></div><div class="line">service logstash start</div><div class="line">service logstash status</div><div class="line"></div><div class="line"><span class="comment">#查看5000端口</span></div><div class="line">netstat -nltp</div><div class="line"></div><div class="line">Active Internet connections (only servers)</div><div class="line">Proto Recv-Q Send-Q Local Address Foreign Address State PID/Program name</div><div class="line">tcp 0 0 0.0.0.0:9200 0.0.0.0:* LISTEN 1765/java</div><div class="line">tcp 0 0 0.0.0.0:9300 0.0.0.0:* LISTEN 1765/java</div><div class="line">tcp 0 0 0.0.0.0:9301 0.0.0.0:* LISTEN 2309/java</div><div class="line">tcp 0 0 0.0.0.0:22 0.0.0.0:* LISTEN 1509/sshd</div><div class="line">tcp 0 0 0.0.0.0:5601 0.0.0.0:* LISTEN 1876/node</div><div class="line">tcp 0 0 0.0.0.0:5000 0.0.0.0:* LISTEN 2309/java</div><div class="line">tcp 0 0 :::22 :::* LISTEN 1509/sshd</div><div class="line"></div><div class="line"></div><div class="line">修改启动脚本</div><div class="line">vim /etc/init.d/logstash </div><div class="line">指定的目录自己源码安装的路径。</div><div class="line"></div><div class="line">name=logstash</div><div class="line">pidfile=<span class="string">"/var/run/<span class="variable">$name</span>.pid"</span></div><div class="line"><span class="built_in">export</span> CLASSPATH=.:<span class="variable">$JAVA_HOME</span>/jre/lib/rt.jar:<span class="variable">$JAVA_HOME</span>/lib/dt.jar:<span class="variable">$JAVA_HOME</span>/lib/tools.jar</div><div class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$JAVA_HOME</span>/bin</div><div class="line">LS_USER=logstash</div><div class="line">LS_GROUP=logstash</div><div class="line">LS_HOME=/usr/<span class="built_in">local</span>/logstash 安装路径</div><div class="line">LS_HEAP_SIZE=<span class="string">"1000m"</span></div><div class="line">LS_JAVA_OPTS=<span class="string">"-Djava.io.tmpdir=<span class="variable">$&#123;LS_HOME&#125;</span>"</span></div><div class="line">LS_LOG_DIR=/usr/<span class="built_in">local</span>/logstash</div><div class="line">LS_LOG_FILE=<span class="string">"<span class="variable">$&#123;LS_LOG_DIR&#125;</span>/<span class="variable">$name</span>.log"</span></div><div class="line">LS_CONF_FILE=/etc/logstash.conf     收集日志的规则conf</div><div class="line">LS_OPEN_FILES=16384</div><div class="line">LS_NICE=19</div><div class="line">LS_OPTS=<span class="string">""</span></div><div class="line"></div><div class="line">https://www.elastic.co/guide/en/logstash/current/plugins-inputs-file.html</div><div class="line">这个是<span class="built_in">log</span> stash的官方文档的配置说明。</div><div class="line">这个配置说明上面我先修改下我之前的配置文件。</div></pre></td></tr></table></figure>
 <h4 id="logstash-agent配置："><a href="#logstash-agent配置：" class="headerlink" title="logstash agent配置："></a>logstash agent配置：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">配置<span class="built_in">log</span> stash－实现系统日志收集input</div><div class="line">file_to_kafka.conf 日志文件读出写入到kafka</div><div class="line">input &#123;</div><div class="line">file &#123;</div><div class="line">path =&gt; <span class="string">"/srv/tomcat/logs/account/logFile.*.log"</span></div><div class="line"><span class="built_in">type</span> =&gt; <span class="string">"tomcat"</span></div><div class="line">discover_interval =&gt; 15 <span class="comment">#logstash</span></div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">output &#123;</div><div class="line"><span class="comment">#stdout &#123; codec =&gt; rubydebug &#125;</span></div><div class="line">kafka&#123;</div><div class="line">bootstrap_servers =&gt; <span class="string">"10.46.72.172:9092,10.47.88.103:9092,10.47.102.137:9092"</span></div><div class="line"><span class="comment">#group_id =&gt; "logstash"</span></div><div class="line">topic_id =&gt; <span class="string">"logstash"</span></div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">2.2 logstash indexer 配置</div><div class="line">kafka_to_es.conf</div><div class="line">input &#123;</div><div class="line">kafka &#123;</div><div class="line">zk_connect =&gt; <span class="string">"10.46.72.172:2181,10.47.88.103:2181,10.47.102.137:2181kafka"</span></div><div class="line">group_id =&gt; <span class="string">"logstash"</span></div><div class="line">topic_id =&gt; <span class="string">"logstash"</span></div><div class="line">reset_beginning =&gt; <span class="literal">false</span> <span class="comment"># boolean (optional)， default: false</span></div><div class="line">consumer_threads =&gt; 2 <span class="comment"># number (optional)， default: 1</span></div><div class="line">decorate_events =&gt; <span class="literal">false</span> <span class="comment"># boolean (optional)， default: false</span></div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">output &#123;</div><div class="line">elasticsearch &#123;</div><div class="line">hosts =&gt; [<span class="string">"10.47.88.206:9200"</span>,<span class="string">"10.47.88.188:9200"</span>]</div><div class="line">index =&gt; <span class="string">"%&#123;host&#125;-%&#123;+YYYY.MM.dd&#125;"</span></div><div class="line">&#125;</div><div class="line"><span class="comment"># stdout &#123; codec =&gt; rubydebug &#125;</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h4 id="es安装插件head查看下效果："><a href="#es安装插件head查看下效果：" class="headerlink" title="es安装插件head查看下效果："></a>es安装插件head查看下效果：</h4><p>然后打开网站：<a href="http://elk.ihaozhuo.com/_plugin/head/" target="_blank" rel="external">http://elk.ihaozhuo.com/_plugin/head/</a></p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/es_head.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/es_head.png" alt=""></p>
 <p>####kibana网站效果：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/es_kibana.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/es_kibana.png" alt=""></p>
 <h3 id="Communicative-learning"><a href="#Communicative-learning" class="headerlink" title="Communicative learning:"></a>Communicative learning:</h3><p>🐧  Linux shell_ senior operation and maintenance faction: QQ group <code>459096184</code> circle (system operation and maintenance - application operation and maintenance - automation operation and maintenance - virtualization technology research, welcome to join)<br>🐧  BigData-Exchange School:QQ group <code>521621407</code> circles (big data Yun Wei) (Hadoop developer) (big data research enthusiasts) welcome to join</p>
 <p>Bidata have internal WeChat exchange group, learn from each other, join QQ group has links.</p>
 
-	
 
-	
-		<span class="different-posts"><a href="/2016/12/29/日志分析平台/Elasticsearch/搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+                <hr>
 
-	
+                
 
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/01/07/自动化+Jenkins/Phabricator/Centos7搭建配置phabricator开源的可视化代码审查工具/" data-toggle="tooltip" data-placement="top" title="Centos7搭建配置phabricator开源的可视化代码审查工具">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/12/02/Web服务技术/tomcat/记录tomcat进程CPU使用率高排查故障经验/" data-toggle="tooltip" data-placement="top" title="记录tomcat进程CPU使用率高排查故障经验">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Elasticsearch" title="Elasticsearch">Elasticsearch</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
 </article>
 
-	</main>
-
-	<footer class="footer">
-	<div class="footer-content">
-		
-	      <div class="footer__element">
-	<h5>Hi there,</h5>
-	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
-</div>
 
 
-	    
-	      <div class="footer__element">
-	<h5>Check out</h5>
-	<ul class="footer-links">
-		<li class="footer-links__link"><a href="/archives">Archive</a></li>
-		
-		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
-	    
-		<li class="footer-links__link"><a href="/about">about page</a></li>
-		<li class="footer-links__link"><a href="/tags">Tags</a></li>
-		<li class="footer-links__link"><a href="/categories">Categories</a></li>
-	</ul>
-</div>
-
-	    
-
-		<div class="footer-credit">
-			<span>© 2019 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
-		</div>
-
-	</div>
 
 
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
 </footer>
 
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
 
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
 

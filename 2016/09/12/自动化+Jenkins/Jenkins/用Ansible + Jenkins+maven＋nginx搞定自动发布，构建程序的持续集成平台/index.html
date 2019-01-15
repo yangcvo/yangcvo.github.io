@@ -1,62 +1,199 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
+<!-- Head tag -->
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta name="theme-color" content="#33474d">
-	<title>Ansible + Jenkins+Maven＋Nginx搞定自动发布，构建程序的持续集成平台 | Yancy&#39;s blog</title>
-	<link rel="stylesheet" href="/css/style.css" />
-	
-      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
-    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Ansible + Jenkins+Maven＋Nginx搞定自动发布，构建程序的持续集成平台 - Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2016/09/12/自动化+Jenkins/Jenkins/用Ansible + Jenkins+maven＋nginx搞定自动发布，构建程序的持续集成平台/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body>
 
-	<header class="header">
-		<nav class="header__nav">
-			
-				<a href="/" class="header__link">Home</a>
-			
-				<a href="/tags" class="header__link">Tags</a>
-			
-				<a href="/archives" class="header__link">ARCHIVES</a>
-			
-				<a href="/about/About" class="header__link">ABOUT</a>
-			
-				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
-			
-				<a href="/atom.xml" class="header__link">RSS</a>
-			
-		</nav>
-		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
-		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
-	</header>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
 
-	<main>
-		<article>
-	
-		<h1>Ansible + Jenkins+Maven＋Nginx搞定自动发布，构建程序的持续集成平台</h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-09-12</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/automation/">automation</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Jenkins/">Jenkins</a> <a class="article__tag-link" href="/tags/Manven/">Manven</a>
-			</span>
-		
-	</div>
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
+        </div>
 
-	
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
 
-	
-		<h1 id="Ansible-Jenkins搞定自动发布，构建程序的持续集成平台"><a href="#Ansible-Jenkins搞定自动发布，构建程序的持续集成平台" class="headerlink" title="Ansible+Jenkins搞定自动发布，构建程序的持续集成平台"></a>Ansible+Jenkins搞定自动发布，构建程序的持续集成平台</h1><p>Ansible是相对简单的批量管理工具，支持模板管理等高级功能。搞定了自动发布，开发的服务器需求已经明显下降，只要把代码提交到 Git主干，就会自动触发发布。</p>
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Jenkins" title="Jenkins">Jenkins</a>
+                        
+                          <a class="tag" href="/tags/#Manven" title="Manven">Manven</a>
+                        
+                    </div>
+                    <h1>Ansible + Jenkins+Maven＋Nginx搞定自动发布，构建程序的持续集成平台</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2016-09-12
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="Ansible-Jenkins搞定自动发布，构建程序的持续集成平台"><a href="#Ansible-Jenkins搞定自动发布，构建程序的持续集成平台" class="headerlink" title="Ansible+Jenkins搞定自动发布，构建程序的持续集成平台"></a>Ansible+Jenkins搞定自动发布，构建程序的持续集成平台</h1><p>Ansible是相对简单的批量管理工具，支持模板管理等高级功能。搞定了自动发布，开发的服务器需求已经明显下降，只要把代码提交到 Git主干，就会自动触发发布。</p>
 <p>今天有空就简单记录下用Ansible + Jenkins搞定自动发布 。这篇是主要环境安装。</p>
 <h3 id="一、什么是持续集成"><a href="#一、什么是持续集成" class="headerlink" title="一、什么是持续集成"></a>一、什么是持续集成</h3><p><strong>1、什么是集成</strong></p>
 <p>指的是代码由编译、发布和测试、直到上线的一个过程</p>
@@ -118,10 +255,10 @@
 <p>2)    放在配置好Tomcat，启动Jenkins，根据提示，输入安装秘钥。</p>
 <h5 id="2-3-jenkins安装配置："><a href="#2-3-jenkins安装配置：" class="headerlink" title="2.3 jenkins安装配置："></a>2.3 jenkins安装配置：</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mv jenkins.war /srv/tomcat/webapps/. </div><div class="line"><span class="built_in">cd</span> /tomcat</div><div class="line">./bin/startup.sh</div><div class="line">然后打开地址：http://192.168.1.183:8080/jenkins</div><div class="line">新版本会提示下载安装插件。下载以后会让你设置账号和密码还有邮箱。</div></pre></td></tr></table></figure>
 <p>进入安装界面:<br>第一次，登录，需要进行一个解锁 ，页面也会有提示.</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins1.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins1.png" alt=""></p>
 <p>秘钥的具体位置在：<code>/root/.jenkins/secrets/initialAdminPassword</code>中，我们可以通过这个文件中查看密码，并输入。</p>
 <p>3)    设置好登录账号密码，根据推荐选项安装插件，等待下载安装完成。在插件安装过程中可能有些安装不成功，暂时先不用管。</p>
-<p>它会给我们安装一些基础的插件<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins_01.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins_02.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins_03.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins_04.png" alt=""></figure><br>早期jenkins默认是不需要登陆的。</p>
+<p>它会给我们安装一些基础的插件<br><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins_01.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins_02.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins_03.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins_04.png" alt=""><br>早期jenkins默认是不需要登陆的。</p>
 <h4 id="1-3-Maven-安装和配置"><a href="#1-3-Maven-安装和配置" class="headerlink" title="1.3 Maven 安装和配置"></a>1.3 Maven 安装和配置</h4><p>官网：<a href="http://maven.apache.org/" target="_blank" rel="external">http://maven.apache.org/</a><br>官网下载：<a href="http://maven.apache.org/download.cgi" target="_blank" rel="external">http://maven.apache.org/download.cgi</a><br>历史版本下载：<a href="https://archive.apache.org/dist/maven/binaries/" target="_blank" rel="external">https://archive.apache.org/dist/maven/binaries/</a><br>此时（20160208） Maven 最新版本为：<strong>3.3.9</strong></p>
 <p>Maven 3.3 的 JDK 最低要求是 JDK 1.7 - 我个人习惯 <code>/opt</code> 目录下创建一个目录 <code>setups</code> 用来存放各种软件安装包；在 <code>/srv</code> 目录下创建一个 <code>program</code> 用来存放各种解压后的软件包，下面的讲解也都是基于此习惯.</p>
 <p>下载压缩包：<code>wget http://mirrors.cnnic.cn/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz</code><br>解压指定到我个人习惯的安装目录下：<code>tar zxvf apache-maven-3.3.9-bin.tar.gz -C /srv/program/.</code><br>移到我个人习惯的安装目录下：<code>mv maven3.3.9/ /srv/program/maven3</code></p>
@@ -143,25 +280,25 @@
 <p>重启nginx，<code>/usr/sbin/nginx -s reload</code>，即可以地址 <code>jenkins.yjk.cn</code> 访问Jenkins主页.</p>
 <h3 id="四-安装部分Jenkins插件"><a href="#四-安装部分Jenkins插件" class="headerlink" title="四. 安装部分Jenkins插件"></a>四. 安装部分Jenkins插件</h3><p>访问Jenkins主页：<a href="http://jenkins.yjk.cn" target="_blank" rel="external">http://jenkins.yjk.cn</a><br>系统管理 –&gt; 管理插件 –&gt; 可选插件;<br>安装所需要的插件(根据需要自行选择)，如 <code>GitBucket Plugin、 FindBugs Plug-in 、Cobertura Plugin 、 Violations Plugin 、Email Extension Plugin</code>等</p>
 <p>⚠️插件安装不成功处理办法：</p>
-<p>进入左侧菜单栏的系统管理，发现很多插件无法安装成功，如下图：<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.cah.png" alt=""></figure></p>
+<p>进入左侧菜单栏的系统管理，发现很多插件无法安装成功，如下图：<br><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.cah.png" alt=""></p>
 <p>复制安装失败的名称，点击右侧按钮，选择可选插件，输入名称重新安装。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.1.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.1.png" alt=""></p>
 <p>如果还是失败，请注意提示信息，可直接下载该插件手动上传安装，手动下载该插件，在插件管理的高级标签中，选择上传安装。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.2.png" alt=""></figure><br>如果上传失败，还有个方法：直接把下载下来的插件上传到Jenkins服务器上面。默认安装的话目录在：/root/.jenkins/plugins/  重启服务即可.</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.2.png" alt=""><br>如果上传失败，还有个方法：直接把下载下来的插件上传到Jenkins服务器上面。默认安装的话目录在：/root/.jenkins/plugins/  重启服务即可.</p>
 <h3 id="五-系统设置以及介绍（可跳过）"><a href="#五-系统设置以及介绍（可跳过）" class="headerlink" title="五. 系统设置以及介绍（可跳过）"></a>五. 系统设置以及介绍（可跳过）</h3><h4 id="1-1-系统配置"><a href="#1-1-系统配置" class="headerlink" title="1.1 系统配置"></a>1.1 系统配置</h4><p>进入首页系统管理—&gt;系统设置。</p>
 <ol>
 <li>配置maven</li>
-<li>配置邮件服务<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.3.png" alt=""></figure> </li>
+<li>配置邮件服务<br><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.3.png" alt=""> </li>
 </ol>
 <p>主目录默认在 /root/.jenkins  下面，此目录保存jenkins 的所有配置和插件等，具体可以于服务器中查看该目录。<br>下面可以继续配置maven，jdk，git等等，也可以使用默认的配置。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.4.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.5.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.4.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.5.png" alt=""></p>
 <h4 id="1-2-项目配置"><a href="#1-2-项目配置" class="headerlink" title="1.2 项目配置"></a>1.2 项目配置</h4><p>新建一个自由风格的项目，输入项目名称。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.6.png" alt=""></figure><br>1.参数配置</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.6.png" alt=""><br>1.参数配置</p>
 <p>简单的从Git中拉取代码无法满足我们的需求，最理想的状态是可以对发布的分支进行动态选择。所以我们需要安装一个配置动态参数的插件：<a href="https://wiki.jenkins-ci.org/display/JENKINS/Dynamic+Parameter+Plug-in" target="_blank" rel="external">Dynamic Parameter Plug-in</a> </p>
 <p>安装好插件之后，在项目配置，参数化构建过程中添加动态参数：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.7.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.8.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.7.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.8.png" alt=""></p>
 <p>输入变量名称和脚本，在接下来的配置中就可以使用<code>$Name</code>的方式，使用变量了。如：<code>$branch</code>。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.9.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.9.png" alt=""></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">def gettags = (<span class="string">"git ls-remote -h git@gitlab.ihaozhuo.com:Java_Service/YJK-Java.git"</span>).execute() </div><div class="line">gettags.text.readLines().collect &#123; it.split()[1].replaceAll(<span class="string">'refs/heads/'</span>, <span class="string">''</span>)  &#125;.unique()</div></pre></td></tr></table></figure>
 <p> 这是一段<code>Groovy</code>脚本，用来获取Git地址的分支，将Git地址改成自己的就行。</p>
 <h4 id="1-3接下来选择扩展功能。"><a href="#1-3接下来选择扩展功能。" class="headerlink" title="1.3接下来选择扩展功能。"></a>1.3接下来选择扩展功能。</h4><p>由于我们的项目模块较多，所有的服务全部重启会非常浪费时间，我们希望能对单独的模块进行部署，这时候需要添加一个可选择的参数<code>Extensible Choice Parameter</code></p>
@@ -169,27 +306,27 @@
 <p>实现效果：</p>
 <p>发布选择应用模块，之前只能单个选择发布，效率太低，安装choice扩展性的插件，可以选择多个模块应用一起部署。非常方便<br>下载插件：<br><a href="https://plugins.jenkins.io/extended-choice-parameter" target="_blank" rel="external">Extended Choice Parameter Plug-In</a><br><a href="https://plugins.jenkins.io/extensible-choice-parameter" target="_blank" rel="external">Extensible Choice Parameter plugin</a></p>
 <p>这里jenkins 第一步安装扩展插件：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.1.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.2.png" alt=""></figure><br>安装好插件以后 进入创建项目配置参数：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.3.png" alt=""></figure></p>
-<p><code>Value</code> ：这里选择模块名字最好是git拉取下来的名称一样。这样下面打包可以选择对应模块名称一样。<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.4.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.1.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.2.png" alt=""><br>安装好插件以后 进入创建项目配置参数：</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.3.png" alt=""></p>
+<p><code>Value</code> ：这里选择模块名字最好是git拉取下来的名称一样。这样下面打包可以选择对应模块名称一样。<br><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.4.png" alt=""></p>
 <p>这里构建使用shell 做一层<code>if</code> 判断  选择<code>all</code> 全部发布。和单独模块发布。</p>
 <h4 id="1-4Git配置"><a href="#1-4Git配置" class="headerlink" title="1.4Git配置"></a>1.4Git配置</h4><p>初次使用Jenkins需要添加一个有访问Git权限的用户。<br>我直接使用系统自带的ssh-key，也可以自己去生成。<br>在gitlab上添加ssh-key公钥 这个是你发布机器的公钥。</p>
 <p>1.源码管理选择Git，输入URL，并选择用户。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.10.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.10.png" alt=""></p>
 <p>从Jenkins发布服务器上面查看公钥上传到gitlab.</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansbile.11.png" alt=""></figure></p>
-<p>2.在jenkins上点击添加私钥<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.12.png" alt=""></figure><br>3.选择SSH…key，输入用户名，输入私钥，输入密码，添加完成。<br>在Jenkins发布服务器上面查看私钥：</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansbile.11.png" alt=""></p>
+<p>2.在jenkins上点击添加私钥<br><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.12.png" alt=""><br>3.选择SSH…key，输入用户名，输入私钥，输入密码，添加完成。<br>在Jenkins发布服务器上面查看私钥：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">[root@ansible_02 yaml]<span class="comment"># cat /root/.ssh/id_rsa</span></div><div class="line">-----BEGIN RSA PRIVATE KEY-----</div><div class="line">MIIEpAIBAAKCAQEAv5BSNmykQcvklQdb+3jV8d1I2tjq4tIiyVbQDhDBs6UFR4hj</div><div class="line">20EHg/3Tjvw+4mHtzWFYv1/rYeTg7xJ/bIf3XRIeRcrc/b2rvqo3wQBupRjHM6wb</div><div class="line">nd+Jgyv2v8Lk2c8yNzMoUIuYzcG5Dpv5mWyg1akbWcIH3tsGyTVXxxmAQ78L+J1N</div><div class="line">zj3a9fImQcx5ocKlV/Y1v9B+Uv4gTBmSBR7akvNg7E+3JKTphbbUv3rFrG6zqvTW</div><div class="line">CtEA/h9X//zPWTiwTjJv87NJkHQLqoo1TPYZcNjDEfki+jfc9gJzJvZ/5D0A3fA/</div><div class="line">mO8ApW9VMsaLiiwQvGP2RoiTVwU2G1iNASBcWwIDAQABAoIBABh64fawhYEfBDQD</div><div class="line">P77wHy8MXz4QUFvyDJ38KRRTEd3aLcWJaXFgawx0CHASThrx9sizMvspz9Ovwwrq</div><div class="line">Kzx8V6EeKp4yoXEPpv3zlLJmUr1oYDR7PwA6y8Dmgl7ZEhO/haRGNlWssTdCFVsH</div><div class="line">lasElb0YIjWjNQxGoyRdW71GxfxiGdZXgWDT7yYGvdavO5tGzDPhh6/vf5lpU2F2</div><div class="line">nJbMyXzWgrrqXqIG3W+jqg2kVA<span class="keyword">fi</span>MdNgeUOn6+SA/7uK8rNhxG/5dr7WKJE31uRS</div><div class="line">FJiVCATcHQBIRScDDd/nI8rGiVQOjHFt2oNV82DOIhNXhbzdWGROUcMiT04OoJgQ</div><div class="line">JeNL7IkCgYEA8wrgamw1w5dBoynzV6tUPgSdHhAMoMhPrzJTaG8qMamnHzZgz1fl</div><div class="line">3jqI7qCNsj1n6Y1UbzhKILHcTIoUj7lj41mY4XVBHqDLXh9Socf9IPrSabZIfe2n</div><div class="line">wMLMhdhoaMPUWtHj9SUn/Y+ESLuFLtF6LjR1Eghu8xKRwULo1GscSyUCgYEAycbY</div><div class="line">j1/KaFAcwSl7teRiYEY+LRHB/AUa7lc+r+p2YMjGQ3CiaN9wKqu1E4jEvL0eZXDK</div><div class="line">aXJ6qcDJiHa2M+Bf8qcVoyXtKFtlTfSVPJDviZjl3EPmhXbuKzW3et2w5zWv8lAU</div><div class="line">2fWU+3ta3fVrFXz2zlY1j47Dv9zUlDeCF+lRMX8CgYEA1hkKwDU612XzSEy4NM6U</div><div class="line">k111GvqAZVKP/4GRwDnNLZqJwhEhDwYbVLyzy6JbsFwvoaoCa0dm5Y5IxpQMsN9b</div><div class="line">Z9GGH7CWLEJ7a4gJmrYQYpECgYAIqe8WiOhp/jad3KghMUNAGwQEb2TC630yirB4</div><div class="line">YTrgAP7yWl2+3wkz69eElTTNXdl2RZeLW40EyPBeWaqNI686/g2hybkbKIF7DWtz</div><div class="line">BE4kvFnyUUAOrwKe/Fl6fxZfdyCs6N9cVH0nJy7JpQYKECmQxobaOSkSjerayl9d</div><div class="line">x1mI3d6fwqmAbbyiolLXbn3JySkxTaVBS8gjnQh6LO6JbpTspKlz3R2/CzUhDhEY</div><div class="line">n3vhU2trAGh6hY/bizI1oKNxwp/b9uAaLVmmHGNV/+V5glnDH+luQA==</div><div class="line">-----END RSA PRIVATE KEY-----</div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.13.png" alt=""></figure></p>
-<p>此处要注意，将默认的master分支改为我们之前定义好的分支变量.<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.5.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.13.png" alt=""></p>
+<p>此处要注意，将默认的master分支改为我们之前定义好的分支变量.<br><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.5.png" alt=""></p>
 <h4 id="1-5项目打包"><a href="#1-5项目打包" class="headerlink" title="1.5项目打包"></a>1.5项目打包</h4><p>由于我们使用手动出发构建，触发器我们此处不需要配置。<br>构建环境暂时也不需要配置，这里调用ansible去执行yml代码发布。项目打包优化了。</p>
 <p>关键在于构建的步骤。<br>我们可以使用Shell命令，进入项目目录，使用Maven命令进行打包。</p>
 <p>这里主要是<code>if</code> 判断是 执行对应模块打包。这样节省了打包时间，如果不做对应发布模块发布，第一条如何<code>model</code>等于<code>all</code> 文件：全部执行 : <code>mvn clean install -U -T 1C -Dmaven.test.skip=true</code></p>
 <p>如果不等于这里指定对应模块打包： <code>mvn clean install -pl $model -amd -U -T 1C -Dmaven.test.skip=true</code></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">echo</span> <span class="variable">$model</span></div><div class="line"><span class="keyword">if</span> [[ <span class="variable">$model</span> == all* ]]; <span class="keyword">then</span></div><div class="line"><span class="built_in">cd</span> /srv/ &amp;&amp; rm dev-properties/ -rf &amp;&amp; git <span class="built_in">clone</span> git@gitlab.ihaozhuo.com:dev-properties/dev-properties.git &amp;&amp; <span class="built_in">cd</span> /root/.jenkins/workspace/yjk-dev_master/haozhuo/ &amp;&amp; mvn clean install -U -T 1C -Dmaven.test.skip=<span class="literal">true</span>  -Dmaven.compile.fork=<span class="literal">true</span> -Pdev -Dautoconfig.userProperties=/srv/dev-properties/dev1.properties -Dautoconfig.charset=utf-8</div><div class="line"><span class="keyword">else</span></div><div class="line"><span class="built_in">cd</span> /srv/ &amp;&amp; rm dev-properties/ -rf &amp;&amp; git <span class="built_in">clone</span> git@gitlab.ihaozhuo.com:dev-properties/dev-properties.git &amp;&amp; <span class="built_in">cd</span> /root/.jenkins/workspace/yjk-dev_master/haozhuo/ &amp;&amp; mvn clean install -pl <span class="variable">$model</span> -amd -U -T 1C -Dmaven.test.skip=<span class="literal">true</span>  -Dmaven.compile.fork=<span class="literal">true</span> -Pdev -Dautoconfig.userProperties=/srv/dev-properties/dev1.properties -Dautoconfig.charset=utf-8</div><div class="line"><span class="keyword">fi</span></div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.6.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.6.png" alt=""></p>
 <p>所有的脚本和变量的参数列表统一。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi8.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi8.png" alt=""></p>
 <p>这里说下发布模块 结合<code>ansible-Playbook</code>基本语法写控制发布服务器，然后在<code>jenkins</code>上面写ansible 发布脚本&amp;命令。<br>model.sh 脚本： </p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/sh</span></div><div class="line">  IFS=<span class="string">','</span></div><div class="line">  arr=<span class="variable">$1</span></div><div class="line">  <span class="keyword">for</span> split <span class="keyword">in</span> <span class="variable">$arr</span></div><div class="line">  <span class="keyword">do</span></div><div class="line">          <span class="built_in">echo</span> <span class="variable">$split</span></div><div class="line">       /usr/bin/ansible-playbook /srv/yaml/<span class="variable">$split</span>.yml</div><div class="line">          <span class="keyword">if</span> [ <span class="variable">$split</span> = <span class="string">'all'</span> ]</div><div class="line">          <span class="keyword">then</span></div><div class="line">                  <span class="built_in">echo</span> <span class="string">"model:all"</span></div><div class="line">                  <span class="built_in">break</span></div><div class="line">          <span class="keyword">fi</span></div><div class="line">  <span class="keyword">done</span></div></pre></td></tr></table></figure>
 <p>这里举个例子我上面发布yml模块代码。</p>
@@ -197,61 +334,283 @@
 <p>Ansible脚本编写完之后，可以现在自己本机上执行一下。<br>目标机器上必须安装libselinux-python，不然无法执行成功（小坑）。</p>
 <p>在jenkins中我们做如下配置：<br>在构建打包命令后面我们增加一个Shell命令，用来执行Ansible的脚本。<br>我们脚本名称使用变量名称，这样我们选择模块就能执行对应的脚本。</p>
 <h4 id="1-6发送邮件"><a href="#1-6发送邮件" class="headerlink" title="1.6发送邮件"></a>1.6发送邮件</h4><p>配置好构建失败后发送邮件到指定的邮箱，多个邮箱用逗号隔开。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.7.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.7.png" alt=""></p>
 <p>至此项目配置结束。</p>
-<h4 id="六-运行效果，打包效果。"><a href="#六-运行效果，打包效果。" class="headerlink" title="六.运行效果，打包效果。"></a>六.运行效果，打包效果。</h4><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.9.png" alt=""></figure><br>指定模块去打包，终端上查看发布日志 这里变量生效效果：<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.10.png" alt=""></figure></p>
+<h4 id="六-运行效果，打包效果。"><a href="#六-运行效果，打包效果。" class="headerlink" title="六.运行效果，打包效果。"></a>六.运行效果，打包效果。</h4><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.9.png" alt=""><br>指定模块去打包，终端上查看发布日志 这里变量生效效果：<br><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.10.png" alt=""></p>
 <h3 id="七-Jenkins延伸学习"><a href="#七-Jenkins延伸学习" class="headerlink" title="七. Jenkins延伸学习"></a>七. Jenkins延伸学习</h3><p>效果图：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins_05.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins_05.png" alt=""></p>
 <p><code>Blue Ocean</code> 是<code>Jenkins</code> 非常不错一个提升。</p>
 <p>这里可以查看下我在我github上面扩展<a href="https://github.com/yangcvo/Jenkins-automation" target="_blank" rel="external">更新jenkins新功能Blue Ocean实现先进的可视化精确定位问题</a></p>
 <p>现在我们Git使用的是 GitLab，同时为了安全我们做了一层LDAP代理，效果相当于“将军令”，操作机、Git和Jenkins用 OpenLDAP 做统一认证，后续用到的Redmine、Grafana、Zabbix 等都接入了OpenLDAP认证，每个人都有个动态口令，每次验证都需要用到。</p>
 
-	
 
-	
-		<span class="different-posts"><a href="/2016/09/12/自动化+Jenkins/Jenkins/用Ansible + Jenkins+maven＋nginx搞定自动发布，构建程序的持续集成平台/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+                <hr>
 
-	
+                
 
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/09/21/运维笔记/运维工程师的职责和前景/" data-toggle="tooltip" data-placement="top" title="运维工程师的职责和前景">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/08/23/Web服务技术/Nginx/企业级Nginx Web服务优化实战/" data-toggle="tooltip" data-placement="top" title="企业级Nginx Web服务优化实战">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Jenkins" title="Jenkins">Jenkins</a>
+                        
+                          <a class="tag" href="/tags/#Manven" title="Manven">Manven</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
 </article>
 
-	</main>
-
-	<footer class="footer">
-	<div class="footer-content">
-		
-	      <div class="footer__element">
-	<h5>Hi there,</h5>
-	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
-</div>
 
 
-	    
-	      <div class="footer__element">
-	<h5>Check out</h5>
-	<ul class="footer-links">
-		<li class="footer-links__link"><a href="/archives">Archive</a></li>
-		
-		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
-	    
-		<li class="footer-links__link"><a href="/about">about page</a></li>
-		<li class="footer-links__link"><a href="/tags">Tags</a></li>
-		<li class="footer-links__link"><a href="/categories">Categories</a></li>
-	</ul>
-</div>
-
-	    
-
-		<div class="footer-credit">
-			<span>© 2019 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
-		</div>
-
-	</div>
 
 
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
 </footer>
 
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
 
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
 

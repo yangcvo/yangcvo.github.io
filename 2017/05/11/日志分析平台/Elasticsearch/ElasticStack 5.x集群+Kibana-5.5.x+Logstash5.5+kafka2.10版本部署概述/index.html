@@ -1,62 +1,199 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
+<!-- Head tag -->
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta name="theme-color" content="#33474d">
-	<title>ElasticStack 5.x集群+Kibana-5.5.x+Logstash5.5+kafka2.10版本部署概述 | Yancy&#39;s blog</title>
-	<link rel="stylesheet" href="/css/style.css" />
-	
-      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
-    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          ElasticStack 5.x集群+Kibana-5.5.x+Logstash5.5+kafka2.10版本部署概述 - Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2017/05/11/日志分析平台/Elasticsearch/ElasticStack 5.x集群+Kibana-5.5.x+Logstash5.5+kafka2.10版本部署概述/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body>
 
-	<header class="header">
-		<nav class="header__nav">
-			
-				<a href="/" class="header__link">Home</a>
-			
-				<a href="/tags" class="header__link">Tags</a>
-			
-				<a href="/archives" class="header__link">ARCHIVES</a>
-			
-				<a href="/about/About" class="header__link">ABOUT</a>
-			
-				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
-			
-				<a href="/atom.xml" class="header__link">RSS</a>
-			
-		</nav>
-		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
-		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
-	</header>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
 
-	<main>
-		<article>
-	
-		<h1>ElasticStack 5.x集群+Kibana-5.5.x+Logstash5.5+kafka2.10版本部署概述</h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2017-05-11</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Elasticsearch/">Elasticsearch</a> <a class="article__tag-link" href="/tags/Kibana/">Kibana</a>
-			</span>
-		
-	</div>
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
+        </div>
 
-	
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
 
-	
-		<h2 id="ElasticStack-5-x介绍"><a href="#ElasticStack-5-x介绍" class="headerlink" title="ElasticStack 5.x介绍"></a>ElasticStack 5.x介绍</h2><h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/elastic-elk-b.png" alt=""></figure><br><code>ELK=ElasticSearch 官方博客:分布式以及 Elastic</code></p>
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Elasticsearch" title="Elasticsearch">Elasticsearch</a>
+                        
+                          <a class="tag" href="/tags/#Kibana" title="Kibana">Kibana</a>
+                        
+                    </div>
+                    <h1>ElasticStack 5.x集群+Kibana-5.5.x+Logstash5.5+kafka2.10版本部署概述</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2017-05-11
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="ElasticStack-5-x介绍"><a href="#ElasticStack-5-x介绍" class="headerlink" title="ElasticStack 5.x介绍"></a>ElasticStack 5.x介绍</h2><h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/elastic-elk-b.png" alt=""><br><code>ELK=ElasticSearch 官方博客:分布式以及 Elastic</code></p>
 <p>Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一款开源分布式日志系统，一般说来包括了Elasticsearch、Logstash和Kibana，涵盖了后端日志采集、日志搜索服务和前端数据展示等功能。<br>本文将会对Elastic Stack的安装部署流程进行一系列简单的介绍，并记录下了一些部署过程中遇到的坑及解决方法。</p>
 <p>对于一个软件或互联网公司来说，对计算资源和应用进行监控和告警是非常基础的需求。对于大公司或成熟公司，一个高度定制化的监控系统应该已经存在了很长时间并且非常成熟了。而对于一个初创公司或小公司来说，如何利用现有开源工具快速搭建一套日志监控及分析平台是需要探索的事情。</p>
 <a id="more"></a>
@@ -77,7 +214,7 @@
 <p>优势：<code>灵活，易于扩展，数据分析和处理能力强</code><br>劣势：<code>开发难度高，周期长，维护成本高</code></p>
 <h3 id="ELK优势和劣势："><a href="#ELK优势和劣势：" class="headerlink" title="ELK优势和劣势："></a>ELK优势和劣势：</h3><p>优势：<code>开源成熟解决方案，使用简单，扩展能力强</code><br>劣势：<code>日志分析和处理依靠logstash完成，处理能力较低，无法适应复杂的日志分析场景</code><br>结论：<code>初步选择ELK搭建起监控平台，其能够满足当前较为简单的监控和分析需求。未来如果不能适应，再考虑其他方案。</code></p>
 <p>在本次实践中，我们所部署的ELK分布式日志系统，其架构大致如下：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/elasticstack_011.png" alt=""></figure><br>首先在各日志产生机上部署收集器<code>Filebeat</code>，然后Filebeat将监控到的log文件变化数据传至Kafka集群，<code>Logstash</code>负责将数据从<code>kafka</code>中拉取下来，并进行字段解析，向<code>Elasticsearch</code>输出结构化后的日志，<code>Kibana负责将Elasticsearch</code>中的数据进行可视化。</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/elasticstack_011.png" alt=""><br>首先在各日志产生机上部署收集器<code>Filebeat</code>，然后Filebeat将监控到的log文件变化数据传至Kafka集群，<code>Logstash</code>负责将数据从<code>kafka</code>中拉取下来，并进行字段解析，向<code>Elasticsearch</code>输出结构化后的日志，<code>Kibana负责将Elasticsearch</code>中的数据进行可视化。</p>
 <p>【重点参考】：<a href="http://kibana.logstash.es/content/" target="_blank" rel="external">ELK中文书</a></p>
 <h3 id="一、Elasticsearch集群1部署"><a href="#一、Elasticsearch集群1部署" class="headerlink" title="一、Elasticsearch集群1部署"></a>一、Elasticsearch集群1部署</h3><p>首先在<code>https://www.elastic.co</code>中找到ES的安装包。下文中所用的安装包均为Linux 64的<code>tar.gz</code>压缩包，解压即可用。官网安装方法:<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html" target="_blank" rel="external">Installation example with tar</a></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">curl -L -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.5.2.tar.gz</div><div class="line">tar -xvf elasticsearch-5.5.2.tar.gz</div><div class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/elasticsearch-5.5.2/bin</div><div class="line">useradd elasticsearch </div><div class="line">chown -R  /usr/<span class="built_in">local</span>/elasticsearch-5.5.2/</div><div class="line">su - elasticsearch -c <span class="string">"/usr/local/elasticsearch-5.5.2/bin/elasticsearch -d"</span></div><div class="line">这里我切换普通es用户启动，记得给予权限。</div></pre></td></tr></table></figure>
@@ -150,9 +287,9 @@
 <p>此时可以重新获取一个授权，比如免费版授权，但是功能有阉割。更新授权的时候，可能会发现更新不会被确认，这是因为需要加上 <code>acknowledge=true</code> 参数。使用免费授权的后遗症就是基本的安全性没有了，可以用 Nginx 代理做一个<code>HTTP Basic</code>认证来弥补.</p>
 <p>访问效果：</p>
 <p>登录需要输入认证密码统一：Username：elastic password：elastic</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kibana-01.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kibana-01.png" alt=""></p>
 <p>JVM堆，索引内存（KB），CPU利用率（％），系统负载，延迟（ms）等等</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/kibana-02.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kibana-02.png" alt=""></p>
 <h4 id="1-3-Elasticsearch的Head插件"><a href="#1-3-Elasticsearch的Head插件" class="headerlink" title="1.3 Elasticsearch的Head插件"></a>1.3 Elasticsearch的Head插件</h4><p><code>Head</code>插件作为<code>ELK 2.x</code>版本中较为通用的前端管理插件，在<code>ELK 5.x</code>版本中无法直接使用<code>./bin/elasticsearch-plugin install head</code>的方式安装，但是可以采取standalone的方式进行运行。</p>
 <p>参考官方文档：<a href="https://github.com/mobz/elasticsearch-head#running-with-built-in-server" target="_blank" rel="external">elasticsearch-head</a></p>
 <p>一篇较好的<a href="http://www.cnblogs.com/xing901022/p/6030296.html" target="_blank" rel="external">ES 5.x安装Head的博文：</a></p>
@@ -173,7 +310,7 @@
 <ul>
 <li>访问效果：</li>
 </ul>
-<p><figure class="figure"><img src="media/15033045476000.jpg" alt=""></figure></p>
+<p><img src="media/15033045476000.jpg" alt=""></p>
 <h2 id="三、-Elasticsearch-Kibana"><a href="#三、-Elasticsearch-Kibana" class="headerlink" title="三、 Elasticsearch-Kibana"></a>三、 Elasticsearch-Kibana</h2><p>RPM方法安装参考官网文档：<a href="https://www.elastic.co/guide/en/kibana/current/rpm.html#rpm" target="_blank" rel="external">使用RPM 编辑安装Kibana</a></p>
 <p>Running Kibana on Docker: <a href="https://www.elastic.co/guide/en/kibana/current/_pulling_the_image.html" target="_blank" rel="external">Docker 搭建方法</a></p>
 <p>tar方式安装Kibana </p>
@@ -189,15 +326,15 @@
 </ul>
 <p>您可以通过导航到达Kibana服务器的状态页面localhost:5601/status。状态页面显示有关服务器资源使用情况的信息，并列出已安装的插件。</p>
 <p><code>http://10.11.10.26:5601/status</code></p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/elasticstack_022.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/elasticstack_022.png" alt=""></p>
 <ul>
 <li>配置索引模式<br>指定与一个或多个弹性搜索索引的名称相匹配的索引模式。默认情况下，Kibana猜测您正在使用由Logstash提供给Elasticsearch的数据。如果是这样，您可以使用默认值logstash-<em>作为索引模式。星号（</em>）匹配索引名称中的零个或多个字符。如果您的弹性搜索索引遵循其他命名约定，请输入适当的模式。“模式”也可以简单地是单个索引的名称。<br>选择包含要用于执行基于时间的比较的时间戳的索引字段。Kibana读取索引映射以列出包含时间戳的所有字段。如果您的索引没有基于时间的数据，请禁用索引包含基于时间的事件选项。</li>
 </ul>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/elasticstack_033.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/elasticstack_033.png" alt=""></p>
 <ul>
 <li>选择索引查看日志</li>
 </ul>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/elasticstack_044.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/elasticstack_044.png" alt=""></p>
 <p>官网中在生产环境中使用Kibana 说的很详细：<a href="https://www.elastic.co/guide/en/kibana/current/production.html" target="_blank" rel="external">在生产环境中使用Kibana</a></p>
 <p>上面是我logstash已经搭建配置好索引才能获取到。下面讲如何部署logstash</p>
 <h2 id="四、Logstash的部署"><a href="#四、Logstash的部署" class="headerlink" title="四、Logstash的部署"></a>四、Logstash的部署</h2><p>与Elasticsearch类似，在官网下载压缩包后，解压即可用。</p>
@@ -205,7 +342,7 @@
 <h3 id="Installing-Logstash"><a href="#Installing-Logstash" class="headerlink" title="Installing Logstash"></a>Installing Logstash</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">java version <span class="string">"1.8.0_65"</span></div><div class="line">Java(TM) SE Runtime Environment (build 1.8.0_65-b17)</div><div class="line">Java HotSpot(TM) 64-Bit Server VM (build 25.65-b01, mixed mode)</div><div class="line"></div><div class="line">rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch</div><div class="line"></div><div class="line">vim /etc/yum.repos.d/logstash.repo</div><div class="line">[logstash-5.x]</div><div class="line">name=Elastic repository <span class="keyword">for</span> 5.x packages</div><div class="line">baseurl=https://artifacts.elastic.co/packages/5.x/yum</div><div class="line">gpgcheck=1</div><div class="line">gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch</div><div class="line">enabled=1</div><div class="line">autorefresh=1</div><div class="line"><span class="built_in">type</span>=rpm-md</div><div class="line"></div><div class="line">sudo yum install logstash</div></pre></td></tr></table></figure>
 <p>首先，我们通过运行最基本的<code>Logstash</code>管道来测试您的<code>Logstash</code>安装。</p>
 <p><code>Logstash</code>管道有两个必需的元素，<code>input</code>并且<code>output</code>，和一个可选的元素，<code>filter</code>。输入插件消耗来自源的数据，过滤器插件会按照您指定的方式修改数据，并且输出插件将数据写入到目的地。</p>
-<p><figure class="figure"><img src="https://www.elastic.co/guide/en/logstash/current/static/images/basic_logstash_pipeline.png" alt=""></figure></p>
+<p><img src="https://www.elastic.co/guide/en/logstash/current/static/images/basic_logstash_pipeline.png" alt=""></p>
 <p>要测试您的Logstash安装，运行最基本的Logstash管道。例如：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> logstash-5.5.2</div><div class="line">bin / logstash <span class="_">-e</span><span class="string">'input &#123;stdin &#123;&#125;&#125; output &#123;stdout &#123;&#125;&#125;'</span></div></pre></td></tr></table></figure>
 <p>该<code>-e</code>标志使您能够直接从命令行指定配置。在命令行中指定配置可以快速测试配置，而无需在迭代之间编辑文件。示例中的流水线从标准输入端输入，<code>stdin并stdout</code>以结构化格式将该输入移动到标准输出 。</p>
@@ -218,52 +355,274 @@
 <h3 id="Communicative-learning"><a href="#Communicative-learning" class="headerlink" title="Communicative learning:"></a>Communicative learning:</h3><p>🐧  Linux shell_ senior operation and maintenance faction: QQ group <code>459096184</code> circle (system operation and maintenance - application operation and maintenance - automation operation and maintenance - virtualization technology research, welcome to join)<br>🐧  BigData-Exchange School:QQ group <code>521621407</code> circles (big data Yun Wei) (Hadoop developer) (big data research enthusiasts) welcome to join</p>
 <p>Bidata have internal WeChat exchange group, learn from each other, join QQ group has links.</p>
 
-	
 
-	
-		<span class="different-posts"><a href="/2017/05/11/日志分析平台/Elasticsearch/ElasticStack 5.x集群+Kibana-5.5.x+Logstash5.5+kafka2.10版本部署概述/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+                <hr>
 
-	
+                
 
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/05/21/性能监控/Zabbix/ZABBIX 3.0 自动发现  (九)/" data-toggle="tooltip" data-placement="top" title="ZABBIX 3.0 自动发现  (九)">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/05/08/Bigdata-hadoop/ hadoop新增节点集群启动请求异常：Last contact：200/" data-toggle="tooltip" data-placement="top" title="Bigdata-hadoop新增节点集群启动请求异常：Last contact：200">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Elasticsearch" title="Elasticsearch">Elasticsearch</a>
+                        
+                          <a class="tag" href="/tags/#Kibana" title="Kibana">Kibana</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
 </article>
 
-	</main>
-
-	<footer class="footer">
-	<div class="footer-content">
-		
-	      <div class="footer__element">
-	<h5>Hi there,</h5>
-	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
-</div>
 
 
-	    
-	      <div class="footer__element">
-	<h5>Check out</h5>
-	<ul class="footer-links">
-		<li class="footer-links__link"><a href="/archives">Archive</a></li>
-		
-		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
-	    
-		<li class="footer-links__link"><a href="/about">about page</a></li>
-		<li class="footer-links__link"><a href="/tags">Tags</a></li>
-		<li class="footer-links__link"><a href="/categories">Categories</a></li>
-	</ul>
-</div>
-
-	    
-
-		<div class="footer-credit">
-			<span>© 2019 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
-		</div>
-
-	</div>
 
 
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
 </footer>
 
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
 
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
 

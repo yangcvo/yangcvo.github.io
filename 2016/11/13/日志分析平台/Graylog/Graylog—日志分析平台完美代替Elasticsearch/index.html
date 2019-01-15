@@ -1,62 +1,197 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
+<!-- Head tag -->
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta name="theme-color" content="#33474d">
-	<title>Graylog——日志分析平台完美代替Elasticsearch | Yancy&#39;s blog</title>
-	<link rel="stylesheet" href="/css/style.css" />
-	
-      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
-    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Graylog——日志分析平台完美代替Elasticsearch - Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2016/11/13/日志分析平台/Graylog/Graylog—日志分析平台完美代替Elasticsearch/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body>
 
-	<header class="header">
-		<nav class="header__nav">
-			
-				<a href="/" class="header__link">Home</a>
-			
-				<a href="/tags" class="header__link">Tags</a>
-			
-				<a href="/archives" class="header__link">ARCHIVES</a>
-			
-				<a href="/about/About" class="header__link">ABOUT</a>
-			
-				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
-			
-				<a href="/atom.xml" class="header__link">RSS</a>
-			
-		</nav>
-		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
-		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
-	</header>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
 
-	<main>
-		<article>
-	
-		<h1>Graylog——日志分析平台完美代替Elasticsearch</h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-11-13</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Graylog/">Graylog</a>
-			</span>
-		
-	</div>
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
+        </div>
 
-	
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
 
-	
-		<p>摘要: 提起日志聚合工具，有开源界的ELK，商业界的Splunk，但我要介绍开源的后起之秀Graylog，可以说是龙头老大Splunk的开源版。</p>
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Graylog" title="Graylog">Graylog</a>
+                        
+                    </div>
+                    <h1>Graylog——日志分析平台完美代替Elasticsearch</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2016-11-13
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>摘要: 提起日志聚合工具，有开源界的ELK，商业界的Splunk，但我要介绍开源的后起之秀Graylog，可以说是龙头老大Splunk的开源版。</p>
 <h1 id="Graylog——日志分析平台完美代替Elasticsearch"><a href="#Graylog——日志分析平台完美代替Elasticsearch" class="headerlink" title="Graylog——日志分析平台完美代替Elasticsearch"></a>Graylog——日志分析平台完美代替Elasticsearch</h1><p>先看看 推荐！<a href="https://my.oschina.net/HeAlvin/blog/378262" target="_blank" rel="external">国外程序员整理的系统管理员资源大全</a> 中，国外程序员整理的日志聚合工具的列表：</p>
 <p><strong>日志管理工具：收集，解析，可视化</strong></p>
 <ul>
@@ -74,10 +209,10 @@
 <li>ELK： Logstash -&gt; Elasticsearch -&gt; Kibana （使用了一些插件head ，marvel）</li>
 <li>Graylog： Graylog Collector -&gt; Graylog Server(封装Elasticsearch) -&gt; Graylog Web</li>
 </ul>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Graylog.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/Graylog.png" alt=""></p>
 <p>做为运维，公司内部使用elk处理日志发现很多问题。</p>
 <p>顺便截图了几张：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog-elk.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog-elk1.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog-elk.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog-elk1.png" alt=""></p>
 <p>之前试过Logstash + Elasticsearch + Kibana的方案，发现有几个缺点：</p>
 <ol>
 <li>不能处理多行日志，比如Mysql慢查询，Tomcat/Jetty应用的Java异常打印</li>
@@ -97,19 +232,19 @@
 <p>Graylog图解</p>
 <p>Graylog开源版官网： <a href="https://www.graylog.org/" target="_blank" rel="external">https://www.graylog.org/</a></p>
 <p>来几张官网的截图：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog2.png" alt=""></figure></p>
-<p><figure class="figure"><img src="https://www.graylog.org/assets/itops_full-87fe2811ab676116142c145affa95b902635b1d6da99718057e8ae9d45c15007.png" alt=""></figure></p>
-<p><figure class="figure"><img src="https://www.graylog.org/assets/overview_dashboard-3817012f923d4a00e9bde1c0547796319cf0396149464f434cfc2ae83a9da826.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog2.png" alt=""></p>
+<p><img src="https://www.graylog.org/assets/itops_full-87fe2811ab676116142c145affa95b902635b1d6da99718057e8ae9d45c15007.png" alt=""></p>
+<p><img src="https://www.graylog.org/assets/overview_dashboard-3817012f923d4a00e9bde1c0547796319cf0396149464f434cfc2ae83a9da826.png" alt=""></p>
 <p>Graylog是强大的日志管理、分析工具。它基于 Elasticsearch, Java和MongoDB。</p>
 <p>Graylog可以收集监控多种不同应用的日志。但是为了示范说明，我只收集syslog。并且，我将会把用到的组件全部安装到一个单独的服务器上。对于大型、生产系统你可以把组件分开安装在不同的服务器上，这样可以提高效率。</p>
 <h3 id="Graylog的组件"><a href="#Graylog的组件" class="headerlink" title="Graylog的组件"></a>Graylog的组件</h3><p>Graylog有4个基本组件：</p>
 <figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Graylog <span class="built_in">Server</span>：这个服务负责接收和处理日志/消息，并且和其他组件沟通。</div><div class="line">Elasticsearch：存储所有的日志，它的性能依赖内存和硬盘IO。</div><div class="line">MongoDB：存储元数据，负载不高。</div><div class="line">graylog-Web接口：用户接口。</div></pre></td></tr></table></figure>
 <p>下面是Graylog组件之间的关系图：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog3.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog3.png" alt=""></p>
 <p>下面来自我公司内部分享的PPT拍图：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/Graylog4-ppt.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/Graylog4-ppt.png" alt=""></p>
 <p>生产环境 我参考网上一些博客画的图：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog5.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog5.png" alt=""></p>
 <h3 id="系统要求："><a href="#系统要求：" class="headerlink" title="系统要求："></a>系统要求：</h3><ul>
 <li>CentOS 6.7</li>
 <li>内存至少2GB</li>
@@ -168,13 +303,13 @@ yum -y install pwgen
 <pre><code>$ SECRET=$(pwgen -s 96 1)
 $ sudo -E sed -i -e &apos;s/password_secret =.*/password_secret = &apos;$SECRET&apos;/&apos; /etc/graylog/server/server.conf
 </code></pre><p>执行完上面命令之后，password_secret参数的样子：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog6.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog6.png" alt=""></p>
 <p>这一步，设置管理员密码。由于密码使用sha哈希算法，我们需要把明文密码转换为hash，然后赋值给root_password_sha2参数。例如，我要设置的管理员密码是 Ihaozhuo_b313，它对应的hash为：</p>
 <pre><code>$ echo -n Ihaozhuo_b313 | sha256sum | awk &apos;{print $1}&apos;
-</code></pre><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog7.png" alt=""></figure></p>
+</code></pre><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog7.png" alt=""></p>
 <p>编辑/etc/graylog/server/server.conf，设置root_password_sha2参数：</p>
 <pre><code>$ sudo vim /etc/graylog/server/server.conf
-</code></pre><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog8.png" alt=""></figure></p>
+</code></pre><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog8.png" alt=""></p>
 <p>现在Graylog管理员密码为Ihaozhuo_b313。</p>
 <p>配置rest_transport_uri参数，设置Graylog web接口和服务器的沟通方式。由于我们把所有组件都安装到了单独的一个服务器上，需要把值设置为<strong>127.0.0.1</strong> 或 <strong>localhost</strong>。找到rest_transport_uri一行，取消注释，并把值设置为：</p>
 <pre><code>rest_transport_uri = http://192.168.1.234:12900/
@@ -182,7 +317,7 @@ $ sudo -E sed -i -e &apos;s/password_secret =.*/password_secret = &apos;$SECRET&
 <pre><code>elasticsearch_shards = 1
 </code></pre><p>更改elasticsearch_cluster_name参数，应该和前面Elasticsearch的<strong>cluster.name</strong>参数相对应：</p>
 <pre><code>elasticsearch_cluster_name = graylog-development
-</code></pre><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog9.png" alt=""></figure></p>
+</code></pre><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog9.png" alt=""></p>
 <p>取消下面两行的注释，检测Elasticsearch：</p>
 <pre><code>172 elasticsearch_discovery_zen_ping_multicast_enabled = false
 173 elasticsearch_discovery_zen_ping_unicast_hosts = 192.168.1.234:9300
@@ -202,7 +337,7 @@ graylog2-server.uris=&quot;http://127.0.0.1:12900/&quot;
 </code></pre><h3 id="配置Graylog服务器接收其他服务器的syslog日志"><a href="#配置Graylog服务器接收其他服务器的syslog日志" class="headerlink" title="配置Graylog服务器接收其他服务器的syslog日志"></a>配置Graylog服务器接收其他服务器的syslog日志</h3><h4 id="登录Graylog-Web"><a href="#登录Graylog-Web" class="headerlink" title="登录Graylog Web"></a>登录Graylog Web</h4><p>使用浏览器访问Graylog服务器的域名或IP：<strong><a href="http://graylog_public_IP_domain:9000/" target="_blank" rel="external">http://graylog_public_IP_domain:9000/</a></strong>。</p>
 <p>你应该能看到一个登录界面，使用admin做为用户名和前面设置的密码登录。</p>
 <p>登录之后：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog10.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog10.png" alt=""></p>
 <p>上面的红数字1是通知（you have a node without any running inputs），下面设置通过UDP接收syslog。</p>
 <p>创建syslog UDP输入</p>
 <p>添加要接收的其他服务器syslog日志：System-&gt;Inputs-&gt;Syslog UDP-&gt;Launch new input。</p>
@@ -213,8 +348,8 @@ graylog2-server.uris=&quot;http://127.0.0.1:12900/&quot;
 <li>Bind address: 这里写Graylog-server服务器主机IP</li>
 </ul>
 <p>点击Launch</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog11.png" alt=""></figure></p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog12.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog11.png" alt=""></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog12.png" alt=""></p>
 <p>如果你需要收集多个服务器的日志，重复上面步骤。</p>
 <p>现在，我们的Graylog服务器已经做好了接收其他服务器发来日志的准备。下面我们还需要配置其他服务器，让这些服务器给Graylog服务器发送日志。</p>
 <h4 id="配置其他服务器给Graylog服务器发送syslog"><a href="#配置其他服务器给Graylog服务器发送syslog" class="headerlink" title="配置其他服务器给Graylog服务器发送syslog"></a>配置其他服务器给Graylog服务器发送syslog</h4><p>参考官网：<a href="https://marketplace.graylog.org/addons/a47beb3b-0bd9-4792-a56a-33b27b567856" target="_blank" rel="external">从Linux系统日志发送到Graylog</a></p>
@@ -227,12 +362,12 @@ graylog2-server.uris=&quot;http://127.0.0.1:12900/&quot;
 <pre><code>/etc/init.d/rsyslog restart
 </code></pre><p>配置完成之后，回到Graylog Web，点击Sources，查看是否有新添加rsyslog。</p>
 <h4 id="Graylog使用http协议发送："><a href="#Graylog使用http协议发送：" class="headerlink" title="Graylog使用http协议发送："></a>Graylog使用http协议发送：</h4><p>添加要接收的其他服务器syslog日志：System-&gt;Inputs-&gt;GELF HTTP-&gt;Launch new input。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog14.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog14.png" alt=""></p>
 <p>然后在服务器上面发送下面命令。</p>
 <figure class="highlight accesslog"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="string">[root@graylog-development ~]</span># curl -XPOST http://<span class="number">192.168.1.234:12201</span>/gelf -p0 -d '&#123;<span class="string">"short_message"</span>:<span class="string">"Hello there"</span>, <span class="string">"host"</span>:<span class="string">"example.org"</span>, <span class="string">"facility"</span>:<span class="string">"test"</span>, <span class="string">"_foo"</span>:<span class="string">"bar"</span>&#125;'</div><div class="line"><span class="string">[root@graylog-development ~]</span># curl -XPOST http://<span class="number">192.168.1.234:12201</span>/gelf -p0 -d '&#123;<span class="string">"short_message"</span>:<span class="string">"测试"</span>, <span class="string">"host"</span>:<span class="string">"example.org"</span>, <span class="string">"facility"</span>:<span class="string">"test"</span>, <span class="string">"_foo"</span>:<span class="string">"bar"</span>&#125;'</div></pre></td></tr></table></figure>
 <p>这里定义192.168.1.234 是graylog-server服务器地址 12201 端口是之前创建好的。</p>
 <h3 id="搜素Graylog"><a href="#搜素Graylog" class="headerlink" title="搜素Graylog"></a>搜素Graylog</h3><p>假如你要搜索hello：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog13.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog13.png" alt=""></p>
 <p>上面安装配置了基本的Graylog服务器。</p>
 <h3 id="时区和高亮设置"><a href="#时区和高亮设置" class="headerlink" title="时区和高亮设置"></a>时区和高亮设置</h3><p>admin帐号的时区：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="string">[root@graylog</span> <span class="string">~]#</span> <span class="string">vi</span> <span class="string">/etc/graylog/server/server.conf</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="number">30</span> <span class="string">root_timezone</span> <span class="string">=</span> <span class="string">Asia/Shanghai</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="string">[root@graylog</span> <span class="string">~]#</span> <span class="string">/etc/init.d/graylog-server</span> <span class="string">restart</span></div></pre></td></tr></table></figure>
@@ -245,52 +380,272 @@ graylog2-server.uris=&quot;http://127.0.0.1:12900/&quot;
 <p><a href="http://blog.topspeedsnail.com/archives/4066" target="_blank" rel="external">Centos7 搭建graylog</a></p>
 <p><a href="https://my.oschina.net/fitnessefan/blog/464351?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">Graylog——日志聚合工具中的后起之秀</a></p>
 
-	
 
-	
-		<span class="different-posts"><a href="/2016/11/13/日志分析平台/Graylog/Graylog—日志分析平台完美代替Elasticsearch/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+                <hr>
 
-	
+                
 
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/11/14/日志分析平台/Graylog/graylog 升级2.1 集中日志解决方案/" data-toggle="tooltip" data-placement="top" title="graylog 升级2.1 集中日志解决方案">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/11/10/运维笔记/如何解决抽奖的性能问题和秒杀的讨论  /" data-toggle="tooltip" data-placement="top" title="如何解决秒杀的性能问题和微信推广活动的讨论">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Graylog" title="Graylog">Graylog</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
 </article>
 
-	</main>
-
-	<footer class="footer">
-	<div class="footer-content">
-		
-	      <div class="footer__element">
-	<h5>Hi there,</h5>
-	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
-</div>
 
 
-	    
-	      <div class="footer__element">
-	<h5>Check out</h5>
-	<ul class="footer-links">
-		<li class="footer-links__link"><a href="/archives">Archive</a></li>
-		
-		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
-	    
-		<li class="footer-links__link"><a href="/about">about page</a></li>
-		<li class="footer-links__link"><a href="/tags">Tags</a></li>
-		<li class="footer-links__link"><a href="/categories">Categories</a></li>
-	</ul>
-</div>
-
-	    
-
-		<div class="footer-credit">
-			<span>© 2019 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
-		</div>
-
-	</div>
 
 
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
 </footer>
 
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
 
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
 

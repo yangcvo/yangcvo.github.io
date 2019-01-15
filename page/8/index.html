@@ -1,584 +1,778 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
+<!-- Head tag -->
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta name="theme-color" content="#33474d">
-	<title>Yancy&#39;s blog</title>
-	<link rel="stylesheet" href="/css/style.css" />
-	
-      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
-    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/page/8/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body>
 
-	<header class="header">
-		<nav class="header__nav">
-			
-				<a href="/" class="header__link">Home</a>
-			
-				<a href="/tags" class="header__link">Tags</a>
-			
-				<a href="/archives" class="header__link">ARCHIVES</a>
-			
-				<a href="/about/About" class="header__link">ABOUT</a>
-			
-				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
-			
-				<a href="/atom.xml" class="header__link">RSS</a>
-			
-		</nav>
-		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
-		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
-	</header>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
 
-	<main>
-		
-	<span class="different-posts different-posts_earlier">📖 <a href="/page/7">earlier posts</a> 📖</span>
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>Yancy&#39;s blog</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
 
 
 
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        
 
-	<article>
-	
-		<h1><a href="/2016/09/12/自动化+Jenkins/Jenkins/用Ansible + Jenkins+maven＋nginx搞定自动发布，构建程序的持续集成平台/">Ansible + Jenkins+Maven＋Nginx搞定自动发布，构建程序的持续集成平台</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-09-12</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/automation/">automation</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Jenkins/">Jenkins</a> <a class="article__tag-link" href="/tags/Manven/">Manven</a>
-			</span>
-		
-	</div>
+<!-- USE SIDEBAR -->
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                post-container
+            ">
+            
+                <!-- Main Content -->
 
-	
 
-	
-		<h1 id="Ansible-Jenkins搞定自动发布，构建程序的持续集成平台"><a href="#Ansible-Jenkins搞定自动发布，构建程序的持续集成平台" class="headerlink" title="Ansible+Jenkins搞定自动发布，构建程序的持续集成平台"></a>Ansible+Jenkins搞定自动发布，构建程序的持续集成平台</h1><p>Ansible是相对简单的批量管理工具，支持模板管理等高级功能。搞定了自动发布，开发的服务器需求已经明显下降，只要把代码提交到 Git主干，就会自动触发发布。</p>
-<p>今天有空就简单记录下用Ansible + Jenkins搞定自动发布 。这篇是主要环境安装。</p>
-<h3 id="一、什么是持续集成"><a href="#一、什么是持续集成" class="headerlink" title="一、什么是持续集成"></a>一、什么是持续集成</h3><p><strong>1、什么是集成</strong></p>
-<p>指的是代码由编译、发布和测试、直到上线的一个过程</p>
-<p><strong>2、什么持续集成</strong></p>
-<p>高效的、持续性质的不断迭代代码的集成工作</p>
-<p><strong>3、如何高效准确的实现持续集成</strong></p>
-<p>必不可少的需要一套能自动化、并且可视化的平台来帮助我们。</p>
-<p>那么总结来看，Jenkins就是一个可以帮助我们实现持续集成的平台。</p>
-<h3 id="二、为什么Jenkins能帮助我们进行持续集成"><a href="#二、为什么Jenkins能帮助我们进行持续集成" class="headerlink" title="二、为什么Jenkins能帮助我们进行持续集成"></a>二、为什么Jenkins能帮助我们进行持续集成</h3><p> 理由有如下几点：</p>
-<p><strong>1、Jenkins是一个开源的、且基于JAVA代码开发的持续集成系统。</strong></p>
-<p>因为含有非常丰富的插件支持所以我们可以方便的打通版本库、测试构建环境、线上环境的所有环节。并且丰富友好的通知使用者和开发、管理人员。</p>
-<p><strong>2、安装维护简单</strong></p>
-<p>安装Jenkins，不太复杂。且支持通用的平台。</p>
-<p><strong>3、Java 应用 常用</strong></p>
-<p>在企业的软件构建过程中，JAVA的应用工程稍显复杂，由于复杂构建、和代码上线、并且服务的重启。整个过程下来，消耗的时间较多，Jenkins却能很好的集成maven的编译方式，且利用自动化的插件、和自定义开发脚本的支持。所以目前广泛的应用于JAVA工程的持续集成平台。</p>
-<p>好了，那么接下来我就来介绍，如何搭建一套快速有效的Jenkins自动化发布持续集成平台。</p>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>为了提高工作效率，避免重复的手动发包部署工作，特搭建Jenkins+Ansible的自动部署平台。<br>主要实现原理是：</p>
-<ul>
-<li>由Jenkins拉取git代码  </li>
-<li>使用Maven命令编译打包  </li>
-<li>通过Ansible 发送war包到对应的服务器  </li>
-<li>通过Ansible执行远程服务器的重启命令 </li>
-<li>发布完成。</li>
+<div class="post-preview">
+
+    <a href="/2016/09/12/自动化+Jenkins/Jenkins/用Ansible + Jenkins+maven＋nginx搞定自动发布，构建程序的持续集成平台/">
+        <h2 class="post-title">
+            Ansible + Jenkins+Maven＋Nginx搞定自动发布，构建程序的持续集成平台
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Ansible+Jenkins搞定自动发布，构建程序的持续集成平台Ansible是相对简单的批量管理工具，支持模板管理等高级功能。搞定了自动发布，开发的服务器需求已经明显下降，只要把代码提交到 Git主干，就会自动触发发布。
+今天有空就简单记录下用Ansible + Jenkins搞定自动发布 。这篇是主要环境安装。
+一、什么是持续集成1、什么是集成
+指的是代码由编译、发布和测试、直到上线的......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-09-12
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/08/23/Web服务技术/Nginx/企业级Nginx Web服务优化实战/">
+        <h2 class="post-title">
+            企业级Nginx Web服务优化实战
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            企业级Nginx Web服务优化实战前言:  在运维工作已经3个年，运维岗位：对web服务是必须要会的，这次我对Nginx Web服务做一次优化总结，上次记得写博客是对Nginx配置详解和服务的高可用。希望写的对你看到我博客的人有所帮助。
+1.1 Nginx 基本安全优化1.1.2 调整参数隐藏Nginx软件版本号信息 这里说隐藏版本号重要性软件出现漏洞跟版本特别有关系，我们尽可能隐藏或消除......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-08-23
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/08/23/Web服务技术/Nginx/Nginx 的启动、停止、平滑重启、信号控制和平滑升级 /">
+        <h2 class="post-title">
+            Nginx 的启动、停止、平滑重启、信号控制和平滑升级
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Nginx 的启动、停止、平滑重启、信号控制和平滑升级Nginx的启动假设 nginx 安装在/usr/local/nginx 目录中，那么启动 nginx 的命令就是：
+1[root@Nginx_01 ~]# /usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf
+参数&quot;-c&quot; 指定了配置文件的路径......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-08-23
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/08/21/性能监控/Zabbix/直播分享的主题是云监控----zabbix&collectd 互相讨论/">
+        <h2 class="post-title">
+            直播分享的主题是云监控----zabbix&collectd 互相讨论
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            直播分享的主题是云监控—-zabbix&amp;collectd 互相讨论前几天参加KVM开展的直播秀，肖总请来了各位运维大咖给我们展示他们云监控。这里我整理下崔广章大师的聊天记录各位可以一起聆听下。
+12345678910111213141516171819202122232425 崔广章 19:58我之前一直在做私有云，我们整个云平台的监控系统系统用的就是zabbix 崔广章 19:59......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-08-21
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/08/21/Node.js-npm/npm翻墙加速国内镜像/">
+        <h2 class="post-title">
+            npm翻墙加速国内镜像
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            问题Node.js 的依赖包管理生态系统 npm, 是世界上最大的生态系统开源库。 但国内使用 npm 来安装软件，速度很慢，有时候甚至直接就失败了！比如我安装stf就需要翻墙或者VPN去安装，可是就一直卡着。
+
+原因npm 默认是从国外的源获取和下载包信息，不慢才怪，有时甚至被墙，导致无法正常安装软件。
+解决可以采用国内的 npm 镜像来解决网速慢的问题。这里以“淘宝 NPM 镜像”举例。......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-08-21
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/08/16/Node.js-npm/Centos7.1+Mac环境安装Node.Js以及彻底删除卸载node.js教程/">
+        <h2 class="post-title">
+            Centos7.1+Mac环境安装Node.Js以及彻底删除卸载node.js教程
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            linux Centos7系统快速安装node.js npm1234567第一、选择合适的版本安装# 4.x版本curl --silent --location https://rpm.nodesource.com/setup_4.x | bash -# 5.x版本curl --silent --location https://rpm.nodesource.com/setup_5.x | ......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-08-16
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/07/21/性能监控/Zabbix/Zabbix 监控 KVM集群/">
+        <h2 class="post-title">
+            KVM monitoring through Zabbix
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            KVM monitoring through ZabbixMonitor your KVM resources through Zabbix
+Zabbix 监控 KVM
+安装依赖python2, libvirt-python (tested with 0.9.12.3, 0.10.2 and 1.1.3.x)
+pip install libvirt-python 
+KVM Server 设定......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-07-21
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/06/29/运维安全/ 化解自己的阿里云服务器被黑客攻击-暴力破解/">
+        <h2 class="post-title">
+            化解自己的阿里云服务器被黑客攻击-暴力破解
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            说明下：因为阿里云服务器我是用来自己搭建blog 的做了一些简单的监控。
+因为防止被攻击瘫痪，做到安全防范，可是今天晚上吃完饭，发现又被人攻击，是印度和巴西IP地址暴力破解方式一直在尝试破解我密码。
+1还好我在阿里云上面使用了云盾告警，其实它这个一般般，只能提醒，不能有效阻止黑客攻击。
+
+收到告警以后，马上打开电脑去云盾上面查看下。
+
+然后看了以后发现问题不大，可是上机器查看，发现有不断的攻......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-06-29
+    </p>
+
+</div>
+<hr>
+
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+        <li class="previous">
+            <a href="/page/7/">&larr; Newer Posts</a>
+        </li>
+    
+    
+        <li class="next">
+            <a href="/page/9/">Older Posts &rarr;</a>
+        </li>
+    
 </ul>
-<h3 id="一-环境介绍"><a href="#一-环境介绍" class="headerlink" title="一. 环境介绍"></a>一. 环境介绍</h3><p>本平台搭建在CentOS6环境中，其他linux环境情况类似。<br>在自动部署服务器中需要安装以下软件：</p>
-<ol>
-<li>JDK</li>
-<li>Git</li>
-<li>Maven</li>
-<li>Tomcat</li>
-<li>Jenkins</li>
-<li>Ansible</li>
-</ol>
-<h3 id="二-步骤："><a href="#二-步骤：" class="headerlink" title="二. 步骤："></a>二. 步骤：</h3><ol>
-<li>ansible安装与配置；</li>
-<li>Jenkins的安装；</li>
-<li>Jenkins的配置；</li>
-<li>安装配置tomcat</li>
-<li>安装配置Java；</li>
-<li>安装配置maven；</li>
-<li>nginx反向代理配置访问域名；</li>
-<li>相关插件安装；</li>
-<li>系统设置明细；</li>
-<li>slave节点配置；</li>
-<li>一些依赖项的安装。</li>
-</ol>
-<h4 id="1-1-Ansible简单介绍"><a href="#1-1-Ansible简单介绍" class="headerlink" title="1.1    Ansible简单介绍"></a>1.1    Ansible简单介绍</h4><p>Ansible是一个部署一群远程主机的工具。远程的主机可以是本地或者远程的虚拟 机，也可以是远程的物理机。<br>Ansible通过SSH协议进行管理节点和远程节点之间的通信。理论上说管理员通过 ssh到一台远程主机上能做的操作Ansible都可以做。包括：拷贝文件、安装包、启动服务…</p>
-<p>总结：<strong>Ansible把一些shell命令封装成一个个模块，并通过SSH连接，在远程机器上执行这些模块包含的脚本。</strong></p>
-<h4 id="1-2-Ansible安装与配置"><a href="#1-2-Ansible安装与配置" class="headerlink" title="1.2    Ansible安装与配置"></a>1.2    Ansible安装与配置</h4><p>系统环境：centos7.1<br>直接使用yum安装ansible</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># yum install http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm</span></div><div class="line"><span class="comment"># yum install ansible</span></div></pre></td></tr></table></figure>
-<p>安装完成之后，需要<code>ansible</code>中的<code>hosts</code>文件分组，编辑<code>/etc/ansible/hosts</code>文件，将目标机器加入分组，并配置好面秘钥登录。<br>Ansible更多详细内容可以参考我之前写的<a href="http://blog.yangcvo.me/2016/03/07/%E8%87%AA%E5%8A%A8%E5%8C%96/Ansible/Ansible%20%E5%B0%8F%E7%BB%93%EF%BC%88%E4%B8%80%EF%BC%89ansible%E7%9A%84%E5%AE%89%E8%A3%85%20/" target="_blank" rel="external">ansibles学习篇</a></p>
-<h4 id="二-安装Jenkins环境"><a href="#二-安装Jenkins环境" class="headerlink" title="二. 安装Jenkins环境"></a>二. 安装Jenkins环境</h4><p>1)    安装并配置好JAVA、JDK、Tomcat，并去官网下载最新版本的war包。</p>
-<p>去官网下载包资源：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">apache-tomcat-8.0.28.tar.gz</div><div class="line">jenkins.war</div><div class="line">jdk1.8.0_66.tar.gz</div><div class="line">maven.tar.gz</div></pre></td></tr></table></figure>
-<p>没有下载成功的我这里已下载好了。最新版本<br><a href="http://oak0aohum.bkt.clouddn.com/jenkins.war" target="_blank" rel="external">jenkins.war</a><br><a href="http://oak0aohum.bkt.clouddn.com/apache-tomcat-8.0.28.tar.gz" target="_blank" rel="external">tomcat.tar.gz</a><br><a href="http://oak0aohum.bkt.clouddn.com/maven.tar.gz" target="_blank" rel="external">maven.tar.gz</a></p>
-<h5 id="2-1-jdk安装："><a href="#2-1-jdk安装：" class="headerlink" title="2.1 jdk安装："></a>2.1 jdk安装：</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">tar -zxvf jdk1.8.0_66.tar.gz -C /srv/.</div><div class="line">         </div><div class="line">这里在配置环境变量。</div><div class="line"></div><div class="line">vim /etc/profile.d/java.sh</div><div class="line"><span class="built_in">export</span> JAVA_HOME=/srv/jdk1.8.0_66</div><div class="line"><span class="built_in">export</span> CLASS_PATH=<span class="string">"<span class="variable">$JAVA_HOME</span>/lib:<span class="variable">$JAVA_HOME</span>/jre/lib"</span></div><div class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$JAVA_HOME</span>/bin</div><div class="line"></div><div class="line">[root@Jenkins ~]<span class="comment"># java -version</span></div><div class="line">java version <span class="string">"1.8.0_66"</span></div><div class="line">Java(TM) SE Runtime Environment (build 1.8.0_66-b17)</div><div class="line">Java HotSpot(TM) 64-Bit Server VM (build 25.66-b17, mixed mode)</div></pre></td></tr></table></figure>
-<h5 id="2-2-Tomcat安装配置："><a href="#2-2-Tomcat安装配置：" class="headerlink" title="2.2 Tomcat安装配置："></a>2.2 Tomcat安装配置：</h5><p>Jenkins官网：<a href="https://jenkins.io/index.html" target="_blank" rel="external">https://jenkins.io/index.html</a><br>可参考我之前写的文档：<a href="http://blog.yangcvo.me/2015/11/21/tomcat/%E6%90%AD%E5%BB%BA%E9%85%8D%E7%BD%AEtomcat%E7%8E%AF%E5%A2%83/" target="_blank" rel="external">搭建配置tomcat环境</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">tar -zxvf apache-tomcat-8.0.28.tar.gz -C /srv/.</div><div class="line">mv apache-tomcat-8.0.28 tomcat</div><div class="line">useradd <span class="_">-s</span> /sbin/nologin tomcat </div><div class="line">chown -R tomcat:tomcat tomcat</div></pre></td></tr></table></figure>
-<p>2)    放在配置好Tomcat，启动Jenkins，根据提示，输入安装秘钥。</p>
-<h5 id="2-3-jenkins安装配置："><a href="#2-3-jenkins安装配置：" class="headerlink" title="2.3 jenkins安装配置："></a>2.3 jenkins安装配置：</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mv jenkins.war /srv/tomcat/webapps/. </div><div class="line"><span class="built_in">cd</span> /tomcat</div><div class="line">./bin/startup.sh</div><div class="line">然后打开地址：http://192.168.1.183:8080/jenkins</div><div class="line">新版本会提示下载安装插件。下载以后会让你设置账号和密码还有邮箱。</div></pre></td></tr></table></figure>
-<p>进入安装界面:<br>第一次，登录，需要进行一个解锁 ，页面也会有提示.</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins1.png" alt=""></figure></p>
-<p>秘钥的具体位置在：<code>/root/.jenkins/secrets/initialAdminPassword</code>中，我们可以通过这个文件中查看密码，并输入。</p>
-<p>3)    设置好登录账号密码，根据推荐选项安装插件，等待下载安装完成。在插件安装过程中可能有些安装不成功，暂时先不用管。</p>
-<p>它会给我们安装一些基础的插件<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins_01.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins_02.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins_03.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins_04.png" alt=""></figure><br>早期jenkins默认是不需要登陆的。</p>
-<h4 id="1-3-Maven-安装和配置"><a href="#1-3-Maven-安装和配置" class="headerlink" title="1.3 Maven 安装和配置"></a>1.3 Maven 安装和配置</h4><p>官网：<a href="http://maven.apache.org/" target="_blank" rel="external">http://maven.apache.org/</a><br>官网下载：<a href="http://maven.apache.org/download.cgi" target="_blank" rel="external">http://maven.apache.org/download.cgi</a><br>历史版本下载：<a href="https://archive.apache.org/dist/maven/binaries/" target="_blank" rel="external">https://archive.apache.org/dist/maven/binaries/</a><br>此时（20160208） Maven 最新版本为：<strong>3.3.9</strong></p>
-<p>Maven 3.3 的 JDK 最低要求是 JDK 1.7 - 我个人习惯 <code>/opt</code> 目录下创建一个目录 <code>setups</code> 用来存放各种软件安装包；在 <code>/srv</code> 目录下创建一个 <code>program</code> 用来存放各种解压后的软件包，下面的讲解也都是基于此习惯.</p>
-<p>下载压缩包：<code>wget http://mirrors.cnnic.cn/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz</code><br>解压指定到我个人习惯的安装目录下：<code>tar zxvf apache-maven-3.3.9-bin.tar.gz -C /srv/program/.</code><br>移到我个人习惯的安装目录下：<code>mv maven3.3.9/ /srv/program/maven3</code></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">环境变量设置：vim /etc/profile.d/maven.sh</div><div class="line">    <span class="comment"># Maven</span></div><div class="line">    MAVEN_HOME=/srv/program/maven3</div><div class="line">    PATH=<span class="variable">$PATH</span>:<span class="variable">$MAVEN_HOME</span>/bin</div><div class="line">    MAVEN_OPTS=<span class="string">"-Xms256m -Xmx356m"</span></div><div class="line">    <span class="built_in">export</span> MAVEN_HOME</div><div class="line">    <span class="built_in">export</span> PATH</div><div class="line">    <span class="built_in">export</span> MAVEN_OPTS</div></pre></td></tr></table></figure>
-<p>刷新配置文件：<code>source /etc/profile</code><br>测试是否安装成功：<code>mvn -version</code></p>
-<h4 id="1-3-1-Maven-配置"><a href="#1-3-1-Maven-配置" class="headerlink" title="1.3.1 Maven 配置"></a>1.3.1 Maven 配置</h4><ul>
-<li>配置项目连接上私服</li>
-<li>全局方式配置：</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div></pre></td><td class="code"><pre><div class="line"><span class="php"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span><span class="meta">?&gt;</span></span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">settings</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/SETTINGS/1.0.0"</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span> <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd"</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!--本地仓库位置--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">localRepository</span>&gt;</span>/srv/mv2<span class="tag">&lt;/<span class="name">localRepository</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">pluginGroups</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">pluginGroups</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">proxies</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">proxies</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!--设置 Nexus 认证信息--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">servers</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">server</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>nexus-releases<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">username</span>&gt;</span>admin<span class="tag">&lt;/<span class="name">username</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">password</span>&gt;</span>admin123<span class="tag">&lt;/<span class="name">password</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">server</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">server</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>nexus-snapshots<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">username</span>&gt;</span>admin<span class="tag">&lt;/<span class="name">username</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">password</span>&gt;</span>admin123<span class="tag">&lt;/<span class="name">password</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">server</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">servers</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!--设置 Nexus 镜像，后面只要本地没对应的以来，则到 Nexus 去找--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">mirrors</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>nexus-releases<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>*<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://localhost:8081/nexus/content/groups/public<span class="tag">&lt;/<span class="name">url</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>nexus-snapshots<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>*<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://localhost:8081/nexus/content/groups/public-snapshots<span class="tag">&lt;/<span class="name">url</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">mirrors</span>&gt;</span></div><div class="line"></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">profiles</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">profile</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>nexus<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">repositories</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">repository</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">id</span>&gt;</span>nexus-releases<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://nexus-releases<span class="tag">&lt;/<span class="name">url</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">releases</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>true<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;/<span class="name">releases</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">snapshots</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>true<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;/<span class="name">snapshots</span>&gt;</span></div><div class="line">                <span class="tag">&lt;/<span class="name">repository</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">repository</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">id</span>&gt;</span>nexus-snapshots<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://nexus-snapshots<span class="tag">&lt;/<span class="name">url</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">releases</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>true<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;/<span class="name">releases</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">snapshots</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>true<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;/<span class="name">snapshots</span>&gt;</span></div><div class="line">                <span class="tag">&lt;/<span class="name">repository</span>&gt;</span></div><div class="line">            <span class="tag">&lt;/<span class="name">repositories</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">pluginRepositories</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">pluginRepository</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">id</span>&gt;</span>nexus-releases<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://nexus-releases<span class="tag">&lt;/<span class="name">url</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">releases</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>true<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;/<span class="name">releases</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">snapshots</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>true<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;/<span class="name">snapshots</span>&gt;</span></div><div class="line">                <span class="tag">&lt;/<span class="name">pluginRepository</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">pluginRepository</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">id</span>&gt;</span>nexus-snapshots<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://nexus-snapshots<span class="tag">&lt;/<span class="name">url</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">releases</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>true<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;/<span class="name">releases</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">snapshots</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>true<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;/<span class="name">snapshots</span>&gt;</span></div><div class="line">                <span class="tag">&lt;/<span class="name">pluginRepository</span>&gt;</span></div><div class="line">            <span class="tag">&lt;/<span class="name">pluginRepositories</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">profile</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">profiles</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">activeProfiles</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">activeProfile</span>&gt;</span>nexus<span class="tag">&lt;/<span class="name">activeProfile</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">activeProfiles</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">settings</span>&gt;</span></div></pre></td></tr></table></figure>
-<ul>
-<li>jenkins发布修改过以后：</li>
-</ul>
-<figure class="highlight dust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div></pre></td><td class="code"><pre><div class="line"><span class="xml"><span class="tag">&lt;<span class="name">settings</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/POM/4.0.0"</span></span></span></div><div class="line">          <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></div><div class="line">          <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/POM/4.0.0</span></div><div class="line">                               http://maven.apache.org/xsd/settings-1.0.0.xsd"&gt;</div><div class="line">                               </div><div class="line">                               </div><div class="line">         <span class="comment">&lt;!--表示本地库的保存位置，也就是maven2主要的jar保存位置，默认在$</span><span class="template-variable">&#123;user.dir&#125;</span><span class="xml"><span class="comment">/.m2/repository，如果需要另外设置，就换成其他的路径。 --&gt;</span></span></div><div class="line">         </div><div class="line">  <span class="tag">&lt;<span class="name">localRepository</span>&gt;</span>/srv/m2<span class="tag">&lt;/<span class="name">localRepository</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">interactiveMode</span>/&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">usePluginRegistry</span>/&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">offline</span>&gt;</span>false<span class="tag">&lt;/<span class="name">offline</span>&gt;</span></div><div class="line">  </div><div class="line">  </div><div class="line">  <span class="comment">&lt;!--当插件的组织Id（groupId）没有显式提供时，供搜寻插件组织Id（groupId）的列表。该元素包含一个pluginGroup元素列表，每个子元素包含了一个组织Id（groupId）。</span></div><div class="line">当我们使用某个插件，并且没有在命令行为其提供组织Id（groupId）的时候，Maven就会使用该列表。默认情况下该列表包含了org.apache.maven.plugins。 --&gt;</div><div class="line"></div><div class="line"> <span class="tag">&lt;<span class="name">pluginGroups</span>&gt;</span></div><div class="line">  <span class="comment">&lt;!--plugin的组织Id（groupId） --&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">pluginGroup</span>&gt;</span>org.codehaus.mojo<span class="tag">&lt;/<span class="name">pluginGroup</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">pluginGroup</span>&gt;</span>org.apache.tomcat.maven<span class="tag">&lt;/<span class="name">pluginGroup</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">pluginGroup</span>&gt;</span>org.mortbay.jetty<span class="tag">&lt;/<span class="name">pluginGroup</span>&gt;</span></div><div class="line"> <span class="tag">&lt;/<span class="name">pluginGroups</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">servers</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">server</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">id</span>&gt;</span>tomcat<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">username</span>&gt;</span>tomcat<span class="tag">&lt;/<span class="name">username</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">password</span>&gt;</span>keyfree123<span class="tag">&lt;/<span class="name">password</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">server</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">server</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">id</span>&gt;</span>haozhuo<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">username</span>&gt;</span>haozhuo<span class="tag">&lt;/<span class="name">username</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">password</span>&gt;</span>haozhuo123<span class="tag">&lt;/<span class="name">password</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">server</span>&gt;</span></div><div class="line">        <span class="comment">&lt;!--d:server 的id,用于匹配distributionManagement库id，比较重要。 --&gt;</span></div><div class="line">         <span class="tag">&lt;<span class="name">server</span>&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="name">id</span>&gt;</span>nexus-releases<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">        <span class="comment">&lt;!--username, password:用于登陆此服务器的用户名和密码 --&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="name">username</span>&gt;</span>admin<span class="tag">&lt;/<span class="name">username</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">password</span>&gt;</span>123456<span class="tag">&lt;/<span class="name">password</span>&gt;</span></div><div class="line">   <span class="tag">&lt;/<span class="name">server</span>&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">server</span>&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="name">id</span>&gt;</span>nexus-snapshots<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="name">username</span>&gt;</span>admin<span class="tag">&lt;/<span class="name">username</span>&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="name">password</span>&gt;</span>123456<span class="tag">&lt;/<span class="name">password</span>&gt;</span></div><div class="line">   <span class="tag">&lt;/<span class="name">server</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">servers</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">mirrors</span>&gt;</span></div><div class="line">  <span class="comment">&lt;!--表示镜像库，指定库的镜像，用于增加其他库 --&gt;</span></div><div class="line"></div><div class="line">   </div><div class="line">    <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">id</span>&gt;</span>nexus-aliyun<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>*<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>Nexus aliyun<span class="tag">&lt;/<span class="name">name</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://maven.aliyun.com/nexus/content/groups/public<span class="tag">&lt;/<span class="name">url</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">id</span>&gt;</span>hz<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">name</span>&gt;</span>hz Central<span class="tag">&lt;/<span class="name">name</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://nexus.haozhuo.com:8083/nexus/content/groups/public/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">id</span>&gt;</span>CN<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">name</span>&gt;</span>OSChina Central<span class="tag">&lt;/<span class="name">name</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://maven.oschina.net/content/groups/public/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">          <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">id</span>&gt;</span>ibiblio.org<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">name</span>&gt;</span>ibiblio Mirror of http://repo1.maven.org/maven2/<span class="tag">&lt;/<span class="name">name</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://mirrors.ibiblio.org/pub/mirrors/maven2<span class="tag">&lt;/<span class="name">url</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></div><div class="line"></div><div class="line">     <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></div><div class="line">        </div><div class="line">           <span class="comment">&lt;!--</span></div><div class="line">     &lt;mirror&gt;</div><div class="line">         &lt;id&gt;jboss-public-repository-group&lt;/id&gt;</div><div class="line">         &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;</div><div class="line">         &lt;name&gt;JBoss Public Repository Group&lt;/name&gt;</div><div class="line">         &lt;url&gt;http://repository.jboss.org/nexus/content/groups/public&lt;/url&gt;</div><div class="line">     &lt;/mirror&gt;</div><div class="line">            --&gt;</div><div class="line">            </div><div class="line"> <span class="tag">&lt;/<span class="name">mirrors</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">activeProfiles</span>&gt;</span></div><div class="line">    <span class="comment">&lt;!--make the profile active all the time --&gt;</span></div><div class="line">     <span class="comment">&lt;!--&lt;activeProfile&gt;nexus&lt;/activeProfile&gt;   --&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">activeProfiles</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">settings</span>&gt;</span></div></pre></td></tr></table></figure>
-<h3 id="三-配置nginx反向代理"><a href="#三-配置nginx反向代理" class="headerlink" title="三. 配置nginx反向代理."></a>三. 配置nginx反向代理.</h3><p>在nginx配置目录/usr/local/nginx/conf/nginx.conf，配置文件内容如下</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">upstream tomcat-jenkins &#123;</div><div class="line">     server  192.168.1.220:8080 weight=1;</div><div class="line"> &#125;</div><div class="line"></div><div class="line"> server &#123;</div><div class="line">     listen       80;</div><div class="line">     server_name  jenkins.yjk.cn;</div><div class="line">     location / &#123;</div><div class="line">        index        index.html index.php index.jsp index.htm;</div><div class="line">        proxy_pass           http://tomcat-jenkins;</div><div class="line">        proxy_ignore_client_abort on;</div><div class="line">        proxy_redirect               off;</div><div class="line">        proxy_set_header     Host    <span class="variable">$host</span>;</div><div class="line">        proxy_set_header     X-Real-IP       <span class="variable">$remote_addr</span>;</div><div class="line">        proxy_set_header     X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
-<p>修改/etc/hosts，在末尾新增一行 :</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">127.0.0.1     jenkins.yjk.cn</div></pre></td></tr></table></figure>
-<p>重启nginx，<code>/usr/sbin/nginx -s reload</code>，即可以地址 <code>jenkins.yjk.cn</code> 访问Jenkins主页.</p>
-<h3 id="四-安装部分Jenkins插件"><a href="#四-安装部分Jenkins插件" class="headerlink" title="四. 安装部分Jenkins插件"></a>四. 安装部分Jenkins插件</h3><p>访问Jenkins主页：<a href="http://jenkins.yjk.cn" target="_blank" rel="external">http://jenkins.yjk.cn</a><br>系统管理 –&gt; 管理插件 –&gt; 可选插件;<br>安装所需要的插件(根据需要自行选择)，如 <code>GitBucket Plugin、 FindBugs Plug-in 、Cobertura Plugin 、 Violations Plugin 、Email Extension Plugin</code>等</p>
-<p>⚠️插件安装不成功处理办法：</p>
-<p>进入左侧菜单栏的系统管理，发现很多插件无法安装成功，如下图：<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.cah.png" alt=""></figure></p>
-<p>复制安装失败的名称，点击右侧按钮，选择可选插件，输入名称重新安装。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.1.png" alt=""></figure></p>
-<p>如果还是失败，请注意提示信息，可直接下载该插件手动上传安装，手动下载该插件，在插件管理的高级标签中，选择上传安装。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.2.png" alt=""></figure><br>如果上传失败，还有个方法：直接把下载下来的插件上传到Jenkins服务器上面。默认安装的话目录在：/root/.jenkins/plugins/  重启服务即可.</p>
-<h3 id="五-系统设置以及介绍（可跳过）"><a href="#五-系统设置以及介绍（可跳过）" class="headerlink" title="五. 系统设置以及介绍（可跳过）"></a>五. 系统设置以及介绍（可跳过）</h3><h4 id="1-1-系统配置"><a href="#1-1-系统配置" class="headerlink" title="1.1 系统配置"></a>1.1 系统配置</h4><p>进入首页系统管理—&gt;系统设置。</p>
-<ol>
-<li>配置maven</li>
-<li>配置邮件服务<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.3.png" alt=""></figure> </li>
-</ol>
-<p>主目录默认在 /root/.jenkins  下面，此目录保存jenkins 的所有配置和插件等，具体可以于服务器中查看该目录。<br>下面可以继续配置maven，jdk，git等等，也可以使用默认的配置。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.4.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.5.png" alt=""></figure></p>
-<h4 id="1-2-项目配置"><a href="#1-2-项目配置" class="headerlink" title="1.2 项目配置"></a>1.2 项目配置</h4><p>新建一个自由风格的项目，输入项目名称。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.6.png" alt=""></figure><br>1.参数配置</p>
-<p>简单的从Git中拉取代码无法满足我们的需求，最理想的状态是可以对发布的分支进行动态选择。所以我们需要安装一个配置动态参数的插件：<a href="https://wiki.jenkins-ci.org/display/JENKINS/Dynamic+Parameter+Plug-in" target="_blank" rel="external">Dynamic Parameter Plug-in</a> </p>
-<p>安装好插件之后，在项目配置，参数化构建过程中添加动态参数：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.7.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.8.png" alt=""></figure></p>
-<p>输入变量名称和脚本，在接下来的配置中就可以使用<code>$Name</code>的方式，使用变量了。如：<code>$branch</code>。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.9.png" alt=""></figure></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">def gettags = (<span class="string">"git ls-remote -h git@gitlab.ihaozhuo.com:Java_Service/YJK-Java.git"</span>).execute() </div><div class="line">gettags.text.readLines().collect &#123; it.split()[1].replaceAll(<span class="string">'refs/heads/'</span>, <span class="string">''</span>)  &#125;.unique()</div></pre></td></tr></table></figure>
-<p> 这是一段<code>Groovy</code>脚本，用来获取Git地址的分支，将Git地址改成自己的就行。</p>
-<h4 id="1-3接下来选择扩展功能。"><a href="#1-3接下来选择扩展功能。" class="headerlink" title="1.3接下来选择扩展功能。"></a>1.3接下来选择扩展功能。</h4><p>由于我们的项目模块较多，所有的服务全部重启会非常浪费时间，我们希望能对单独的模块进行部署，这时候需要添加一个可选择的参数<code>Extensible Choice Parameter</code></p>
-<p>扩展选择参数插件<code>Extensible Choice Parameter</code>灵活使用实现部署多应用模块服务同时发布.单模块服务单独打包快速发布.</p>
-<p>实现效果：</p>
-<p>发布选择应用模块，之前只能单个选择发布，效率太低，安装choice扩展性的插件，可以选择多个模块应用一起部署。非常方便<br>下载插件：<br><a href="https://plugins.jenkins.io/extended-choice-parameter" target="_blank" rel="external">Extended Choice Parameter Plug-In</a><br><a href="https://plugins.jenkins.io/extensible-choice-parameter" target="_blank" rel="external">Extensible Choice Parameter plugin</a></p>
-<p>这里jenkins 第一步安装扩展插件：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.1.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.2.png" alt=""></figure><br>安装好插件以后 进入创建项目配置参数：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.3.png" alt=""></figure></p>
-<p><code>Value</code> ：这里选择模块名字最好是git拉取下来的名称一样。这样下面打包可以选择对应模块名称一样。<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.4.png" alt=""></figure></p>
-<p>这里构建使用shell 做一层<code>if</code> 判断  选择<code>all</code> 全部发布。和单独模块发布。</p>
-<h4 id="1-4Git配置"><a href="#1-4Git配置" class="headerlink" title="1.4Git配置"></a>1.4Git配置</h4><p>初次使用Jenkins需要添加一个有访问Git权限的用户。<br>我直接使用系统自带的ssh-key，也可以自己去生成。<br>在gitlab上添加ssh-key公钥 这个是你发布机器的公钥。</p>
-<p>1.源码管理选择Git，输入URL，并选择用户。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.10.png" alt=""></figure></p>
-<p>从Jenkins发布服务器上面查看公钥上传到gitlab.</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansbile.11.png" alt=""></figure></p>
-<p>2.在jenkins上点击添加私钥<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.12.png" alt=""></figure><br>3.选择SSH…key，输入用户名，输入私钥，输入密码，添加完成。<br>在Jenkins发布服务器上面查看私钥：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">[root@ansible_02 yaml]<span class="comment"># cat /root/.ssh/id_rsa</span></div><div class="line">-----BEGIN RSA PRIVATE KEY-----</div><div class="line">MIIEpAIBAAKCAQEAv5BSNmykQcvklQdb+3jV8d1I2tjq4tIiyVbQDhDBs6UFR4hj</div><div class="line">20EHg/3Tjvw+4mHtzWFYv1/rYeTg7xJ/bIf3XRIeRcrc/b2rvqo3wQBupRjHM6wb</div><div class="line">nd+Jgyv2v8Lk2c8yNzMoUIuYzcG5Dpv5mWyg1akbWcIH3tsGyTVXxxmAQ78L+J1N</div><div class="line">zj3a9fImQcx5ocKlV/Y1v9B+Uv4gTBmSBR7akvNg7E+3JKTphbbUv3rFrG6zqvTW</div><div class="line">CtEA/h9X//zPWTiwTjJv87NJkHQLqoo1TPYZcNjDEfki+jfc9gJzJvZ/5D0A3fA/</div><div class="line">mO8ApW9VMsaLiiwQvGP2RoiTVwU2G1iNASBcWwIDAQABAoIBABh64fawhYEfBDQD</div><div class="line">P77wHy8MXz4QUFvyDJ38KRRTEd3aLcWJaXFgawx0CHASThrx9sizMvspz9Ovwwrq</div><div class="line">Kzx8V6EeKp4yoXEPpv3zlLJmUr1oYDR7PwA6y8Dmgl7ZEhO/haRGNlWssTdCFVsH</div><div class="line">lasElb0YIjWjNQxGoyRdW71GxfxiGdZXgWDT7yYGvdavO5tGzDPhh6/vf5lpU2F2</div><div class="line">nJbMyXzWgrrqXqIG3W+jqg2kVA<span class="keyword">fi</span>MdNgeUOn6+SA/7uK8rNhxG/5dr7WKJE31uRS</div><div class="line">FJiVCATcHQBIRScDDd/nI8rGiVQOjHFt2oNV82DOIhNXhbzdWGROUcMiT04OoJgQ</div><div class="line">JeNL7IkCgYEA8wrgamw1w5dBoynzV6tUPgSdHhAMoMhPrzJTaG8qMamnHzZgz1fl</div><div class="line">3jqI7qCNsj1n6Y1UbzhKILHcTIoUj7lj41mY4XVBHqDLXh9Socf9IPrSabZIfe2n</div><div class="line">wMLMhdhoaMPUWtHj9SUn/Y+ESLuFLtF6LjR1Eghu8xKRwULo1GscSyUCgYEAycbY</div><div class="line">j1/KaFAcwSl7teRiYEY+LRHB/AUa7lc+r+p2YMjGQ3CiaN9wKqu1E4jEvL0eZXDK</div><div class="line">aXJ6qcDJiHa2M+Bf8qcVoyXtKFtlTfSVPJDviZjl3EPmhXbuKzW3et2w5zWv8lAU</div><div class="line">2fWU+3ta3fVrFXz2zlY1j47Dv9zUlDeCF+lRMX8CgYEA1hkKwDU612XzSEy4NM6U</div><div class="line">k111GvqAZVKP/4GRwDnNLZqJwhEhDwYbVLyzy6JbsFwvoaoCa0dm5Y5IxpQMsN9b</div><div class="line">Z9GGH7CWLEJ7a4gJmrYQYpECgYAIqe8WiOhp/jad3KghMUNAGwQEb2TC630yirB4</div><div class="line">YTrgAP7yWl2+3wkz69eElTTNXdl2RZeLW40EyPBeWaqNI686/g2hybkbKIF7DWtz</div><div class="line">BE4kvFnyUUAOrwKe/Fl6fxZfdyCs6N9cVH0nJy7JpQYKECmQxobaOSkSjerayl9d</div><div class="line">x1mI3d6fwqmAbbyiolLXbn3JySkxTaVBS8gjnQh6LO6JbpTspKlz3R2/CzUhDhEY</div><div class="line">n3vhU2trAGh6hY/bizI1oKNxwp/b9uAaLVmmHGNV/+V5glnDH+luQA==</div><div class="line">-----END RSA PRIVATE KEY-----</div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.ansible.13.png" alt=""></figure></p>
-<p>此处要注意，将默认的master分支改为我们之前定义好的分支变量.<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.5.png" alt=""></figure></p>
-<h4 id="1-5项目打包"><a href="#1-5项目打包" class="headerlink" title="1.5项目打包"></a>1.5项目打包</h4><p>由于我们使用手动出发构建，触发器我们此处不需要配置。<br>构建环境暂时也不需要配置，这里调用ansible去执行yml代码发布。项目打包优化了。</p>
-<p>关键在于构建的步骤。<br>我们可以使用Shell命令，进入项目目录，使用Maven命令进行打包。</p>
-<p>这里主要是<code>if</code> 判断是 执行对应模块打包。这样节省了打包时间，如果不做对应发布模块发布，第一条如何<code>model</code>等于<code>all</code> 文件：全部执行 : <code>mvn clean install -U -T 1C -Dmaven.test.skip=true</code></p>
-<p>如果不等于这里指定对应模块打包： <code>mvn clean install -pl $model -amd -U -T 1C -Dmaven.test.skip=true</code></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">echo</span> <span class="variable">$model</span></div><div class="line"><span class="keyword">if</span> [[ <span class="variable">$model</span> == all* ]]; <span class="keyword">then</span></div><div class="line"><span class="built_in">cd</span> /srv/ &amp;&amp; rm dev-properties/ -rf &amp;&amp; git <span class="built_in">clone</span> git@gitlab.ihaozhuo.com:dev-properties/dev-properties.git &amp;&amp; <span class="built_in">cd</span> /root/.jenkins/workspace/yjk-dev_master/haozhuo/ &amp;&amp; mvn clean install -U -T 1C -Dmaven.test.skip=<span class="literal">true</span>  -Dmaven.compile.fork=<span class="literal">true</span> -Pdev -Dautoconfig.userProperties=/srv/dev-properties/dev1.properties -Dautoconfig.charset=utf-8</div><div class="line"><span class="keyword">else</span></div><div class="line"><span class="built_in">cd</span> /srv/ &amp;&amp; rm dev-properties/ -rf &amp;&amp; git <span class="built_in">clone</span> git@gitlab.ihaozhuo.com:dev-properties/dev-properties.git &amp;&amp; <span class="built_in">cd</span> /root/.jenkins/workspace/yjk-dev_master/haozhuo/ &amp;&amp; mvn clean install -pl <span class="variable">$model</span> -amd -U -T 1C -Dmaven.test.skip=<span class="literal">true</span>  -Dmaven.compile.fork=<span class="literal">true</span> -Pdev -Dautoconfig.userProperties=/srv/dev-properties/dev1.properties -Dautoconfig.charset=utf-8</div><div class="line"><span class="keyword">fi</span></div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.6.png" alt=""></figure></p>
-<p>所有的脚本和变量的参数列表统一。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi8.png" alt=""></figure></p>
-<p>这里说下发布模块 结合<code>ansible-Playbook</code>基本语法写控制发布服务器，然后在<code>jenkins</code>上面写ansible 发布脚本&amp;命令。<br>model.sh 脚本： </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/sh</span></div><div class="line">  IFS=<span class="string">','</span></div><div class="line">  arr=<span class="variable">$1</span></div><div class="line">  <span class="keyword">for</span> split <span class="keyword">in</span> <span class="variable">$arr</span></div><div class="line">  <span class="keyword">do</span></div><div class="line">          <span class="built_in">echo</span> <span class="variable">$split</span></div><div class="line">       /usr/bin/ansible-playbook /srv/yaml/<span class="variable">$split</span>.yml</div><div class="line">          <span class="keyword">if</span> [ <span class="variable">$split</span> = <span class="string">'all'</span> ]</div><div class="line">          <span class="keyword">then</span></div><div class="line">                  <span class="built_in">echo</span> <span class="string">"model:all"</span></div><div class="line">                  <span class="built_in">break</span></div><div class="line">          <span class="keyword">fi</span></div><div class="line">  <span class="keyword">done</span></div></pre></td></tr></table></figure>
-<p>这里举个例子我上面发布yml模块代码。</p>
-<p>这个脚本做了五件事：<br>1)               首先指定编码为UTF-8（否则启动项目后会乱码！这是个坑!）<br>2)               拷贝文件到指定机器的目录下，拷贝命令的dest不能使用变量！否则拷贝不会成功！（第二个坑）<br>3)               重启远程服务，我们试过直接重启tomcat服务，虽然服务重启会成功，但是最后会报一个错误，导致项目编码无法指定为UTF-8，所以我们还是选择使用Shell脚本去重启服务（第三个坑）。<br>4）          进行创建目录备份。<br>5）          查看进程后台启动。</p>
-<p>Ansible脚本编写完之后，可以现在自己本机上执行一下。<br>目标机器上必须安装libselinux-python，不然无法执行成功（小坑）。</p>
-<p>在jenkins中我们做如下配置：<br>在构建打包命令后面我们增加一个Shell命令，用来执行Ansible的脚本。<br>我们脚本名称使用变量名称，这样我们选择模块就能执行对应的脚本。</p>
-<h4 id="1-6发送邮件"><a href="#1-6发送邮件" class="headerlink" title="1.6发送邮件"></a>1.6发送邮件</h4><p>配置好构建失败后发送邮件到指定的邮箱，多个邮箱用逗号隔开。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.7.png" alt=""></figure></p>
-<p>至此项目配置结束。</p>
-<h4 id="六-运行效果，打包效果。"><a href="#六-运行效果，打包效果。" class="headerlink" title="六.运行效果，打包效果。"></a>六.运行效果，打包效果。</h4><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.9.png" alt=""></figure><br>指定模块去打包，终端上查看发布日志 这里变量生效效果：<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins.peizhi.10.png" alt=""></figure></p>
-<h3 id="七-Jenkins延伸学习"><a href="#七-Jenkins延伸学习" class="headerlink" title="七. Jenkins延伸学习"></a>七. Jenkins延伸学习</h3><p>效果图：</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/jenkins_05.png" alt=""></figure></p>
-<p><code>Blue Ocean</code> 是<code>Jenkins</code> 非常不错一个提升。</p>
-<p>这里可以查看下我在我github上面扩展<a href="https://github.com/yangcvo/Jenkins-automation" target="_blank" rel="external">更新jenkins新功能Blue Ocean实现先进的可视化精确定位问题</a></p>
-<p>现在我们Git使用的是 GitLab，同时为了安全我们做了一层LDAP代理，效果相当于“将军令”，操作机、Git和Jenkins用 OpenLDAP 做统一认证，后续用到的Redmine、Grafana、Zabbix 等都接入了OpenLDAP认证，每个人都有个动态口令，每次验证都需要用到。</p>
 
-	
 
-	
 
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/08/23/Web服务技术/Nginx/企业级Nginx Web服务优化实战/">企业级Nginx Web服务优化实战</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-08-23</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/nginx/">nginx</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Nginx/">Nginx</a> <a class="article__tag-link" href="/tags/Web-Service/">Web Service</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h3 id="企业级Nginx-Web服务优化实战"><a href="#企业级Nginx-Web服务优化实战" class="headerlink" title="企业级Nginx Web服务优化实战"></a>企业级Nginx Web服务优化实战</h3><h5 id="前言"><a href="#前言" class="headerlink" title="前言:"></a>前言:</h5><p>  在运维工作已经3个年，运维岗位：对web服务是必须要会的，这次我对Nginx Web服务做一次优化总结，上次记得写博客是对Nginx配置详解和服务的高可用。希望写的对你看到我博客的人有所帮助。</p>
-<h5 id="1-1-Nginx-基本安全优化"><a href="#1-1-Nginx-基本安全优化" class="headerlink" title="1.1 Nginx 基本安全优化"></a>1.1 Nginx 基本安全优化</h5><h6 id="1-1-2-调整参数隐藏Nginx软件版本号信息"><a href="#1-1-2-调整参数隐藏Nginx软件版本号信息" class="headerlink" title="1.1.2 调整参数隐藏Nginx软件版本号信息"></a>1.1.2 调整参数隐藏Nginx软件版本号信息</h6><p> 这里说隐藏版本号重要性软件出现漏洞跟版本特别有关系，我们尽可能隐藏或消除web服务队访问用户显示各类敏感信息，这样恶意要攻击你的用户就很难猜到他攻击的服务所用的是否有特定的漏洞的软件，或者是否有对应漏洞的某一特定版本，从而加强了Web服务的安全性。</p>
-<p> 例子：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">[root@nginx ~]<span class="comment"># curl -I 127.0.0.7 </span></div><div class="line">HTTP/1.1 200 OK</div><div class="line">Server: nginx/1.9.7   <span class="comment">#&lt;--这里清晰地暴露了web版本号（1.9.7）以及软件名称（Nginx）</span></div><div class="line">Date: Sat, 08 Apr 2017 08:15:59 GMT</div><div class="line">Content-Type: text/html</div><div class="line">Content-Length: 612</div><div class="line">Last-Modified: Thu, 19 Nov 2015 05:50:20 GMT</div><div class="line">Connection: keep-alive</div><div class="line">ETag: <span class="string">"564d631c-264"</span></div><div class="line">Accept-Ranges: bytes</div></pre></td></tr></table></figure>
-<p>如何隐藏可以通过配置文件加参数来实现：</p>
-<p>在Nginx配置文件Nginx.conf 中的server标签🏷内加入<code>“server_tokens off”</code>参数，具体查看如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">      listen       80;</div><div class="line">      server_name  localhost;</div><div class="line">      server_tokens off;</div><div class="line"></div><div class="line">      location / &#123;</div><div class="line">          root   html;</div><div class="line">          index  index.html index.htm;</div><div class="line">      limit_req  zone=one;</div><div class="line">      &#125;</div></pre></td></tr></table></figure>
-<p> 配置完成后保存，重新加载配置文件，再次curl查看：</p>
-<pre><code class="bash"> [root@nginx ~]<span class="comment"># curl -I 127.0.0.7</span>
-HTTP/1.1 200 OK
-Server: nginx
-Date: Sat, 08 Apr 2017 08:20:31 GMT
-Content-Type: text/html
-Content-Length: 612
-Last-Modified: Thu, 19 Nov 2015 05:50:20 GMT
-Connection: keep-alive
-ETag: <span class="string">"564d631c-264"</span>
-Accept-Ranges: bytes
-</code></pre>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/08/23/Web服务技术/Nginx/Nginx 的启动、停止、平滑重启、信号控制和平滑升级 /">Nginx 的启动、停止、平滑重启、信号控制和平滑升级</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-08-23</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/nginx/">nginx</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Nginx/">Nginx</a> <a class="article__tag-link" href="/tags/Web-Service/">Web Service</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h1 id="Nginx-的启动、停止、平滑重启、信号控制和平滑升级"><a href="#Nginx-的启动、停止、平滑重启、信号控制和平滑升级" class="headerlink" title="Nginx 的启动、停止、平滑重启、信号控制和平滑升级"></a>Nginx 的启动、停止、平滑重启、信号控制和平滑升级</h1><h2 id="Nginx的启动"><a href="#Nginx的启动" class="headerlink" title="Nginx的启动"></a>Nginx的启动</h2><p>假设 nginx 安装在<code>/usr/local/nginx</code> 目录中，那么启动 nginx 的命令就是：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[root@Nginx_01 ~]<span class="comment"># /usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf</span></div></pre></td></tr></table></figure>
-<p>参数<code>&quot;-c&quot;</code> 指定了配置文件的路径，如果不加<code>&quot;-c&quot;</code>参数，Nginx 会默认加载其安装目录的 conf 子目录中的 nginx.conf 文件。</p>
-<h2 id="Nginx的停止"><a href="#Nginx的停止" class="headerlink" title="Nginx的停止"></a>Nginx的停止</h2><p>nginx 的停止方法有很多，一般通过发送系统信号给 nginx 的主进程的方式来停止 nginx。 </p>
-<blockquote>
-<p>1、从容停止Nginx</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@Nginx_01 ~]<span class="comment"># kill -QUIT 【Nginx主进程号】</span></div><div class="line">或者</div><div class="line">[root@Nginx_01 ~]<span class="comment"># kill -QUIT `/usr/local/nginx/logs/nginx.pid`</span></div></pre></td></tr></table></figure>
-<p>字符是数字键盘 1 字符左边的那个字符，不需要 Shift，直接按 ` 字符即可。<br>如果在 nginx.conf 配置文件中指定了 pid 文件存放的路径，该文件中存放的就是 nginx 当前的主进程号。默认是放在 nginx 安装目录的 logs 目录下。</p>
-<blockquote>
-<p>2、快速停止Nginx</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@Nginx_01 ~]<span class="comment"># kill -TERM 【Nginx主进程号】</span></div><div class="line">或者</div><div class="line">[root@Nginx_01 ~]<span class="comment"># kill -INT 【Nginx主进程号】  </span></div><div class="line">``` </div><div class="line">&gt;3、强制停止所有 nginx 进程 </div><div class="line"></div><div class="line">```bash</div><div class="line">[root@Nginx_01 ~]<span class="comment"># pkill -9 nginx</span></div></pre></td></tr></table></figure>
-<h2 id="Nginx的平滑启动"><a href="#Nginx的平滑启动" class="headerlink" title="Nginx的平滑启动"></a>Nginx的平滑启动</h2><p>如果改变了 nginx 的配置文件，想重启 nginx，同样可以发送系统信号给 nginx 主进程的方式来进行。不过，重启之前，要确认 nginx 配置文件的语法是否正确的。否则 nginx 将不会加载新的配置文件。可以通过以下命令来判断配置文件是否正确：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -t 参数将检查配置文件的语法是否正确，默认会检查 /usr/local/nginx/conf/nginx.conf 文件。  </span></div><div class="line">[root@Nginx_01 ~]<span class="comment"># /usr/local/nginx/sbin/nginx -t  </span></div><div class="line"><span class="comment"># 如果要对指定的配置文件进行语法检查，可以继续添加 -c 参数  </span></div><div class="line">[root@Nginx_01 ~]<span class="comment"># /usr/local/nginx/sbin/nginx -t -c /usr/local/nginx/conf/nginx.conf</span></div><div class="line"> </div><div class="line">这个时候，就可以平滑重启 nginx 了。</div><div class="line"> </div><div class="line">[root@Nginx_01 ~]<span class="comment"># kill -HUP 【Nginx主进程号】 </span></div><div class="line">当 nginx 接收到 HUP 信号时，它会尝试先解析配置文件，如果成功，就应用新的配置文件(例如，重新打开日志文件或监听的套接字)。之后，nginx 运行新的工作进程并从容关闭旧的工作进程。通知工作进程关闭监听套接字，但是继续为当前连接的客户提供服务。所有的客户端的服务完成后，旧的工作进程被关闭。如果新的配置文件应用失败，nginx 将继续使用旧的配置文件进行工作。</div></pre></td></tr></table></figure>
-<h2 id="Nginx-的平滑升级"><a href="#Nginx-的平滑升级" class="headerlink" title="Nginx 的平滑升级"></a>Nginx 的平滑升级</h2><p>当需要将正在运行中的 nginx 升级、添加/删除服务器模块时，可以在不中断服务的情况下，使用新版本、重编译的 nginx 可执行程序替换旧版本的课执行程序。步骤如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">(1) 使用新的可执行程序替换旧的可执行程序，对于编译安装的 nginx，可以将新版本编译安装到旧版本的 nginx 安装路径中。替换之前，最好备份一下旧的可执行文件。 </div><div class="line"> </div><div class="line">(2) 发送以下指令： </div><div class="line">[root@Nginx_01 ~]<span class="comment"># kill -USR2 【旧颁布的Nginx主进程号】 </span></div><div class="line"> </div><div class="line">(3) 旧版本 nginx 的主进程将重命名它的 pid 文件为 .oldbin(例如：/usr/<span class="built_in">local</span>/nginx/logs/nginx.pid.oldbin)，然后执行新版本的 nginx 可执行程序，依次启动新的主进程和新的工作进程。 </div><div class="line"> </div><div class="line">(4) 此时，新、旧版本的 nginx 实例会同时运行，共同处理输入的请求。要逐步停止旧版本的 nginx 实例，你必须发送 WINCH 信号给旧的主进程，然后，它的工作进程就将开始从容关闭：</div><div class="line">[root@Nginx_01 ~]<span class="comment"># kill -WINCH 【旧版本的Nginx主进程号】 </span></div><div class="line"> </div><div class="line">(5) 一段时间后，旧的工作进程(worker process)处理了所有已连接的请求后退出，仅由新的工作进程来处理输入的请求了。 </div><div class="line"> </div><div class="line">(6) 这时候，我们可以决定是使用新版本，还是恢复到旧版本： </div><div class="line">[root@Nginx_01 ~]<span class="comment"># kill -HUP 【旧的主进程号】：nginx 将在不重载配置文件的情况下启动它的工作进程 </span></div><div class="line">[root@Nginx_01 ~]<span class="comment"># kill -QUIT 【新的主进程号】：从容关闭其工作进程(worker process) </span></div><div class="line">[root@Nginx_01 ~]<span class="comment"># kill -TERM 【新的主进程号】：强制退出 </span></div><div class="line">[root@Nginx_01 ~]<span class="comment"># kill 【新的主进程号或旧的主进程号】：如果因为某些原因新的工作进程不能退出，则向其发送 kill 信号 </span></div><div class="line"> </div><div class="line">新的主进程退出后，旧的主进程会移除 .oldbin 后缀，恢复为它 的 .pid 文件，这样，一切就恢复到升级之前了。如果尝试升级成功，而你也希望保留新的服务器时，可发送 QUIT 信号给旧的主进程，使其退出而只留下新的服务器运行。</div></pre></td></tr></table></figure>
-<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">上图是nginx官方网站对nginx信号的解释文档截取</div><div class="line"></div><div class="line">下面是一些常见nginx命令</div><div class="line"></div><div class="line">nginx -c <span class="string">/path/to/nginx.conf</span>  <span class="string">//</span> 以特定目录下的配置文件启动nginx:</div><div class="line"></div><div class="line">nginx -s  <span class="keyword">reload</span>  <span class="string">//</span> 修改配置后重新加载生效</div><div class="line"></div><div class="line">nginx -s  reopen   <span class="string">//</span> 重新打开日志文件</div><div class="line"></div><div class="line">nginx -s stop  <span class="string">//</span> 快速停止nginx</div><div class="line"></div><div class="line">nginx -s <span class="keyword">quit</span>  <span class="string">//</span> 完整有序的停止nginx</div><div class="line"></div><div class="line">nginx -t     <span class="string">//</span> 测试当前配置文件是否正确</div><div class="line"></div><div class="line">nginx -t -c <span class="string">/path/to/nginx.conf</span>  <span class="string">//</span>测试特定的nginx配置文件是否正确</div></pre></td></tr></table></figure>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/08/21/性能监控/Zabbix/直播分享的主题是云监控----zabbix&amp;collectd 互相讨论/">直播分享的主题是云监控----zabbix&amp;collectd 互相讨论</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-08-21</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h3 id="直播分享的主题是云监控—-zabbix-amp-collectd-互相讨论"><a href="#直播分享的主题是云监控—-zabbix-amp-collectd-互相讨论" class="headerlink" title="直播分享的主题是云监控—-zabbix&amp;collectd 互相讨论"></a>直播分享的主题是云监控—-zabbix&amp;collectd 互相讨论</h3><p>前几天参加KVM开展的直播秀，肖总请来了各位运维大咖给我们展示他们云监控。这里我整理下崔广章大师的聊天记录各位可以一起聆听下。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"> 崔广章 19:58</div><div class="line">我之前一直在做私有云，我们整个云平台的监控系统系统用的就是zabbix</div><div class="line"> 崔广章 19:59</div><div class="line">基本没什么变化，做的比较多的就是国际化，大家都懂的</div><div class="line"> 崔广章 20:00</div><div class="line">我先借度娘给搭建扫个盲</div><div class="line"> 崔广章 20:00</div><div class="line">zabbix（音同 zæbix）是一个基于WEB界面的提供分布式系统监视以及网络监视功能的企业级的开源解决方案。</div><div class="line"> 崔广章 20:01</div><div class="line">zabbix能监视各种网络参数，保证服务器系统的安全运营；并提供灵活的通知机制以让系统管理员快速定位/解决存在的各种问题。</div><div class="line"> 崔广章 20:02</div><div class="line">zabbix由2部分构成，zabbix server与可选组件zabbix agent。</div><div class="line"> 崔广章 20:02</div><div class="line">zabbix server可以通过SNMP，zabbix agent，ping，端口监视等方法提供对远程服务器/网络状态的监视，数据收集等功能，它可以运行在Linux，Solaris，HP-UX，AIX，Free BSD，Open BSD，OS X等平台上。</div><div class="line"> 崔广章 20:02</div><div class="line">扫盲就到此为止吧</div><div class="line"> 崔广章 20:03</div><div class="line">按度娘的，接下来就是安装啦，我就在这耽误大家的人间啦</div><div class="line"> 崔广章 20:04</div><div class="line">zabbix监控主要分四块，zabbix-agent,SNMP,IPMI,和JMX</div><div class="line"> 崔广章 20:05</div><div class="line">因为我们主要是是做Iaas和Pass的，所以我们只用了前三种功能</div><div class="line"> 崔广章 20:06</div><div class="line">前三种功能又分为两种方案，就是负载大时的一种方案和负载小时的方案</div><div class="line"> 崔广章 20:07</div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix_yun.png" alt=""></figure></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"> 崔广章 20:07</div><div class="line">这是小负载时的方案</div><div class="line"> 崔广章 20:08</div><div class="line">接下来是大负载时的方案</div><div class="line"> 崔广章 20:08</div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix_yun1.png" alt=""></figure></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">崔广章 20:11</div><div class="line">这里还有一个zabbix的整体架构广章 20:11</div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix_yun2.png" alt=""></figure></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div></pre></td><td class="code"><pre><div class="line"> 崔广章 20:12</div><div class="line">我从14年才开始将zabbix进行分布式部署</div><div class="line"> 崔广章 20:14</div><div class="line">在云环境下，zabbix有个缺点就是，对虚拟机的监控达我们感觉不理想</div><div class="line"> 崔广章 20:15</div><div class="line">因为zabbix对与虚拟与物理机进行监控采取的是同样的方法，就是向系统中注入代理zabbix-agent</div><div class="line"> 崔广章 20:15</div><div class="line">对诸如代理我有两点担心</div><div class="line"> 崔广章 20:17</div><div class="line">一、因为zabbix-agent它本身也占用了资源，对于自己占用的资源它能不能准确监控，这我还不能确定，如果它不能对自己占用的资源进行准确监控，那就等于污染了虚拟机</div><div class="line"> 崔广章 20:19</div><div class="line">二，zabbix-agent是打包在云主机的镜像中的一个cron任务，说白他就是云主机的一个普通进程，如果用户把它给<span class="built_in">kill</span>了，是不是就监控不到啦？</div><div class="line"> 崔广章 20:21</div><div class="line">所以我就找能运行在底层又能对虚拟机进行准确检测的工具</div><div class="line"> 崔广章 20:21</div><div class="line">那就是接下来要说的collectd喽</div><div class="line"> 崔广章 20:21</div><div class="line">老规矩，咱们还接着扫盲</div><div class="line"> 崔广章 20:21</div><div class="line">collectd是一个守护(daemon)进程，用来收集系统性能和提供各种存储方式来存储不同值的机制。比如以RRD 文件形式。</div><div class="line"> 崔广章 20:29</div><div class="line">collectd确实能够运行在底层，并能采集KVM虚拟机的各项数据，但他的展示使用CGP跟zabbix比太差</div><div class="line"> 崔广章 20:31</div><div class="line">我所以我就试着将两者进行优势互补</div><div class="line"> 崔广章 20:32</div><div class="line">我是将collectd存储在*.rrd中的相关数据取出来，然后存储到zabbix的数据库当中，让zabbix进行展示</div><div class="line"> 崔广章 20:33</div><div class="line">其实只是将collectd采集的虚拟机的内存的数据进行转存和展示</div><div class="line"> 崔广章 20:36</div><div class="line">整个过程包括，分析zabbix的数据库表之间的关系，研究怎么从collectd的*.rrd文件中取数据怎么将取出的数据向数据库里保存，这是一项很大的工程</div><div class="line"> 崔广章 20:36</div><div class="line">今天就分享到这吧好吧？</div><div class="line"> 侯燚@贵州高新翼云 20:37</div><div class="line">谢谢</div><div class="line"> 崔广章 20:37</div><div class="line"> 袁进坤|南京|云应用+大数据+云计算 20:37</div><div class="line"> 薛群 20:37</div><div class="line">其实你说的第一个问题，不是问题</div><div class="line"> 北极熊 20:37</div><div class="line">大家开始提问吧</div><div class="line"> 薛群 20:38</div><div class="line">只要是监控，都需要消耗少量资源</div><div class="line"> 崔广章 20:38</div><div class="line">这个问题我也请教过肖哥@薛群</div><div class="line"> 刘海宾 20:38</div><div class="line">通过libvirt也能获取虚拟机的内存</div><div class="line"> 崔广章 20:38</div><div class="line">嗯嗯</div><div class="line"> 薛群 20:38</div><div class="line">不属于污染虚拟机哦</div><div class="line"> 崔广章 20:38</div><div class="line">嗯嗯</div><div class="line"> 薛群 20:39</div><div class="line">腾讯云上的虚拟机十几个agent</div><div class="line"> 崔广章 20:39</div><div class="line">collectd就是调用了libvirt</div><div class="line"> 崔广章 20:39</div><div class="line">@薛</div><div class="line"> 崔广章 20:40</div><div class="line">错啦</div><div class="line"> 袁进坤|南京|云应用+大数据+云计算 20:40</div><div class="line">在选择监控工具的时候，是否考虑过其他类似的工具，例如nagios，做出选择的主要考虑是什么？</div><div class="line"> 薛群 20:40</div><div class="line">第二种方式，消耗资源多不？</div><div class="line"> 刘海宾 20:40</div><div class="line">那collected就干这一件事吗</div><div class="line"> 崔广章 20:40</div><div class="line"> 刘海宾 20:40</div><div class="line">其实虚拟机监控可以用qga</div><div class="line"> 刘海宾 20:41</div><div class="line">走channel</div><div class="line"> 薛群 20:41</div><div class="line">nagios功能没有ZBX强，性能也不及</div><div class="line"> 崔广章 20:41</div><div class="line">collectd目前我只让它干了怎么一件事</div><div class="line"> 刘海宾 20:42</div><div class="line">那自己写个脚本更简单吧 呵呵 只是个人观点</div><div class="line"> 崔广章 20:42</div><div class="line">我也试着写了一套脚本</div><div class="line"> 刘海宾 20:43</div><div class="line">@薛群 私有云跑agent还好 公有云 用户很反感</div><div class="line"> 薛群 20:43</div><div class="line">@袁进坤@南京，云计算 其实监控主要考虑：方便，扩展性好(规模和二次开发)，功能全，</div><div class="line"> 崔广章 20:43</div><div class="line">但数据误差太大</div><div class="line"> 崔广章 20:44</div><div class="line">就是考虑到这一点@刘海宾@新网</div><div class="line"> 刘海宾 20:45</div><div class="line">虚拟机加上ballon</div><div class="line"> 薛群 20:46</div><div class="line">嗯，是的。腾讯云上这么多agent，是不爽</div><div class="line"> 崔广章 20:46</div><div class="line">ballon跟内存监控关系不大@刘海宾@新网</div><div class="line"> 于江磊@奇点时代 20:47</div><div class="line">zabbix再多个配置不同的vm时，请问模板是分别定制的么</div><div class="line"> 崔广章 20:48</div><div class="line">对的</div><div class="line"> 于江磊@奇点时代 20:48</div><div class="line">监控多个</div><div class="line"> 刘海宾 20:49</div><div class="line">libguestfs也能干这事</div><div class="line"> 袁进坤|南京|云应用+大数据+云计算 20:50</div><div class="line">@薛群 @崔广章 谢谢</div><div class="line"> 刘海宾 20:50</div><div class="line">青云的监控走的channel在 init里边起了个进程 不容易杀死 还不错</div><div class="line"> 刘海宾 20:51</div><div class="line">@崔广章 谢谢分享</div><div class="line"> 崔广章 20:51</div><div class="line">@袁进坤@南京，云计算</div><div class="line"> 崔广章 20:51</div><div class="line"> 袁进坤|南京|云应用+大数据+云计算 20:52</div><div class="line">@崔广章 主要监控了哪些指标？如果在openstack架构，ceilometer和zabbix的的关系怎么看？</div><div class="line"> 刘浩 20:52</div><div class="line">我求问个问题：把zabbix agent用supervise起。是不是就不用担心被杀死的问题了。</div><div class="line"> 于江磊@奇点时代 20:53</div><div class="line">我在用zabbix时,遇到一个问题,监控主机网卡的时候,zabbix默认采用了auto_discovery的策略,但是我宿主机上跑了很多个容器,容器的网络运行模式为桥接,此时zabbix就会自动去检测那些veth的设备,请问我该如何配置呢? 达到让zabbix只监控em0 或者eth0的网卡设备呢</div><div class="line"> 崔广章 20:54</div><div class="line">ceilometer其实是openstack自带的功能，但是功能很菜@袁进坤@南京，云计算</div><div class="line"> 崔广章 20:54</div><div class="line">@刘浩@360 其实我就是怎想的</div><div class="line"> 年福瑞@小牛资本 20:57</div><div class="line">@于江磊@奇点时代 自己写脚本，取物理别名</div><div class="line"> 崔广章 20:58</div><div class="line">我也遇到这样的问题@于江磊@奇点时代</div><div class="line"> 刘浩 20:59</div><div class="line">@崔广章 那是不是可以不用collected了</div><div class="line"> 崔广章 21:00</div><div class="line">理论上是可以，但数据转存的时候，工作量很大@刘浩@360</div><div class="line"> 崔广章 21:01</div><div class="line">难点主要在zabbix端，关系错综复杂</div><div class="line"> 薛群 21:01</div><div class="line">@于江磊@奇点时代 用正则表达式过滤</div><div class="line"> 薛群 21:03</div><div class="line">公有云起agent确实是个问题</div><div class="line"> 崔广章 21:03</div><div class="line">这是公有云的痛点</div></pre></td></tr></table></figure>
-<p>转载：kvm论坛</p>
-<p>就整理这些，想说现在监控也越来越完善了，可以做到邮件告警，微信告警，钉钉告警短信电话告警。 万能的监控zabbix只要有key值都可以做到任何监控。</p>
-<p>也还有些公司对监控更加要求性高可以针对性技术开发一套监控大屏，记得在之前公司运维CDN就是整个技术团队研发一套监控大盘的，主要监控流量的状态每个节点的流量带宽。</p>
-<p>有兴趣一起研究监控的可以加我QQ:1165958741 或者加入群一起讨论：459096184</p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/08/21/Node.js-npm/npm翻墙加速国内镜像/">npm翻墙加速国内镜像</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-08-21</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Node-js/">Node.js</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>Node.js 的依赖包管理生态系统 npm, 是世界上最大的生态系统开源库。 但国内使用 npm 来安装软件，速度很慢，有时候甚至直接就失败了！比如我安装stf就需要翻墙或者VPN去安装，可是就一直卡着。</p>
-		<p><a class="article__read-more-link" href="/2016/08/21/Node.js-npm/npm翻墙加速国内镜像/">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/08/16/Node.js-npm/Centos7.1+Mac环境安装Node.Js以及彻底删除卸载node.js教程/">Centos7.1+Mac环境安装Node.Js以及彻底删除卸载node.js教程</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-08-16</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Node-js/">Node.js</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h3 id="linux-Centos7系统快速安装node-js-npm"><a href="#linux-Centos7系统快速安装node-js-npm" class="headerlink" title="linux Centos7系统快速安装node.js npm"></a>linux Centos7系统快速安装node.js npm</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">第一、选择合适的版本安装</div><div class="line"><span class="comment"># 4.x版本</span></div><div class="line">curl --silent --location https://rpm.nodesource.com/setup_4.x | bash -</div><div class="line"><span class="comment"># 5.x版本</span></div><div class="line">curl --silent --location https://rpm.nodesource.com/setup_5.x | bash -</div><div class="line"><span class="comment"># 6.x版本</span></div><div class="line">curl --silent --location  https://rpm.nodesource.com/setup_6.x | bash -</div></pre></td></tr></table></figure>
-<p>如果是Centos7的话会提示报错<code>Requires: libhttp_parser.so.2()(64bit)</code></p>
-		<p><a class="article__read-more-link" href="/2016/08/16/Node.js-npm/Centos7.1+Mac环境安装Node.Js以及彻底删除卸载node.js教程/">...read more</a></p>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/07/21/性能监控/Zabbix/Zabbix 监控 KVM集群/">KVM monitoring through Zabbix</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-07-21</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h3 id="KVM-monitoring-through-Zabbix"><a href="#KVM-monitoring-through-Zabbix" class="headerlink" title="KVM monitoring through Zabbix"></a>KVM monitoring through Zabbix</h3><p>Monitor your KVM resources through Zabbix</p>
-<p>Zabbix 监控 KVM</p>
-<h4 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h4><p>python2, libvirt-python (tested with 0.9.12.3, 0.10.2 and 1.1.3.x)</p>
-<pre><code>pip install libvirt-python 
-</code></pre><h4 id="KVM-Server-设定程序"><a href="#KVM-Server-设定程序" class="headerlink" title="KVM Server 设定程序"></a>KVM Server 设定程序</h4><figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">cd</span> /usr/local/bin/</div><div class="line">wget http<span class="variable">s:</span>//github.<span class="keyword">com</span>/bushvin/zabbix-kvm-<span class="keyword">res</span>/raw/master/bin/zabbix-kvm-<span class="keyword">res</span>.<span class="keyword">py</span></div><div class="line">chmod <span class="keyword">a</span>+<span class="keyword">x</span> zabbix-kvm-<span class="keyword">res</span>.<span class="keyword">py</span></div><div class="line"><span class="keyword">cd</span> /etc/zabbix/zabbix_agentd.d</div><div class="line">wget http<span class="variable">s:</span>//github.<span class="keyword">com</span>/bushvin/zabbix-kvm-<span class="keyword">res</span>/raw/master/zabbix_agentd.<span class="keyword">conf</span>/UserParameters</div><div class="line">service zabbix-agent restart</div></pre></td></tr></table></figure>
-<h4 id="Zabbix-Server-设定程序"><a href="#Zabbix-Server-设定程序" class="headerlink" title="Zabbix Server 设定程序"></a>Zabbix Server 设定程序</h4><p>至<a href="https://github.com/bushvin/zabbix-kvm-res下载zabbix_kvm.xml" target="_blank" rel="external">https://github.com/bushvin/zabbix-kvm-res下载zabbix_kvm.xml</a><br>将<code>zabbix_kvm.xml 汇入至Zabbix Server → Configuration → Templates → Import</code></p>
-<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
-<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/06/29/运维安全/ 化解自己的阿里云服务器被黑客攻击-暴力破解/">化解自己的阿里云服务器被黑客攻击-暴力破解</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-06-29</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/运维安全/">运维安全</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Operation-safety/">Operation safety</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<p>说明下：因为阿里云服务器我是用来自己搭建blog 的做了一些简单的监控。</p>
-<p>因为防止被攻击瘫痪，做到安全防范，可是今天晚上吃完饭，发现又被人攻击，是印度和巴西IP地址暴力破解方式一直在尝试破解我密码。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">还好我在阿里云上面使用了云盾告警，其实它这个一般般，只能提醒，不能有效阻止黑客攻击。</div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun.png" alt=""></figure></p>
-<p>收到告警以后，马上打开电脑去云盾上面查看下。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun2.png" alt=""></figure></p>
-<p>然后看了以后发现问题不大，可是上机器查看，发现有不断的攻击痕迹。<br>日志查看到很多来历不明的IP。德国🇩🇪  巴西 印度。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun3.png" alt=""></figure><br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun4.png" alt=""></figure></p>
-<p>看到这个，我就写了个脚本记录被攻击留下的保存指定文件夹，我看下是否还在继续攻击了。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"> <span class="comment">#!/bin/bash</span></div><div class="line"><span class="comment">#Denyhosts SHELL SCRIPT</span></div><div class="line"><span class="comment">#2016-2-18</span></div><div class="line">cat /var/<span class="built_in">log</span>/secure|awk <span class="string">'/Failed/&#123;print $(NF-  3)&#125;'</span>|sort|uniq -c|awk <span class="string">'&#123;print $2"=" $1;&#125;'</span> &gt;/root/bin/Denyhosts.txt</div><div class="line">DEFINE=<span class="string">"10"</span></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> `cat /root/bin/Denyhosts.txt`</div><div class="line"><span class="keyword">do</span></div><div class="line">    IP=`<span class="built_in">echo</span> <span class="variable">$i</span>|awk -F= <span class="string">'&#123;print $1&#125;'</span>`</div><div class="line">    NUM=`<span class="built_in">echo</span> <span class="variable">$i</span>|awk -F= <span class="string">'&#123;print $2&#125;'</span>`</div><div class="line">    <span class="keyword">if</span> [ <span class="variable">$NUM</span> <span class="_">-gt</span> <span class="variable">$DEFINE</span> ]</div><div class="line">    <span class="keyword">then</span></div><div class="line">            grep <span class="variable">$IP</span> /etc/hosts.deny &gt;/dev/null</div><div class="line">            <span class="keyword">if</span> [ $? <span class="_">-gt</span> 0 ];</div><div class="line">            <span class="keyword">then</span></div><div class="line">            <span class="built_in">echo</span> <span class="string">"sshd:<span class="variable">$IP</span>"</span> &gt;&gt; /etc/hosts.deny</div><div class="line">            <span class="keyword">fi</span></div><div class="line">    <span class="keyword">fi</span></div><div class="line"><span class="keyword">done</span></div></pre></td></tr></table></figure>
-<p>因为保存到其他的txt文件下面：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@iZ28by3xm9eZ bin]<span class="comment"># ll</span></div><div class="line">总用量 4</div><div class="line">-rwxr-xr-x 1 root root 535 2月  17 21:38 Denyhosts.sh</div><div class="line">-rw-r--r-- 1 root root   0 2月  17 21:45 Denyhosts.txt</div></pre></td></tr></table></figure>
-<p>查看里面有不断攻击的IP :</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@iZ28by3xm9eZ bin]<span class="comment"># vim Denyhosts.txt</span></div><div class="line"></div><div class="line">101.69.252.146=1</div><div class="line">115.196.20.181=11</div><div class="line">117.243.176.226=6</div><div class="line">186.208.19.61=5</div><div class="line">186.251.118.71=3</div><div class="line">89.238.64.148=2</div><div class="line">94.215.141.101=1</div></pre></td></tr></table></figure>
-<p>这里我记录了攻击的多少次也有的。</p>
-<p>可是发现的确在继续攻击，我在想如何阻止被破解呢。</p>
-<p>主要是依靠denyhost软件。稳重所讲的是下载安装包安装，实际上可以从直接使用yum或者apt安装，找到相应的源就可以。下边是帖子原文： DenyHosts官方网站为：<a href="http://denyhosts.sourceforge.net" target="_blank" rel="external">http://denyhosts.sourceforge.net</a></p>
-<p>这里下载最新的版本是2008年 2.6 版本的 一直没更新。不过已经足够强大。 1. 安装</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># tar -zxvf DenyHosts-2.6.tar.gz</span></div><div class="line"><span class="comment"># cd DenyHosts-2.6</span></div><div class="line"><span class="comment"># python setup.py install</span></div></pre></td></tr></table></figure>
-<p>默认是安装到/usr/share/denyhosts目录的。</p>
-<p>1.配置</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment"># cd /usr/share/denyhosts/</span></div><div class="line"><span class="comment"># cp denyhosts.cfg-dist denyhosts.cfg</span></div><div class="line"><span class="comment"># vi denyhosts.cfg</span></div><div class="line">PURGE_DENY = 50m <span class="comment">#过多久后清除已阻止IP</span></div><div class="line">HOSTS_DENY = /etc/hosts.deny </div><div class="line"><span class="comment">#将阻止IP写入到hosts.deny</span></div><div class="line">BLOCK_SERVICE = sshd </div><div class="line"><span class="comment">#阻止服务名</span></div><div class="line">DENY_THRESHOLD_INVALID = 1 </div><div class="line"><span class="comment">#允许无效用户登录失败的次数</span></div><div class="line">DENY_THRESHOLD_VALID = 10 </div><div class="line"><span class="comment">#允许普通用户登录失败的次数</span></div><div class="line">DENY_THRESHOLD_ROOT = 5 </div><div class="line"><span class="comment">#允许root登录失败的次数</span></div><div class="line">WORK_DIR = /usr/<span class="built_in">local</span>/share/denyhosts/data</div><div class="line"><span class="comment">#将deny的host或ip纪录到Work_dir</span></div><div class="line">DENY_THRESHOLD_RESTRICTED = 1 </div><div class="line"><span class="comment">#设定 deny host 写入到该资料夹</span></div><div class="line">LOCK_FILE = /var/lock/subsys/denyhosts <span class="comment">#将DenyHOts启动的pid纪录到LOCK_FILE中，已确保服务正确启动，防止同时启动多个服务。</span></div><div class="line">HOSTNAME_LOOKUP=NO <span class="comment">#是否做域名反解            ADMIN_EMAIL = #设置管理员邮件地址</span></div><div class="line">DAEMON_LOG = /var/<span class="built_in">log</span>/denyhosts <span class="comment">#自己的日志文件</span></div><div class="line">DAEMON_PURGE = 10m <span class="comment">#该项与PURGE_DENY 设置成一样，也是清除hosts.deniedssh 用户的时间。</span></div></pre></td></tr></table></figure>
-<p>2.设置启动脚本</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># cp daemon-control-dist daemon-control</span></div><div class="line"><span class="comment"># chown root daemon-control</span></div><div class="line"><span class="comment"># chmod 700 daemon-control</span></div></pre></td></tr></table></figure>
-<p>完了之后执行daemon-contron start就可以了。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ./daemon-control start</span></div></pre></td></tr></table></figure>
-<p>如果要使DenyHosts每次重起后自动启动还需做如下设置：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ln -s /usr/share/denyhosts/daemon-control                 /etc/init.d/denyhosts</span></div><div class="line"><span class="comment"># chkconfig --add denyhosts</span></div><div class="line"><span class="comment"># chkconfig denyhosts on</span></div></pre></td></tr></table></figure>
-<p>然后就可以启动了：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># service denyhosts start</span></div></pre></td></tr></table></figure>
-<p>可以看看/etc/hosts.deny内是否有禁止的IP，有的话说明已经成功了。</p>
-<p>启动出现错误解决：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./daemon-control start</div></pre></td></tr></table></figure>
-<p>出现：<code>starting DenyHosts: /usr/bin/env python /usr/bin/denyhosts.py --daemon --config=/usr/share/denyhosts/denyhosts.cfg 
-DenyHosts could not obtain lock (pid: ) 
-[Errno 17] File exists: &#39;/var/lock/subsys/denyhosts&#39;</code> 使用：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"> touch /private/var/<span class="built_in">log</span>/system.log</div><div class="line"> touch /var/lock/subsys/denyhosts</div><div class="line">rm <span class="_">-f</span> /var/lock/subsys/denyhosts</div><div class="line"></div><div class="line">./daemon-control start</div><div class="line">starting DenyHosts: /usr/bin/env python /usr/bin/denyhosts.py –daemon –config=/usr/share/denyhosts/denyhosts.cfg </div><div class="line">OK！</div></pre></td></tr></table></figure>
-<p>启动完成啦。 你可以使用</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">service denyhosts status来查看运行状态</div></pre></td></tr></table></figure>
-<p>DenyHosts is running with pid = 25874 表示已经启动起来了。<br>接下来就可以使用</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cat /etc/hosts.deny来查看记录了</div></pre></td></tr></table></figure>
-<p>然后启动成功以后，我自己测试了下，</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">ssh root@115.28.175.207</div><div class="line">root@115.28.175.207<span class="string">'s password:</span></div><div class="line">Permission denied, please try again.</div><div class="line">root@115.28.175.207's password:</div><div class="line">cPermission denied, please try again.</div><div class="line">root@115.28.175.207<span class="string">'s password:</span></div><div class="line">Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password).</div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun5.png" alt=""></figure></p>
-<p>发现自己登陆不上去了，然后只能去阿里控制台操作查看原因。</p>
-<p>原来发现 <code>cat /etc/hosts.deny</code>来查看记录了<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun6.png" alt=""></figure></p>
-<p>然后去掉，115IP 发现就可以登陆了。 所以我做的设置是<code>root</code>尝试破解4次以上，被锁定。</p>
-
-	
-
-	
-
-</article>
-
-
-
-
-
-	<span class="different-posts">📖 <a href="/page/9">more posts</a> 📖</span>
-
-
-
-	</main>
-
-	<footer class="footer">
-	<div class="footer-content">
-		
-	      <div class="footer__element">
-	<h5>Hi there,</h5>
-	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+                <!-- 如果开启评论功能 -->
+                
+
+            </div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                            
+                            <a href="/tags/#Bigdata Hadoop" title="Bigdata Hadoop" rel="3">Bigdata Hadoop</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Node.js" title="Node.js" rel="4">Node.js</a>
+                            
+                        
+                            
+                            <a href="/tags/#OpenLDAP" title="OpenLDAP" rel="5">OpenLDAP</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Operation safety" title="Operation safety" rel="4">Operation safety</a>
+                            
+                        
+                            
+                            <a href="/tags/#Automation Deploy" title="Automation Deploy" rel="2">Automation Deploy</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="2">Performance monitoring</a>
+                            
+                        
+                            
+                            <a href="/tags/#Operation and maintenance Road" title="Operation and maintenance Road" rel="2">Operation and maintenance Road</a>
+                            
+                        
+                            
+                            <a href="/tags/#Kafka" title="Kafka" rel="16">Kafka</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Zabbix" title="Zabbix" rel="2">Zabbix</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Countly" title="Countly" rel="2">Countly</a>
+                            
+                        
+                            
+                            <a href="/tags/#ZooKeeper" title="ZooKeeper" rel="4">ZooKeeper</a>
+                            
+                        
+                            
+                            <a href="/tags/#Web Service" title="Web Service" rel="17">Web Service</a>
+                            
+                        
+                            
+                            <a href="/tags/#Nginx" title="Nginx" rel="17">Nginx</a>
+                            
+                        
+                            
+                            <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="4">Java+Tomcat notes</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Zabbix monitoring" title="Zabbix monitoring" rel="15">Zabbix monitoring</a>
+                            
+                        
+                            
+                            <a href="/tags/#Elasticsearch" title="Elasticsearch" rel="5">Elasticsearch</a>
+                            
+                        
+                            
+                            <a href="/tags/#Kibana" title="Kibana" rel="2">Kibana</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#logstash" title="logstash" rel="2">logstash</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Graylog" title="Graylog" rel="2">Graylog</a>
+                            
+                        
+                            
+                            <a href="/tags/#Ansible" title="Ansible" rel="9">Ansible</a>
+                            
+                        
+                            
+                            <a href="/tags/#Jenkins" title="Jenkins" rel="2">Jenkins</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
+                            
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Short About -->
+                <section class="visible-md visible-lg">
+                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
+                    <div class="short-about">
+
+                        
+                            <img src="/img/avatar.jpg" />
+                        
+
+                        
+                            <p>Yancy，运维技术专家，客居杭州。喜欢学习研究新技术，然后中途弃坑。擅长CDN自动化运维，更擅长让应用高可用无人监听状态。不会玩虚拟化只会用KVM,Docker,Openstack，没有vim全家桶就写不出代码，没有Google 和 StackOverflow 就解决不了技术问题。</p>
+                        
+
+                        <!-- SNS Link -->
+                        <ul class="list-inline">
+                            
+                            
+                                <li>
+                                    <a target="_blank" href="https://twitter.com/yancyoo">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+                            
+                                <li>
+                                    <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa  fa-stack-1x fa-inverse">知</i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+
+                            
+                                <li>
+                                    <a target="_blank" href="http://weibo.com/yangcvo">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+
+                            
+
+                            
+                                <li>
+                                    <a target="_blank"  href="https://github.com/yangcvo">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+                            
+                            
+                            
+                        </ul>
+                    </div>
+                </section>
+                
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+        
+    </div>
 </div>
 
 
-	    
-	      <div class="footer__element">
-	<h5>Check out</h5>
-	<ul class="footer-links">
-		<li class="footer-links__link"><a href="/archives">Archive</a></li>
-		
-		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
-	    
-		<li class="footer-links__link"><a href="/about">about page</a></li>
-		<li class="footer-links__link"><a href="/tags">Tags</a></li>
-		<li class="footer-links__link"><a href="/categories">Categories</a></li>
-	</ul>
-</div>
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
 
-	    
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
 
-		<div class="footer-credit">
-			<span>© 2019 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
-		</div>
+                
 
-	</div>
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
 
+                
 
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
 </footer>
 
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
 
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
 

@@ -1,82 +1,217 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
+<!-- Head tag -->
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta name="theme-color" content="#33474d">
-	<title>zabbix3.0实现微信报警 | Yancy&#39;s blog</title>
-	<link rel="stylesheet" href="/css/style.css" />
-	
-      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
-    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          zabbix3.0实现微信报警 - Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2016/06/22/性能监控/Zabbix/zabbix3-0实现微信报警/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body>
 
-	<header class="header">
-		<nav class="header__nav">
-			
-				<a href="/" class="header__link">Home</a>
-			
-				<a href="/tags" class="header__link">Tags</a>
-			
-				<a href="/archives" class="header__link">ARCHIVES</a>
-			
-				<a href="/about/About" class="header__link">ABOUT</a>
-			
-				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
-			
-				<a href="/atom.xml" class="header__link">RSS</a>
-			
-		</nav>
-		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
-		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
-	</header>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
 
-	<main>
-		<article>
-	
-		<h1>zabbix3.0实现微信报警</h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-06-22</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/monitoring/">monitoring</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Zabbix-monitoring/">Zabbix monitoring</a>
-			</span>
-		
-	</div>
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
+        </div>
 
-	
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
 
-	
-		<h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>  因为我已经在<code>测试环境</code>和·生产环境·都实现了微信和邮件告警。今天有空就写了篇文档后期可以在复习下，现实生产环境中，我们通常使用邮件和短信接受zabbix报警信息，但是邮件经常被工作人员搁置在角落中甚至被设置为垃圾邮件被过滤掉。公司的短信接口又太贵，复杂环境中使用短息报警会使运维成本增加很多。微信提供了很好的第三方接口，我们可以利用微信报警以求降低运维成本。</p>
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Zabbix monitoring" title="Zabbix monitoring">Zabbix monitoring</a>
+                        
+                    </div>
+                    <h1>zabbix3.0实现微信报警</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2016-06-22
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>  因为我已经在<code>测试环境</code>和·生产环境·都实现了微信和邮件告警。今天有空就写了篇文档后期可以在复习下，现实生产环境中，我们通常使用邮件和短信接受zabbix报警信息，但是邮件经常被工作人员搁置在角落中甚至被设置为垃圾邮件被过滤掉。公司的短信接口又太贵，复杂环境中使用短息报警会使运维成本增加很多。微信提供了很好的第三方接口，我们可以利用微信报警以求降低运维成本。</p>
 <p>   这里我现在公司也用第三方的<code>电话短信猫做告警</code>，严重的故障会用短信来发送到指定的运维人员。这样即使微信和邮件都没有打开收到，短信和电话会第一时间通知。</p>
 <h3 id="微信告警的好处："><a href="#微信告警的好处：" class="headerlink" title="微信告警的好处："></a>微信告警的好处：</h3><p>第一：可以及时通知时间通知运维人员。及时的解决故障。</p>
 <p>第二：下班周末课余时间可以准时接收到。</p>
 <h3 id="安装与配置："><a href="#安装与配置：" class="headerlink" title="安装与配置："></a>安装与配置：</h3><p>微信的第三方接口要求我们先申请一个企业号——传送门：<a href="https://qy.weixin.qq.com/" target="_blank" rel="external">微信企业公众号平台</a></p>
-<p>  第一步：申请微信公众号<br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin1.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin2.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin3.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin4.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin5.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin6.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin7.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin8.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin9.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin10.png" alt=""></figure></p>
+<p>  第一步：申请微信公众号<br> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin1.png" alt=""><br> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin2.png" alt=""><br> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin3.png" alt=""><br> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin4.png" alt=""><br> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin5.png" alt=""><br> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin6.png" alt=""><br> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin7.png" alt=""><br> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin8.png" alt=""><br> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin9.png" alt=""><br> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin10.png" alt=""></p>
 <p>这里跟微信绑定后期登陆只需要扫描下二维码就可以了。</p>
 <p>如何申请也可参考这篇文档：<a href="http://itnihao.blog.51cto.com/1741976/1733245" target="_blank" rel="external">申请微信公众号</a></p>
 <h3 id="如何操作企业号？"><a href="#如何操作企业号？" class="headerlink" title="如何操作企业号？"></a>如何操作企业号？</h3><p>1.通讯录添加企业成员</p>
 <p> 我们要提前把成员信息添加进组织部门，必填项+手机号或者微信号，这样别人扫描二维码的时候才能成功关注企业号。<br>注意：这里有两个我们要用到信息，一个组织部门的ID，一个部门成员的账号（账号是自己手动指定的，不同于微信号，最好是字母加数字）</p>
-<p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin12.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin13.png" alt=""></figure></p>
+<p> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin12.png" alt=""><br> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin13.png" alt=""></p>
 <p> 2.应用中心创建应用</p>
 <pre><code>我们要在这里创建应用，因为要通过应用发送消息给部门成员
 注意：这里要记住一个值，应用ID
-</code></pre><p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin14.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin15.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin16.png" alt=""></figure></p>
+</code></pre><p> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin14.png" alt=""><br> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin15.png" alt=""><br> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin16.png" alt=""></p>
 <p> 3.给部门设置管理员</p>
 <pre><code>设置---&gt;功能设置----&gt;权限管理----&gt;新建管理组
 管理员必须事先已经关注了企业号，并且已经设置好邮箱地址  
-</code></pre><p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin17.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin18.png" alt=""></figure></p>
+</code></pre><p> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin17.png" alt=""><br> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin18.png" alt=""></p>
 <p>  确定管理员可以读取通讯录，可以使用应用发消息。<br>  <code>注意：我们需要管理员的CorpID和Secret</code></p>
-<p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin19.png" alt=""></figure></p>
+<p> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin19.png" alt=""></p>
 <p>   我们要准备这些东西：</p>
 <pre><code>一个微信企业号
 企业号已经被部门成员关注
@@ -92,17 +227,17 @@ Secret
 <p>  调用微信接口需要一个调用接口的凭证：access_token</p>
 <pre><code>通过 ：CropID 、Secret  才能获取到access_token，但是获取到的token有效期为两分钟
 </code></pre><p>微信企业号接口调试工具传送门：<a href="http://qydev.weixin.qq.com/debug" target="_blank" rel="external">http://qydev.weixin.qq.com/debug</a></p>
-<p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin20.png" alt=""></figure><br> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin21.png" alt=""></figure></p>
+<p> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin20.png" alt=""><br> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin21.png" alt=""></p>
 <h3 id="测试是否可通："><a href="#测试是否可通：" class="headerlink" title="测试是否可通："></a>测试是否可通：</h3><p>  使用：</p>
 <pre><code>curl -s -G  url    获取 AccessToke
 </code></pre><p>  使用：</p>
 <pre><code>curl --data  url  传送凭证调用企业号接口
 </code></pre><p>这里出现一个问题：</p>
 <p> curl -s -G  url  获取 AccessToke时候为什么我在用企业号发送消息的时候总是返回<code>{&quot;errcode&quot;:41004,&quot;errmsg&quot;:&quot;corpsecret missing”}</code>呢？</p>
-<p> <figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin22.png" alt=""></figure></p>
+<p> <img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin22.png" alt=""></p>
 <p>主要原因：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">“41004”说明：缺少secret参数，请排查相关问题。</div><div class="line"></div><div class="line">用“”把url括起来就OK，即curl <span class="_">-s</span> -G <span class="string">"url"</span>，估计你已经解决了，帮助后来者吧。</div></pre></td></tr></table></figure>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin23.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin23.png" alt=""></p>
 <p>这个问题很棘手，一开始弄搞了一个半个小时后面看到一篇过来人的文章帮助了我：<br>这里我也贴出来了。<a href="参考链接：http://qydev.weixin.qq.com/qa/index.php?qa=16596&amp;qa_1=%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E5%9C%A8%E7%94%A8%E4%BC%81%E4%B8%9A%E5%8F%B7%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF%E7%9A%84%E6%97%B6%E5%80%99%E6%80%BB%E6%98%AF%E8%BF%94%E5%9B%9E">参考文档</a></p>
 <h3 id="python脚本原理"><a href="#python脚本原理" class="headerlink" title="python脚本原理"></a>python脚本原理</h3><pre><code> 使用：
 
@@ -129,7 +264,7 @@ safe否表示是否是保密消息，0表示否，1表示是，默认0
 &quot;touser&quot;:&quot;touser&quot;,   #企业号中的用户帐号，在zabbix用户Media中配置，如果配置不正常，将按部门发送。
 文中使用的用户, toparty 部门iD为3，agentid 应用ID为3.
 </code></pre><h3 id="为什么要这样写脚本？"><a href="#为什么要这样写脚本？" class="headerlink" title="为什么要这样写脚本？"></a>为什么要这样写脚本？</h3><p>因为微信企业号开放的端口有固定的格式限制<br> 企业号支持的格式：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=消息类型及数据格式" target="_blank" rel="external">http://qydev.weixin.qq.com/wiki/index.php?title=消息类型及数据格式</a></p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin24.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin24.png" alt=""></p>
 <p>将脚本放入zabbix默认执行路径下</p>
 <pre><code>mv weixin.sh /usr/local/zabbix/share/zabbix/alertscripts
 chown zabbix.zabbix /usr/local/zabbix/share/zabbix/alertscripts/weixin.py
@@ -143,25 +278,25 @@ chmod +x /usr/local/zabbix/share/zabbix/alertscripts/weixin.py
 <p>这里用户关注了以后：</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@salt alertscripts]<span class="comment"># python weixin.py jinyu hello world!</span></div><div class="line">&#123;<span class="string">u'errcode'</span>: <span class="number">0</span>, <span class="string">u'errmsg'</span>: <span class="string">u'ok'</span>&#125;</div></pre></td></tr></table></figure>
 <h3 id="web服务端配置："><a href="#web服务端配置：" class="headerlink" title="web服务端配置："></a>web服务端配置：</h3><p>至此工具安装完成，在zabbix界面里添加脚本告警</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin25.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin25.png" alt=""></p>
 <p>设置脚本，脚本名称为工具名称，设置好点添加按钮</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin26.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin26.png" alt=""></p>
 <p>添加新的报警媒介到用户，我以Admin用户为例</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin27.png" alt=""></figure><br>添加</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin28.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin27.png" alt=""><br>添加</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin28.png" alt=""></p>
 <p>选择刚才的媒介，收件人为我提供的UserID，多个用户用｜隔开</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin29.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin29.png" alt=""></p>
 <p>添加后一点要点更新</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin30.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin30.png" alt=""></p>
 <p>我们在这里独立设置一个Action，当然你也可以在默认的Action里添加</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin31.png" alt=""></figure></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin31.png" alt=""></p>
 <p>名称为weixin</p>
-<p>告警消息的格式，大家可以根据自己需求具体设置，下面是我的设置<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin32.png" alt=""></figure></p>
+<p>告警消息的格式，大家可以根据自己需求具体设置，下面是我的设置<br><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin32.png" alt=""></p>
 <p>默认接收人：故障{TRIGGER.STATUS},服务器:{HOSTNAME1}发生: {TRIGGER.NAME}故障!</p>
 <p>默认信息：</p>
 <figure class="highlight dust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="xml">告警主机:</span><span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml"></span></div><div class="line">告警时间:<span class="template-variable">&#123;EVENT.DATE&#125;</span><span class="xml"> </span><span class="template-variable">&#123;EVENT.TIME&#125;</span><span class="xml"></span></div><div class="line">告警等级:<span class="template-variable">&#123;TRIGGER.SEVERITY&#125;</span><span class="xml"></span></div><div class="line">告警信息: <span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml"></span></div><div class="line">告警项目:<span class="template-variable">&#123;TRIGGER.KEY1&#125;</span><span class="xml"></span></div><div class="line">问题详情:<span class="template-variable">&#123;ITEM.NAME&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE&#125;</span><span class="xml"></span></div><div class="line">前状态:<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE1&#125;</span><span class="xml"></span></div><div class="line">事件ID:<span class="template-variable">&#123;EVENT.ID&#125;</span><span class="xml"></span></div><div class="line"></div><div class="line">恢复主旨：恢复<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">, 服务器:</span><span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml">: </span><span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml">已恢复!</span></div><div class="line"></div><div class="line">恢复信息：</div><div class="line"></div><div class="line">告警主机:<span class="template-variable">&#123;HOSTNAME1&#125;</span><span class="xml"></span></div><div class="line">告警时间:<span class="template-variable">&#123;EVENT.DATE&#125;</span><span class="xml"> </span><span class="template-variable">&#123;EVENT.TIME&#125;</span><span class="xml"></span></div><div class="line">告警等级:<span class="template-variable">&#123;TRIGGER.SEVERITY&#125;</span><span class="xml"></span></div><div class="line">告警信息: <span class="template-variable">&#123;TRIGGER.NAME&#125;</span><span class="xml"></span></div><div class="line">告警项目:<span class="template-variable">&#123;TRIGGER.KEY1&#125;</span><span class="xml"></span></div><div class="line">问题详情:<span class="template-variable">&#123;ITEM.NAME&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE&#125;</span><span class="xml"></span></div><div class="line">当前状态:<span class="template-variable">&#123;TRIGGER.STATUS&#125;</span><span class="xml">:</span><span class="template-variable">&#123;ITEM.VALUE1&#125;</span><span class="xml"></span></div><div class="line">事件ID:<span class="template-variable">&#123;EVENT.ID&#125;</span><span class="xml"></span></div></pre></td></tr></table></figure>
-<p>切换到操作标签，添加操作<br>选择发送到Admin用户，只使用weixin，选择好之后点添加,这里我已经添加过了，所以提示更新。<br><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin33.png" alt=""></figure><br>设置好之后如下，点添加</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin35.png" alt=""></figure></p>
+<p>切换到操作标签，添加操作<br>选择发送到Admin用户，只使用weixin，选择好之后点添加,这里我已经添加过了，所以提示更新。<br><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin33.png" alt=""><br>设置好之后如下，点添加</p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin35.png" alt=""></p>
 <p>经过以上步骤，就完成了配置，就可以使用zabbix来告警啦，用dd命令测试下磁盘i/o告警，一会就会看到微信上发过来的告警信息</p>
 <pre><code>dd if=/dev/zero of=/tmp/test2.img bs=1024M count=1000 oflag=dsync
 </code></pre><h3 id="课外普及："><a href="#课外普及：" class="headerlink" title="课外普及："></a>课外普及：</h3><p>普及：</p>
@@ -191,8 +326,8 @@ chmod +x /usr/local/zabbix/share/zabbix/alertscripts/weixin.py
 <p>*注：要正确测试磁盘读写能力，建议测试文件的大小要远远大于内存的容量！！！</p>
 <h3 id="PS：后续计划"><a href="#PS：后续计划" class="headerlink" title="PS：后续计划"></a>PS：后续计划</h3><p>1.后续可能会增加发送次数计数，方便管理用户</p>
 <p>2.添加查询操作到微信，针对用户定制开发。可通过微信查询zabbix服务器里监控主机的状态，通过微信简单操作zabbix。</p>
-<h3 id="预览"><a href="#预览" class="headerlink" title="预览"></a>预览</h3><p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin38.png" alt=""></figure></p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin39.jpg" alt=""></figure></p>
+<h3 id="预览"><a href="#预览" class="headerlink" title="预览"></a>预览</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin38.png" alt=""></p>
+<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zabbix-weixin39.jpg" alt=""></p>
 <h3 id="注意事项及报错处理"><a href="#注意事项及报错处理" class="headerlink" title="注意事项及报错处理"></a>注意事项及报错处理</h3><pre><code> #Zabbix-web页面新增用户权限处理，发送对象选择（用户的名称）
 
 #应用当中可见范围选择注意（选这要发送的对象（部门，及部门成员））
@@ -203,52 +338,272 @@ chmod +x /usr/local/zabbix/share/zabbix/alertscripts/weixin.py
 <p>zabbix的ICMP_Ping模版实现对客户端网络状态的监控 : <a href="http://blog.yangcvo.me/2015/11/18/zabbix的ICMP-Ping模版实现对客户端网络状态的监控/" target="_blank" rel="external">zabbix的ICMP_Ping模版实现对客户端网络状态的监控</a></p>
 <p>zabbix性能监控故障总结 <a href="http://blog.yangcvo.me/2016/02/07/zabbix-故障总结/" target="_blank" rel="external">zabbix性能监控故障总结</a></p>
 
-	
 
-	
-		<span class="different-posts"><a href="/2016/06/22/性能监控/Zabbix/zabbix3-0实现微信报警/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+                <hr>
 
-	
+                
 
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/06/29/运维安全/ 化解自己的阿里云服务器被黑客攻击-暴力破解/" data-toggle="tooltip" data-placement="top" title="化解自己的阿里云服务器被黑客攻击-暴力破解">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/06/21/性能监控/Zabbix/zabbix3-0部署jmx监控tomcat/" data-toggle="tooltip" data-placement="top" title="zabbix3.0部署jmx监控tomcat">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Zabbix monitoring" title="Zabbix monitoring">Zabbix monitoring</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
 </article>
 
-	</main>
-
-	<footer class="footer">
-	<div class="footer-content">
-		
-	      <div class="footer__element">
-	<h5>Hi there,</h5>
-	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
-</div>
 
 
-	    
-	      <div class="footer__element">
-	<h5>Check out</h5>
-	<ul class="footer-links">
-		<li class="footer-links__link"><a href="/archives">Archive</a></li>
-		
-		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
-	    
-		<li class="footer-links__link"><a href="/about">about page</a></li>
-		<li class="footer-links__link"><a href="/tags">Tags</a></li>
-		<li class="footer-links__link"><a href="/categories">Categories</a></li>
-	</ul>
-</div>
-
-	    
-
-		<div class="footer-credit">
-			<span>© 2019 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
-		</div>
-
-	</div>
 
 
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
 </footer>
 
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
 
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
 

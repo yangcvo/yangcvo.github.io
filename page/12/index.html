@@ -1,551 +1,776 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
+<!-- Head tag -->
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta name="theme-color" content="#33474d">
-	<title>Yancy&#39;s blog</title>
-	<link rel="stylesheet" href="/css/style.css" />
-	
-      <link rel="alternate" href="/atom.xml" title="Yancy&#39;s blog" type="application/atom+xml">
-    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/page/12/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body>
 
-	<header class="header">
-		<nav class="header__nav">
-			
-				<a href="/" class="header__link">Home</a>
-			
-				<a href="/tags" class="header__link">Tags</a>
-			
-				<a href="/archives" class="header__link">ARCHIVES</a>
-			
-				<a href="/about/About" class="header__link">ABOUT</a>
-			
-				<a href="http://weibo.com/yangcvo" class="header__link">Weibo</a>
-			
-				<a href="/atom.xml" class="header__link">RSS</a>
-			
-		</nav>
-		<h1 class="header__title"><a href="/">Yancy&#39;s blog</a></h1>
-		<h2 class="header__subtitle">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</h2>
-	</header>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
 
-	<main>
-		
-	<span class="different-posts different-posts_earlier">📖 <a href="/page/11">earlier posts</a> 📖</span>
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>Yancy&#39;s blog</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
 
 
 
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        
 
-	<article>
-	
-		<h1><a href="/2016/03/09/自动化+Jenkins/Ansible/Ansible小结（四）Ad-hoc与commands模块 /">Ansible小结（四）Ad-hoc与commands模块</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-03-09</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/automation/">automation</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Ansible/">Ansible</a>
-			</span>
-		
-	</div>
+<!-- USE SIDEBAR -->
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                post-container
+            ">
+            
+                <!-- Main Content -->
 
-	
 
-	
-		<h1 id="ansible小结（四）Ad-hoc与commands模块"><a href="#ansible小结（四）Ad-hoc与commands模块" class="headerlink" title="ansible小结（四）Ad-hoc与commands模块"></a>ansible小结（四）Ad-hoc与commands模块</h1><p>Ad-Hoc 是指ansible下临时执行的一条命令，并且不需要保存的命令，对于复杂的命令后面会说playbook。讲到Ad-hoc 就要提到模块，所有的命令执行都要依赖于事先写好的模块，默认安装好的ansible 里面已经自带了很多模块，如：command、raw、shell、file、cron等，具体可以通过ansible-doc -l 进行查看 。</p>
-<h3 id="1、Ad-hoc"><a href="#1、Ad-hoc" class="headerlink" title="1、Ad-hoc"></a>1、Ad-hoc</h3><p>1、直接执行</p>
-<p>这里还是先来一个上几篇幅经常用到的一个例子：</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_C1 -a "uptime" -k</span></div><div class="line">SSH <span class="symbol">password:</span></div><div class="line"><span class="meta">192.168.1.177 | SUCCESS | rc=0 &gt;</span>&gt;</div><div class="line"> <span class="number">10</span><span class="symbol">:</span><span class="number">37</span><span class="symbol">:</span><span class="number">10</span> up <span class="number">24</span> days, <span class="number">16</span><span class="symbol">:</span><span class="number">48</span>,  <span class="number">4</span> users,  load <span class="symbol">average:</span> <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span></div></pre></td></tr></table></figure>
-<p>一个ad-hoc命令的执行，需要按以下格式进行执行：</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible 主机或组  -m 模块名 -<span class="selector-tag">a</span> <span class="string">'模块参数'</span>  ansible参数</div></pre></td></tr></table></figure>
-<p><strong>主机和组，是在/etc/ansible/hosts 里进行指定的部分，当然动态Inventory 使用的是脚本从外部应用里获取的主机.</strong></p>
-<ul>
-<li><p>模块名，可以通过<code>ansible-doc -l</code>查看目前安装的模块，默认不指定时，使用的是command模块，具体可以查看<code>/etc/ansible/ansible.cfg</code> 的<code>“#module_name = command ”</code> 部分，默认模块可以在该配置文件中进行修改；</p>
-</li>
-<li><p>模块参数，可以通过 <code>“ansible-doc</code> 模块名” 查看具体的用法及后面的参数；</p>
-</li>
-<li><p>ansible参数，可以通过ansible命令的帮忙信息里查看到，这里有很多参数可以供选择，如是否需要输入密码、是否sudo等。</p>
-</li>
+<div class="post-preview">
+
+    <a href="/2016/03/09/自动化+Jenkins/Ansible/Ansible小结（四）Ad-hoc与commands模块 /">
+        <h2 class="post-title">
+            Ansible小结（四）Ad-hoc与commands模块
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            ansible小结（四）Ad-hoc与commands模块Ad-Hoc 是指ansible下临时执行的一条命令，并且不需要保存的命令，对于复杂的命令后面会说playbook。讲到Ad-hoc 就要提到模块，所有的命令执行都要依赖于事先写好的模块，默认安装好的ansible 里面已经自带了很多模块，如：command、raw、shell、file、cron等，具体可以通过ansible-doc......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-09
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/07/自动化+Jenkins/Ansible/Ansible 小结（一）ansible的安装 /">
+        <h2 class="post-title">
+            Ansible 小结（一）ansible的安装
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            上一篇文章记录了解ansible,这篇大概记录下常规使用命令。
+这里以CentOS Linux release 7.2.1511 (Core)系统为准。
+
+一、Ansible的安装Centos安装1、yum源安装
+以centos为例，默认在源里没有ansible，不过在fedora epel源里有ansible，配置完epel 源后，可以直接通过yum 进行安装。这里以centos6.8为例......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-07
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/07/自动化+Jenkins/Ansible/ansible小结（二）ansible架构 /">
+        <h2 class="post-title">
+            Ansible小结（二）ansible架构
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Ansible 是一个模型驱动的配置管理器，支持多节点发布、远程任务执行。默认使用 SSH 进行远程连接。无需在被管理节点上安装附加软件，可使用各种编程语言进行扩展。
+
+上图为ansible的基本架构，从上图可以了解到其由以下部分组成：
+1234567核心：ansible核心模块（Core Modules）：这些都是ansible自带的模块 扩展模块（Custom Modules）：如果核心......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-07
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/07/自动化+Jenkins/Ansible/Ansible小结（三）ansible.cfg与默认配置 /">
+        <h2 class="post-title">
+            Ansible小结（三）ansible.cfg与默认配置
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            #Ansible小结（四）ansible.cfg与默认配置
+Ansible默认安装好后有一个配置文件/etc/ansible/ansible.cfg，该配置文件中定义了ansible的主机的默认配置部分，如默认是否需要输入密码、是否开启sudo认证、action_plugins插件的位置、hosts主机组的位置、是否开启log功能、默认端口、key文件位置等等。
+具体如下：
+12345678......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-07
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/07/自动化+Jenkins/Ansible/ Ansible 学习入门 /">
+        <h2 class="post-title">
+            Ansible 学习入门
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Ansible介绍
+学习ansible这里我自己做了简单的介绍总结：
+Ansible是一个自动化工具。它可以配置系统,部署软件,编排更高级的任务,比如连续部署或零停机时间滚动更新。
+Ansible的目标是最简单和最易用。它也有一个强烈关注安全性和可靠性,以最少的移动部件,使用OpenSSH运输(加速插座模式和拉模式选择),和设计语言,人类可审核性的——甚至是那些不熟悉程序。
+我们认为简单是所......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-07
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/02/25/Web服务技术/Nginx/Nginx限制IP访问权限或限制某个IP同一时间段的访问次数/">
+        <h2 class="post-title">
+            Nginx限制IP访问权限或限制某个IP同一时间段的访问次数
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            nginx限制ip访问 nginx访问权限看下配置：
+这里我只允许我公司IP访问：
+12345678910111213141516  server &#123;        listen       80;        server_name  kibana.ihaozhuo.com;        location / &#123;             index        i......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-02-25
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/01/30/日志分析平台/Elasticsearch/Elasticsearch5.x版本的索引定时自动清理和检测进程状态自动启动/">
+        <h2 class="post-title">
+            Elasticsearch5.x版本的索引定时自动清理和检测进程状态自动启动
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            elasticsearch的索引定时自动清理之前用 logstash来做日志收集 并用 elasticsearch来搜索，因为日志没有进行过滤，没几天就发现elasticsearch的索引文件大的吓人，之前还真没清理过。其实要说清理也简单，直接到 elasticsearch data文件夹里删掉就行了，写个脚本定期清理集群es的日志数据。
+这里我清理1月7号的。
+这里后面是索引名称。app_......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-01-30
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/01/29/日志分析平台/Elasticsearch/logstash如何收集tomcat日志分析/">
+        <h2 class="post-title">
+            logstash如何写tomcat,redis,nginx日志收集规则
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            logstash如何收集tomcat日志分析（可以参考我下面写的模板）1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162我想实现对tomcat的日志采集，正常应该创建一个file的input，这个input指定了监......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-01-29
+    </p>
+
+</div>
+<hr>
+
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+        <li class="previous">
+            <a href="/page/11/">&larr; Newer Posts</a>
+        </li>
+    
+    
+        <li class="next">
+            <a href="/page/13/">Older Posts &rarr;</a>
+        </li>
+    
 </ul>
-<h4 id="2、后台执行例子"><a href="#2、后台执行例子" class="headerlink" title="2、后台执行例子"></a>2、后台执行例子</h4><p>当命令执行时间比较长时，也可以放到后台执行，这里会用到-B、-P参数，如下：</p>
-<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ansible all -B <span class="number">3600</span> -a <span class="string">"/usr/bin/long_running_operation --do-stuff"</span> \\后台执行命令 <span class="number">3600</span>s，-B 表示后台执行的时间</div><div class="line">ansible all -m async_status -a <span class="string">"jid=123456789"</span>  \\检查任务的状态</div><div class="line">ansible all -B <span class="number">1800</span> -P <span class="number">60</span> -a <span class="string">"/usr/bin/long_running_operation --do-stuff"</span> \\后台执行命令最大时间是 <span class="number">1800</span>s 即 <span class="number">30</span> 分钟，-P 每 <span class="number">60</span>s 检查下状态默认 <span class="number">15</span>s</div></pre></td></tr></table></figure>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># ansible  -B 60 -P 1  tomcat_B1 -a  "uptime"</span></div><div class="line"><span class="meta">192.168.1.176 | SUCCESS | rc=0 &gt;</span>&gt;</div><div class="line"> <span class="number">11</span><span class="symbol">:</span><span class="number">23</span><span class="symbol">:</span><span class="number">00</span> up <span class="number">24</span> days, <span class="number">17</span><span class="symbol">:</span><span class="number">34</span>,  <span class="number">1</span> user,  load <span class="symbol">average:</span> <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span></div></pre></td></tr></table></figure>
-<h2 id="二、commands模块"><a href="#二、commands模块" class="headerlink" title="二、commands模块"></a>二、commands模块</h2><p>上面已经提到，ansbile自身已经自带了很多模块，可以通过ansible-doc -l 进行查看。这里就结合<code>command、shell、raw、script</code>模块了解下其用法。</p>
-<p>上面四个模块都属于commands 类。</p>
-<ul>
-<li><code>command</code>模块，该模块通过<code>-a</code>跟上要执行的命令可以直接执行，不过命令里如果有带有如下字符部分则执行不成功 “ so variables like $HOME and operations like “&lt;”, “&gt;”, “|”, and “&amp;” will not work (use the shell module if you need these features).”；**</li>
-<li><code>shell</code>模块，用法其本和<code>command</code>一样，不过的是其是通过/bin/sh进行执行，所以shell 模块可以执行任何命令，就像在本机执行一样，“ It is almost exactly like the command module but runs the command through a shell (/bin/sh) on the remote node.”；</li>
-<li><code>raw</code>模块，用法和shell 模块一样 ，其也可以执行任意命令，就像在本机执行一样，“Executes a low-down and dirty SSH command, not going through the module subsystem. There is no change handler support for this module. This module does not require python on the remote system”</li>
-<li><code>script</code>模块，其是将管理端的shell 在被管理主机上执行，其原理是先将shell 复制到远程主机，再在远程主机上执行，原理类似于raw模块，“This module does not require python on the remote system, much like the raw module.” 。</li>
-</ul>
-<blockquote>
-<p>注：raw模块和comand、shell 模块不同的是其没有chdir、creates、removes参数，chdir参数的作用就是先切到chdir指定的目录后，再执行后面的命令，这在后面很多模块里都会有该参数 。</p>
-</blockquote>
-<p>###command模块包含如下选项： </p>
-<ul>
-<li>creates：一个文件名，当该文件存在，则该命令不执行 </li>
-<li>free_form：要执行的linux指令 </li>
-<li>chdir：在执行指令之前，先切换到该指定的目录 </li>
-<li>removes：一个文件名，当该文件不存在，则该选项不执行</li>
-<li>executable：切换shell来执行指令，该执行路径必须是一个绝对路径</li>
-</ul>
-<p><strong>command模块、raw模块、shell模块示例：</strong></p>
-<h4 id="command例子："><a href="#command例子：" class="headerlink" title="command例子："></a>command例子：</h4><figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_B1 -m command -a "ps -ef|grep tomcat"</span></div><div class="line"><span class="number">192.168</span><span class="number">.1</span><span class="number">.176</span> | FAILED | rc=<span class="number">1</span> &gt;&gt;</div><div class="line">ERROR: Unsupported SysV option.</div><div class="line">********* simple selection *********  ********* selection <span class="keyword">by</span> <span class="built_in">list</span> *********</div><div class="line">-A all processes                      -C <span class="keyword">by</span> command <span class="built_in">name</span></div><div class="line">-N negate selection                   -G <span class="keyword">by</span> <span class="built_in">real</span> group ID (supports names)</div><div class="line">-a all w/ tty except session leaders  -U <span class="keyword">by</span> <span class="built_in">real</span> user ID (supports names)</div><div class="line">-d all except session leaders         -g <span class="keyword">by</span> session OR <span class="keyword">by</span> effective group <span class="built_in">name</span></div><div class="line">-e all processes                      -p <span class="keyword">by</span> process ID</div><div class="line">                                      -q <span class="keyword">by</span> process ID (unsorted &amp; quick)</div><div class="line">T  all processes <span class="keyword">on</span> this terminal     -s processes <span class="keyword">in</span> <span class="keyword">the</span> sessions <span class="keyword">given</span></div><div class="line">a  all w/ tty, including other users  -t <span class="keyword">by</span> tty</div><div class="line">g  OBSOLETE <span class="comment">-- DO NOT USE             -u by effective user ID (supports names)</span></div><div class="line">r  only <span class="built_in">running</span> processes             U  processes <span class="keyword">for</span> specified users</div><div class="line">x  processes w/o controlling ttys     t  <span class="keyword">by</span> tty</div><div class="line">*********** output format **********  *********** long options ***********</div><div class="line">-o,o user-defined  -f full            <span class="comment">--Group --User --pid --cols --ppid</span></div><div class="line">-j,j job control   s  signal          <span class="comment">--group --user --sid --rows --info</span></div><div class="line">-O,O preloaded -o  v  virtual memory  <span class="comment">--cumulative --format --deselect</span></div><div class="line">-l,l long          u  user-oriented   <span class="comment">--sort --tty --forest --version</span></div><div class="line">-F   extra full    X  registers       <span class="comment">--heading --no-heading --context</span></div><div class="line">                                      <span class="comment">--quick-pid</span></div><div class="line">                    ********* misc options *********</div><div class="line">-V,V  show <span class="built_in">version</span>      L  <span class="built_in">list</span> format codes  f  ASCII art forest</div><div class="line">-m,m,-L,-T,H  threads   S  children <span class="keyword">in</span> sum    -y change -l format</div><div class="line">-M,Z  security data     c  <span class="literal">true</span> command <span class="built_in">name</span>  -c scheduling <span class="built_in">class</span></div><div class="line">-w,w  wide output       n  numeric WCHAN,UID  -H process hierarchy</div></pre></td></tr></table></figure>
-<p><strong>上面的执行结果可以看到，我这里加了管道，<code>command模块</code>执行时出错，而使用<code>raw模块</code>和<code>shell模块</code>都正常。</strong></p>
-<h4 id="shell例子："><a href="#shell例子：" class="headerlink" title="shell例子："></a>shell例子：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_B1 -m shell -a "ps -ef|grep tomcat"</span></div><div class="line">192.168.1.176 | SUCCESS | rc=0 &gt;&gt;</div><div class="line">root      1529     1  0 Aug11 ?        00:00:00 jsvc.exec -java-home /srv/jdk1.7.0_67 -user tomcat -pidfile /srv/tomcat/tomcat_manager/logs/catalina-daemon.pid -wait 10 -outfile /srv/tomcat/tomcat_manager/logs/catalina-daemon.out -errfile &amp;1 -classpath /srv/tomcat/tomcat_manager/bin/bootstrap.jar:/srv/tomcat/</div></pre></td></tr></table></figure>
-<h4 id="使用chdir的示例："><a href="#使用chdir的示例：" class="headerlink" title="使用chdir的示例："></a>使用chdir的示例：</h4><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_B1 -m command -a "chdir=/tmp/ touch 1.txt"</span></div><div class="line"><span class="meta">192.168.1.176 | SUCCESS | rc=0 &gt;</span>&gt;</div><div class="line"></div><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_B1 -m shell -a "chdir=/tmp/ touch 2.txt"</span></div><div class="line"><span class="meta">192.168.1.176 | SUCCESS | rc=0 &gt;</span>&gt;</div><div class="line"></div><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_B1 -m raw -a "chdir=/tmp/ touch 3.txt"</span></div><div class="line"><span class="meta">192.168.1.176 | SUCCESS | rc=0 &gt;</span>&gt;</div></pre></td></tr></table></figure>
-<p>从上面执行结果来看，三个命令都执行成功了。不过通过在远程主机上查看，前两个文件被成功创建：</p>
-<figure class="highlight tap"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_B1 -m command -a "chdir=/tmp/ ls -lh"</span></div><div class="line">192.168.1.176 | SUCCESS | rc=0 &gt;&gt;</div><div class="line">total 188K</div><div class="line">-rw-r--r--.<span class="number"> 1 </span>root   root     <span class="number"> 0 </span>Sep <span class="number"> 5 </span>22:52 1.txt</div><div class="line">-rw-r--r--.<span class="number"> 1 </span>root   root     <span class="number"> 0 </span>Sep <span class="number"> 5 </span>22:51 2.txt</div></pre></td></tr></table></figure>
-<p>使用<code>raw模块</code>的执行的结果文件也被正常创建了，不过不是在chdir 指定的目录，而是在当前执行用户的家目录。</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_B1 -m raw -a "ls ~/4.txt"</span></div><div class="line"><span class="meta">192.168.1.176 | SUCCESS | rc=0 &gt;</span>&gt;</div><div class="line"><span class="regexp">/root/</span><span class="number">4</span>.txt</div></pre></td></tr></table></figure>
-<h4 id="creates与removes示例："><a href="#creates与removes示例：" class="headerlink" title="creates与removes示例："></a>creates与removes示例：</h4><p>这里我在测试主机上创建/tmp/server.txt文件，执行结果如下：</p>
-<ul>
-<li>creates：一个文件名，当该文件存在，则该命令不执行 </li>
-</ul>
-<figure class="highlight nimrod"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_B1  -a "creates=/tmp/1.txt uptime"</span></div><div class="line"> [<span class="type">WARNING</span>]: <span class="type">Failure</span> <span class="keyword">using</span> <span class="keyword">method</span> (v2_runner_on_ok) <span class="keyword">in</span> callback plugin (&lt;ansible.plugins.callback.minimal.<span class="type">CallbackModule</span> <span class="keyword">object</span> at <span class="number">0x2093e90</span>&gt;): coercing to</div><div class="line"><span class="type">Unicode</span>: need <span class="built_in">string</span> <span class="keyword">or</span> buffer, <span class="built_in">bool</span> found</div><div class="line"></div><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_B1  -a "removes=/tmp/1.txt uptime"</span></div><div class="line"><span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">176</span> | <span class="type">SUCCESS</span> | rc=<span class="number">0</span> &gt;&gt;</div><div class="line"> <span class="number">22</span>:<span class="number">59</span>:<span class="number">04</span> up <span class="number">25</span> days,  <span class="number">5</span>:<span class="number">10</span>,  <span class="number">1</span> user,  load average: <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span></div></pre></td></tr></table></figure>
-<h4 id="script模块示例："><a href="#script模块示例：" class="headerlink" title="script模块示例："></a>script模块示例：</h4><figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[root@361way ~]# cat script.sh</div><div class="line">#!/bin/bash</div><div class="line">df -hl</div><div class="line">ifconfig</div><div class="line">ps auxf|grep snmp</div><div class="line">[root@361way ~]# ansible 10.212.52.252 -m script -a 'scrip.sh'</div><div class="line">10.212.52.252 | FAILED =&gt; file or module does not exist: /root/scrip.sh</div><div class="line">[root@361way ~]# ansible 10.212.52.252 -m script -a 'script.sh'</div><div class="line">10.212.52.252 | success &gt;&gt; &#123;</div><div class="line">    "changed": true,</div><div class="line">    "rc": 0,</div><div class="line">    "stderr": "OpenSSH_5.3p1, OpenSSL 1.0.1e-fips 11 Feb 2013<span class="symbol">\n</span>debug1: Reading configuration data /etc/ssh/ssh_config<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Applying options for *<span class="symbol">\r</span><span class="symbol">\n</span>debug1: auto-mux: Trying existing master<span class="symbol">\r</span><span class="symbol">\n</span>Control socket connect(/root/.ansible/cp/ansible-ssh-10.212.52.252-22-root): Connection refused<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Connecting to 10.212.52.252 [10.212.52.252] port 22.<span class="symbol">\r</span><span class="symbol">\n</span>debug1: fd 3 clearing O_NONBLOCK<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Connection established.<span class="symbol">\r</span><span class="symbol">\n</span>debug1: permanently_set_uid: 0/0<span class="symbol">\r</span><span class="symbol">\n</span>debug1: identity file /root/.ssh/identity type -1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: identity file /root/.ssh/identity-cert type -1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: identity file /root/.ssh/id_rsa type -1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: identity file /root/.ssh/id_rsa-cert type -1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: identity file /root/.ssh/id_dsa type -1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: identity file /root/.ssh/id_dsa-cert type -1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: identity file /root/.ssh/id_ecdsa type -1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: identity file /root/.ssh/id_ecdsa-cert type -1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Remote protocol version 2.0, remote software version OpenSSH_6.2<span class="symbol">\r</span><span class="symbol">\n</span>debug1: match: OpenSSH_6.2 pat OpenSSH*<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Enabling compatibility mode for protocol 2.0<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Local version string SSH-2.0-OpenSSH_5.3<span class="symbol">\r</span><span class="symbol">\n</span>debug1: SSH2_MSG_KEXINIT sent<span class="symbol">\r</span><span class="symbol">\n</span>debug1: SSH2_MSG_KEXINIT received<span class="symbol">\r</span><span class="symbol">\n</span>debug1: kex: server-&gt;client aes128-ctr hmac-md5 zlib@openssh.com<span class="symbol">\r</span><span class="symbol">\n</span>debug1: kex: client-&gt;server aes128-ctr hmac-md5 zlib@openssh.com<span class="symbol">\r</span><span class="symbol">\n</span>debug1: SSH2_MSG_KEX_DH_GEX_REQUEST(1024&lt;1024&lt;8192) sent<span class="symbol">\r</span><span class="symbol">\n</span>debug1: expecting SSH2_MSG_KEX_DH_GEX_GROUP<span class="symbol">\r</span><span class="symbol">\n</span>debug1: SSH2_MSG_KEX_DH_GEX_INIT sent<span class="symbol">\r</span><span class="symbol">\n</span>debug1: expecting SSH2_MSG_KEX_DH_GEX_REPLY<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Host '10.212.52.252' is known and matches the RSA host key.<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Found key in /root/.ssh/known_hosts:1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: ssh_rsa_verify: signature correct<span class="symbol">\r</span><span class="symbol">\n</span>debug1: SSH2_MSG_NEWKEYS sent<span class="symbol">\r</span><span class="symbol">\n</span>debug1: expecting SSH2_MSG_NEWKEYS<span class="symbol">\r</span><span class="symbol">\n</span>debug1: SSH2_MSG_NEWKEYS received<span class="symbol">\r</span><span class="symbol">\n</span>debug1: SSH2_MSG_SERVICE_REQUEST sent<span class="symbol">\r</span><span class="symbol">\n</span>debug1: SSH2_MSG_SERVICE_ACCEPT received<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Authentications that can continue: publickey,password,keyboard-interactive<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Next authentication method: keyboard-interactive<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Enabling compression at level 6.<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Authentication succeeded (keyboard-interactive).<span class="symbol">\r</span><span class="symbol">\n</span>debug1: setting up multiplex master socket<span class="symbol">\r</span><span class="symbol">\n</span>ControlSocket /root/.ansible/cp/ansible-ssh-10.212.52.252-22-root already exists, disabling multiplexing<span class="symbol">\r</span><span class="symbol">\n</span>debug1: channel 0: new [client-session]<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Requesting no-more-sessions@openssh.com<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Entering interactive session.<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Sending environment.<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Sending env LANG = en_US.UTF-8<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Sending command: LANG=C LC_CTYPE=C /root/.ansible/tmp/ansible-tmp-1431924855.88-242473611260231/script.sh <span class="symbol">\r</span><span class="symbol">\n</span>debug1: client_input_channel_req: channel 0 rtype exit-status reply 0<span class="symbol">\r</span><span class="symbol">\n</span>debug1: client_input_channel_req: channel 0 rtype eow@openssh.com reply 0<span class="symbol">\r</span><span class="symbol">\n</span>debug1: channel 0: free: client-session, nchannels 1<span class="symbol">\r</span><span class="symbol">\n</span>debug1: fd 1 clearing O_NONBLOCK<span class="symbol">\r</span><span class="symbol">\n</span>debug1: fd 2 clearing O_NONBLOCK<span class="symbol">\r</span><span class="symbol">\n</span>Connection to 10.212.52.252 closed.<span class="symbol">\r</span><span class="symbol">\n</span>Transferred: sent 1928, received 3920 bytes, in 0.1 seconds<span class="symbol">\r</span><span class="symbol">\n</span>Bytes per second: sent 37017.0, received 75262.7<span class="symbol">\r</span><span class="symbol">\n</span>debug1: Exit status 0<span class="symbol">\r</span><span class="symbol">\n</span>debug1: compress outgoing: raw data 537, compressed 375, factor 0.70<span class="symbol">\r</span><span class="symbol">\n</span>debug1: compress incoming: raw data 1837, compressed 1019, factor 0.55<span class="symbol">\r</span><span class="symbol">\n</span>",</div><div class="line">    "stdout": "Filesystem      Size  Used Avail Use<span class="variable">% Mounted on\r\n/dev/sda2       9.9G  872M  8.5G  10%</span> /<span class="symbol">\r</span><span class="symbol">\n</span>udev            3.9G  128K  3.9G   1<span class="variable">% /dev\r\ntmpfs           3.9G   76K  3.9G   1%</span> /dev/shm<span class="symbol">\r</span><span class="symbol">\n</span>/dev/sda3       5.0G  219M  4.5G   5<span class="variable">% /boot\r\n/dev/sda8        40G   15G   23G  40%</span> /home<span class="symbol">\r</span><span class="symbol">\n</span>/dev/sda9       9.9G  5.2G  4.3G  55<span class="variable">% /opt\r\n/dev/sda6       5.0G  2.7G  2.1G  57%</span> /tmp<span class="symbol">\r</span><span class="symbol">\n</span>/dev/sda5       9.9G  3.4G  6.0G  36<span class="variable">% /usr\r\n/dev/sda7       9.9G  823M  8.6G   9%</span> /var<span class="symbol">\r</span><span class="symbol">\n</span>eth0      Link encap:Ethernet  HWaddr 00:50:56:A8:65:7E  <span class="symbol">\r</span><span class="symbol">\n</span>          inet addr:10.212.52.252  Bcast:10.212.52.255  Mask:255.255.255.0<span class="symbol">\r</span><span class="symbol">\n</span>          inet6 addr: fe80::250:56ff:fea8:657e/64 Scope:Link<span class="symbol">\r</span><span class="symbol">\n</span>          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1<span class="symbol">\r</span><span class="symbol">\n</span>          RX packets:24112135 errors:0 dropped:792372 overruns:0 frame:0<span class="symbol">\r</span><span class="symbol">\n</span>          TX packets:10697339 errors:0 dropped:0 overruns:0 carrier:0<span class="symbol">\r</span><span class="symbol">\n</span>          collisions:0 txqueuelen:1000 <span class="symbol">\r</span><span class="symbol">\n</span>          RX bytes:17137233328 (16343.3 Mb)  TX bytes:13390377826 (12770.0 Mb)<span class="symbol">\r</span><span class="symbol">\n</span><span class="symbol">\r</span><span class="symbol">\n</span>lo        Link encap:Local Loopback  <span class="symbol">\r</span><span class="symbol">\n</span>          inet addr:127.0.0.1  Mask:255.0.0.0<span class="symbol">\r</span><span class="symbol">\n</span>          inet6 addr: ::1/128 Scope:Host<span class="symbol">\r</span><span class="symbol">\n</span>          UP LOOPBACK RUNNING  MTU:16436  Metric:1<span class="symbol">\r</span><span class="symbol">\n</span>          RX packets:3407332 errors:0 dropped:0 overruns:0 frame:0<span class="symbol">\r</span><span class="symbol">\n</span>          TX packets:3407332 errors:0 dropped:0 overruns:0 carrier:0<span class="symbol">\r</span><span class="symbol">\n</span>          collisions:0 txqueuelen:0 <span class="symbol">\r</span><span class="symbol">\n</span>          RX bytes:262675450 (250.5 Mb)  TX bytes:262675450 (250.5 Mb)<span class="symbol">\r</span><span class="symbol">\n</span><span class="symbol">\r</span><span class="symbol">\n</span>root     25332  0.0  0.0   4260   568 pts/2    S+   12:54   0:00          <span class="symbol">\\</span>_ grep snmp<span class="symbol">\r</span><span class="symbol">\n</span>root     24364  0.0  0.0  70416  6696 ?        SNl  May15   0:22 /usr/sbin/snmpd -r -A -LF i /var/log/net-snmpd.log -p /var/run/snmpd.pid<span class="symbol">\r</span><span class="symbol">\n</span>"</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>输出结果很多，看起来也很乱，不过查下stdout部分，这个部分是实际上执行后的结果。这里可以配合管道一起使用，可以如下使用：</p>
-<p><code>`
-[root@361way ~]# ansible 10.212.52.252 -m script -a &#39;script.sh&#39; |egrep &#39;&gt;&gt;|stdout&#39;</code></p>
 
-	
 
-	
 
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/03/07/自动化+Jenkins/Ansible/Ansible 小结（一）ansible的安装 /">Ansible 小结（一）ansible的安装</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-03-07</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/automation/">automation</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Ansible/">Ansible</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<p>上一篇文章记录了解ansible,这篇大概记录下常规使用命令。</p>
-<p>这里以CentOS Linux release 7.2.1511 (Core)系统为准。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ansible_03.png" alt=""></figure></p>
-<h3 id="一、Ansible的安装"><a href="#一、Ansible的安装" class="headerlink" title="一、Ansible的安装"></a>一、Ansible的安装</h3><h4 id="Centos安装"><a href="#Centos安装" class="headerlink" title="Centos安装"></a>Centos安装</h4><p>1、yum源安装</p>
-<p>以centos为例，默认在源里没有ansible，不过在fedora epel源里有ansible，配置完epel 源后，可以直接通过yum 进行安装。这里以centos6.8为例：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">centos 6</div><div class="line"><span class="comment"># yum install http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm</span></div><div class="line"></div><div class="line">centos 7</div><div class="line"><span class="comment"># yum install http://mirrors.sohu.com/fedora-epel/7/x86_64/Packages/e/epel-release-7-11.noarch.rpm</span></div><div class="line"><span class="comment"># yum install -y ansible</span></div></pre></td></tr></table></figure>
-<h4 id="Ubuntu安装"><a href="#Ubuntu安装" class="headerlink" title="Ubuntu安装"></a>Ubuntu安装</h4><p>2、apt-get安装</p>
-<p>在ubuntu及其衍生版中，可以通过增加ppa源进行apt-get安装，具体如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span><span class="bash"> sudo apt-get install software-properties-common</span></div><div class="line"><span class="meta">$</span><span class="bash"> sudo apt-add-repository ppa:ansible/ansible</span></div><div class="line"><span class="meta">$</span><span class="bash"> sudo apt-get update</span></div><div class="line"><span class="meta">$</span><span class="bash"> sudo apt-get install ansible</span></div></pre></td></tr></table></figure>
-<p>3、源码安装</p>
-<p>源码安装需要python2.6以上版本，其依赖模块paramiko、PyYAML、Jinja2、httplib2、simplejson、pycrypto模块，以上模块可以通过pip或easy_install 进行安装，不过本部分既然提到的是源码安装，主要针对的无法上外网的情况下，可以通过pypi 站点搜索以上包，下载后通过python setup.py install 进行安装。</p>
-<p>最后通过github或pypi上下载ansible源码包，通过python setup.py install 安装即可。由于安装过程相对简单，这里略过，主要介绍安装后，可能遇到的问题。</p>
-<p>a、安装PyYAML时，报错如下：</p>
-<figure class="highlight gams"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># python setup.py install</div><div class="line">libyaml is <span class="keyword">not</span> found <span class="keyword">or</span> a compiler error: forcing --without-libyaml</div><div class="line">(<span class="keyword">if</span> libyaml is installed correctly, you may need to</div><div class="line"> specify the <span class="keyword">option</span> --include-dirs <span class="keyword">or</span> uncomment <span class="keyword">and</span></div><div class="line"> modify the <span class="keyword">parameter</span> include_dirs <span class="comment">in setup.cfg)</span></div><div class="line">running <span class="comment">install_lib</span></div><div class="line">running <span class="comment">install_egg_info</span></div><div class="line">Removing /usr/<span class="comment">lib64</span>/python2<span class="number">.6</span>/<span class="comment">site-packages</span>/PyYAML<span class="number">-3.11</span>-py2<span class="number">.6</span>.egg-info</div><div class="line">Writing /<span class="comment">usr</span>/lib64/<span class="comment">python2.6</span>/site-packages/<span class="comment">PyYAML-3.11-py2.6.egg-info</span></div></pre></td></tr></table></figure>
-<p>在centos6.8系统中，可以通过<code>yum -y install libyaml</code>包解决，或者从ISO文件中提供该包，通过rpm -ivh进行安装。</p>
-<p>###二、Ansible的配置与验证</p>
-<p>yum 安装使用默认示例配置文件后，编辑/etc/ansible/hosts文件，通过以下方式验证ansible是否可用：</p>
-<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]# cat /etc/ansible/hosts</div><div class="line">[test]</div><div class="line"><span class="number">10.212</span><span class="number">.52</span><span class="number">.252</span> ansible_ssh_user=root ansible_ssh_pass=qwe123.com</div><div class="line"><span class="number">10.212</span><span class="number">.52</span><span class="number">.14</span> ansible_ssh_user=root ansible_ssh_pass=abc123</div><div class="line"><span class="number">10.212</span><span class="number">.52</span><span class="number">.16</span> ansible_ssh_user=root ansible_ssh_pass=<span class="number">91</span>it.org</div></pre></td></tr></table></figure>
-<p>以上的配置中，我配置了一个test组，该组下有三台主机，三台都使用root验证，三台的密码分别是361way.com、abc123、91it.org 。</p>
-<p>注：后面的用户和密码项是非必须的，在配置key认证的情况下，不使用密码也可以直接操作 。未使用key的，也可以在ansible通过 -k参数在操作前询问手动输入密码。</p>
-<p>配置文件就是一般下目录的hosts文件。</p>
-<p>在库存中，我们可以定义如下信息：</p>
-<ul>
-<li>主机地址</li>
-<li>主机分组</li>
-<li>连接属性（登录名，密码，秘钥，端口等）<br>1，主机地址和分组</li>
-</ul>
-<p>定义主机地址和名称比较简单：</p>
-<figure class="highlight fsharp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">[&lt;主机名&gt;]</span></div><div class="line">&lt;主机 IP&gt;</div></pre></td></tr></table></figure>
-<p>定义分组的语法类似，就是在名字后加上:children，成员可以是主机名，也可以是分组名：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[<span class="tag">&lt;<span class="name">分组名</span>&gt;</span>:children]</div><div class="line"><span class="tag">&lt;<span class="name">主机名</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">分组名</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>2，连接属性</p>
-<p>可以针对SSH连接指定一些参数：</p>
-<ul>
-<li><code>ansible_ssh_host</code>：主机名。</li>
-<li><code>ansible_ssh_port</code>：SSH端口，默认22。</li>
-<li><code>ansible_ssh_user</code>：登录用户。</li>
-<li><code>ansible_ssh_pass</code>：登陆密码。</li>
-<li><code>ansible_ssh_private_key_file</code>：私钥。</li>
-</ul>
-<p>通过私钥登陆的话，就不要指定登录密码了，主机名也可以忽略。当然，既然是使用私钥登陆，需要你确保已经在各个中主机的authorized_keys里添加了对应的公钥。</p>
-<p>3，演示</p>
-<p>完整的库存例子如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> -----------------</span></div><div class="line"><span class="meta">#</span><span class="bash"> 首先定义各个主机</span></div><div class="line"><span class="meta">#</span><span class="bash"> -----------------</span></div><div class="line"><span class="meta">#</span><span class="bash">============================01_version=============================<span class="comment">#</span></span></div><div class="line"></div><div class="line">[tomcat-account_01]</div><div class="line">  10.27.232.82</div><div class="line">[tomcat-point_01]</div><div class="line">  10.27.2.12</div><div class="line">[tomcat-system_01]</div><div class="line">   10.27.232.12</div><div class="line"> [tomcat-family_01]</div><div class="line">   10.27.230.63</div><div class="line"> [tomcat-mission_01]</div><div class="line">   10.47.59.12</div><div class="line"> [tomcat-card_01]</div><div class="line">   10.47.74.12</div><div class="line"> [tomcat-check_01]</div><div class="line">   10.47.107.153</div><div class="line">   </div><div class="line"><span class="meta">#</span><span class="bash"> -----------------</span></div><div class="line"><span class="meta">#</span><span class="bash"> 定义分组</span></div><div class="line"><span class="meta">#</span><span class="bash"></span></div><div class="line"><span class="meta">#</span><span class="bash"> 在这里我们定义了三个分组，分别名为：</span></div><div class="line"><span class="meta">#</span><span class="bash">   - cluster1</span></div><div class="line"><span class="meta">#</span><span class="bash">   - light</span></div><div class="line"><span class="meta">#</span><span class="bash">   - starwar</span></div><div class="line"><span class="meta">#</span><span class="bash"> -----------------</span></div><div class="line"></div><div class="line">[cluster1:children]</div><div class="line">tomcat-account_01</div><div class="line">tomcat-point_01</div><div class="line">tomcat-system_01</div><div class="line">tomcat-family_01</div><div class="line">tomcat-mission_01</div><div class="line"></div><div class="line">[light:children]</div><div class="line">tomcat-account_01</div><div class="line">tomcat-point_01</div><div class="line">tomcat-system_01</div><div class="line">tomcat-family_01</div><div class="line">tomcat-mission_01</div><div class="line"></div><div class="line">[starwar:children]</div><div class="line">tomcat-account_01</div><div class="line">tomcat-point_01</div><div class="line">tomcat-system_01</div><div class="line">tomcat-family_01</div><div class="line">tomcat-mission_01</div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"> -----------------</span></div><div class="line"><span class="meta">#</span><span class="bash"> 给分组定义变量</span></div><div class="line"><span class="meta">#</span><span class="bash"></span></div><div class="line"><span class="meta">#</span><span class="bash"> 这里我们给 starwar 组定义了变量 </span></div><div class="line"><span class="meta">#</span><span class="bash"> -----------------</span></div><div class="line">[cluster1:vars]</div><div class="line">ansible_ssh_port=7525</div><div class="line">ansible_ssh_user=lucas</div><div class="line">ansible_ssh_private_key_file=./ssh/id_rsa</div></pre></td></tr></table></figure>
-<p>这里设置分组的时候名字不能与单台机器名称一样。比如：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[tomcat-account_01]</div><div class="line">  10.27.232.82</div><div class="line">[tomcat-account_01:children]</div><div class="line">tomcat-account_01</div></pre></td></tr></table></figure>
-<p>这里例子是错误的，会提示分组存在。</p>
-<p>为了安全和方便在hosts里面就不需要写用户名和密码。<br>做个免秘钥登陆。<br>这里我自己对控制的机器全部做了免秘钥登陆，所以这里只需要这么写：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">[redis1]</div><div class="line">192.168.1.173</div><div class="line"></div><div class="line">[redis2]</div><div class="line">192.168.1.174</div><div class="line"></div><div class="line">[tomcat_A1]</div><div class="line">192.168.1.175</div><div class="line"></div><div class="line">[tomcat_B1]</div><div class="line">192.168.1.176</div><div class="line"></div><div class="line">[tomcat_C1]</div><div class="line">192.168.1.177</div><div class="line"></div><div class="line">[tomcat_D1]</div><div class="line">192.168.1.178</div></pre></td></tr></table></figure>
-<p>这里是执行脚本。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible tomcat_D1 -m shell <span class="_">-a</span> <span class="string">"sh +x  /root/update/shoppingmall.sh"</span></div></pre></td></tr></table></figure>
-<p>例子操作查看zk1分组上所有机器端口：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">[root@salt ansible]<span class="comment"># ansible zk1:children -m shell -a "netstat -ntulp"</span></div><div class="line">10.27.238.75 | SUCCESS | rc=0 &gt;&gt;</div><div class="line">Active Internet connections (only servers)</div><div class="line">Proto Recv-Q Send-Q Local Address               Foreign Address             State       PID/Program name</div><div class="line">tcp        0      0 0.0.0.0:2181                0.0.0.0:*                   LISTEN      12497/java</div><div class="line">tcp        0      0 0.0.0.0:56521               0.0.0.0:*                   LISTEN      12497/java</div><div class="line">tcp        0      0 0.0.0.0:22                  0.0.0.0:*                   LISTEN      1251/sshd</div><div class="line">tcp        0      0 0.0.0.0:4888                0.0.0.0:*                   LISTEN      12497/java</div><div class="line">tcp        0      0 127.0.0.1:15770             0.0.0.0:*                   LISTEN      1434/aegis_quartz</div><div class="line">udp        0      0 118.178.240.129:123         0.0.0.0:*                               1262/ntpd</div><div class="line">udp        0      0 10.27.238.75:123            0.0.0.0:*                               1262/ntpd</div><div class="line">udp        0      0 127.0.0.1:123               0.0.0.0:*                               1262/ntpd</div><div class="line">udp        0      0 0.0.0.0:123                 0.0.0.0:*                               1262/ntpd</div><div class="line"></div><div class="line">10.47.100.200 | SUCCESS | rc=0 &gt;&gt;</div><div class="line">Active Internet connections (only servers)</div><div class="line">Proto Recv-Q Send-Q Local Address               Foreign Address             State       PID/Program name</div><div class="line">tcp        0      0 0.0.0.0:58367               0.0.0.0:*                   LISTEN      11232/java</div><div class="line">tcp        0      0 10.47.100.200:10050         0.0.0.0:*                   LISTEN      646/zabbix_agentd</div><div class="line">tcp        0      0 0.0.0.0:2181                0.0.0.0:*                   LISTEN      11232/java</div><div class="line">tcp        0      0 0.0.0.0:22                  0.0.0.0:*                   LISTEN      1243/sshd</div><div class="line">tcp        0      0 0.0.0.0:4888                0.0.0.0:*                   LISTEN      11232/java</div><div class="line">tcp        0      0 127.0.0.1:15770             0.0.0.0:*                   LISTEN      1436/aegis_quartz</div><div class="line">udp        0      0 120.27.152.77:123           0.0.0.0:*                               1254/ntpd</div><div class="line">udp        0      0 10.47.100.200:123           0.0.0.0:*                               1254/ntpd</div><div class="line">udp        0      0 127.0.0.1:123               0.0.0.0:*                               1254/ntpd</div><div class="line">udp        0      0 0.0.0.0:123                 0.0.0.0:*                               1254/ntpd</div></pre></td></tr></table></figure>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/03/07/自动化+Jenkins/Ansible/ Ansible 学习入门 /">Ansible 学习入门</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-03-07</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/automation/">automation</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Ansible/">Ansible</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h1 id="Ansible介绍"><a href="#Ansible介绍" class="headerlink" title="Ansible介绍"></a>Ansible介绍</h1><hr>
-<p><strong>学习ansible这里我自己做了简单的介绍总结：</strong></p>
-<p>Ansible是一个自动化工具。它可以配置系统,部署软件,编排更高级的任务,比如连续部署或零停机时间滚动更新。</p>
-<p>Ansible的目标是最简单和最易用。它也有一个强烈关注安全性和可靠性,以最少的移动部件,使用OpenSSH运输(加速插座模式和拉模式选择),和设计语言,人类可审核性的——甚至是那些不熟悉程序。</p>
-<p>我们认为简单是所有大小的环境和相关的设计对于忙碌的所有类型的用户——这是否意味着开发人员、系统管理员,发布工程师,经理,无处不在。Ansible适合管理小设置少量的实例以及与许多成千上万的企业环境。</p>
-<p>Ansible管理机器以最好的方式。没有一个问题如何升级远程守护进程或无法管理系统的问题因为守护进程是卸载。OpenSSH是最同行评议的开源组件,使用该工具的安全风险大大降低。Ansible是分散的,它依赖于现有的操作系统凭证来控制访问远程机器,如果需要使用Kerberos,它可以很容易地连接LDAP和其他管理系统的集中式身份验证。</p>
-<p>Ansible是一个彻底的简单自动化引擎,自动化云配置,配置管理、应用程序部署,intra-service编排,以及许多其他的需求。</p>
-<p>被设计为多层部署自第一天,Ansible模型你的IT基础设施,描述如何推动你所有的系统,而不仅仅是管理一个系统。</p>
-<p>它使用没有代理,没有额外的自定义安全基础设施,所以很容易部署,最重要的是,它使用一个非常简单的语言(YAML Ansible Playbooks的形式),让你描述你的自动化工作的方式方法简明英语。</p>
-<p>我们利用Ansible主要是作为内网服务器的一些管理，因为他用ssh来管理配置，内网同学还是很快速的，外网主要是利用Saltstack，利用消息队列远程通信，我感觉是比Ansible好的。</p>
-<p><strong>为什么选择ansible</strong></p>
-<p>Ansible大家都知道，和salt/puppet等一样，是一款配置管理工具。为什么选择它，就是因为它简单，不需要安装agent，只要服务器能用ssh访问，就可以使用它去管理大家如果要问，和我用rsync直接同步或写个for循环执行rpm或yum有什么区别.</p>
-<p>我想最大的区别应该就是“并发”<br><strong>当然，大企业会自己去开发自己的持续部署平台，而大部分的还是中小型企业</strong></p>
-<p>其实部署每个环节都可以用rpm安装发布。</p>
-<p>我们的某个应用直接构建成rpm，是直接放到我们另一个内部服务器中，提供http接口，然后执行的就是yum模块进行安装。</p>
-<p>也有人问我salt有没有用过。其实我们最初是使用salt的，后来因为网络的原因，选择了没有agent的ansible。在阿里云上面还是salt去服务管理。</p>
-<p> 参考官网<a href="https://www.ansible.com/quick-start-video" target="_blank" rel="external">入门学习视频</a></p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/03/07/自动化+Jenkins/Ansible/ansible小结（二）ansible架构 /">Ansible小结（二）ansible架构</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-03-07</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/automation/">automation</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Ansible/">Ansible</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<p>Ansible 是一个模型驱动的配置管理器，支持多节点发布、远程任务执行。默认使用 SSH 进行远程连接。无需在被管理节点上安装附加软件，可使用各种编程语言进行扩展。</p>
-<p><figure class="figure"><img src="http://7xrthw.com1.z0.glb.clouddn.com/ansible_01.png" alt=""></figure></p>
-<p>上图为ansible的基本架构，从上图可以了解到其由以下部分组成：</p>
-<figure class="highlight coq"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">核心：ansible</div><div class="line">核心模块（Core <span class="keyword">Modules</span>）：这些都是ansible自带的模块 </div><div class="line">扩展模块（Custom <span class="keyword">Modules</span>）：如果核心模块不足以完成某种功能，可以添加扩展模块</div><div class="line">插件（Plugins）：完成模块功能的补充</div><div class="line">剧本（Playbooks）：ansible的任务配置文件，将多个任务定义在剧本中，由ansible自动执行</div><div class="line">连接插件（Connectior Plugins）：ansible基于连接插件连接到各个主机上，虽然ansible是使用ssh连接到各个主机的，但是它还支持其他的连接方法，所以需要有连接插件</div><div class="line">主机群（Host Inventory）：定义ansible管理的主机</div></pre></td></tr></table></figure>
-<p>二、ansible工作原理</p>
-<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"> <span class="number">1</span>、管理端支持local 、ssh、zeromq 三种方式连接被管理端，默认使用基于ssh的连接－－－这部分对应基本架构图中的连接模块；</div><div class="line"></div><div class="line"><span class="number">2</span>、可以按应用类型等方式进行Host Inventory（主机群）分类，管理节点通过各类模块实现相应的操作－－－单个模块，单条命令的批量执行，我们可以称之为ad-hoc；</div><div class="line"></div><div class="line"><span class="number">3</span>、管理节点可以通过playbooks 实现多个task的集合实现一类功能，如web服务的安装部署、数据库服务器的批量备份等。playbooks我们可以简单的理解为，系统通过组合多条ad-hoc操作的配置文件 。</div></pre></td></tr></table></figure>
-<h2 id="三、ansible的七个命令"><a href="#三、ansible的七个命令" class="headerlink" title="三、ansible的七个命令"></a>三、ansible的七个命令</h2><p>安装完ansible后，发现ansible一共为我们提供了七个指令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">ansible</div><div class="line">ansible-doc</div><div class="line">ansible-galaxy</div><div class="line">ansible-lint</div><div class="line">ansible-playbook</div><div class="line">ansible-pull</div><div class="line">ansible-vault</div></pre></td></tr></table></figure>
-<p>这里我们只查看usage部分，详细部分可以通过 “指令 -h”  的方式获取。</p>
-<h4 id="1、ansible"><a href="#1、ansible" class="headerlink" title="1、ansible"></a>1、ansible</h4><figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]# ansible -h</div><div class="line">Usage: ansible &lt;host-pattern&gt; [options]</div><div class="line">参数：</div><div class="line">  -<span class="ruby">a <span class="string">'Arguments'</span>, --args=<span class="string">'Arguments'</span> 命令行参数</span></div><div class="line">  -<span class="ruby">m NAME, --<span class="class"><span class="keyword">module</span>-<span class="title">name</span>=<span class="title">NAME</span> 执行模块的名字，默认使用 <span class="title">command</span> 模块，所以如果是只执行单一命令可以不用 -<span class="title">m</span>参数</span></span></div><div class="line">  -<span class="ruby">i PATH, --inventory=PATH 指定库存主机文件的路径,默认为/etc/ansible/hosts.</span></div><div class="line">  -<span class="ruby">u Username， --user=Username 执行用户，使用这个远程用户名而不是当前用户</span></div><div class="line">  -<span class="ruby">U --sud-user=SUDO_User  sudo到哪个用户，默认为 root</span></div><div class="line">  -<span class="ruby">k --ask-pass  登录密码，提示输入SSH密码而不是假设基于密钥的验证</span></div><div class="line">  -<span class="ruby">K --ask-sudo-pass 提示密码使用sudo</span></div><div class="line">  -<span class="ruby">s --sudo sudo运行</span></div><div class="line">  -<span class="ruby">S --su 用 su 命令</span></div><div class="line">  -<span class="ruby">l  --list 显示所支持的所有模块</span></div><div class="line">  -<span class="ruby">s --snippet 指定模块显示剧本片段</span></div><div class="line">  -<span class="ruby">f  --forks=NUM 并行任务数。NUM被指定为一个整数,默认是<span class="number">5</span>。 <span class="comment">#ansible testhosts -a "/sbin/reboot" -f 10 重启testhosts组的所有机器，每次重启10台</span></span></div><div class="line">  -<span class="ruby">-private-key=PRIVATE_KEY_FILE 私钥路径，使用这个文件来验证连接</span></div><div class="line">  -<span class="ruby">v --verbose 详细信息</span></div><div class="line">  all  针对hosts 定义的所有主机执行</div><div class="line">  -<span class="ruby">M MODULE_PATH, --<span class="class"><span class="keyword">module</span>-<span class="title">path</span>=<span class="title">MODULE_PATH</span> 要执行的模块的路径，默认为/<span class="title">usr</span>/<span class="title">share</span>/<span class="title">ansible</span>/</span></span></div><div class="line">  -<span class="ruby">-list-hosts 只打印有哪些主机会执行这个 playbook 文件，不是实际执行该 playbook 文件</span></div><div class="line">  -<span class="ruby">o --one-line 压缩输出，摘要输出.尝试一切都在一行上输出。</span></div><div class="line">  -<span class="ruby">t Directory, --tree=Directory 将内容保存在该输出目录,结果保存在一个文件中在每台主机上。</span></div><div class="line">  -<span class="ruby">B 后台运行超时时间</span></div><div class="line">  -<span class="ruby">P 调查后台程序时间</span></div><div class="line">  -<span class="ruby">T Seconds, --timeout=Seconds 时间，单位秒s</span></div><div class="line">  -<span class="ruby">P NUM, --poll=NUM 调查背景工作每隔数秒。需要- b</span></div><div class="line">  -<span class="ruby">c Connection, --connection=Connection  连接类型使用。可能的选项是paramiko(SSH),SSH和地方。当地主要是用于crontab或启动。</span></div><div class="line">  -<span class="ruby">-tags=TAGS 只执行指定标签的任务    例子<span class="symbol">:ansible-playbook</span> test.yml --tags=copy  只执行标签为copy的那个任务</span></div><div class="line">  -<span class="ruby">-list-hosts 只打印有哪些主机会执行这个 playbook 文件，不是实际执行该 playbook 文件</span></div><div class="line">  -<span class="ruby">-list-tasks 列出所有将被执行的任务</span></div><div class="line">  -<span class="ruby">C, --check 只是测试一下会改变什么内容，不会真正去执行;相反,试图预测一些可能发生的变化</span></div><div class="line">  -<span class="ruby">-syntax-check 执行语法检查的剧本,但不执行它</span></div><div class="line">  -<span class="ruby">l SUBSET, --limit=SUBSET 进一步限制所选主机/组模式  --limit=<span class="number">192.168</span>.<span class="number">0</span>.<span class="number">15</span> 只对这个ip执行</span></div><div class="line">  -<span class="ruby">-skip-tags=SKIP_TAGS 只运行戏剧和任务不匹配这些值的标签  --skip-tags=copy_start</span></div><div class="line">  -<span class="ruby">e EXTRA_VARS, --extra-vars=EXTRA_VARS  额外的变量设置为键=值或YAML / JSON</span></div><div class="line">        #cat update.yml</div><div class="line">        -<span class="ruby">--</span></div><div class="line">        -<span class="ruby"> <span class="symbol">hosts:</span> &#123;&#123; hosts &#125;&#125;</span></div><div class="line">          remote_user: &#123;&#123; user &#125;&#125;</div><div class="line">        ..............</div><div class="line">        #ansible-playbook update.yml --extra-vars "hosts=vipers user=admin"   传递&#123;&#123;hosts&#125;&#125;、&#123;&#123;user&#125;&#125;变量,hosts可以是 ip或组名</div><div class="line">  -<span class="ruby">l,--limit 对指定的 主机/组 执行任务  --limit=<span class="number">192.168</span>.<span class="number">0</span>.<span class="number">10</span>，<span class="number">192.168</span>.<span class="number">0</span>.<span class="number">11</span> 或 -l <span class="number">192.168</span>.<span class="number">0</span>.<span class="number">10</span>，<span class="number">192.168</span>.<span class="number">0</span>.<span class="number">11</span> 只对这个<span class="number">2</span>个ip执行任务</span></div></pre></td></tr></table></figure>
-<h4 id="2、ansible-doc"><a href="#2、ansible-doc" class="headerlink" title="2、ansible-doc"></a>2、ansible-doc</h4><figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]# ansible-doc -h</div><div class="line">Usage: ansible-doc [options] [module...]</div><div class="line"></div><div class="line">Options:</div><div class="line">  -<span class="ruby">h, --help            show this help message <span class="keyword">and</span> exit</span></div><div class="line">  -<span class="ruby">l, --list            List available modules</span></div><div class="line">  -<span class="ruby">M MODULE_PATH, --<span class="class"><span class="keyword">module</span>-<span class="title">path</span>=<span class="title">MODULE_PATH</span></span></span></div><div class="line">                        specify path(s) to module library (default=None)</div><div class="line">  -<span class="ruby">s, --snippet         Show playbook snippet <span class="keyword">for</span> specified <span class="class"><span class="keyword">module</span>(<span class="title">s</span>)</span></span></div><div class="line">  -<span class="ruby">v, --verbose         verbose mode (-vvv <span class="keyword">for</span> more, -vvvv to enable</span></div><div class="line">                        connection debugging)</div><div class="line">  -<span class="ruby">-version             show program<span class="string">'s version number and exit</span></span></div></pre></td></tr></table></figure>
-<p>该指令用于查看模块信息，常用参数有两个-l 和 -s ，具体如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">//列出所有已安装的模块</div><div class="line"><span class="meta">#</span><span class="bash"> ansible-doc  <span class="_">-l</span></span></div><div class="line">//查看具体某模块的用法，这里如查看command模块</div><div class="line"><span class="meta">#</span><span class="bash"> ansible-doc  <span class="_">-s</span> <span class="built_in">command</span></span></div></pre></td></tr></table></figure>
-<h4 id="3、ansible-galaxy"><a href="#3、ansible-galaxy" class="headerlink" title="3、ansible-galaxy"></a>3、ansible-galaxy</h4><figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]# ansible-galaxy -h</div><div class="line">Usage: ansible-galaxy [<span class="keyword">delete</span>|import|info|init|install|<span class="keyword">list</span>|login|<span class="built_in">remove</span>|<span class="built_in">search</span>|setup] [--<span class="keyword">help</span>] [<span class="keyword">options</span>] ...</div><div class="line"></div><div class="line">Option<span class="variable">s:</span></div><div class="line">  -h, --<span class="keyword">help</span>     show this <span class="keyword">help</span> message <span class="built_in">and</span> <span class="keyword">exit</span></div><div class="line">  -v, --<span class="keyword">verbose</span>  <span class="keyword">verbose</span> <span class="keyword">mode</span> (-vvv <span class="keyword">for</span> more, -vvvv <span class="keyword">to</span> enable connection</div><div class="line">                 debugging)</div><div class="line">  --<span class="keyword">version</span>      show program<span class="string">'s version number and exit</span></div></pre></td></tr></table></figure>
-<p>ansible-galaxy 指令用于方便的从<a href="https://galaxy.ansible.com/" target="_blank" rel="external">https://galaxy.ansible.com/</a> 站点下载第三方扩展模块，我们可以形象的理解其类似于centos下的yum、python下的pip或easy_install 。如下示例：</p>
-<figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# ansible-galaxy install aeriscloud.docker</div><div class="line">-<span class="ruby"> downloading role <span class="string">'docker'</span>, owned by aeriscloud</span></div><div class="line">-<span class="ruby"> downloading role from <span class="symbol">https:</span>/<span class="regexp">/github.com/</span>AerisCloud/ansible-docker/archive/v1.<span class="number">0</span>.<span class="number">0</span>.tar.gz</span></div><div class="line">-<span class="ruby"> extracting aeriscloud.docker to /etc/ansible/roles/aeriscloud.docker</span></div><div class="line">-<span class="ruby"> aeriscloud.docker was installed successfully</span></div></pre></td></tr></table></figure>
-<p>这个安装了一个aeriscloud.docker组件，前面aeriscloud是galaxy上创建该模块的用户名，后面对应的是其模块。在实际应用中也可以指定txt或yml 文件进行多个组件的下载安装。这部分可以参看官方文档。</p>
-<p>这个安装了一个aeriscloud.docker组件，前面aeriscloud是galaxy上创建该模块的用户名，后面对应的是其模块。在实际应用中也可以指定txt或yml 文件进行多个组件的下载安装。这部分可以参看官方文档。</p>
-<h4 id="4、ansible-lint"><a href="#4、ansible-lint" class="headerlink" title="4、ansible-lint"></a>4、ansible-lint</h4><p>ansible-lint是对playbook的语法进行检查的一个工具。用法是ansible-lint playbook.yml 。</p>
-<h4 id="5、ansible-playbook"><a href="#5、ansible-playbook" class="headerlink" title="5、ansible-playbook"></a>5、ansible-playbook</h4><p>该指令是使用最多的指令，其通过读取playbook 文件后，执行相应的动作，这个后面会做为一个重点来讲。</p>
-<h4 id="6、ansible-pull"><a href="#6、ansible-pull" class="headerlink" title="6、ansible-pull"></a>6、ansible-pull</h4><p>该指令使用需要谈到ansible的另一种模式－－－pull 模式，这和我们平常经常用的push模式刚好相反，其适用于以下场景：你有数量巨大的机器需要配置，即使使用非常高的线程还是要花费很多时间；你要在一个没有网络连接的机器上运行Anisble，比如在启动之后安装。这部分也会单独做一节来讲。</p>
-<h4 id="7、ansible-vault"><a href="#7、ansible-vault" class="headerlink" title="7、ansible-vault"></a>7、ansible-vault</h4><p>ansible-vault主要应用于配置文件中含有敏感信息，又不希望他能被人看到，vault可以帮你加密/解密这个配置文件，属高级用法。主要对于playbooks里比如涉及到配置密码或其他变量时，可以通过该指令加密，这样我们通过cat看到的会是一个密码串类的文件，编辑的时候需要输入事先设定的密码才能打开。这种playbook文件在执行时，需要加上 –ask-vault-pass参数，同样需要输入密码后才能正常执行。具体该部分可以参查官方博客。</p>
-<h4 id="注：上面七个指令，用的最多的只有两个ansible-和ansible-playbook-，这两个一定要掌握，其他五个属于拓展或高级部分。"><a href="#注：上面七个指令，用的最多的只有两个ansible-和ansible-playbook-，这两个一定要掌握，其他五个属于拓展或高级部分。" class="headerlink" title="注：上面七个指令，用的最多的只有两个ansible 和ansible-playbook ，这两个一定要掌握，其他五个属于拓展或高级部分。"></a>注：上面七个指令，用的最多的只有两个ansible 和ansible-playbook ，这两个一定要掌握，其他五个属于拓展或高级部分。</h4>
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/03/07/自动化+Jenkins/Ansible/Ansible小结（三）ansible.cfg与默认配置 /">Ansible小结（三）ansible.cfg与默认配置</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-03-07</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/automation/">automation</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Ansible/">Ansible</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<p>#Ansible小结（四）ansible.cfg与默认配置</p>
-<p>Ansible默认安装好后有一个配置文件<code>/etc/ansible/ansible.cfg</code>，该配置文件中定义了ansible的主机的默认配置部分，如默认是否需要输入密码、是否开启sudo认证、action_plugins插件的位置、hosts主机组的位置、是否开启log功能、默认端口、key文件位置等等。</p>
-<p>具体如下：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="section">[defaults]</span></div><div class="line"><span class="comment"># some basic default values...</span></div><div class="line"><span class="attr">hostfile</span>       = /etc/ansible/hosts   \\指定默认hosts配置的位置</div><div class="line"><span class="comment"># library_path = /usr/share/my_modules/</span></div><div class="line"><span class="attr">remote_tmp</span>     = <span class="variable">$HOME</span>/.ansible/tmp</div><div class="line"><span class="attr">pattern</span>        = *</div><div class="line"><span class="attr">forks</span>          = <span class="number">5</span></div><div class="line"><span class="attr">poll_interval</span>  = <span class="number">15</span></div><div class="line"><span class="attr">sudo_user</span>      = root  \\远程sudo用户</div><div class="line"><span class="comment">#ask_sudo_pass = True  \\每次执行ansible命令是否询问ssh密码</span></div><div class="line"><span class="comment">#ask_pass      = True  \\每次执行ansible命令时是否询问sudo密码</span></div><div class="line"><span class="attr">transport</span>      = smart</div><div class="line"><span class="attr">remote_port</span>    = <span class="number">22</span></div><div class="line"><span class="attr">module_lang</span>    = C</div><div class="line"><span class="attr">gathering</span> = implicit</div><div class="line"><span class="attr">host_key_checking</span> = <span class="literal">False</span>    \\关闭第一次使用ansible连接客户端是输入命令提示</div><div class="line"><span class="attr">log_path</span>    = /var/log/ansible.log \\需要时可以自行添加。chown -R root:root ansible.log</div><div class="line"><span class="attr">system_warnings</span> = <span class="literal">False</span>    \\关闭运行ansible时系统的提示信息，一般为提示升级</div><div class="line"><span class="comment"># set plugin path directories here, separate with colons</span></div><div class="line"><span class="attr">action_plugins</span>     = /usr/share/ansible_plugins/action_plugins</div><div class="line"><span class="attr">callback_plugins</span>   = /usr/share/ansible_plugins/callback_plugins</div><div class="line"><span class="attr">connection_plugins</span> = /usr/share/ansible_plugins/connection_plugins</div><div class="line"><span class="attr">lookup_plugins</span>     = /usr/share/ansible_plugins/lookup_plugins</div><div class="line"><span class="attr">vars_plugins</span>       = /usr/share/ansible_plugins/vars_plugins</div><div class="line"><span class="attr">filter_plugins</span>     = /usr/share/ansible_plugins/filter_plugins</div><div class="line"><span class="attr">fact_caching</span> = memory</div><div class="line"><span class="section">[accelerate]</span></div><div class="line"><span class="attr">accelerate_port</span> = <span class="number">5099</span></div><div class="line"><span class="attr">accelerate_timeout</span> = <span class="number">30</span></div><div class="line"><span class="attr">accelerate_connect_timeout</span> = <span class="number">5.0</span></div><div class="line"><span class="comment"># The daemon timeout is measured in minutes. This time is measured</span></div><div class="line"><span class="comment"># from the last activity to the accelerate daemon.</span></div><div class="line"><span class="attr">accelerate_daemon_timeout</span> = <span class="number">30</span></div></pre></td></tr></table></figure>
-<p>在ansible.cfg配置文件中，也会找到如下部分：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># uncomment this to disable SSH key host checking</span></div><div class="line"><span class="attr">host_key_checking</span> = <span class="literal">False</span></div></pre></td></tr></table></figure>
-<p>默认host_key_checking部分是注释的，通过找开该行的注释，同样也可以实现跳过 ssh 首次连接提示验证部分。</p>
-<p>我这里做了免秘钥的查看日志如下：</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_C1 -a "uptime"</span></div><div class="line"><span class="meta">192.168.1.177 | SUCCESS | rc=0 &gt;</span>&gt;</div><div class="line"> 09<span class="symbol">:</span><span class="number">28</span><span class="symbol">:</span><span class="number">03</span> up <span class="number">24</span> days, <span class="number">15</span><span class="symbol">:</span><span class="number">39</span>,  <span class="number">4</span> users,  load <span class="symbol">average:</span> <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span></div><div class="line"></div><div class="line">[root@docker ~]<span class="comment">#</span></div><div class="line">[root@docker ~]<span class="comment">#</span></div><div class="line">[root@docker ~]<span class="comment">#  cat /var/log/ansible.log</span></div><div class="line"><span class="number">2016</span>-09-<span class="number">05</span> 09<span class="symbol">:</span><span class="number">19</span><span class="symbol">:</span><span class="number">23</span>,<span class="number">235</span> p=<span class="number">1412</span> u=root <span class="params">|  ERROR! Missing target hosts</span></div><div class="line">2016-09-05 09:19:54,580 p=1417 u=root |  <span class="number">192.168</span>.<span class="number">1.177</span> <span class="params">| SUCCESS |</span> rc=<span class="number">0</span> <span class="meta">&gt;&gt;</span></div><div class="line"> 09<span class="symbol">:</span><span class="number">20</span><span class="symbol">:</span><span class="number">24</span> up <span class="number">24</span> days, <span class="number">15</span><span class="symbol">:</span><span class="number">31</span>,  <span class="number">4</span> users,  load <span class="symbol">average:</span> <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span></div><div class="line"></div><div class="line"><span class="number">2016</span>-09-<span class="number">05</span> 09<span class="symbol">:</span><span class="number">20</span><span class="symbol">:</span><span class="number">07</span>,<span class="number">206</span> p=<span class="number">1440</span> u=root <span class="params">|  192.168.1.177 |</span> SUCCESS <span class="params">| rc=0 &gt;&gt;</span></div><div class="line"> 09:20:37 up 24 days, 15:31,  4 users,  load average: 0.00, 0.00, 0.00</div><div class="line"></div><div class="line">2016-09-05 09:27:31,607 p=1460 u=root |  <span class="number">192.168</span>.<span class="number">1.177</span> <span class="params">| SUCCESS |</span> rc=<span class="number">0</span> <span class="meta">&gt;&gt;</span></div><div class="line"> 09<span class="symbol">:</span><span class="number">28</span><span class="symbol">:</span><span class="number">01</span> up <span class="number">24</span> days, <span class="number">15</span><span class="symbol">:</span><span class="number">39</span>,  <span class="number">4</span> users,  load <span class="symbol">average:</span> <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span></div><div class="line"></div><div class="line"><span class="number">2016</span>-09-<span class="number">05</span> 09<span class="symbol">:</span><span class="number">27</span><span class="symbol">:</span><span class="number">33</span>,<span class="number">800</span> p=<span class="number">1482</span> u=root <span class="params">|  192.168.1.177 |</span> SUCCESS <span class="params">| rc=0 &gt;&gt;</span></div><div class="line"> 09:28:03 up 24 days, 15:39,  4 users,  load average: 0.00, 0.00, 0.00</div></pre></td></tr></table></figure>
-<p>更多部分可以参看<a href="http://docs.ansible.com/intro_configuration.html" target="_blank" rel="external">官方文档</a></p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/02/25/Web服务技术/Nginx/Nginx限制IP访问权限或限制某个IP同一时间段的访问次数/">Nginx限制IP访问权限或限制某个IP同一时间段的访问次数</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-02-25</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/nginx/">nginx</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Nginx/">Nginx</a> <a class="article__tag-link" href="/tags/Web-Service/">Web Service</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h4 id="nginx限制ip访问-nginx访问权限"><a href="#nginx限制ip访问-nginx访问权限" class="headerlink" title="nginx限制ip访问 nginx访问权限"></a>nginx限制ip访问 nginx访问权限</h4><p>看下配置：</p>
-<p>这里我只允许我公司IP访问：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">  server &#123;</div><div class="line">        listen       80;</div><div class="line">        server_name  kibana.ihaozhuo.com;</div><div class="line">        location / &#123;</div><div class="line">             index        index.html index.php index.jsp index.htm;</div><div class="line">             allow 202.107.202.82/32;</div><div class="line">             deny all;</div><div class="line">             proxy_pass           http://kibana.ihaozhuo.com;</div><div class="line">             proxy_ignore_client_abort on;</div><div class="line">             proxy_redirect               off;</div><div class="line">             proxy_set_header     Host    <span class="variable">$host</span>;</div><div class="line">             proxy_set_header     X-Real-IP       <span class="variable">$remote_addr</span>;</div><div class="line">             proxy_set_header     X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</div><div class="line">             &#125;</div><div class="line">      &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这里分全局配置和站点配置。这里我kibana网站只限制当个网站IP访问：</p>
-<p>一、服务器全局限IP</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#vi nginx.conf</span></div><div class="line">    allow 202.107.202.82/32;  <span class="comment">#允许的IP</span></div><div class="line">    deny all;</div></pre></td></tr></table></figure>
-<p>二、站点限IP</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#vi vhosts.conf</span></div><div class="line">站点全局限IP:</div><div class="line">location / &#123;</div><div class="line">    index  index.html index.htm index.php;</div><div class="line">    allow 202.107.202.82/32; </div><div class="line">    deny all;</div></pre></td></tr></table></figure>
-<h4 id="如何设置能限制某个IP某一时间段的访问次数"><a href="#如何设置能限制某个IP某一时间段的访问次数" class="headerlink" title="如何设置能限制某个IP某一时间段的访问次数"></a>如何设置能限制某个IP某一时间段的访问次数</h4><p>如何设置能限制某个IP某一时间段的访问次数是一个让人头疼的问题，特别面对恶意的ddos攻击的时候。其中<code>CC攻击（Challenge Collapsar）是DDOS（分布式拒绝服务）</code>的一种，也是一种常见的网站攻击方法，攻击者通过代理服务器或者肉鸡向向受害主机不停地发大量数据包，造成对方服务器资源耗尽，一直到宕机崩溃。</p>
-<p><code>cc攻击</code>一般就是使用有限的ip数对服务器频繁发送数据来达到攻击的目的，nginx可以通过<code>HttpLimitReqModul</code>和<code>HttpLimitZoneModule</code>配置来限制ip在同一时间段的访问次数来防cc攻击。</p>
-<p><code>HttpLimitReqModul</code>用来限制连单位时间内连接数的模块，使用<code>limit_req_zone</code>和<code>limit_req</code>指令配合使用来达到限制。一旦并发连接超过指定数量，就会返回503错误。</p>
-<p><code>HttpLimitConnModul</code>用来限制单个ip的并发连接数，使用limit_zone和limit_conn指令</p>
-<p>这两个模块的区别前一个是对一段时间内的连接数限制，后者是对同一时刻的连接数限制</p>
-<p>####HttpLimitReqModul 限制某一段时间内同一ip访问数实例</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">http&#123;</div><div class="line">    ...</div><div class="line"></div><div class="line">    <span class="comment">#定义一个名为allips的limit_req_zone用来存储session，大小是10M内存，</span></div><div class="line">    <span class="comment">#以$binary_remote_addr 为key,限制平均每秒的请求为20个，</span></div><div class="line">    <span class="comment">#1M能存储16000个状态，rete的值必须为整数，</span></div><div class="line">    <span class="comment">#如果限制两秒钟一个请求，可以设置成30r/m</span></div><div class="line"></div><div class="line">    limit_req_zone <span class="variable">$binary_remote_addr</span> zone=allips:10m rate=20r/s;</div><div class="line">    ...</div><div class="line">    server&#123;</div><div class="line">        ...</div><div class="line">        location &#123;</div><div class="line">            ...</div><div class="line"></div><div class="line">            <span class="comment">#限制每ip每秒不超过20个请求，漏桶数burst为5</span></div><div class="line">            <span class="comment">#brust的意思就是，如果第1秒、2,3,4秒请求为19个，</span></div><div class="line">            <span class="comment">#第5秒的请求为25个是被允许的。</span></div><div class="line">            <span class="comment">#但是如果你第1秒就25个请求，第2秒超过20的请求返回503错误。</span></div><div class="line">            <span class="comment">#nodelay，如果不设置该选项，严格使用平均速率限制请求数，</span></div><div class="line">            <span class="comment">#第1秒25个请求时，5个请求放到第2秒执行，</span></div><div class="line">            <span class="comment">#设置nodelay，25个请求将在第1秒执行。</span></div><div class="line"></div><div class="line">            limit_req zone=allips burst=5 nodelay;</div><div class="line">            ...</div><div class="line">        &#125;</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="HttpLimitZoneModule-限制并发连接数实例"><a href="#HttpLimitZoneModule-限制并发连接数实例" class="headerlink" title="HttpLimitZoneModule 限制并发连接数实例"></a>HttpLimitZoneModule 限制并发连接数实例</h4><p>limit_zone只能定义在http作用域，limit_conn可以定义在http server location作用域</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">http&#123;</div><div class="line">    ...</div><div class="line"></div><div class="line">    <span class="comment">#定义一个名为one的limit_zone,大小10M内存来存储session，</span></div><div class="line">    <span class="comment">#以$binary_remote_addr 为key</span></div><div class="line">    <span class="comment">#nginx 1.18以后用limit_conn_zone替换了limit_conn</span></div><div class="line">    <span class="comment">#且只能放在http作用域</span></div><div class="line">    limit_conn_zone   one  <span class="variable">$binary_remote_addr</span>  10m;  </div><div class="line">    ...</div><div class="line">    server&#123;</div><div class="line">        ...</div><div class="line">        location &#123;</div><div class="line">            ...</div><div class="line">           limit_conn one 20;          <span class="comment">#连接数限制</span></div><div class="line"></div><div class="line">           <span class="comment">#带宽限制,对单个连接限数，如果一个ip两个连接，就是500x2k</span></div><div class="line">           limit_rate 500k;            </div><div class="line"></div><div class="line">            ...</div><div class="line">        &#125;</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="nginx白名单设置"><a href="#nginx白名单设置" class="headerlink" title="nginx白名单设置"></a>nginx白名单设置</h4><p>以上配置会对所有的ip都进行限制，有些时候我们不希望对搜索引擎的蜘蛛或者自己测试ip进行限制，<br>对于特定的白名单ip我们可以借助geo指令实现。<br>1.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">http&#123;</div><div class="line">     geo <span class="variable">$limited</span>&#123;</div><div class="line">        default 1;</div><div class="line">        <span class="comment">#google </span></div><div class="line">        64.233.160.0/19 0;</div><div class="line">        65.52.0.0/14 0;</div><div class="line">        66.102.0.0/20 0;</div><div class="line">        66.249.64.0/19 0;</div><div class="line">        72.14.192.0/18 0;</div><div class="line">        74.125.0.0/16 0;</div><div class="line">        209.85.128.0/17 0;</div><div class="line">        216.239.32.0/19 0;</div><div class="line">        <span class="comment">#M$</span></div><div class="line">        64.4.0.0/18 0;</div><div class="line">        157.60.0.0/16 0;</div><div class="line">        157.54.0.0/15 0;</div><div class="line">        157.56.0.0/14 0;</div><div class="line">        207.46.0.0/16 0;</div><div class="line">        207.68.192.0/20 0;</div><div class="line">        207.68.128.0/18 0;</div><div class="line">        <span class="comment">#yahoo</span></div><div class="line">        8.12.144.0/24 0;</div><div class="line">        66.196.64.0/18 0;</div><div class="line">        66.228.160.0/19 0;</div><div class="line">        67.195.0.0/16 0;</div><div class="line">        74.6.0.0/16 0;</div><div class="line">        68.142.192.0/18 0;</div><div class="line">        72.30.0.0/16 0;</div><div class="line">        209.191.64.0/18 0;</div><div class="line">        <span class="comment">#My IPs</span></div><div class="line">        127.0.0.1/32 0;</div><div class="line">        123.456.0.0/28 0; <span class="comment">#example for your server CIDR</span></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>geo指令定义了一个白名单$limited变量，默认值为1，如果客户端ip在上面的范围内，$limited的值为0</p>
-<p>2.使用map指令映射搜索引擎客户端的ip为空串，如果不是搜索引擎就显示本身真是的ip，这样搜索引擎ip就不能存到limit_req_zone内存session中，所以不会限制搜索引擎的ip访问</p>
-<p>map $limited $limit {<br>1 $binary_remote_addr;<br>0 “”;<br>}</p>
-<p>3.设置limit_req_zone和limit_req<br>limit_req_zone $limit zone=foo:1m rate=10r/m;</p>
-<p>limit_req zone=foo burst=5;</p>
-<p>最后我们使用ab压php-fpm的方式，对上面的方法效果实际测试下</p>
-<p>例1：限制只允许一分钟内只允许一个ip访问60次配置，也就是平均每秒1次<br>首先我们准备一个php脚本放在根目录下$document_root</p>
-<p>test.php</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span>( <span class="variable">$i</span>=0; <span class="variable">$i</span> &lt; 1000; <span class="variable">$i</span>++)</div><div class="line"><span class="built_in">echo</span> <span class="string">'Hello World'</span>;</div><div class="line">?&gt;</div></pre></td></tr></table></figure>
-<p>nginx配置增加limit_req_zone 和 limit_req</p>
-<figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">http&#123;</div><div class="line">    <span class="params">...</span></div><div class="line">    limit_req_zone $binary_remote_addr zone=allips:<span class="number">10</span>m rate=<span class="number">60</span>r/m;</div><div class="line">    <span class="params">...</span></div><div class="line">    server&#123;</div><div class="line">        <span class="params">...</span></div><div class="line">        location &#123;</div><div class="line">            <span class="params">...</span></div><div class="line">            limit_req zone=allips;</div><div class="line">            <span class="params">...</span></div><div class="line">        &#125;</div><div class="line">        <span class="params">...</span></div><div class="line">    &#125;</div><div class="line">    <span class="params">...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>ab -n 5 -c 1 <a href="http://www.weizhang.org/test.php" target="_blank" rel="external">http://www.weizhang.org/test.php</a></p>
-<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:06:27:06 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">200</span> <span class="number">11000</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:06:27:06 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">503</span> <span class="number">537</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:06:27:07 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">503</span> <span class="number">537</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:06:27:07 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">503</span> <span class="number">537</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:06:27:07 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">503</span> <span class="number">537</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div></pre></td></tr></table></figure>
-<p>未设置brust和nodelay可以看到该配置只允许每秒访问1次，超出的请求返回503错误</p>
-<figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">http&#123;</div><div class="line">    <span class="params">...</span></div><div class="line">    limit_req_zone $binary_remote_addr zone=allips:<span class="number">10</span>m rate=<span class="number">60</span>r/m;</div><div class="line">    <span class="params">...</span></div><div class="line">    server&#123;</div><div class="line">        <span class="params">...</span></div><div class="line">        location &#123;</div><div class="line">            <span class="params">...</span></div><div class="line">            limit_req zone=allips burst=<span class="number">1</span> nodelay;</div><div class="line">            <span class="params">...</span></div><div class="line">        &#125;</div><div class="line">        <span class="params">...</span></div><div class="line">    &#125;</div><div class="line">    <span class="params">...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>ab -n 5 -c 1 <a href="http://www.weizhang.org/test.php" target="_blank" rel="external">http://www.weizhang.org/test.php</a></p>
-<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:07:01:00 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">200</span> <span class="number">11000</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:07:01:00 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">200</span> <span class="number">11000</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:07:01:01 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">503</span> <span class="number">537</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:07:01:01 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">503</span> <span class="number">537</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div><div class="line"><span class="number">118.144.94.193</span> - - <span class="string">[22/Dec/2012:07:01:01 +0000]</span> <span class="string">"<span class="keyword">GET</span> /test.php HTTP/1.0"</span> <span class="number">503</span> <span class="number">537</span> <span class="string">"-"</span> <span class="string">"ApacheBench/2.3"</span></div></pre></td></tr></table></figure>
-<p>设置brust=1和nodelay后允许第1秒处理两个请求。</p>
-<p>参考例子：<a href="http://storysky.blog.51cto.com/628458/642970/" target="_blank" rel="external">http://storysky.blog.51cto.com/628458/642970/</a></p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/01/30/日志分析平台/Elasticsearch/Elasticsearch5.x版本的索引定时自动清理和检测进程状态自动启动/">Elasticsearch5.x版本的索引定时自动清理和检测进程状态自动启动</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-01-30</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Elasticsearch/">Elasticsearch</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h1 id="elasticsearch的索引定时自动清理"><a href="#elasticsearch的索引定时自动清理" class="headerlink" title="elasticsearch的索引定时自动清理"></a>elasticsearch的索引定时自动清理</h1><p>之前用 logstash来做日志收集 并用 elasticsearch来搜索，因为日志没有进行过滤，没几天就发现elasticsearch的索引文件大的吓人，之前还真没清理过。其实要说清理也简单，直接到 elasticsearch data文件夹里删掉就行了，写个脚本定期清理集群es的日志数据。</p>
-<p>这里我清理1月7号的。</p>
-<p>这里后面是索引名称。<br>app_error-2017.01.07</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@es_01 sh]<span class="comment"># curl -XDELETE 'http://10.47.88.206:9200/app_error-2017.01.07'</span></div><div class="line">&#123;<span class="string">"acknowledged"</span>:<span class="literal">true</span>&#125;[root@es_01 sh]<span class="comment">#</span></div></pre></td></tr></table></figure>
-<p>shell 7天清理一次数据写在计划任务里面：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"></div><div class="line">now=`date +%Y%m%d`</div><div class="line"><span class="built_in">echo</span> <span class="variable">$now</span></div><div class="line">days_07_before=`date <span class="_">-d</span> <span class="string">"<span class="variable">$now</span> 7 days ago"</span> +%Y.%m.%d`</div><div class="line"><span class="built_in">echo</span> <span class="variable">$days_07_before</span></div><div class="line">curl -XDELETE <span class="string">"http://<span class="variable">$(hostname)</span>:9200/log-spm-product-<span class="variable">$days_07_before</span>"</span>  &gt; /dev/null 2&gt;&amp;1</div><div class="line">curl -XDELETE <span class="string">"http://<span class="variable">$(hostname)</span>:9200/log-dataexport-product-<span class="variable">$days_07_before</span>"</span>  &gt; /dev/null 2&gt;&amp;1</div></pre></td></tr></table></figure>
-<p>计划任务：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">10 0 * * * /opt/sh/logstash-null.sh</div></pre></td></tr></table></figure>
-<p>官网：<a href="https://www.elastic.co/guide/cn/elasticsearch/guide/current/doc-exists.html" target="_blank" rel="external">检查状态是否存在</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">检查文档是否存在编辑</div><div class="line">如果只想检查一个文档是否存在 --根本不想关心内容--那么用 HEAD 方法来代替 GET 方法。 HEAD 请求没有返回体，只返回一个 HTTP 请求报头：</div><div class="line"></div><div class="line">curl -i -XHEAD http://localhost:9200/website/blog/123</div><div class="line">如果文档存在， Elasticsearch 将返回一个 200 ok 的状态码：</div><div class="line"></div><div class="line">HTTP/1.1 200 OK</div><div class="line">Content-Type: text/plain; charset=UTF-8</div><div class="line">Content-Length: 0</div><div class="line">若文档不存在， Elasticsearch 将返回一个 404 Not Found 的状态码：</div><div class="line"></div><div class="line">curl -i -XHEAD http://localhost:9200/website/blog/124</div><div class="line">HTTP/1.1 404 Not Found</div><div class="line">Content-Type: text/plain; charset=UTF-8</div><div class="line">Content-Length: 0</div><div class="line">当然，一个文档仅仅是在检查的时候不存在，并不意味着一毫秒之后它也不存在：也许同时正好另一个进程就创建了该文档。</div></pre></td></tr></table></figure>
-<h4 id="自动检测es端口状态如何不存在启动"><a href="#自动检测es端口状态如何不存在启动" class="headerlink" title="自动检测es端口状态如何不存在启动"></a>自动检测es端口状态如何不存在启动</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">vim /bin/whole51/es_poss.sh</div><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"><span class="built_in">source</span> /etc/profile</div><div class="line">curl -Is <span class="string">"10.11.10.26:9200"</span> | grep -q <span class="string">'HTTP/1.1 200 OK'</span> || su - elasticsearch -c <span class="string">"/usr/local/elasticsearch-5.5.2/bin/elasticsearch -d"</span></div><div class="line">curl -Is <span class="string">"10.11.10.26:5601"</span> | grep -q <span class="string">'HTTP/1.1 200 OK'</span> ||  /usr/<span class="built_in">local</span>/kibana-5.5.2/bin/kibana &amp;</div></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">*/2 * * * * /bin/whole51/es.sh</div></pre></td></tr></table></figure>
-<h3 id="Communicative-learning"><a href="#Communicative-learning" class="headerlink" title="Communicative learning:"></a>Communicative learning:</h3><p>🐧  Linux shell_ senior operation and maintenance faction: QQ group <code>459096184</code> circle (system operation and maintenance - application operation and maintenance - automation operation and maintenance - virtualization technology research, welcome to join)<br>🐧  BigData-Exchange School:QQ group <code>521621407</code> circles (big data Yun Wei) (Hadoop developer) (big data research enthusiasts) welcome to join</p>
-<p>Bidata have internal WeChat exchange group, learn from each other, join QQ group has links.</p>
-
-	
-
-	
-
-</article>
-
-
-
-
-	<article>
-	
-		<h1><a href="/2016/01/29/日志分析平台/Elasticsearch/logstash如何收集tomcat日志分析/">logstash如何写tomcat,redis,nginx日志收集规则</a></h1>
-	
-	<div class="article__infos">
-		<span class="article__date">2016-01-29</span><br />
-		
-			<span class="article__category">
-				<a class="article-category-link" href="/categories/Log-Analysis-Platform/">Log Analysis Platform</a>
-			</span><br />
-		
-		
-			<span class="article__tags">
-			  	<a class="article__tag-link" href="/tags/Log-analysis-platform/">Log analysis platform</a>
-			</span>
-		
-	</div>
-
-	
-
-	
-		<h5 id="logstash如何收集tomcat日志分析（可以参考我下面写的模板）"><a href="#logstash如何收集tomcat日志分析（可以参考我下面写的模板）" class="headerlink" title="logstash如何收集tomcat日志分析（可以参考我下面写的模板）"></a>logstash如何收集tomcat日志分析（可以参考我下面写的模板）</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line">我想实现对tomcat的日志采集，正常应该创建一个file的input，这个input指定了监听的文件或者目录....然后过滤器（如果没有特殊要求，先可以不进行解析，原始的日志直接存就行）....最后使用一个elastcisearch插件，发送到es中去.</div><div class="line"></div><div class="line">input &#123;</div><div class="line">        stdin&#123;&#125;</div><div class="line"></div><div class="line">        file &#123;</div><div class="line">                <span class="built_in">type</span> =&gt; <span class="string">"tomcat_card"</span></div><div class="line">                path =&gt; <span class="string">"/srv/tomcat/logs/card/*.log"</span></div><div class="line">                start_position =&gt; <span class="string">"beginning"</span></div><div class="line">        &#125;</div><div class="line">        file &#123;</div><div class="line">                <span class="built_in">type</span> =&gt; <span class="string">"tomcat_family"</span></div><div class="line">                path =&gt; <span class="string">"/srv/tomcat/logs/family/*.log"</span></div><div class="line">                start_position =&gt; <span class="string">"beginning"</span></div><div class="line"></div><div class="line">        &#125;</div><div class="line">        file &#123;</div><div class="line">                <span class="built_in">type</span> =&gt; <span class="string">"tomcat_mission"</span></div><div class="line">                path =&gt; <span class="string">"/srv/tomcat/logs/mission/*.log"</span></div><div class="line">                start_position =&gt; <span class="string">"beginning"</span></div><div class="line"></div><div class="line">        &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">filter &#123;</div><div class="line"></div><div class="line">        grok &#123;</div><div class="line">                match =&gt; [</div><div class="line">                                <span class="string">"message"</span>, <span class="string">"%&#123;TIMESTAMP_ISO8601:logdate&#125; %&#123;WORD:loglevel&#125;%&#123;SPACE&#125;%&#123;NOTSPACE:loggername&#125; - %&#123;GREEDYDATA:msg&#125;"</span>,</div><div class="line">                                <span class="string">"message"</span>, <span class="string">"%&#123;GREEDYDATA:msg&#125;"</span></div><div class="line">                         ]</div><div class="line"></div><div class="line">        &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">output&#123;</div><div class="line">        <span class="keyword">if</span> [<span class="built_in">type</span>] == <span class="string">"tomcat_card"</span> &#123;</div><div class="line">        elasticsearch &#123;</div><div class="line">                host =&gt; <span class="string">"192.168.1.234"</span></div><div class="line">                protocol =&gt; <span class="string">"http"</span></div><div class="line">                index   =&gt; <span class="string">"tomcat_card-%&#123;+YYYYY.MM.dd&#125;"</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line">        <span class="keyword">if</span> [<span class="built_in">type</span>] == <span class="string">"tomcat_family"</span> &#123;</div><div class="line">        elasticsearch &#123;</div><div class="line">                host =&gt; <span class="string">"192.168.1.234"</span></div><div class="line">                protocol =&gt; <span class="string">"http"</span></div><div class="line">                index   =&gt; <span class="string">"tomcat_card-%&#123;+YYYYY.MM.dd&#125;"</span></div><div class="line">        &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> [<span class="built_in">type</span>] == <span class="string">"tomcat_mission"</span> &#123;</div><div class="line">        elasticsearch &#123;</div><div class="line">                host =&gt; <span class="string">"192.168.1.234"</span></div><div class="line">                protocol =&gt; <span class="string">"http"</span></div><div class="line">                index   =&gt; <span class="string">"tomcat_mission-%&#123;+YYYYY.MM.dd&#125;"</span></div><div class="line">                &#125;</div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h5 id="logstash日志采集nginx配置"><a href="#logstash日志采集nginx配置" class="headerlink" title="logstash日志采集nginx配置"></a>logstash日志采集nginx配置</h5><p>/etc/logstash/conf.d/nginx.conf</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">input &#123;</div><div class="line">file &#123;</div><div class="line">path =&gt; <span class="string">"/data/wwwlogs/nginx_json.log"</span></div><div class="line">codec =&gt; <span class="string">"json"</span></div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">filter &#123;</div><div class="line">mutate &#123;</div><div class="line">split =&gt; [ <span class="string">"upstreamtime"</span>, <span class="string">","</span> ]</div><div class="line">&#125;</div><div class="line">mutate &#123;</div><div class="line">convert =&gt; [ <span class="string">"upstreamtime"</span>, <span class="string">"float"</span> ]</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">output &#123;</div><div class="line">kafka &#123;</div><div class="line">bootstrap_servers =&gt; <span class="string">"10.0.0.11:9092"</span></div><div class="line">topic_id =&gt; <span class="string">"logstash"</span></div><div class="line">compression_type =&gt; <span class="string">"gzip"</span></div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h5 id="创建一个从日志文件读取，并写入redis的配置文件-本文件采用默认方式进行输入，输出"><a href="#创建一个从日志文件读取，并写入redis的配置文件-本文件采用默认方式进行输入，输出" class="headerlink" title="创建一个从日志文件读取，并写入redis的配置文件(本文件采用默认方式进行输入，输出)"></a>创建一个从日志文件读取，并写入redis的配置文件(本文件采用默认方式进行输入，输出)</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#cat agent.conf</span></div><div class="line">input &#123;</div><div class="line">    file &#123;</div><div class="line">        path =&gt; <span class="string">"/var/log/httpd/access_log"</span>    //设置读取的日志路径</div><div class="line">        sincedb_path =&gt; <span class="string">"../.sincedb"</span></div><div class="line">        <span class="built_in">type</span> =&gt; <span class="string">"httpd"</span></div><div class="line">        start_position =&gt; <span class="string">"beginning"</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">output &#123;</div><div class="line">    redis &#123;</div><div class="line">        host =&gt; [<span class="string">"127.0.0.1"</span>]</div><div class="line">        port =&gt; 6379</div><div class="line">        batch =&gt; <span class="literal">true</span></div><div class="line">            batch_events =&gt; 5</div><div class="line">            data_type =&gt; <span class="string">"list"</span></div><div class="line">            key =&gt; <span class="string">"logstash:redis"</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">配置一个从redis读取日志并输出到es的配置文件</div><div class="line"></div><div class="line"><span class="comment">#cat index.conf</span></div><div class="line">input &#123;</div><div class="line">  redis &#123;</div><div class="line">    host =&gt; [<span class="string">"127.0.0.1"</span>]</div><div class="line">    port =&gt; 6379</div><div class="line">    data_type =&gt; <span class="string">"list"</span></div><div class="line">    key =&gt; “<span class="built_in">log</span> stash:redis<span class="string">"</span></div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">output &#123;</div><div class="line">        elasticsearch &#123;</div><div class="line">        host =&gt; "127.0.0.1<span class="string">"</span></div><div class="line">        protocol =&gt; "http<span class="string">"</span></div><div class="line">        index =&gt; "logstash-%&#123;<span class="built_in">type</span>&#125;-%&#123;+YYYY.MM.dd&#125;<span class="string">"</span></div><div class="line">        index_type =&gt; "%&#123;<span class="built_in">type</span>&#125;<span class="string">"</span></div><div class="line">        &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">启动logstash</div></pre></td></tr></table></figure>
-<h3 id="Communicative-learning"><a href="#Communicative-learning" class="headerlink" title="Communicative learning:"></a>Communicative learning:</h3><p>🐧  Linux shell_ senior operation and maintenance faction: QQ group <code>459096184</code> circle (system operation and maintenance - application operation and maintenance - automation operation and maintenance - virtualization technology research, welcome to join)<br>🐧  BigData-Exchange School:QQ group <code>521621407</code> circles (big data Yun Wei) (Hadoop developer) (big data research enthusiasts) welcome to join</p>
-<p>Bidata have internal WeChat exchange group, learn from each other, join QQ group has links.</p>
-
-	
-
-	
-
-</article>
-
-
-
-
-
-	<span class="different-posts">📖 <a href="/page/13">more posts</a> 📖</span>
-
-
-
-	</main>
-
-	<footer class="footer">
-	<div class="footer-content">
-		
-	      <div class="footer__element">
-	<h5>Hi there,</h5>
-	<p style="text-align:justify;">my name is Yancy, they know me as Radiant🐑🐑. This blog is about Bi-data and my live.<br> I like 🌳🌳🌳</p>
+                <!-- 如果开启评论功能 -->
+                
+
+            </div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                            
+                            <a href="/tags/#Bigdata Hadoop" title="Bigdata Hadoop" rel="3">Bigdata Hadoop</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Node.js" title="Node.js" rel="4">Node.js</a>
+                            
+                        
+                            
+                            <a href="/tags/#OpenLDAP" title="OpenLDAP" rel="5">OpenLDAP</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Operation safety" title="Operation safety" rel="4">Operation safety</a>
+                            
+                        
+                            
+                            <a href="/tags/#Automation Deploy" title="Automation Deploy" rel="2">Automation Deploy</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="2">Performance monitoring</a>
+                            
+                        
+                            
+                            <a href="/tags/#Operation and maintenance Road" title="Operation and maintenance Road" rel="2">Operation and maintenance Road</a>
+                            
+                        
+                            
+                            <a href="/tags/#Kafka" title="Kafka" rel="16">Kafka</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Zabbix" title="Zabbix" rel="2">Zabbix</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Countly" title="Countly" rel="2">Countly</a>
+                            
+                        
+                            
+                            <a href="/tags/#ZooKeeper" title="ZooKeeper" rel="4">ZooKeeper</a>
+                            
+                        
+                            
+                            <a href="/tags/#Web Service" title="Web Service" rel="17">Web Service</a>
+                            
+                        
+                            
+                            <a href="/tags/#Nginx" title="Nginx" rel="17">Nginx</a>
+                            
+                        
+                            
+                            <a href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes" rel="4">Java+Tomcat notes</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Zabbix monitoring" title="Zabbix monitoring" rel="15">Zabbix monitoring</a>
+                            
+                        
+                            
+                            <a href="/tags/#Elasticsearch" title="Elasticsearch" rel="5">Elasticsearch</a>
+                            
+                        
+                            
+                            <a href="/tags/#Kibana" title="Kibana" rel="2">Kibana</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#logstash" title="logstash" rel="2">logstash</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Graylog" title="Graylog" rel="2">Graylog</a>
+                            
+                        
+                            
+                            <a href="/tags/#Ansible" title="Ansible" rel="9">Ansible</a>
+                            
+                        
+                            
+                            <a href="/tags/#Jenkins" title="Jenkins" rel="2">Jenkins</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
+                            
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Short About -->
+                <section class="visible-md visible-lg">
+                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
+                    <div class="short-about">
+
+                        
+                            <img src="/img/avatar.jpg" />
+                        
+
+                        
+                            <p>Yancy，运维技术专家，客居杭州。喜欢学习研究新技术，然后中途弃坑。擅长CDN自动化运维，更擅长让应用高可用无人监听状态。不会玩虚拟化只会用KVM,Docker,Openstack，没有vim全家桶就写不出代码，没有Google 和 StackOverflow 就解决不了技术问题。</p>
+                        
+
+                        <!-- SNS Link -->
+                        <ul class="list-inline">
+                            
+                            
+                                <li>
+                                    <a target="_blank" href="https://twitter.com/yancyoo">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+                            
+                                <li>
+                                    <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa  fa-stack-1x fa-inverse">知</i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+
+                            
+                                <li>
+                                    <a target="_blank" href="http://weibo.com/yangcvo">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+
+                            
+
+                            
+                                <li>
+                                    <a target="_blank"  href="https://github.com/yangcvo">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+                            
+                            
+                            
+                        </ul>
+                    </div>
+                </section>
+                
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+        
+    </div>
 </div>
 
 
-	    
-	      <div class="footer__element">
-	<h5>Check out</h5>
-	<ul class="footer-links">
-		<li class="footer-links__link"><a href="/archives">Archive</a></li>
-		
-		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
-	    
-		<li class="footer-links__link"><a href="/about">about page</a></li>
-		<li class="footer-links__link"><a href="/tags">Tags</a></li>
-		<li class="footer-links__link"><a href="/categories">Categories</a></li>
-	</ul>
-</div>
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
 
-	    
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
 
-		<div class="footer-credit">
-			<span>© 2019 Yancy | Powered by <a href="http://blog.yancy.cc/">Yancy</a> | Theme <a href="https://github.com/yangcvo">Yancy_GitHub</a></span>
-		</div>
+                
 
-	</div>
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
 
+                
 
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
 </footer>
 
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
 
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
 
 </body>
 
