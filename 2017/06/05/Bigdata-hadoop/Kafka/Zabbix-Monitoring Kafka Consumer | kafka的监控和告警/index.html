@@ -90,14 +90,14 @@
 
                         
                         <li>
-                            <a href="/ABOUT/About.html">About</a>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/ARCHIVES/archives.html">Archives</a>
+                            <a href="/ABOUT/About.html">About</a>
                         </li>
                         
                     
@@ -193,7 +193,7 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p><img src="http://7xrthw.com1.z0.glb.clouddn.com/Zabbix-Monitoring-Kafka.png" alt=""></p>
+                <p><img src="http://image.chengyangyang.com/Zabbix-Monitoring-Kafka.png" alt=""></p>
 <h3 id="Zabbix-Monitoring-Kafka集群-Consumer-kafka的监控和告警"><a href="#Zabbix-Monitoring-Kafka集群-Consumer-kafka的监控和告警" class="headerlink" title="Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警"></a>Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警</h3><p>前面一篇讲了我们监控kafka集群Brokers服务状态监控。生产环境监控，可以在Zabbix中对Kafka进行监控，一种是监控JMX端口，另外一种是直接写脚本，使用bin/kafka-run-class.sh里提供的相关方法类。</p>
 <p>根据我们的业务场景，最为主要的的是监控消费者Lag的情况。所有我直接写脚本了。<br>我们对某一个Topic的30个分区，每个分区，当前Consumer的Lag情况。<br>当然还可以生成汇总图，在此不做多展示。在Zabbix中配置对应的Triggers，当Lag超过阀值，实现报警。</p>
 <a id="more"></a>
@@ -217,15 +217,15 @@
 <p>zabbix,key 键值</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">kafka.[event_lag]</div></pre></td></tr></table></figure>
 <p>数据类型默认浮点就可以了。 后面应用集选择下KafkaConsumers 即可。</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Consumer.01.png" alt=""><br>陆陆续续配置完所有项目。</p>
-<h3 id="然后配置图形。"><a href="#然后配置图形。" class="headerlink" title="然后配置图形。"></a>然后配置图形。</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Consumer.02.png" alt=""></p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Consumer.04.png" alt=""></p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Consumer.05.png" alt=""></p>
-<h3 id="查看最新数据图："><a href="#查看最新数据图：" class="headerlink" title="查看最新数据图："></a>查看最新数据图：</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Consumer.06.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Consumer.07.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/kafka-Consumer.01.png" alt=""><br>陆陆续续配置完所有项目。</p>
+<h3 id="然后配置图形。"><a href="#然后配置图形。" class="headerlink" title="然后配置图形。"></a>然后配置图形。</h3><p><img src="http://image.chengyangyang.com/kafka-Consumer.02.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/kafka-Consumer.04.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/kafka-Consumer.05.png" alt=""></p>
+<h3 id="查看最新数据图："><a href="#查看最新数据图：" class="headerlink" title="查看最新数据图："></a>查看最新数据图：</h3><p><img src="http://image.chengyangyang.com/kafka-Consumer.06.png" alt=""><br><img src="http://image.chengyangyang.com/kafka-Consumer.07.png" alt=""></p>
 <p>出现问题第一时间发送报警消息。<br>报警的Trigger触发规则也是对lag的值做报警，具体阀值设置为多少，还是看大家各自业务需求了。</p>
 <h3 id="这里我对未消费告警定时60分钟触发一次。"><a href="#这里我对未消费告警定时60分钟触发一次。" class="headerlink" title="这里我对未消费告警定时60分钟触发一次。"></a>这里我对未消费告警定时60分钟触发一次。</h3><p>⚠️注释：设置group_event_lag最近消息条数的60分钟时间之内一直超过200万消费则报警</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Consumer.08.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Consumer.09.png" alt=""></p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-Consumer.10.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/kafka-Consumer.08.png" alt=""><br><img src="http://image.chengyangyang.com/kafka-Consumer.09.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/kafka-Consumer.10.png" alt=""></p>
 <h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
 <p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
 

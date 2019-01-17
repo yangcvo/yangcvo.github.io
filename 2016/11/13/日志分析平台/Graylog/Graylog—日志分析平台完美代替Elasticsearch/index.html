@@ -90,14 +90,14 @@
 
                         
                         <li>
-                            <a href="/ABOUT/About.html">About</a>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/ARCHIVES/archives.html">Archives</a>
+                            <a href="/ABOUT/About.html">About</a>
                         </li>
                         
                     
@@ -209,10 +209,10 @@
 <li>ELK： Logstash -&gt; Elasticsearch -&gt; Kibana （使用了一些插件head ，marvel）</li>
 <li>Graylog： Graylog Collector -&gt; Graylog Server(封装Elasticsearch) -&gt; Graylog Web</li>
 </ul>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/Graylog.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/Graylog.png" alt=""></p>
 <p>做为运维，公司内部使用elk处理日志发现很多问题。</p>
 <p>顺便截图了几张：</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog-elk.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog-elk1.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/graylog-elk.png" alt=""><br><img src="http://image.chengyangyang.com/graylog-elk1.png" alt=""></p>
 <p>之前试过Logstash + Elasticsearch + Kibana的方案，发现有几个缺点：</p>
 <ol>
 <li>不能处理多行日志，比如Mysql慢查询，Tomcat/Jetty应用的Java异常打印</li>
@@ -232,7 +232,7 @@
 <p>Graylog图解</p>
 <p>Graylog开源版官网： <a href="https://www.graylog.org/" target="_blank" rel="external">https://www.graylog.org/</a></p>
 <p>来几张官网的截图：</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog2.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/graylog2.png" alt=""></p>
 <p><img src="https://www.graylog.org/assets/itops_full-87fe2811ab676116142c145affa95b902635b1d6da99718057e8ae9d45c15007.png" alt=""></p>
 <p><img src="https://www.graylog.org/assets/overview_dashboard-3817012f923d4a00e9bde1c0547796319cf0396149464f434cfc2ae83a9da826.png" alt=""></p>
 <p>Graylog是强大的日志管理、分析工具。它基于 Elasticsearch, Java和MongoDB。</p>
@@ -240,11 +240,11 @@
 <h3 id="Graylog的组件"><a href="#Graylog的组件" class="headerlink" title="Graylog的组件"></a>Graylog的组件</h3><p>Graylog有4个基本组件：</p>
 <figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Graylog <span class="built_in">Server</span>：这个服务负责接收和处理日志/消息，并且和其他组件沟通。</div><div class="line">Elasticsearch：存储所有的日志，它的性能依赖内存和硬盘IO。</div><div class="line">MongoDB：存储元数据，负载不高。</div><div class="line">graylog-Web接口：用户接口。</div></pre></td></tr></table></figure>
 <p>下面是Graylog组件之间的关系图：</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog3.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/graylog3.png" alt=""></p>
 <p>下面来自我公司内部分享的PPT拍图：</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/Graylog4-ppt.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/Graylog4-ppt.png" alt=""></p>
 <p>生产环境 我参考网上一些博客画的图：</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog5.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/graylog5.png" alt=""></p>
 <h3 id="系统要求："><a href="#系统要求：" class="headerlink" title="系统要求："></a>系统要求：</h3><ul>
 <li>CentOS 6.7</li>
 <li>内存至少2GB</li>
@@ -303,13 +303,13 @@ yum -y install pwgen
 <pre><code>$ SECRET=$(pwgen -s 96 1)
 $ sudo -E sed -i -e &apos;s/password_secret =.*/password_secret = &apos;$SECRET&apos;/&apos; /etc/graylog/server/server.conf
 </code></pre><p>执行完上面命令之后，password_secret参数的样子：</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog6.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/graylog6.png" alt=""></p>
 <p>这一步，设置管理员密码。由于密码使用sha哈希算法，我们需要把明文密码转换为hash，然后赋值给root_password_sha2参数。例如，我要设置的管理员密码是 Ihaozhuo_b313，它对应的hash为：</p>
 <pre><code>$ echo -n Ihaozhuo_b313 | sha256sum | awk &apos;{print $1}&apos;
-</code></pre><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog7.png" alt=""></p>
+</code></pre><p><img src="http://image.chengyangyang.com/graylog7.png" alt=""></p>
 <p>编辑/etc/graylog/server/server.conf，设置root_password_sha2参数：</p>
 <pre><code>$ sudo vim /etc/graylog/server/server.conf
-</code></pre><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog8.png" alt=""></p>
+</code></pre><p><img src="http://image.chengyangyang.com/graylog8.png" alt=""></p>
 <p>现在Graylog管理员密码为Ihaozhuo_b313。</p>
 <p>配置rest_transport_uri参数，设置Graylog web接口和服务器的沟通方式。由于我们把所有组件都安装到了单独的一个服务器上，需要把值设置为<strong>127.0.0.1</strong> 或 <strong>localhost</strong>。找到rest_transport_uri一行，取消注释，并把值设置为：</p>
 <pre><code>rest_transport_uri = http://192.168.1.234:12900/
@@ -317,7 +317,7 @@ $ sudo -E sed -i -e &apos;s/password_secret =.*/password_secret = &apos;$SECRET&
 <pre><code>elasticsearch_shards = 1
 </code></pre><p>更改elasticsearch_cluster_name参数，应该和前面Elasticsearch的<strong>cluster.name</strong>参数相对应：</p>
 <pre><code>elasticsearch_cluster_name = graylog-development
-</code></pre><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog9.png" alt=""></p>
+</code></pre><p><img src="http://image.chengyangyang.com/graylog9.png" alt=""></p>
 <p>取消下面两行的注释，检测Elasticsearch：</p>
 <pre><code>172 elasticsearch_discovery_zen_ping_multicast_enabled = false
 173 elasticsearch_discovery_zen_ping_unicast_hosts = 192.168.1.234:9300
@@ -337,7 +337,7 @@ graylog2-server.uris=&quot;http://127.0.0.1:12900/&quot;
 </code></pre><h3 id="配置Graylog服务器接收其他服务器的syslog日志"><a href="#配置Graylog服务器接收其他服务器的syslog日志" class="headerlink" title="配置Graylog服务器接收其他服务器的syslog日志"></a>配置Graylog服务器接收其他服务器的syslog日志</h3><h4 id="登录Graylog-Web"><a href="#登录Graylog-Web" class="headerlink" title="登录Graylog Web"></a>登录Graylog Web</h4><p>使用浏览器访问Graylog服务器的域名或IP：<strong><a href="http://graylog_public_IP_domain:9000/" target="_blank" rel="external">http://graylog_public_IP_domain:9000/</a></strong>。</p>
 <p>你应该能看到一个登录界面，使用admin做为用户名和前面设置的密码登录。</p>
 <p>登录之后：</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog10.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/graylog10.png" alt=""></p>
 <p>上面的红数字1是通知（you have a node without any running inputs），下面设置通过UDP接收syslog。</p>
 <p>创建syslog UDP输入</p>
 <p>添加要接收的其他服务器syslog日志：System-&gt;Inputs-&gt;Syslog UDP-&gt;Launch new input。</p>
@@ -348,8 +348,8 @@ graylog2-server.uris=&quot;http://127.0.0.1:12900/&quot;
 <li>Bind address: 这里写Graylog-server服务器主机IP</li>
 </ul>
 <p>点击Launch</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog11.png" alt=""></p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog12.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/graylog11.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/graylog12.png" alt=""></p>
 <p>如果你需要收集多个服务器的日志，重复上面步骤。</p>
 <p>现在，我们的Graylog服务器已经做好了接收其他服务器发来日志的准备。下面我们还需要配置其他服务器，让这些服务器给Graylog服务器发送日志。</p>
 <h4 id="配置其他服务器给Graylog服务器发送syslog"><a href="#配置其他服务器给Graylog服务器发送syslog" class="headerlink" title="配置其他服务器给Graylog服务器发送syslog"></a>配置其他服务器给Graylog服务器发送syslog</h4><p>参考官网：<a href="https://marketplace.graylog.org/addons/a47beb3b-0bd9-4792-a56a-33b27b567856" target="_blank" rel="external">从Linux系统日志发送到Graylog</a></p>
@@ -362,12 +362,12 @@ graylog2-server.uris=&quot;http://127.0.0.1:12900/&quot;
 <pre><code>/etc/init.d/rsyslog restart
 </code></pre><p>配置完成之后，回到Graylog Web，点击Sources，查看是否有新添加rsyslog。</p>
 <h4 id="Graylog使用http协议发送："><a href="#Graylog使用http协议发送：" class="headerlink" title="Graylog使用http协议发送："></a>Graylog使用http协议发送：</h4><p>添加要接收的其他服务器syslog日志：System-&gt;Inputs-&gt;GELF HTTP-&gt;Launch new input。</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog14.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/graylog14.png" alt=""></p>
 <p>然后在服务器上面发送下面命令。</p>
 <figure class="highlight accesslog"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="string">[root@graylog-development ~]</span># curl -XPOST http://<span class="number">192.168.1.234:12201</span>/gelf -p0 -d '&#123;<span class="string">"short_message"</span>:<span class="string">"Hello there"</span>, <span class="string">"host"</span>:<span class="string">"example.org"</span>, <span class="string">"facility"</span>:<span class="string">"test"</span>, <span class="string">"_foo"</span>:<span class="string">"bar"</span>&#125;'</div><div class="line"><span class="string">[root@graylog-development ~]</span># curl -XPOST http://<span class="number">192.168.1.234:12201</span>/gelf -p0 -d '&#123;<span class="string">"short_message"</span>:<span class="string">"测试"</span>, <span class="string">"host"</span>:<span class="string">"example.org"</span>, <span class="string">"facility"</span>:<span class="string">"test"</span>, <span class="string">"_foo"</span>:<span class="string">"bar"</span>&#125;'</div></pre></td></tr></table></figure>
 <p>这里定义192.168.1.234 是graylog-server服务器地址 12201 端口是之前创建好的。</p>
 <h3 id="搜素Graylog"><a href="#搜素Graylog" class="headerlink" title="搜素Graylog"></a>搜素Graylog</h3><p>假如你要搜索hello：</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/graylog13.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/graylog13.png" alt=""></p>
 <p>上面安装配置了基本的Graylog服务器。</p>
 <h3 id="时区和高亮设置"><a href="#时区和高亮设置" class="headerlink" title="时区和高亮设置"></a>时区和高亮设置</h3><p>admin帐号的时区：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="string">[root@graylog</span> <span class="string">~]#</span> <span class="string">vi</span> <span class="string">/etc/graylog/server/server.conf</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="number">30</span> <span class="string">root_timezone</span> <span class="string">=</span> <span class="string">Asia/Shanghai</span></div><div class="line"><span class="meta">---</span></div><div class="line"><span class="string">[root@graylog</span> <span class="string">~]#</span> <span class="string">/etc/init.d/graylog-server</span> <span class="string">restart</span></div></pre></td></tr></table></figure>

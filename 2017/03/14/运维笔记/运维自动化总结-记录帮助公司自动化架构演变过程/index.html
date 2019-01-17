@@ -90,14 +90,14 @@
 
                         
                         <li>
-                            <a href="/ABOUT/About.html">About</a>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/ARCHIVES/archives.html">Archives</a>
+                            <a href="/ABOUT/About.html">About</a>
                         </li>
                         
                     
@@ -201,7 +201,7 @@
 <p>这里也在Infoq上面有他的分享作品我这里粘贴出来了：<a href="http://www.infoq.com/cn/articles/multi-service-line-environment-deployment" target="_blank" rel="external">大规模集群上的多业务线环境部署</a></p>
 <h4 id="个人现在运维自动化演变过程经验："><a href="#个人现在运维自动化演变过程经验：" class="headerlink" title="个人现在运维自动化演变过程经验："></a>个人现在运维自动化演变过程经验：</h4><p>我现在在一家上市公司旗下控股医疗大数据子公司负责运维部门，负责IT网络安全办公：主要做的应用运维和网络运维，兼大数据运维。</p>
 <p>第一个版本公司整体服务架构：</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/yjkjiagoutu.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/yjkjiagoutu.png" alt=""></p>
 <h4 id="2016年2月份脚本形式自动化发布："><a href="#2016年2月份脚本形式自动化发布：" class="headerlink" title="2016年2月份脚本形式自动化发布："></a>2016年2月份脚本形式自动化发布：</h4><p>16年2月份这里的Tomcat自动化 发布我一开始使用shell脚本去实现自动化发布和回滚。 </p>
 <h4 id="2016年4月份salt自动化远程控制脚本发布："><a href="#2016年4月份salt自动化远程控制脚本发布：" class="headerlink" title="2016年4月份salt自动化远程控制脚本发布："></a>2016年4月份salt自动化远程控制脚本发布：</h4><p>16年4月份这里的tomcat服务增多，发现脚本发布手工操作太繁琐，而且出现问题几率大，效率不高。每次一次大版本改动发布会出现很多问题。</p>
 <p>这里跟随服务模块增多，现在服务器90多台，统一salt自动化调用每台对应脚本发布回滚。</p>
@@ -217,11 +217,11 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">- hosts: all</div><div class="line"></div><div class="line">  environment:</div><div class="line">     LC_ALL: zh_CN.UTF-8</div><div class="line">     LANG : zh_CN.UTF-8</div><div class="line"></div><div class="line">  vars:</div><div class="line"><span class="comment">#jenkins-打包目录</span></div><div class="line">    TESTWAR: /root/java_war/haozhuo-family.war</div><div class="line"><span class="comment">#生产环境中项目的tomcat所在的位置</span></div><div class="line">    OLDHOME: /srv/tomcat/tomcat_family/webapps/ROOT</div><div class="line"><span class="comment">#生产环境中老版本项目所在webapps备份目录的位置</span></div><div class="line">    backupwebapps: /srv/tomcat/tomcat_family/warbackup</div><div class="line"><span class="comment">#从jenkins-打包环境获取的新版本war包所在的位置</span></div><div class="line">    NEWWAR: /root/java_war/</div><div class="line"><span class="comment">#生产环境中项目war包的名字</span></div><div class="line">    WARNAME: haozhuo-family.war</div><div class="line"><span class="comment">#kill服务type路径</span></div><div class="line">    DOWNFILE: /srv/tomcat/tomcat_family</div><div class="line"></div><div class="line">  tasks:</div><div class="line">  - name: copy-war-file</div><div class="line">    copy: src=&#123;&#123; TESTWAR &#125;&#125; dest=&#123;&#123; NEWWAR &#125;&#125;</div><div class="line">  - name: mkdir-bakwar-file</div><div class="line">    file: path=&#123;&#123; backupwebapps &#125;&#125; state=directory owner=tomcat group=tomcat mode=755</div><div class="line">  - name: bakwar-file</div><div class="line">    shell: <span class="string">"cp -r &#123;&#123; OLDHOME &#125;&#125; &#123;&#123; backupwebapps &#125;&#125;"</span></div><div class="line">  - name: unzip war.</div><div class="line">    unarchive: src=&#123;&#123; NEWWAR &#125;&#125;/&#123;&#123; WARNAME &#125;&#125; dest=&#123;&#123; OLDHOME &#125;&#125;</div><div class="line">  - name: stop-tomcat-service</div><div class="line">    shell: <span class="string">"ps -ef |grep &#123;&#123; DOWNFILE &#125;&#125; |grep -v grep |awk '&#123;print <span class="variable">$2</span>&#125;' |xargs kill -9"</span></div><div class="line">    ignore_errors: yes</div><div class="line">    async: 0</div><div class="line">  - name: start-tomcat-service-nohup</div><div class="line">    shell: <span class="built_in">chdir</span>=&#123;&#123; DOWNFILE &#125;&#125;/bin nohup ./startup.sh &amp;</div></pre></td></tr></table></figure>
 <h6 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h6><p>在金融领域中，安全是最重要的考虑因素，在众多自动化运维工具种，Ansible的安全性能最好，是目前最适合金融领域的自动化运维工具。本文通过将Ansible微服务化，集成到自动化运维平台中，实现自动化运维平台高并发执行运维操作场景和实时收集执行结果。</p>
 <h4 id="2016年7月份Jenkins上面实现持续集成"><a href="#2016年7月份Jenkins上面实现持续集成" class="headerlink" title="2016年7月份Jenkins上面实现持续集成"></a>2016年7月份Jenkins上面实现持续集成</h4><p>这里Jenkins打通gitlab自动发布，审计代码。 这里结合<code>openVPN+谷歌二次动态认证</code>效果给予开发他们开放环境。<br>架构图 ：</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/yjkjiagoutu2.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/yjkjiagoutu2.png" alt=""></p>
 <h4 id="2016年9月份公司架构演变从传统架构更换dubbo架构。"><a href="#2016年9月份公司架构演变从传统架构更换dubbo架构。" class="headerlink" title="2016年9月份公司架构演变从传统架构更换dubbo架构。"></a>2016年9月份公司架构演变从传统架构更换dubbo架构。</h4><p>公司应用服务架构图这里贴出来：<a href="http://shiyanjun.cn/archives/325.html" target="_blank" rel="external">Dubbo架构设计详解</a></p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/jiagoutu2.png" alt=""><br>系统架构图这里我后期在更新贴出来。</p>
+<p><img src="http://image.chengyangyang.com/jiagoutu2.png" alt=""><br>系统架构图这里我后期在更新贴出来。</p>
 <h4 id="2017年3月份-公司服务器150台服务自动化发布。"><a href="#2017年3月份-公司服务器150台服务自动化发布。" class="headerlink" title="2017年3月份 公司服务器150台服务自动化发布。"></a>2017年3月份 公司服务器150台服务自动化发布。</h4><p>后面运维开发开发了一套基于salt自动化一套web版的管理平台。对我们后面的做部署初始化的确减轻了很多。<br>现在开始公司用的是ansible基python开发出来一套自动化部署的。发布部署测试一体系：<br>刚开发出来的截了一张图：</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/zidonhua1.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/zidonhua1.png" alt=""></p>
 <h2 id="个人总结："><a href="#个人总结：" class="headerlink" title="个人总结："></a>个人总结：</h2><h4 id="系统标准化："><a href="#系统标准化：" class="headerlink" title="系统标准化："></a>系统标准化：</h4><p>要想自动化，首先第一就是标准化。比如软件的<code>安装位置、版本、脚本，注册</code>到init.d下面，这些应该是标准的，所有服务器都统一的。或者说你使用salt就是为了达到这样的标准化做自动化运维要经历的标准化–&gt;&gt;自动化—-&gt;&gt;服务化—-&gt;&gt;数据化。</p>
 <h4 id="个人意见："><a href="#个人意见：" class="headerlink" title="个人意见："></a>个人意见：</h4><ol>
 <li>只有标准了，才能自动，至少你相同的业务都应该是一样的。</li>

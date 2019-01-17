@@ -90,14 +90,14 @@
 
                         
                         <li>
-                            <a href="/ABOUT/About.html">About</a>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/ARCHIVES/archives.html">Archives</a>
+                            <a href="/ABOUT/About.html">About</a>
                         </li>
                         
                     
@@ -201,13 +201,13 @@
 <p>这个解决以后 新增的机器必须关闭防火墙。因为这个原因会导致我 hadoop新增节点集群启动请求异常：Last contact：200</p>
 <p>（2） 集群重启时防火墙自动开启导致：</p>
 <p>这里贴张图片给大家看看：</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop1.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/hadoop1.png" alt=""></p>
 <p>问题：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">2017-07-04 18:43:30,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 8 time(s).</div><div class="line">2017-07-04 18:43:31,475 INFO org.apache.hadoop.ipc.Client: Retrying connect to server: /192.168.18.218:9000. Already tried 9 time(s).</div><div class="line">2017-07-04 18:43:31,479 ERROR org.apache.hadoop.hdfs.server.datanode.DataNode: java.io.IOException: Call to /192.168.18.218:9000 failed on <span class="built_in">local</span> exception: java.net.NoRouteToHostException: 没有到主机的路由</div><div class="line">        at org.apache.hadoop.ipc.Client.wrapException(Client.java:775)</div><div class="line">        at org.apache.hadoop.ipc.Client.call(Client.java:743)</div><div class="line">解决方法：在root权限下关闭防火墙：service iptables stop</div></pre></td></tr></table></figure>
 <p>最好配置成机器重启默认防火墙关闭：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables off   #开机不启动防火墙服务</span></div><div class="line">[root@junlings ~]<span class="comment"># chkconfig iptables on   #开机启动防火墙服务</span></div></pre></td></tr></table></figure>
 <p>解决以后服务重新跑一遍已经搞定。</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop2.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/hadoop3.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/hadoop2.png" alt=""><br><img src="http://image.chengyangyang.com/hadoop3.png" alt=""></p>
 
 
                 <hr>
@@ -217,12 +217,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2017/05/11/日志分析平台/Elasticsearch/ElasticStack 5.x集群+Kibana-5.5.x+Logstash5.5+kafka2.10版本部署概述/" data-toggle="tooltip" data-placement="top" title="ElasticStack 5.x集群+Kibana-5.5.x+Logstash5.5+kafka2.10版本部署概述">&larr; Previous Post</a>
+                            <a href="/2017/05/08/Bigdata-hadoop/HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群 /" data-toggle="tooltip" data-placement="top" title="HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群">&larr; Previous Post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2017/05/08/Bigdata-hadoop/HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群 /" data-toggle="tooltip" data-placement="top" title="HORTONW0RKS数据平台实现搭建Ambari配置和部署HDP集群监控Hadoop集群">Next Post &rarr;</a>
+                            <a href="/2017/05/04/Bigdata-hadoop/zookeeper/Zookeeper 报错：Unable to connect to zookeeper server within timeout: 6000/" data-toggle="tooltip" data-placement="top" title="Zookeeper 报错：Unable to connect to zookeeper server within timeout:6000">Next Post &rarr;</a>
                         </li>
                     
                 </ul>

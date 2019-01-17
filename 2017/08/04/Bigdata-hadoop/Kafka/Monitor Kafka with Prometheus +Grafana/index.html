@@ -90,14 +90,14 @@
 
                         
                         <li>
-                            <a href="/ABOUT/About.html">About</a>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/ARCHIVES/archives.html">Archives</a>
+                            <a href="/ABOUT/About.html">About</a>
                         </li>
                         
                     
@@ -196,7 +196,7 @@
                 post-container">
 
                 <h3 id="Monitoring-Kafka-with-Prometheus"><a href="#Monitoring-Kafka-with-Prometheus" class="headerlink" title="Monitoring Kafka with Prometheus"></a>Monitoring Kafka with Prometheus</h3><p>We’ve previously looked at how to monitor Cassandra with <a href="https://www.robustperception.io/monitoring-cassandra-with-prometheus/" target="_blank" rel="external">Prometheus</a>. Let’s see the process for getting metrics from another popular Java application, <a href="https://kafka.apache.org/" target="_blank" rel="external">Kafka.</a></p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-overview.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/kafka-overview.png" alt=""></p>
 <a id="more"></a>
 <p>we download Kafka, the JMX exporter and the config file:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">wget http://ftp.heanet.ie/mirrors/www.apache.org/dist/kafka/0.10.1.0/kafka_2.11-0.10.1.0.tgz</div><div class="line">tar -xzf kafka _ *。tgz</div><div class="line"><span class="built_in">cd</span> kafka_ *</div><div class="line"></div><div class="line">wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.6/jmx_prometheus_javaagent-0.6.jar</div><div class="line">wget https://raw.githubusercontent.com/prometheus/jmx_exporter/master/example_configs/kafka-0-8-2.yml</div><div class="line"></div><div class="line">Download the good files and put them under the Kafka directory:</div><div class="line">[hadoop@hadoop6 kafka_2.10-0.9.0.1]$ ll</div><div class="line">drwxr-xr-x 3 hadoop hadoop    4096 9月  27 13:34 bin</div><div class="line">drwxr-xr-x 2 hadoop hadoop    4096 9月  27 21:18 config</div><div class="line">-rw-rw-r-- 1 hadoop hadoop 1225418 2月   5 2016 jmx_prometheus_javaagent-0.6.jar</div><div class="line">-rw-rw-r-- 1 hadoop hadoop    2824 9月  26 17:48 kafka-0-8-2.yml</div><div class="line">drwxr-xr-x 2 hadoop hadoop    4096 9月  27 13:31 libs</div><div class="line">-rw-r--r-- 1 hadoop hadoop   11358 2月  12 2016 LICENSE</div><div class="line">drwxrwxr-x 2 hadoop hadoop  266240 9月  27 21:19 logs</div><div class="line">-rw-r--r-- 1 hadoop hadoop     162 2月  12 2016 NOTICE</div><div class="line">drwxrwxr-x 5 hadoop hadoop    4096 9月  27 15:56 prometheus-1.2.1.linux-amd64</div><div class="line">drwxr-xr-x 2 hadoop hadoop    4096 2月  12 2016 site-docs</div></pre></td></tr></table></figure>
@@ -207,8 +207,8 @@
 <p>Following run access: <a href="http://localhost:9090/graph" target="_blank" rel="external">http://localhost:9090/graph</a></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[hadoop@hadoop8 prometheus-1.2.1.linux-amd64]$ ./prometheus</div><div class="line">INFO[0000] Starting prometheus (version=1.2.1, branch=master, revision=dd66f2e94b2b662804b9aa1b6a50587b990ba8b7)  <span class="built_in">source</span>=main.go:75</div><div class="line">INFO[0000] Build context (go=go1.7.1, user=root@fd9b0daff6bd, date=20161010-15:58:23)  <span class="built_in">source</span>=main.go:76</div><div class="line">INFO[0000] Loading configuration file prometheus.yml     <span class="built_in">source</span>=main.go:247</div><div class="line">INFO[0000] Loading series map and head chunks...         <span class="built_in">source</span>=storage.go:354</div><div class="line">INFO[0000] 49 series loaded.                             <span class="built_in">source</span>=storage.go:359</div><div class="line">WARN[0000] No AlertManagers configured, not dispatching any alerts  <span class="built_in">source</span>=notifier.go:176</div><div class="line">INFO[0000] Listening on :9090                            <span class="built_in">source</span>=web.go:240</div><div class="line">INFO[0000] Starting target manager...                    <span class="built_in">source</span>=targetmanager.go:76</div></pre></td></tr></table></figure>
 <p>The Prometheus platform monitors all data from the Kafka index:<br>This function is very powerful, late will explain what each representative means:</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-monitor02.png" alt=""></p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/kafka-monitor03.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/kafka-monitor02.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/kafka-monitor03.png" alt=""></p>
 <p>Install <a href="http://docs.grafana.org/installation/rpm/#install-stable" target="_blank" rel="external">open source Grafana monitoring</a>, combine <a href="https://prometheus.io/docs/visualization/grafana/" target="_blank" rel="external">prometheus.io</a> to obtain Prometheus platform data.</p>
 <h3 id="Installing-Grafana"><a href="#Installing-Grafana" class="headerlink" title="Installing Grafana"></a>Installing Grafana</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Download and unpack Grafana from binary tar (adjust version as appropriate).</span></div><div class="line">curl -L -O https://grafanarel.s3.amazonaws.com/builds/grafana-2.5.0.linux-x64.tar.gz</div><div class="line">tar zxf grafana-2.5.0.linux-x64.tar.gz</div><div class="line"></div><div class="line"><span class="comment"># Start Grafana.</span></div><div class="line"><span class="built_in">cd</span> grafana-2.5.0/</div><div class="line">./bin/grafana-server web</div></pre></td></tr></table></figure>
 <h3 id="Using"><a href="#Using" class="headerlink" title="Using"></a>Using</h3><p>By default, Grafana will be listening on <a href="http://localhost:3000" target="_blank" rel="external">http://localhost:3000</a>. The default login is “admin” / “admin”.</p>

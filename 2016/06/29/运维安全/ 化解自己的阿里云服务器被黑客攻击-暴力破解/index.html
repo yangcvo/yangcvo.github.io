@@ -90,14 +90,14 @@
 
                         
                         <li>
-                            <a href="/ABOUT/About.html">About</a>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/ARCHIVES/archives.html">Archives</a>
+                            <a href="/ABOUT/About.html">About</a>
                         </li>
                         
                     
@@ -194,11 +194,11 @@
                 <p>说明下：因为阿里云服务器我是用来自己搭建blog 的做了一些简单的监控。</p>
 <p>因为防止被攻击瘫痪，做到安全防范，可是今天晚上吃完饭，发现又被人攻击，是印度和巴西IP地址暴力破解方式一直在尝试破解我密码。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">还好我在阿里云上面使用了云盾告警，其实它这个一般般，只能提醒，不能有效阻止黑客攻击。</div></pre></td></tr></table></figure>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/aliyundun.png" alt=""></p>
 <p>收到告警以后，马上打开电脑去云盾上面查看下。</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun2.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/aliyundun2.png" alt=""></p>
 <p>然后看了以后发现问题不大，可是上机器查看，发现有不断的攻击痕迹。<br>日志查看到很多来历不明的IP。德国🇩🇪  巴西 印度。</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun3.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun4.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/aliyundun3.png" alt=""><br><img src="http://image.chengyangyang.com/aliyundun4.png" alt=""></p>
 <p>看到这个，我就写了个脚本记录被攻击留下的保存指定文件夹，我看下是否还在继续攻击了。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"> <span class="comment">#!/bin/bash</span></div><div class="line"><span class="comment">#Denyhosts SHELL SCRIPT</span></div><div class="line"><span class="comment">#2016-2-18</span></div><div class="line">cat /var/<span class="built_in">log</span>/secure|awk <span class="string">'/Failed/&#123;print $(NF-  3)&#125;'</span>|sort|uniq -c|awk <span class="string">'&#123;print $2"=" $1;&#125;'</span> &gt;/root/bin/Denyhosts.txt</div><div class="line">DEFINE=<span class="string">"10"</span></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> `cat /root/bin/Denyhosts.txt`</div><div class="line"><span class="keyword">do</span></div><div class="line">    IP=`<span class="built_in">echo</span> <span class="variable">$i</span>|awk -F= <span class="string">'&#123;print $1&#125;'</span>`</div><div class="line">    NUM=`<span class="built_in">echo</span> <span class="variable">$i</span>|awk -F= <span class="string">'&#123;print $2&#125;'</span>`</div><div class="line">    <span class="keyword">if</span> [ <span class="variable">$NUM</span> <span class="_">-gt</span> <span class="variable">$DEFINE</span> ]</div><div class="line">    <span class="keyword">then</span></div><div class="line">            grep <span class="variable">$IP</span> /etc/hosts.deny &gt;/dev/null</div><div class="line">            <span class="keyword">if</span> [ $? <span class="_">-gt</span> 0 ];</div><div class="line">            <span class="keyword">then</span></div><div class="line">            <span class="built_in">echo</span> <span class="string">"sshd:<span class="variable">$IP</span>"</span> &gt;&gt; /etc/hosts.deny</div><div class="line">            <span class="keyword">fi</span></div><div class="line">    <span class="keyword">fi</span></div><div class="line"><span class="keyword">done</span></div></pre></td></tr></table></figure>
 <p>因为保存到其他的txt文件下面：</p>
@@ -234,9 +234,9 @@ DenyHosts could not obtain lock (pid: )
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cat /etc/hosts.deny来查看记录了</div></pre></td></tr></table></figure>
 <p>然后启动成功以后，我自己测试了下，</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">ssh root@115.28.175.207</div><div class="line">root@115.28.175.207<span class="string">'s password:</span></div><div class="line">Permission denied, please try again.</div><div class="line">root@115.28.175.207's password:</div><div class="line">cPermission denied, please try again.</div><div class="line">root@115.28.175.207<span class="string">'s password:</span></div><div class="line">Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password).</div></pre></td></tr></table></figure>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun5.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/aliyundun5.png" alt=""></p>
 <p>发现自己登陆不上去了，然后只能去阿里控制台操作查看原因。</p>
-<p>原来发现 <code>cat /etc/hosts.deny</code>来查看记录了<br><img src="http://7xrthw.com1.z0.glb.clouddn.com/aliyundun6.png" alt=""></p>
+<p>原来发现 <code>cat /etc/hosts.deny</code>来查看记录了<br><img src="http://image.chengyangyang.com/aliyundun6.png" alt=""></p>
 <p>然后去掉，115IP 发现就可以登陆了。 所以我做的设置是<code>root</code>尝试破解4次以上，被锁定。</p>
 
 

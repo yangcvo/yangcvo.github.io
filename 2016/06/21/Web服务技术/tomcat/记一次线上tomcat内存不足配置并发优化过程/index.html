@@ -90,14 +90,14 @@
 
                         
                         <li>
-                            <a href="/ABOUT/About.html">About</a>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/ARCHIVES/archives.html">Archives</a>
+                            <a href="/ABOUT/About.html">About</a>
                         </li>
                         
                     
@@ -206,18 +206,18 @@
 <h4 id="服务器参数配置"><a href="#服务器参数配置" class="headerlink" title="服务器参数配置"></a>服务器参数配置</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">    tomcat默认： -Xms1024m -Xmx1024m -Xss1024K -XX:PermSize=128m -XX:MaxPermSize=256m</div><div class="line"></div><div class="line">Java代码</div><div class="line"></div><div class="line">    JAVA_OPTS=<span class="string">"-Djava.awt.headless=true -Dfile.encoding=UTF-8</span></div><div class="line">    -server -Xms2048m -Xmx2048m</div><div class="line">    -XX:NewSize=512m -XX:MaxNewSize=512m -XX:PermSize=512m</div><div class="line">    -XX:MaxPermSize=512m -XX:+DisableExplicitGC"</div></pre></td></tr></table></figure>
 <p>配置完成后可重启Tomcat ，通过以下命令进行查看配置是否生效：</p>
 <h4 id="首先查看Tomcat进程号："><a href="#首先查看Tomcat进程号：" class="headerlink" title="首先查看Tomcat进程号："></a>首先查看Tomcat进程号：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ps -ef | grep tomcat</div></pre></td></tr></table></figure>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/tomcat_youhua.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/tomcat_youhua.png" alt=""></p>
 <p>我们可以看到Tomcat 进程号是 32179 。</p>
 <ul>
 <li>实践例子：</li>
 </ul>
 <p>先查看没有优化tomcat内存前：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo jmap  – heap 32179</div></pre></td></tr></table></figure>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/tomcat_youhua2.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/tomcat_youhua2.png" alt=""></p>
 <h4 id="查看是否配置生效："><a href="#查看是否配置生效：" class="headerlink" title="查看是否配置生效："></a>查看是否配置生效：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Xml代码</div><div class="line"></div><div class="line">sudo jmap  – heap 32179</div></pre></td></tr></table></figure>
 <p>我们可以看到MaxHeapSize 等参数已经生效。</p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/tomcat_youhua3.png" alt=""></p>
-<p><img src="http://7xrthw.com1.z0.glb.clouddn.com/tomcat_youhua4.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/tomcat_youhua3.png" alt=""></p>
+<p><img src="http://image.chengyangyang.com/tomcat_youhua4.png" alt=""></p>
 <p>提示：如果jdk1.8 启动服务会有警告⚠️</p>
 <p><code>Java HotSpot(TM) 64-Bit Server VM warning: ignoring option PermSize=512m; support was removed in 8.0</code></p>
 <h2 id="Tomcat并发优化"><a href="#Tomcat并发优化" class="headerlink" title="Tomcat并发优化"></a>Tomcat并发优化</h2><p>1.Tomcat连接相关参数</p>
