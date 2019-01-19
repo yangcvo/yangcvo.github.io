@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="description" content="null">
     <meta name="keyword"  content="undefined">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
     <title>
         
-          Yancy&#39;s blog
+          Yancy
         
     </title>
 
@@ -67,7 +67,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
+            <a class="navbar-brand" href="/">Grocery store</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -153,9 +153,9 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
                 <div class="site-heading">
-                    <h1>Yancy&#39;s blog</h1>
+                    <h1>Grocery store</h1>
                     <!--<hr class="small">-->
-                    <span class="subheading">SIMPLICITY IS PREREQUISITE FOR  RELIABILITY</span>
+                    <span class="subheading"></span>
                 </div>
             </div>
         </div>
@@ -184,22 +184,20 @@
 
 <div class="post-preview">
 
-    <a href="/2014/09/13/运维安全/httpd进程非常多，查找被攻击的原因/">
+    <a href="/2016/06/10/自动化+Jenkins/Ansible/Ansible 安装出现 ImportError: No module named _text/">
         <h2 class="post-title">
-            httpd进程非常多，查找被攻击的原因
+            Ansible安装出现 ImportError/ No module named _text
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            前两天，公司托管在电信机房的vps服务器突然网络中断，运营商那边说我们的服务器不断往外发包，严重影响到机房的网络，所以把该机器的端口封了，无比蛋疼啊，无奈下只能亲自跑到机房解决问题。去到机房，使用top命令查看后发现httpd进程居然占到90%多的CPU。
-ps -aux |grep httpd |wc -l
-   发现有300多个httpd进程应该是受到SYN Flood攻击这时候没有直接......
+            centos6.7 ansible yum安装出现问题：12345ansible --versionTraceback (most recent call last):  File "/usr/bin/ansible", line 46, in &lt;module&gt;    from ansible.module_utils._text import to_textImportErro......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-09-13
+        2016-06-10
     </p>
 
 </div>
@@ -207,21 +205,103 @@ ps -aux |grep httpd |wc -l
 
 <div class="post-preview">
 
-    <a href="/2014/04/19/性能监控/Somekeping/用最简单易懂的方式安装smokeping/">
+    <a href="/2016/05/24/Web服务技术/Nginx/nginx解决办法-503-Service.Temporarily.Unavailable/">
         <h2 class="post-title">
-            用最简单的方式安装smokeping
+            NGINX解决办法-503-Service.Temporarily.Unavailable
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            smokeping这个监控还是很强大的，用这个监控是在第一家公司做IDC起家后面转型CDN云计算云加速。这个也是我学的最早的一款监控，在这里我用编译安装方式。也有脚本安装不过需要了解过somkeping安装过程会比较看的懂脚本。
-适用于宽带运营商维护和IDC机房维护可以检测本地网络的到上级运营商出口这段路由各个节点的稳定性            可以检测本地网络到各主要门户网站的延时，丢包率......
+            503 Service Temporarily Unavailable 解决办法-nginx因为最近公司微信抽奖活动项目环境  - ginx做负载均衡限制某个IP同一时间段的访问次数。
+就是防止有人同一个IP不断请求，网站刷新后经常出现503 Service Temporarily Unavailable错误，有时有可以，联想到最近在nginx.conf里做了单ip访问次数限制.
+(limi......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2014-04-19
+        2016-05-24
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/05/23/Web服务技术/Nginx/Nginx多种安装与配置文件详解/">
+        <h2 class="post-title">
+            Nginx多种安装与配置文件详解
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            安装nginx最近在弄灰度发布环境，之前nginx在测试和线上都有搭建配置。负载均衡配置（包括健康检查）、缓存（包括清空缓存）反向代理。就打算自己整理篇自己操作的文档，各种编译配置，今天自己也整理一份安装文档和nginx.conf配置选项的说明。
+选择稳定版本 我们编译安装nginx来定制自己的模块。
+
+机器CentOS 6.6 x86_64。
+软件版本：Nginx 1.9.9
+nginx最......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-05-23
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/05/23/Web服务技术/Nginx/Nginx+Tomcat实现负载均衡设置访问控制/">
+        <h2 class="post-title">
+            Nginx+Tomcat实现负载均衡设置访问控制
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Nginx+Tomcat实现负载均衡设置访问控制一、环境准备
+Tomcat1：10.11.155.26
+Tomcat2：10.11.155.41
+Nginx：192.168.31.154 
+
+在26和41上分别部署相同的Tomcat程序，修改index.jsp页面，把内容改为各自的IP地址.
+
+
+
+二、修改配置文件nginx.confNginx负载均衡，其实主要就是用upstream、ser......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-05-23
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/05/22/Web服务技术/Nginx/Nginx+Keepalived实现高可用Web负载均衡 /">
+        <h2 class="post-title">
+            Nginx+Keepalived实现高可用Web负载均衡
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Nginx+Keepalived实现高可用Web负载均衡一、需求场景：通过之前的一篇文章：
+Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用的负载均衡，但是单个的Nginx会存在单点隐患，如果Nginx挂掉，那么全部的Tomcat应用都将变得不可用，所以实现Nginx的高可用是必不可少的一步。
+
+二、说明
+高可用 HA（High Availability）......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-05-22
     </p>
 
 </div>
@@ -237,6 +317,10 @@ ps -aux |grep httpd |wc -l
             <a href="/page/14/">&larr; Newer Posts</a>
         </li>
     
+    
+        <li class="next">
+            <a href="/page/16/">Older Posts &rarr;</a>
+        </li>
     
 </ul>
 
@@ -266,15 +350,17 @@ ps -aux |grep httpd |wc -l
                             
                         
                             
+                            <a href="/tags/#OpenLDAP" title="OpenLDAP" rel="5">OpenLDAP</a>
+                            
+                        
+                            
+                        
+                            
                             <a href="/tags/#Node.js" title="Node.js" rel="4">Node.js</a>
                             
                         
                             
                         
-                            
-                        
-                            
-                            <a href="/tags/#OpenLDAP" title="OpenLDAP" rel="5">OpenLDAP</a>
                             
                         
                             
@@ -284,21 +370,11 @@ ps -aux |grep httpd |wc -l
                             
                         
                             
-                            <a href="/tags/#Automation Deploy" title="Automation Deploy" rel="2">Automation Deploy</a>
-                            
-                        
-                            
-                        
-                            
                             <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="2">Performance monitoring</a>
                             
                         
                             
-                            <a href="/tags/#Operation and maintenance Road" title="Operation and maintenance Road" rel="2">Operation and maintenance Road</a>
-                            
-                        
-                            
-                            <a href="/tags/#Countly" title="Countly" rel="2">Countly</a>
+                            <a href="/tags/#Automation Deploy" title="Automation Deploy" rel="2">Automation Deploy</a>
                             
                         
                             
@@ -308,15 +384,19 @@ ps -aux |grep httpd |wc -l
                             
                         
                             
+                        
+                            
                             <a href="/tags/#Zabbix" title="Zabbix" rel="2">Zabbix</a>
                             
                         
                             
-                        
+                            <a href="/tags/#Countly" title="Countly" rel="2">Countly</a>
                             
                         
                             
                             <a href="/tags/#ZooKeeper" title="ZooKeeper" rel="4">ZooKeeper</a>
+                            
+                        
                             
                         
                             
@@ -336,13 +416,7 @@ ps -aux |grep httpd |wc -l
                             
                         
                             
-                            <a href="/tags/#Jenkins" title="Jenkins" rel="2">Jenkins</a>
-                            
-                        
-                            
-                            <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
-                            
-                        
+                            <a href="/tags/#Zabbix monitoring" title="Zabbix monitoring" rel="15">Zabbix monitoring</a>
                             
                         
                             
@@ -356,7 +430,13 @@ ps -aux |grep httpd |wc -l
                             
                         
                             
-                            <a href="/tags/#Zabbix monitoring" title="Zabbix monitoring" rel="15">Zabbix monitoring</a>
+                            <a href="/tags/#Jenkins" title="Jenkins" rel="2">Jenkins</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
                             
                         
                             
@@ -393,7 +473,7 @@ ps -aux |grep httpd |wc -l
                         
 
                         
-                            <p>Yancy，担任金融公司运维负责人，客居深圳。个人技术博客：blog.yangcy.cc 可关注个人生活博客：chengyangyang.com</p>
+                            <p>Yancy，担任金融公司运维负责人，客居深圳。个人技术博客：blog.yangcy.cc        🚀 关注个人生活博客：chengyangyang.com</p>
                         
 
                         <!-- SNS Link -->
@@ -526,7 +606,7 @@ ps -aux |grep httpd |wc -l
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Yancy&#39;s blog 2019 
+                    Copyright &copy; Grocery store 2019 
                     <br>
                  Theme by <a href="http://blog.yancy.cc">Yancy</a>
                     <span style="display: inline-block; margin: 0 5px;">

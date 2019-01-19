@@ -67,7 +67,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">运维杂货铺</a>
+            <a class="navbar-brand" href="/">Grocery store</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -90,14 +90,14 @@
 
                         
                         <li>
-                            <a href="/ABOUT/About.html">About</a>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/ARCHIVES/archives.html">Archives</a>
+                            <a href="/ABOUT/About.html">About</a>
                         </li>
                         
                     
@@ -153,7 +153,7 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
                 <div class="site-heading">
-                    <h1>运维杂货铺</h1>
+                    <h1>Grocery store</h1>
                     <!--<hr class="small">-->
                     <span class="subheading"></span>
                 </div>
@@ -184,22 +184,23 @@
 
 <div class="post-preview">
 
-    <a href="/2017/06/05/Bigdata-hadoop/Kafka/Zabbix-Monitoring Kafka Consumer | kafka的监控和告警/">
+    <a href="/2017/07/29/Bigdata-hadoop/RabbitMQ/Zabbix 3.0 监控推送rabbitmq队列/">
         <h2 class="post-title">
-            Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警
+            Zabbix 3.0 监控推送rabbitmq队列-消息堆积
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            
-Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警前面一篇讲了我们监控kafka集群Brokers服务状态监控。生产环境监控，可以在Zabbix中对Kafka进行监控，一种是监控JMX端口，另外一种是直接写脚本，使用bin/kafka-run-class.sh里提供的相关方法类。
-根据我们的业务场景，最为主要的的是监控消费者Lag的情况。所有我......
+            Zabbix 3.0 监控推送rabbitmq队列对于RabbitMQ的监控，除了服务器基本信息（硬盘、CPU、内存、IO等）以及MQ的进程和端口，我们也可以通过请求url访问管理API监控其集群和队列的情况。在java api 3.6.0以后，channel接口为我们提供了如下接口：
+
+messageCount：查询队列未消费的消息数，可以监控消息堆积的情况。 
+consumerCount......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2017-06-05
+        2017-07-29
     </p>
 
 </div>
@@ -207,22 +208,21 @@ Zabbix-Monitoring Kafka集群 Consumer | kafka的监控和告警前面一篇讲�
 
 <div class="post-preview">
 
-    <a href="/2017/06/01/Bigdata-hadoop/Kafka/Zabbix监控Kafka集群 Brokers服务/">
+    <a href="/2017/07/21/Bigdata-hadoop/Kafka/Kafka动态增加Topic的副本(Replication)/">
         <h2 class="post-title">
-            Zabbix监控Kafka集群 Brokers服务
+            Kafka动态增加Topic的副本(Replication)
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Zabbix监控Kafka集群 Brokers服务
-前言：Monitoring Kafka with Datadog
-This post is the final part of a 3-part series on how to monitor Kafka. Part 1 explores the key metrics available from Kafka, and Part 2 i......
+            Kafka动态增加Topic的副本(Replication)当前我的topic ：countly_event 只有1个副本，如果集群其中一台机器出现问题，就会丢失数据。所以这里以后新建新的topic 最少2个副本，如果资源非常充足可以考虑副本3个。
+1234567891011121314[jollybi@kafka1 kafka_2.10-0.9.0.1]$ ./bin/kafka-topi......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2017-06-01
+        2017-07-21
     </p>
 
 </div>
@@ -230,27 +230,21 @@ This post is the final part of a 3-part series on how to monitor Kafka. Part 1 e
 
 <div class="post-preview">
 
-    <a href="/2017/05/28/Bigdata-hadoop/Kafka/开源的Kafka集群管理器(Kafka Manager)/">
+    <a href="/2017/07/11/Bigdata-hadoop/Kafka/KafKa扩容群集(Topic.partitions迁移)/">
         <h2 class="post-title">
-            Bigdata-开源的Kafka集群管理器(Kafka Manager)
+            KafKa动态扩容群集-(Topic.partitions迁移)
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Kafka ManagerA tool for managing Apache Kafka.
-It supports the following:
-管理多个群集
-容易检查集群状态（主题，消费者，偏移量，经纪人，副本分发，分区分配）
-运行首选副本选举
-使用选项生成分区分配，以选择要使用的代理
-运行分区的重新分配（基于生成的分配）
-创建可选主题配置的主题（0.8.1.1具有不同于0.8.2+的配......
+            kafka的扩容难点：1）主要在于增加机器之后，数据需要rebalance到新增的空闲节点，即把partitions迁移到空闲机器上。kafka提供bin/kafka-reassign-partitions.sh工具，完成parttition的迁移。
+2）kafka的集群的数据量加大，数据rebalance的时间较长。解决办法是把log.retention.hours=1设置一小时（生产参数......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2017-05-28
+        2017-07-11
     </p>
 
 </div>
@@ -258,20 +252,22 @@ It supports the following:
 
 <div class="post-preview">
 
-    <a href="/2017/05/27/Bigdata-hadoop/zookeeper/Bigdata-ZooKeeper的配置详解优化/">
+    <a href="/2017/07/04/Bigdata-hadoop/Kafka/kafka性能优化–JVM参数配置优化/">
         <h2 class="post-title">
-            Bigdata-ZooKeeper的配置详解优化
+            Kafka性能优化–JVM参数配置优化
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            前言ZooKeeper的功能特性通过 ZooKeeper 配置文件来进行控制管理（ zoo.cfg 配置文件）。 ZooKeeper 这样的设计其实是有它自身的原因的。通过前面对 ZooKeeper 的配置可以看出，对 ZooKeeper集群进行配置的时候，它的配置文档是完全相同的（对于集群伪分布模式来说，只有很少的部分是不同的）。这样的配置方使得在部署 ZooKeeper 服务的时候非常地......
+            
+Kafka集群稳定GC调优　　调GC是门手艺活，幸亏Java 7引进了G1 垃圾回收，使得GC调优变的没那么难。G1主要有两个配置选项来调优：MaxGCPauseMillis 和 InitiatingHeapOccupancyPercent，具体参数设置可以参考Google，这里不赘述。
+　　Kafka broker能够有效的利用堆内存和对象回收，所以这些值可以调小点。对于 64Gb内存，......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2017-05-27
+        2017-07-04
     </p>
 
 </div>
@@ -279,106 +275,21 @@ It supports the following:
 
 <div class="post-preview">
 
-    <a href="/2017/05/26/Bigdata-hadoop/zookeeper/Bigdata-ZooKeeper集群快速搭建配置与扩容/">
+    <a href="/2017/06/29/Bigdata-hadoop/Kafka/如何手动更新Kafka中某个Topic的偏移量/">
         <h2 class="post-title">
-            Bigdata-ZooKeeper集群快速搭建配置与扩容
+            Bigdata-如何手动更新Kafka中某个Topic的偏移量
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            ZooKeeper集群快速搭建之前搞过了hadoop和spark，hue，现在使用kafka集群结合zookeeper集群做数据消费处理，本文是ZooKeeper的快速搭建,旨在帮助大家以最快的速度完成一个ZK集群的搭建,以便开展其它工作。
-
-集群：本文使用了3台机器部署ZooKeeper集群，IP和主机名对应关系如下：
-1234IP             主机名169.44.62.11 ......
+            如何手动更新Kafka中某个Topic的偏移量
+我们都知道，Kafka topic的偏移量一般都是存储在Zookeeper中，具体的路径为/consumers/[groupId]/offsets/[topic]/[partitionId]，比如iteblog主题分区10的偏移量获取如下：在有些场景下，这个工具不满足我们的需求，我们需要的是能够手动设置分区的偏移量为任何有意义的值，而不仅仅是e......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2017-05-26
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2017/05/25/Bigdata-hadoop/Kafka/Bigdata-开源的Kafka集群管理器(kafka-web-console)/">
-        <h2 class="post-title">
-            Bigdata-开源的Kafka集群管理器(kafka-web-console)
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            前言源码的地址在:kafka-web-console
-Kafka Web Console也是用Scala语言编写的Java web程序用于监控Apache Kafka。这个系统的功能和KafkaOffsetMonitor很类似，但是我们从源码角度来看，这款系统实现比KafkaOffsetMonitor要复杂很多，而且编译配置比KafkaOffsetMonitor较麻烦。
-
-　要想运行这套系统......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2017-05-25
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2017/05/21/性能监控/Zabbix/ZABBIX 3.0 自动发现  (九)/">
-        <h2 class="post-title">
-            ZABBIX 3.0 自动发现  (九)
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            ####自动化分类
-所有的自动化都可以分为2种 
-
-1.自动注册 
-
-
-zabbix-agnet自动添加 
-
-
-2.主动发现 
-
-
-自动发现 Discover
-zabbix api
-
-
-Zabbix自动发现(Discovery)功能使用随着监控主机不断增多，有的时候需要添加一批机器，特别是刚用zabbix的运维人员需要将公司的所有服务器添加到zabbix，如果使用传统办法去单个添加设备、分组......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2017-05-21
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2017/05/11/日志分析平台/Elasticsearch/ElasticStack 5.x集群+Kibana-5.5.x+Logstash5.5+kafka2.10版本部署概述/">
-        <h2 class="post-title">
-            ElasticStack 5.x集群+Kibana-5.5.x+Logstash5.5+kafka2.10版本部署概述
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            ElasticStack 5.x介绍前言ELK=ElasticSearch 官方博客:分布式以及 Elastic
-Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一款开源分布式日志系统，一般说来包括了Elasticsearch、Logstash和Kibana，涵盖了后端日志采集、日志搜索服务和前端数据展示等功能。本文将会对Elastic Stack的安装部署流程进......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2017-05-11
+        2017-06-29
     </p>
 
 </div>
@@ -427,15 +338,15 @@ Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一�
                             
                         
                             
+                            <a href="/tags/#OpenLDAP" title="OpenLDAP" rel="5">OpenLDAP</a>
+                            
+                        
+                            
                         
                             
                             <a href="/tags/#Node.js" title="Node.js" rel="4">Node.js</a>
                             
                         
-                            
-                        
-                            
-                            <a href="/tags/#OpenLDAP" title="OpenLDAP" rel="5">OpenLDAP</a>
                             
                         
                             
@@ -459,11 +370,11 @@ Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一�
                             
                         
                             
+                        
+                            
+                        
+                            
                             <a href="/tags/#Zabbix" title="Zabbix" rel="2">Zabbix</a>
-                            
-                        
-                            
-                        
                             
                         
                             
@@ -471,17 +382,9 @@ Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一�
                             
                         
                             
-                        
-                            
                             <a href="/tags/#ZooKeeper" title="ZooKeeper" rel="4">ZooKeeper</a>
                             
                         
-                            
-                            <a href="/tags/#Web Service" title="Web Service" rel="17">Web Service</a>
-                            
-                        
-                            
-                            <a href="/tags/#Nginx" title="Nginx" rel="17">Nginx</a>
                             
                         
                             
@@ -493,17 +396,25 @@ Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一�
                             
                         
                             
+                            <a href="/tags/#Web Service" title="Web Service" rel="17">Web Service</a>
+                            
+                        
+                            
+                            <a href="/tags/#Nginx" title="Nginx" rel="17">Nginx</a>
+                            
+                        
+                            
                             <a href="/tags/#Zabbix monitoring" title="Zabbix monitoring" rel="15">Zabbix monitoring</a>
                             
                         
                             
-                        
-                            
-                        
-                            
-                        
-                            
                             <a href="/tags/#Ansible" title="Ansible" rel="9">Ansible</a>
+                            
+                        
+                            
+                        
+                            
+                        
                             
                         
                             
@@ -513,13 +424,9 @@ Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一�
                             
                         
                             
-                        
-                            
                             <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
                             
                         
-                            
-                            <a href="/tags/#logstash" title="logstash" rel="2">logstash</a>
                             
                         
                             
@@ -528,6 +435,10 @@ Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一�
                         
                             
                             <a href="/tags/#Kibana" title="Kibana" rel="2">Kibana</a>
+                            
+                        
+                            
+                            <a href="/tags/#logstash" title="logstash" rel="2">logstash</a>
                             
                         
                             
@@ -683,7 +594,7 @@ Elastic Stack是ELK日志系统的官方称呼，而ELK则是盛名在外的一�
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; 运维杂货铺 2019 
+                    Copyright &copy; Grocery store 2019 
                     <br>
                  Theme by <a href="http://blog.yancy.cc">Yancy</a>
                     <span style="display: inline-block; margin: 0 5px;">

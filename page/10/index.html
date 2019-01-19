@@ -67,7 +67,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">运维杂货铺</a>
+            <a class="navbar-brand" href="/">Grocery store</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -90,14 +90,14 @@
 
                         
                         <li>
-                            <a href="/ABOUT/About.html">About</a>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/ARCHIVES/archives.html">Archives</a>
+                            <a href="/ABOUT/About.html">About</a>
                         </li>
                         
                     
@@ -153,7 +153,7 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
                 <div class="site-heading">
-                    <h1>运维杂货铺</h1>
+                    <h1>Grocery store</h1>
                     <!--<hr class="small">-->
                     <span class="subheading"></span>
                 </div>
@@ -184,25 +184,24 @@
 
 <div class="post-preview">
 
-    <a href="/2016/05/23/Web服务技术/Nginx/Nginx多种安装与配置文件详解/">
+    <a href="/2016/12/02/运维安全/gitlab网站被黑redis被劫持6379端口需要提交认证，如何挽救？/">
         <h2 class="post-title">
-            Nginx多种安装与配置文件详解
+            gitlab网站被黑redis被劫持6379端口需要提交认证，如何挽救？
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            安装nginx最近在弄灰度发布环境，之前nginx在测试和线上都有搭建配置。负载均衡配置（包括健康检查）、缓存（包括清空缓存）反向代理。就打算自己整理篇自己操作的文档，各种编译配置，今天自己也整理一份安装文档和nginx.conf配置选项的说明。
-选择稳定版本 我们编译安装nginx来定制自己的模块。
+            今天早上5点多收到阿里云的告警：服务器CPU百分百，gitlab服务器访问出现500，第一时间排查问题。毕竟这个关乎着开发今天可能无法提交代码。
 
-机器CentOS 6.6 x86_64。
-软件版本：Nginx 1.9.9
-nginx最......
+第一时间我查看什么原因导致我gitlab 500。根据以往经验gitlab出现500 第一：版本出现bug，第二：服务器网络不正常，请求不到。
+然后查看日志：
+1234567891011121314[root@GitLab ~]# tailf -......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-05-23
+        2016-12-02
     </p>
 
 </div>
@@ -210,29 +209,24 @@ nginx最......
 
 <div class="post-preview">
 
-    <a href="/2016/05/23/Web服务技术/Nginx/Nginx+Tomcat实现负载均衡设置访问控制/">
+    <a href="/2016/11/24/Node.js-npm/Node.js-Grunt工具搭建后台管理实践/">
         <h2 class="post-title">
-            Nginx+Tomcat实现负载均衡设置访问控制
+            Node.js+Grunt工具搭建后台管理实践
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Nginx+Tomcat实现负载均衡设置访问控制一、环境准备
-Tomcat1：10.11.155.26
-Tomcat2：10.11.155.41
-Nginx：192.168.31.154 
+            最近弄灰度发布系统，由于最近体检项目需要对css文件和js文件进行压缩，各种比较之后，选择了grunt进行构建。google一下，几乎都是grunt最新版的使用说明查看gruntjs的入门 Getting started，又是云里雾里的，好吧，只能耐心看文档和不断的实践吧。
 
-在26和41上分别部署相同的Tomcat程序，修改index.jsp页面，把内容改为各自的IP地址.
-
-
-
-二、修改配置文件nginx.confNginx负载均衡，其实主要就是用upstream、ser......
+Grunt入门入门教程:
+系统环境centos 6.6 x64
+Grunt安装过程：1、前提安装了nodejs，进入......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-05-23
+        2016-11-24
     </p>
 
 </div>
@@ -240,24 +234,23 @@ Nginx：192.168.31.154
 
 <div class="post-preview">
 
-    <a href="/2016/05/22/Web服务技术/Nginx/Nginx+Keepalived实现高可用Web负载均衡 /">
+    <a href="/2016/11/24/Web服务技术/申请证书Https/免费 Https 证书（Let'S Encrypt）申请与配置 /">
         <h2 class="post-title">
-            Nginx+Keepalived实现高可用Web负载均衡
+            免费 Https证书（Let'S Encrypt）申请与配置
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Nginx+Keepalived实现高可用Web负载均衡一、需求场景：通过之前的一篇文章：
-Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用的负载均衡，但是单个的Nginx会存在单点隐患，如果Nginx挂掉，那么全部的Tomcat应用都将变得不可用，所以实现Nginx的高可用是必不可少的一步。
-
-二、说明
-高可用 HA（High Availability）......
+            免费 Https 证书（Let’S Encrypt）申请与配置之前要申请免费的 https 证书操作步骤相当麻烦，今天看到有人在讨论，就搜索了一下。发现现在申请步骤简单多了。
+1. 下载 certbot123git clone https://github.com/certbot/certbotcd certbot./certbot-auto --help
+解压打开执行就会有相关提示
+2. ......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-05-22
+        2016-11-24
     </p>
 
 </div>
@@ -265,23 +258,20 @@ Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用�
 
 <div class="post-preview">
 
-    <a href="/2016/04/05/Web服务技术/Nginx/Nginx 安全&优化&日志输出规范详细配置/">
+    <a href="/2016/11/23/Web服务技术/申请证书Https/如何在Nginx申请安装配置免费HTTPS证书+阿里云SLB如何配置HTTPS/">
         <h2 class="post-title">
-            Nginx 安全&优化&日志输出规范详细配置
+            如何在Nginx申请安装配置免费HTTPS证书+阿里云SLB如何配置HTTPS
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            ##1.Nginx日志审计
-① 参考配置操作(1)编辑 nginx.conf 配置文件
-将 error_log 前的“#”去掉，记录错误日志将 access_log 前的“#”去掉，记录访问日志(2)设置 access_log，修改配置文件如下：
-1234log_format formatname '$remote_addr - $remote_user [$time_local] '' "......
+            如何在Nginx申请安装配置免费HTTPS证书HTTPS在各大互联网站已经成为标配，就连某度也在前不久全面启用HTTPS，很多小网站也配置了HTTPS，这是未来的一种趋势.HTTPS的好处多多，可以防止各种攻击劫持，运营商广告植入，客户传输信息泄露等问题。为了让HTTPS能够全面普及，让我们加密项目应运而生，它由互联网安全研究小组ISRG（互联网安全研究小组）提供服务，很早之前我就在关注 L......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-04-05
+        2016-11-23
     </p>
 
 </div>
@@ -289,93 +279,21 @@ Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用�
 
 <div class="post-preview">
 
-    <a href="/2016/04/02/Web服务技术/Nginx/http response code 301 和 302分析总结/">
+    <a href="/2016/11/23/Web服务技术/申请证书Https/解决Https请求跨域CDN资源http网站出现访问失败-证书显示不安全/">
         <h2 class="post-title">
-            Http response code 301 和 302分析总结
+            解决Https请求跨域CDN资源http网站出现访问失败-证书显示不安全
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            http response code 301 和 302 了解多少呢。一．官方说法最近Nginx访问出现301和302这里就对301 302认真做了一次总结。
-123301，302 都是HTTP状态的编码，都代表着某个URL发生了转移，不同之处在于： 301 redirect: 301 代表永久性转移(Permanently Moved)。302 redirect: 302 代表暂时性转移(......
+            解决Https请求跨域CDN资源http网站出现访问失败-证书显示不安全这里讲如何解决跨域http资源请求证书出现问题， 上一篇我解决网站如何申请免费证书，实现申请免费证书在Nginx上面实现https访问。
+可是我一开始没有这么顺利实现我想要的效果，因为的确证书是有了访问可以https可是请求跨域http服务就出现问题了。这里我是在又拍云做CDN加速的，所以这里说明下如果你的公司网站比如说......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-04-02
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/03/29/Web服务技术/Nginx/nginx基础篇-日志管理和切割/">
-        <h2 class="post-title">
-            Nginx基础篇-日志管理和切割
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            前言：公司日志查看有时候不太规范，官网web服务日志这边整理了下Nginx日志输出优化。 
-一、日志分类Nginx日志主要分为两种，访问日志和错误日志。两种日志可以在http和server模块中配置，nginx有一个非常灵活的日志记录模式。每个级别的配置可以有各自独立的访问日志。日志格式通过log_format命令来定义
-1、访问日志访问日志主要记录客户端访问Nginx的每一个请求log_f......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-03-29
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/03/29/Web服务技术/Nginx/Nginx基础篇-Nginx.conf配置文件详解/">
-        <h2 class="post-title">
-            Nginx基础篇-Nginx.conf配置文件详解
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            Nginx.conf配置文件详解Nginx配置文件主要分成四部分：main（全局设置）、server（主机设置）、upstream（上游服务器设置，主要为反向代理、负载均衡相关配置）和 location（URL匹配特定位置后的设置），每部分包含若干个指令。main部分设置的指令将影响其它所有部分的设置；server部分的指令主要用于指定虚拟主机域名、IP和端口；upstream的指令用于设置......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-03-29
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/03/27/Web服务技术/Nginx/确保nginx安全的几个技巧/">
-        <h2 class="post-title">
-            确保Nginx安全的几个技巧
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-在配置文件中设置自定义缓存以限制缓冲区溢出攻击的可能性
-
-1234client_body_buffer_size 1K;client_header_buffer_size 1k;client_max_body_size 1k;large_client_header_buffers 2 1k;
-
-将timeout设低来防止DOS攻击所有这些声明都可以放到主配置文件中。
-
-1234client......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-03-27
+        2016-11-23
     </p>
 
 </div>
@@ -424,15 +342,15 @@ Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用�
                             
                         
                             
+                            <a href="/tags/#OpenLDAP" title="OpenLDAP" rel="5">OpenLDAP</a>
+                            
+                        
+                            
                         
                             
                             <a href="/tags/#Node.js" title="Node.js" rel="4">Node.js</a>
                             
                         
-                            
-                        
-                            
-                            <a href="/tags/#OpenLDAP" title="OpenLDAP" rel="5">OpenLDAP</a>
                             
                         
                             
@@ -456,11 +374,11 @@ Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用�
                             
                         
                             
+                        
+                            
+                        
+                            
                             <a href="/tags/#Zabbix" title="Zabbix" rel="2">Zabbix</a>
-                            
-                        
-                            
-                        
                             
                         
                             
@@ -468,17 +386,9 @@ Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用�
                             
                         
                             
-                        
-                            
                             <a href="/tags/#ZooKeeper" title="ZooKeeper" rel="4">ZooKeeper</a>
                             
                         
-                            
-                            <a href="/tags/#Web Service" title="Web Service" rel="17">Web Service</a>
-                            
-                        
-                            
-                            <a href="/tags/#Nginx" title="Nginx" rel="17">Nginx</a>
                             
                         
                             
@@ -490,17 +400,25 @@ Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用�
                             
                         
                             
+                            <a href="/tags/#Web Service" title="Web Service" rel="17">Web Service</a>
+                            
+                        
+                            
+                            <a href="/tags/#Nginx" title="Nginx" rel="17">Nginx</a>
+                            
+                        
+                            
                             <a href="/tags/#Zabbix monitoring" title="Zabbix monitoring" rel="15">Zabbix monitoring</a>
                             
                         
                             
-                        
-                            
-                        
-                            
-                        
-                            
                             <a href="/tags/#Ansible" title="Ansible" rel="9">Ansible</a>
+                            
+                        
+                            
+                        
+                            
+                        
                             
                         
                             
@@ -510,13 +428,9 @@ Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用�
                             
                         
                             
-                        
-                            
                             <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
                             
                         
-                            
-                            <a href="/tags/#logstash" title="logstash" rel="2">logstash</a>
                             
                         
                             
@@ -525,6 +439,10 @@ Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用�
                         
                             
                             <a href="/tags/#Kibana" title="Kibana" rel="2">Kibana</a>
+                            
+                        
+                            
+                            <a href="/tags/#logstash" title="logstash" rel="2">logstash</a>
                             
                         
                             
@@ -680,7 +598,7 @@ Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用�
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; 运维杂货铺 2019 
+                    Copyright &copy; Grocery store 2019 
                     <br>
                  Theme by <a href="http://blog.yancy.cc">Yancy</a>
                     <span style="display: inline-block; margin: 0 5px;">
