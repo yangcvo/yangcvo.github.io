@@ -90,14 +90,14 @@
 
                         
                         <li>
-                            <a href="/ARCHIVES/archives.html">Archives</a>
+                            <a href="/ABOUT/About.html">About</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/ABOUT/About.html">About</a>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
                         </li>
                         
                     
@@ -233,7 +233,7 @@
 <p>vi /etc/services #编辑，在最后添加以下代码</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Zabbix</span></div><div class="line">zabbix-agent 10050/tcp   <span class="comment"># Zabbix Agent</span></div><div class="line">zabbix-agent 10050/udp   <span class="comment"># Zabbix Agent</span></div><div class="line">zabbix-trapper 10051/tcp <span class="comment"># Zabbix Trapper</span></div><div class="line">zabbix-trapper 10051/udp <span class="comment"># Zabbix Trapper</span></div><div class="line">:wq! <span class="comment">#保存退出</span></div></pre></td></tr></table></figure>
 <p>添加后如下</p>
-<figure class="highlight 1c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta"># grep zabbix /etc/services</span></div><div class="line">zabbix-agent     <span class="number">10050</span>/tcp  <span class="meta">#ZabbixAgent</span></div><div class="line">zabbix-agent     <span class="number">10050</span>/udp  <span class="meta">#ZabbixAgent</span></div><div class="line">zabbix-trapper   <span class="number">10051</span>/tcp  <span class="meta">#ZabbixTrapperz</span></div><div class="line">abbix-trapper    <span class="number">10051</span>/udp  <span class="meta">#ZabbixTrapper</span></div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># grep zabbix /etc/services</span></div><div class="line">zabbix-agent     10050/tcp  <span class="comment">#ZabbixAgent</span></div><div class="line">zabbix-agent     10050/udp  <span class="comment">#ZabbixAgent</span></div><div class="line">zabbix-trapper   10051/tcp  <span class="comment">#ZabbixTrapperz</span></div><div class="line">abbix-trapper    10051/udp  <span class="comment">#ZabbixTrapper</span></div></pre></td></tr></table></figure>
 <p>修改zabbix配置文件</p>
 <p>vim /usr/local/zabbix/etc/zabbix_server.conf</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">DBName=zabbix <span class="comment">#数据库名称</span></div><div class="line">DBUser=zabbix <span class="comment">#数据库用户名</span></div><div class="line">DBPassword=zabbix123.com <span class="comment">#数据库密码</span></div><div class="line">ListenIP=192.168.1.170 <span class="comment">#数据库ip地址</span></div><div class="line">AlertScriptsPath=/usr/<span class="built_in">local</span>/zabbix/share/zabbix/alertscripts   <span class="comment">#zabbix运行脚本存放目录</span></div></pre></td></tr></table></figure>
@@ -283,31 +283,6 @@
                 <hr>
 
                 
-                <!-- 多说 Share start -->
-                </style>
-                <div class="ds-share"
-                    style="text-align: right"
-                    data-thread-key="2016/06/19/性能监控/Zabbix/zabbix-server3-0-3版本环境安装部署/"
-                    data-title="zabbix-server3.0.3版本环境安装部署"
-                    data-url="http://blog.yancy.cc/2016/06/19/性能监控/Zabbix/zabbix-server3-0-3版本环境安装部署/"
-                    data-images=""
-                    data-content="系统环境：
-192.168.1.170 MySQL主 
-192.168.1.183 zabbi... | Yancy&#39;s blog " >
-                    <div class="ds-share-inline">
-                      <ul  class="ds-share-icons-16">
-                        <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
-                        <li><a class="ds-wechat flat" href="javascript:void(0);" data-service="wechat">微信</a></li>
-                        <li><a class="ds-weibo flat" href="javascript:void(0);" data-service="weibo">微博</a></li>
-                        <li><a class="ds-douban flat" href="javascript:void(0);" data-service="douban">豆瓣</a></li>
-                      </ul>
-                      <div class="ds-share-icons-more">
-                      </div>
-                    </div>
-                <hr>
-                </div>
-                <!-- 多说 Share end-->
-                
 
                 <ul class="pager">
                     
@@ -324,17 +299,13 @@
 		 
 
                 
-                <!-- 多说评论框 start -->
-                <div class="comment">
-                    <div class="ds-thread"
-                        data-thread-key="2016/06/19/性能监控/Zabbix/zabbix-server3-0-3版本环境安装部署/"
-                        data-title="zabbix-server3.0.3版本环境安装部署"
-                        data-url="http://blog.yancy.cc/2016/06/19/性能监控/Zabbix/zabbix-server3-0-3版本环境安装部署/" >
-                    </div>
-                </div>
-                <!-- 多说评论框 end -->
-                
 
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
                 
 
             </div>
@@ -382,25 +353,22 @@
 
 
 
-<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-<script type="text/javascript">
-    // dynamic User by Hux
-    var _user = 'kaijun';
 
-    // duoshuo comment query.
-    var duoshuoQuery = {short_name: _user };
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yancy-cc";
+    var disqus_identifier = "http://blog.yancy.cc/2016/06/19/性能监控/Zabbix/zabbix-server3-0-3版本环境安装部署/";
+    var disqus_url = "http://blog.yancy.cc/2016/06/19/性能监控/Zabbix/zabbix-server3-0-3版本环境安装部署/";
+
     (function() {
-        var ds = document.createElement('script');
-        ds.type = 'text/javascript';ds.async = true;
-        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-        ds.charset = 'UTF-8';
-        (document.getElementsByTagName('head')[0]
-         || document.getElementsByTagName('body')[0]).appendChild(ds);
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
 </script>
-<!-- 多说公共JS代码 end -->
-
-
+<!-- disqus 公共JS代码 end -->
 
 
 
