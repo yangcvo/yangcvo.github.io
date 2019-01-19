@@ -1,128 +1,494 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
+<!-- Head tag -->
 <head>
-  <meta charset="utf-8">
-  
-  <title>ZABBIX monitoring Flume | Yancy&#39;s blog</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="ZABBIX monitoring FlumeFlume本身提供了http, ganglia的监控服务，而我们目前主要使用zabbix做监控。因此，我们为Flume添加了zabbix监控模块，和sa的监控服务无缝融合。另一方面，净化Flume的metrics。只将我们需要的metrics发送给zabbix，避免 zabbix server造成压力。目前我们最为关心的是Flume能否及时把应用端发送">
-<meta name="keywords" content="Zabbix monitoring">
-<meta property="og:type" content="article">
-<meta property="og:title" content="ZABBIX monitoring Flume">
-<meta property="og:url" content="http://blog.yancy.cc/2017/09/21/性能监控/Zabbix/ZABBIX monitoring Flume/index.html">
-<meta property="og:site_name" content="Yancy&#39;s blog">
-<meta property="og:description" content="ZABBIX monitoring FlumeFlume本身提供了http, ganglia的监控服务，而我们目前主要使用zabbix做监控。因此，我们为Flume添加了zabbix监控模块，和sa的监控服务无缝融合。另一方面，净化Flume的metrics。只将我们需要的metrics发送给zabbix，避免 zabbix server造成压力。目前我们最为关心的是Flume能否及时把应用端发送">
-<meta property="og:image" content="https://cdn.itzgeek.com/wp-content/uploads/2014/07/Zabbix.jpg">
-<meta property="og:image" content="http://7xrthw.com1.z0.glb.clouddn.com/ZABBIX-monitoring-Flume.png">
-<meta property="og:image" content="http://7xrthw.com1.z0.glb.clouddn.com/ZABBIX-monitoring-Flume1.png">
-<meta property="og:updated_time" content="2018-04-11T12:02:49.000Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ZABBIX monitoring Flume">
-<meta name="twitter:description" content="ZABBIX monitoring FlumeFlume本身提供了http, ganglia的监控服务，而我们目前主要使用zabbix做监控。因此，我们为Flume添加了zabbix监控模块，和sa的监控服务无缝融合。另一方面，净化Flume的metrics。只将我们需要的metrics发送给zabbix，避免 zabbix server造成压力。目前我们最为关心的是Flume能否及时把应用端发送">
-<meta name="twitter:image" content="https://cdn.itzgeek.com/wp-content/uploads/2014/07/Zabbix.jpg">
-  
-  <link rel="stylesheet" href="/css/index.css">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          ZABBIX monitoring Flume - Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2017/09/21/性能监控/Zabbix/ZABBIX monitoring Flume/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body style="
 
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
 
-  background-color: #eff0f6
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
+        </div>
 
-">
-  <div id="container">
-    <nav id="nav">
-  <header class="header">
-    <a href="/" class="title">Clover Tuan</a>
-  </header>
-  <div class="ctnWrap">
-    <div class="icons">
-      
-        
-          
-            <a href="https://dribbble.com/clovertuan" target="_blank" class="nav-icn iconfont icon-dribbble"></a>
-          
-        
-          
-            <a href="https://www.behance.net/clovertuan" target="_blank" class="nav-icn iconfont icon-behance"></a>
-          
-        
-          
-            <a href="http://clovertuan.lofter.com/" target="_blank" class="nav-icn iconfont icon-lofter"></a>
-          
-        
-          
-            <a href="https://www.instagram.com/clovertuan/" target="_blank" class="nav-icn iconfont icon-instagram"></a>
-          
-        
-          
-            <a href="https://github.com/cloverTuan" target="_blank" class="nav-icn iconfont icon-github"></a>
-          
-        
-      
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
     </div>
-    <div class="menu">
-      
-        
-            <a href="/" class="nav-menu ">HOME</a>
-          
-        
-            <a href="/archives" class="nav-menu ">ARCHIVE</a>
-          
-        
-            <a href="/about" class="nav-menu ">ABOUT</a>
-          
-        
-      
-    </div>
-  </div>
+    <!-- /.container -->
 </nav>
-    <div id="main"><section class="article">
-  <h2 class="title">ZABBIX monitoring Flume</h2>
-  <p class="sub">Sep 21, 2017</p>
-  <article class="content">
-    <h4 id="zabbix安装-amp-JVM性能监控"><a href="#zabbix安装-amp-JVM性能监控" class="headerlink" title="zabbix安装&amp;JVM性能监控"></a>zabbix安装&amp;JVM性能监控</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">zabbix安装</div><div class="line">http://my.oschina.net/yunnet/blog/173161</div><div class="line"></div><div class="line">JDK1.8</div><div class="line">[jollybi@countly1 conf]$ java -version</div><div class="line">java version <span class="string">"1.8.0_65"</span></div><div class="line">Java(TM) SE Runtime Environment (build 1.8.0_65-b17)</div><div class="line">Java HotSpot(TM) 64-Bit Server VM (build 25.65-b01, mixed mode)</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">#JVM性能监控</span></div><div class="line">Young GC  counts</div><div class="line"></div><div class="line">/usr/<span class="built_in">local</span>/jdk/bin/jstat  -gcutil 87007 | tail -1 | awk <span class="string">'&#123;print  $6&#125;'</span></div><div class="line">95.16</div><div class="line"></div><div class="line">Full GC counts</div><div class="line">/usr/<span class="built_in">local</span>/jdk/bin/jstat  -gcutil 87007 | tail -1 | awk <span class="string">'&#123;print  $8&#125;'</span></div><div class="line">436.252</div><div class="line"></div><div class="line">JVM total  memory usage</div><div class="line">/usr/<span class="built_in">local</span>/jdk/bin/jmap -histo $(pgrep java)|grep Total | sed -n <span class="string">'$p'</span> | awk <span class="string">'&#123;print  $3&#125;'</span></div><div class="line"></div><div class="line"></div><div class="line">JVM total  instances usage</div><div class="line"> /usr/<span class="built_in">local</span>/jdk/bin/jmap -histo $(pgrep java)|grep Total | sed -n <span class="string">'$p'</span> | awk <span class="string">'&#123;print  $2&#125;'</span></div></pre></td></tr></table></figure>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Zabbix monitoring" title="Zabbix monitoring">Zabbix monitoring</a>
+                        
+                    </div>
+                    <h1>ZABBIX monitoring Flume</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2017-09-21
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h4 id="ZABBIX-monitoring-Flume"><a href="#ZABBIX-monitoring-Flume" class="headerlink" title="ZABBIX monitoring Flume"></a>ZABBIX monitoring Flume</h4><p>Flume本身提供了http, ganglia的监控服务，而我们目前主要使用zabbix做监控。因此，我们为Flume添加了zabbix监控模块，和sa的监控服务无缝融合。<br>另一方面，净化Flume的metrics。只将我们需要的metrics发送给zabbix，避免 zabbix server造成压力。目前我们最为关心的是Flume能否及时把应用端发送过来的日志写到Hdfs上， 对应关注的metrics为：</p>
+<p>Source : 接收的event数和处理的event数<br>Channel : Channel中拥堵的event数<br>Sink : 已经处理的event数</p>
+<p><img src="https://cdn.itzgeek.com/wp-content/uploads/2014/07/Zabbix.jpg" alt=""></p>
+<a id="more"></a>
+<h4 id="zabbix安装-amp-JVM性能监控"><a href="#zabbix安装-amp-JVM性能监控" class="headerlink" title="zabbix安装&amp;JVM性能监控"></a>zabbix安装&amp;JVM性能监控</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">zabbix安装</div><div class="line">http://my.oschina.net/yunnet/blog/173161</div><div class="line"></div><div class="line">JDK1.8</div><div class="line">[jollybi@countly1 conf]$ java -version</div><div class="line">java version <span class="string">"1.8.0_65"</span></div><div class="line">Java(TM) SE Runtime Environment (build 1.8.0_65-b17)</div><div class="line">Java HotSpot(TM) 64-Bit Server VM (build 25.65-b01, mixed mode)</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">#JVM性能监控</span></div><div class="line">Young GC  counts</div><div class="line"></div><div class="line">/usr/<span class="built_in">local</span>/jdk/bin/jstat  -gcutil 87007 | tail -1 | awk <span class="string">'&#123;print  $6&#125;'</span></div><div class="line">95.16</div><div class="line"></div><div class="line">Full GC counts</div><div class="line">/usr/<span class="built_in">local</span>/jdk/bin/jstat  -gcutil 87007 | tail -1 | awk <span class="string">'&#123;print  $8&#125;'</span></div><div class="line">436.252</div><div class="line"></div><div class="line">JVM total  memory usage</div><div class="line">/usr/<span class="built_in">local</span>/jdk/bin/jmap -histo $(pgrep java)|grep Total | sed -n <span class="string">'$p'</span> | awk <span class="string">'&#123;print  $3&#125;'</span></div><div class="line"></div><div class="line"></div><div class="line">JVM total  instances usage</div><div class="line"> /usr/<span class="built_in">local</span>/jdk/bin/jmap -histo $(pgrep java)|grep Total | sed -n <span class="string">'$p'</span> | awk <span class="string">'&#123;print  $2&#125;'</span></div></pre></td></tr></table></figure>
 <h4 id="flume应用参数监控"><a href="#flume应用参数监控" class="headerlink" title="flume应用参数监控"></a>flume应用参数监控</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">启动时加上JSON repoting参数,这样就可以通过http://localhost:34545/metrics访问</div><div class="line">bin/flume-ng agent --conf conf --conf-file conf/flume-conf-test.properties --name agent -Dflume.root.logger=INFO,console -Dflume.monitoring.type=http -Dflume.monitoring.port=34545 &amp;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">[root@localhost apache-flume-1.8.0-bin]<span class="comment"># curl http://localhost:34545/metrics 2&gt;/dev/null|sed -e  's/\([,]\)\s*/\1\n/g' -e 's/[&#123;&#125;]/\n/g' -e 's/[",]//g'</span></div><div class="line"></div><div class="line">SOURCE.source1:</div><div class="line">EventReceivedCount:4871</div><div class="line">AppendBatchAcceptedCount:52</div><div class="line">Type:SOURCE</div><div class="line">EventAcceptedCount:4871</div><div class="line">AppendReceivedCount:0</div><div class="line">StartTime:1511251310062</div><div class="line">OpenConnectionCount:0</div><div class="line">AppendAcceptedCount:0</div><div class="line">AppendBatchReceivedCount:52</div><div class="line">StopTime:0</div><div class="line"></div><div class="line">SINK.sink1:</div><div class="line">ConnectionCreatedCount:0</div><div class="line">BatchCompleteCount:0</div><div class="line">BatchEmptyCount:43</div><div class="line">EventDrainAttemptCount:0</div><div class="line">StartTime:1511251311047</div><div class="line">BatchUnderflowCount:1</div><div class="line">ConnectionFailedCount:0</div><div class="line">ConnectionClosedCount:0</div><div class="line">Type:SINK</div><div class="line">RollbackCount:0</div><div class="line">EventDrainSuccessCount:4871</div><div class="line">KafkaEventSendTimer:24748</div><div class="line">StopTime:0</div><div class="line"></div><div class="line">CHANNEL.channel1:</div><div class="line">ChannelCapacity:1000</div><div class="line">ChannelFillPercentage:0.0</div><div class="line">Type:CHANNEL</div><div class="line">ChannelSize:0</div><div class="line">EventTakeSuccessCount:4871</div><div class="line">EventTakeAttemptCount:4915</div><div class="line">StartTime:1511251309391</div><div class="line">EventPutAttemptCount:4871</div><div class="line">EventPutSuccessCount:4871</div><div class="line">StopTime:0</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">/opt/jdk1.8.0_101/bin/jstat</div></pre></td></tr></table></figure>
 <h4 id="配置监控flume的脚本文件"><a href="#配置监控flume的脚本文件" class="headerlink" title="配置监控flume的脚本文件"></a>配置监控flume的脚本文件</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">vim /etc/zabbix/monitor_flume.sh</div><div class="line">event=EventDrainSuccessCount</div><div class="line"><span class="comment">#curl  http://localhost:34545/metrics 2&gt;/dev/null|sed -e 's/\([,]\)\s*/\1\n/g' -e  's/[&#123;&#125;]/\n/g' -e 's/[",]//g' |grep $1|awk -F: '&#123;print $2&#125;'</span></div><div class="line"><span class="keyword">function</span> EventDrainSuccessCount  &#123;</div><div class="line">curl  http://localhost:34545/metrics 2&gt;/dev/null|sed <span class="_">-e</span> <span class="string">'s/\([,]\)\s*/\1\n/g'</span> <span class="_">-e</span>  <span class="string">'s/[&#123;&#125;]/\n/g'</span> <span class="_">-e</span> <span class="string">'s/[",]//g'</span> |grep <span class="variable">$event</span>|awk -F: <span class="string">'&#123;print $2&#125;'</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">function</span> StartTime  &#123;</div><div class="line">curl  http://localhost:34545/metrics 2&gt;/dev/null|sed <span class="_">-e</span> <span class="string">'s/\([,]\)\s*/\1\n/g'</span> <span class="_">-e</span>  <span class="string">'s/[&#123;&#125;]/\n/g'</span> <span class="_">-e</span> <span class="string">'s/[",]//g'</span> |grep StartTim |awk -F: <span class="string">'&#123;print $2&#125;'</span> |sed -n <span class="string">"2p"</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">function</span> Total &#123;</div><div class="line">curl  http://localhost:34545/metrics 2&gt;/dev/null|sed <span class="_">-e</span> <span class="string">'s/\([,]\)\s*/\1\n/g'</span> <span class="_">-e</span>  <span class="string">'s/[&#123;&#125;]/\n/g'</span> <span class="_">-e</span> <span class="string">'s/[",]//g'</span> |grep Total|awk -F: <span class="string">'&#123;print $2&#125;'</span></div><div class="line">&#125;</div><div class="line"><span class="comment">#Run the requested function</span></div><div class="line"><span class="variable">$1</span></div></pre></td></tr></table></figure>
 <h4 id="在zabbix-agent配置文件进行部署"><a href="#在zabbix-agent配置文件进行部署" class="headerlink" title="在zabbix agent配置文件进行部署"></a>在zabbix agent配置文件进行部署</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">vim zabbix_flume_jdk.conf</div><div class="line">UserParameter=ygc.counts,sudo /opt/jdk1.8.0_101/bin/jstat -gcutil $(pgrep java|head -1)|tail -1|awk  <span class="string">'&#123;print $6&#125;'</span></div><div class="line">UserParameter=fgc.counts,sudo /opt/jdk1.8.0_101/bin/jstat  -gcutil $(pgrep java|head -1)|tail -1|awk  <span class="string">'&#123;print $8&#125;'</span></div><div class="line">UserParameter=jvm.memory.usage,sudo /opt/jdk1.8.0_101/bin/jmap -histo $(pgrep java|sed -n <span class="string">'$p'</span>)|grep Total | sed -n <span class="string">'$p'</span> |awk  <span class="string">'&#123;print $3&#125;'</span></div><div class="line">UserParameter=jvm.instances.usage,sudo /opt/jdk1.8.0_101/bin/jmap -histo $(pgrep java|sed -n <span class="string">'$p'</span>)|grep Total | sed -n <span class="string">'$p'</span> |awk  <span class="string">'&#123;print $2&#125;'</span></div><div class="line">UserParameter=flume.monitor[*],sudo /bin/bash /etc/zabbix/monitor_flume.sh <span class="variable">$1</span></div></pre></td></tr></table></figure>
 <p><img src="http://7xrthw.com1.z0.glb.clouddn.com/ZABBIX-monitoring-Flume.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/ZABBIX-monitoring-Flume1.png" alt=""></p>
-  </article>
-  <footer class="f-cf">
-    
-      <a href="/2017/11/04/Bigdata-hadoop/Kafka/KafKa从0.8.2.1升级到0.9.0.1变化方案与步骤/" class="link f-fl">⟵KafKa从0.8.2.1升级到0.9.0.1变化方案与步骤</a>
-    
-    
-      <a href="/2017/09/14/日志分析平台/Elasticsearch/ELK架构梳理-之ES 2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记/" class="link f-fr">ELK架构梳理-之ES2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记⟶</a>
-    
-  </footer>
-</section></div>
-    <footer id="footer" class="f-cf">
-  d.guangying@foxmail.com
-  
-    
-      
-        · <a href="https://dribbble.com/clovertuan" target="_blank" class="nav-icn">Dribbble</a>
-      
-    
-      
-        · <a href="https://www.behance.net/clovertuan" target="_blank" class="nav-icn">Behance</a>
-      
-    
-      
-        · <a href="http://clovertuan.lofter.com/" target="_blank" class="nav-icn">Lofter</a>
-      
-    
-      
-        · <a href="https://www.instagram.com/clovertuan/" target="_blank" class="nav-icn">Instagram</a>
-      
-    
-      
-        · <a href="https://github.com/cloverTuan" target="_blank" class="nav-icn">GitHub</a>
-      
-    
-  
-  <span class="copyright">All rights reserved @Clover Tuan</span>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/11/04/Bigdata-hadoop/Kafka/KafKa从0.8.2.1升级到0.9.0.1变化方案与步骤/" data-toggle="tooltip" data-placement="top" title="KafKa从0.8.2.1升级到0.9.0.1变化方案与步骤">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/09/14/日志分析平台/Elasticsearch/ELK架构梳理-之ES 2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记/" data-toggle="tooltip" data-placement="top" title="ELK架构梳理-之ES2.4双实例平滑升级至5.2.1踩坑并supervisor管理笔记">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Zabbix monitoring" title="Zabbix monitoring">Zabbix monitoring</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yancy-cc";
+    var disqus_identifier = "http://blog.yancy.cc/2017/09/21/性能监控/Zabbix/ZABBIX monitoring Flume/";
+    var disqus_url = "http://blog.yancy.cc/2017/09/21/性能监控/Zabbix/ZABBIX monitoring Flume/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
 </footer>
-  </div>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
 </body>
+
 </html>
