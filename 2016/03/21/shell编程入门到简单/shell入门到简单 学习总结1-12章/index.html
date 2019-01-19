@@ -9,8 +9,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Personal blog, thinking and sharing of technology and life">
     <meta name="keyword"  content="undefined">
-    <link rel="shortcut icon" href="/img/favicon.ico">
-
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
           shell入门到简单 学习总结1-12章 - Yancy&#39;s blog
@@ -22,11 +23,19 @@
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/hux-blog.min.css">
-
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+    
     <!-- Pygments Highlight CSS -->
     <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
 
     <!-- Custom Fonts -->
     <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
@@ -55,7 +64,48 @@
 
 <!-- hack iOS CSS :active style -->
 <body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
 
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Shell programming" title="Shell programming">Shell programming</a>
+                            
+                        </div>
+                        <h1>shell入门到简单 学习总结1-12章</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Yancy on
+                            2016-03-21
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
     <!-- Navigation -->
 <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
     <div class="container-fluid">
@@ -90,14 +140,14 @@
 
                         
                         <li>
-                            <a href="/ABOUT/About.html">About</a>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/ARCHIVES/archives.html">Archives</a>
+                            <a href="/ABOUT/About.html">About</a>
                         </li>
                         
                     
@@ -147,45 +197,14 @@
 
 
     <!-- Main Content -->
-    
-<!-- Image to hack wechat -->
-<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
-<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
-
-<!-- Post Header -->
-<style type="text/css">
-    header.intro-header{
-        background-image: url('/img/home-bg.jpg')
-    }
-</style>
-<header class="intro-header" >
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <div class="tags">
-                        
-                          <a class="tag" href="/tags/#Shell programming" title="Shell programming">Shell programming</a>
-                        
-                    </div>
-                    <h1>shell入门到简单 学习总结1-12章</h1>
-                    <h2 class="subheading"></h2>
-                    <span class="meta">
-                        Posted by Yancy on
-                        2016-03-21
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+    <!-- Modify by Yu-Hsuan Yen -->
 
 <!-- Post Content -->
 <article>
     <div class="container">
         <div class="row">
 
-    <!-- Post Container -->
+            <!-- Post Container -->
             <div class="
                 col-lg-8 col-lg-offset-2
                 col-md-10 col-md-offset-1
@@ -357,15 +376,14 @@
 <h4 id="5-shell-单引号，双引号-区别与使用"><a href="#5-shell-单引号，双引号-区别与使用" class="headerlink" title="5. shell 单引号，双引号 区别与使用"></a>5. shell 单引号，双引号 区别与使用</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">单引号</div><div class="line"></div><div class="line">str=<span class="string">'this is a string'</span></div><div class="line"></div><div class="line">单引号字符串的限制：</div><div class="line">* 单引号里的任何字符都会原样输出，单引号字符串中的变量是无效的；</div><div class="line">* 单引号字串中不能出现单引号（对单引号使用转义符后也不行）。</div></pre></td></tr></table></figure>
 <h4 id="6-shell-中的-gt-dev-null-2-gt-amp-1-是什么鬼？"><a href="#6-shell-中的-gt-dev-null-2-gt-amp-1-是什么鬼？" class="headerlink" title="6. shell 中的&gt;/dev/null 2&gt;&amp;1 是什么鬼？"></a>6. shell 中的&gt;/dev/null 2&gt;&amp;1 是什么鬼？</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">### 这条命令其实分为两命令，一个是&gt;/dev/null，另一个是2&gt;&amp;1。</span></div><div class="line"></div><div class="line">1. &gt;/dev/null</div><div class="line">这条命令的作用是将标准输出1重定向到/dev/null中。/dev/null代表linux的空设备文件，所有往这个文件里面写入的内容都会丢失，俗称“黑洞”。那么执行了&gt;/dev/null之后，标准输出就会不再存在，没有任何地方能够找到输出的内容。</div><div class="line"></div><div class="line">2. 2&gt;&amp;1</div><div class="line">这条命令用到了重定向绑定，采用&amp;可以将两个输出绑定在一起。这条命令的作用是错误输出将和标准输出同用一个文件描述符，说人话就是错误输出将会和标准输出输出到同一个地方。</div><div class="line"></div><div class="line">linux在执行shell命令之前，就会确定好所有的输入输出位置，并且从左到右依次执行重定向的命令，所以&gt;/dev/null 2&gt;&amp;1的作用就是让标准输出重定向到/dev/null中（丢弃标准输出），然后错误输出由于重用了标准输出的描述符，所以错误输出也被定向到了/dev/null中，错误输出同样也被丢弃了。执行了这条命令之后，该条shell命令将不会输出任何信息到控制台，也不会有任何信息输出到文件中。</div><div class="line"></div><div class="line">&gt;/dev/null 2&gt;&amp;1 VS 2&gt;&amp;1 &gt;/dev/null</div><div class="line">再回到文章的开头，我说我弄反了&gt;/dev/null和2&gt;&amp;1拼装的顺序，导致出了一点小问题。乍眼看这两条命令貌似是等同的，但其实大为不同。刚才提到了，linux在执行shell命令之前，就会确定好所有的输入输出位置，并且从左到右依次执行重定向的命令。那么我们同样从左到右地来分析2&gt;&amp;1 &gt;/dev/null：</div><div class="line"></div><div class="line">2&gt;&amp;1，将错误输出绑定到标准输出上。由于此时的标准输出是默认值，也就是输出到屏幕，所以错误输出会输出到屏幕。</div><div class="line">&gt;/dev/null，将标准输出1重定向到/dev/null中。</div><div class="line">&gt;</div><div class="line">&gt;/dev/null 2&gt;&amp;1</div><div class="line"></div><div class="line"><span class="comment">### nohup结合</span></div><div class="line"></div><div class="line">我们经常使用nohup <span class="built_in">command</span> &amp;命令形式来启动一些后台程序，比如一些java服务：</div><div class="line"></div><div class="line"><span class="comment"># nohup java -jar xxxx.jar &gt;/dev/null 2&gt;&amp;1 &amp;</span></div><div class="line">总而言之，在工作中用到最多的就是nohup <span class="built_in">command</span> &gt;/dev/null 2&gt;&amp;1 &amp;命令，希望大家能够好好掌握。</div></pre></td></tr></table></figure>
 
-
-                <hr>
-
                 
 
+                <hr>
+                <!-- Pager -->
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2016/03/26/Web服务技术/Nginx/ Nginx 和 apache 对比 /" data-toggle="tooltip" data-placement="top" title="Nginx-反向代理">&larr; Previous Post</a>
+                            <a href="/2016/03/26/Web服务技术/Nginx/Nginx+Tomcat实现反向代理优化与配置 /" data-toggle="tooltip" data-placement="top" title="Nginx+Tomcat实现反向代理优化与配置">&larr; Previous Post</a>
                         </li>
                     
                     
@@ -374,24 +392,37 @@
                         </li>
                     
                 </ul>
-		 
 
+                <br>
+                
+                <!-- require APlayer -->
                 
 
+                <!-- duoshuo Share start -->
                 
-                <!-- disqus 评论框 start -->
-                <div class="comment">
-                    <div id="disqus_thread" class="disqus-thread"></div>
-                </div>
-                <!-- disqus 评论框 end -->
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+
                 
 
             </div>
-    <!-- Side Catalog Container -->
-        
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
 
-    <!-- Sidebar Container -->
-
+                
+            <!-- Sidebar Container -->
             <div class="
                 col-lg-8 col-lg-offset-2
                 col-md-10 col-md-offset-1
@@ -424,7 +455,6 @@
                 </ul>
                 
             </div>
-
         </div>
     </div>
 </article>
@@ -432,8 +462,7 @@
 
 
 
-
-<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<!-- disqus embedded js code start (one page only need to embed once) -->
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "blog-yancy-cc";
@@ -446,7 +475,8 @@
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
 </script>
-<!-- disqus 公共JS代码 end -->
+<!-- disqus embedded js code start end -->
+
 
 
 
@@ -466,9 +496,9 @@
 <script>
     async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
         anchors.options = {
-          visible: 'always',
-          placement: 'right',
-          icon: '#'
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
         };
         anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
     })
@@ -544,20 +574,19 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Yancy&#39;s blog 2019 
+                    Copyright &copy; Yancy 2019 
                     <br>
-                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    Theme by <a href="http://beantech.org">BeanTech</a> 
                     <span style="display: inline-block; margin: 0 5px;">
                         <i class="fa fa-heart"></i>
-                    </span>
-                    Ported by <a href="http://github.com/yangcvo">Github</a>
-
-                    <!--<iframe
+                    </span> 
+                    re-Ported by <a href="http://www.huweihuang.com">胡伟煌</a> | 
+                    <iframe
                         style="margin-left: 2px; margin-bottom:-5px;"
                         frameborder="0" scrolling="0" width="91px" height="20px"
-                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
-                    </iframe>--> 
-		</p>
+                        src="https://ghbtns.com/github-btn.html?user=huweihuang&repo=hexo-theme-huweihuang&type=star&count=true" >
+                    </iframe>
+                </p>
             </div>
         </div>
     </div>
@@ -635,12 +664,13 @@
 <!-- Baidu Tongji -->
 
 
-<!-- Side Catalog -->
 
 
 
 
-
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
 <!-- Image to hack wechat -->
 <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
 <!-- Migrate from head to bottom, no longer block render and still work -->

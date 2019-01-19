@@ -9,8 +9,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Personal blog, thinking and sharing of technology and life">
     <meta name="keyword"  content="undefined">
-    <link rel="shortcut icon" href="/img/favicon.ico">
-
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
           记一次线上tomcat内存不足配置并发优化过程 - Yancy&#39;s blog
@@ -22,11 +23,19 @@
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/hux-blog.min.css">
-
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+    
     <!-- Pygments Highlight CSS -->
     <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
 
     <!-- Custom Fonts -->
     <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
@@ -55,7 +64,48 @@
 
 <!-- hack iOS CSS :active style -->
 <body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
 
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes">Java+Tomcat notes</a>
+                            
+                        </div>
+                        <h1>记一次线上tomcat内存不足配置并发优化过程</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Yancy on
+                            2016-06-21
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
     <!-- Navigation -->
 <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
     <div class="container-fluid">
@@ -90,14 +140,14 @@
 
                         
                         <li>
-                            <a href="/ABOUT/About.html">About</a>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/ARCHIVES/archives.html">Archives</a>
+                            <a href="/ABOUT/About.html">About</a>
                         </li>
                         
                     
@@ -147,45 +197,14 @@
 
 
     <!-- Main Content -->
-    
-<!-- Image to hack wechat -->
-<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
-<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
-
-<!-- Post Header -->
-<style type="text/css">
-    header.intro-header{
-        background-image: url('/img/home-bg.jpg')
-    }
-</style>
-<header class="intro-header" >
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <div class="tags">
-                        
-                          <a class="tag" href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes">Java+Tomcat notes</a>
-                        
-                    </div>
-                    <h1>记一次线上tomcat内存不足配置并发优化过程</h1>
-                    <h2 class="subheading"></h2>
-                    <span class="meta">
-                        Posted by Yancy on
-                        2016-06-21
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+    <!-- Modify by Yu-Hsuan Yen -->
 
 <!-- Post Content -->
 <article>
     <div class="container">
         <div class="row">
 
-    <!-- Post Container -->
+            <!-- Post Container -->
             <div class="
                 col-lg-8 col-lg-offset-2
                 col-md-10 col-md-offset-1
@@ -239,11 +258,10 @@
 <h3 id="查看Tomcat的JVM内存"><a href="#查看Tomcat的JVM内存" class="headerlink" title="查看Tomcat的JVM内存"></a>查看Tomcat的JVM内存</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">1. Tomcat6中没有设置任何默认用户，因而需要手动往Tomcat6的conf文件夹下的tomcat-users.xml文件中</div><div class="line">添加用户。</div><div class="line">如：       </div><div class="line">        &lt;role rolename=<span class="string">"manager"</span>/&gt;</div><div class="line">          &lt;user username=<span class="string">"tomcat"</span> password=<span class="string">"tomcat"</span> roles=<span class="string">"manager"</span>/&gt;</div><div class="line">    </div><div class="line">注：添加完需要重启Tomcat6。</div><div class="line"></div><div class="line">2. 访问http://localhost:8080/manager/status，输入上面添加的用户名和密码。</div><div class="line"></div><div class="line">3. 然后在如下面的JVM下可以看到内存的使用情况。</div></pre></td></tr></table></figure>
 <p>学习Tomcat给自己总结。</p>
 
-
-                <hr>
-
                 
 
+                <hr>
+                <!-- Pager -->
                 <ul class="pager">
                     
                         <li class="previous">
@@ -256,24 +274,37 @@
                         </li>
                     
                 </ul>
-		 
 
+                <br>
+                
+                <!-- require APlayer -->
                 
 
+                <!-- duoshuo Share start -->
                 
-                <!-- disqus 评论框 start -->
-                <div class="comment">
-                    <div id="disqus_thread" class="disqus-thread"></div>
-                </div>
-                <!-- disqus 评论框 end -->
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+
                 
 
             </div>
-    <!-- Side Catalog Container -->
-        
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
 
-    <!-- Sidebar Container -->
-
+                
+            <!-- Sidebar Container -->
             <div class="
                 col-lg-8 col-lg-offset-2
                 col-md-10 col-md-offset-1
@@ -306,7 +337,6 @@
                 </ul>
                 
             </div>
-
         </div>
     </div>
 </article>
@@ -314,8 +344,7 @@
 
 
 
-
-<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<!-- disqus embedded js code start (one page only need to embed once) -->
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "blog-yancy-cc";
@@ -328,7 +357,8 @@
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
 </script>
-<!-- disqus 公共JS代码 end -->
+<!-- disqus embedded js code start end -->
+
 
 
 
@@ -348,9 +378,9 @@
 <script>
     async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
         anchors.options = {
-          visible: 'always',
-          placement: 'right',
-          icon: '#'
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
         };
         anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
     })
@@ -426,20 +456,19 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Yancy&#39;s blog 2019 
+                    Copyright &copy; Yancy 2019 
                     <br>
-                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    Theme by <a href="http://beantech.org">BeanTech</a> 
                     <span style="display: inline-block; margin: 0 5px;">
                         <i class="fa fa-heart"></i>
-                    </span>
-                    Ported by <a href="http://github.com/yangcvo">Github</a>
-
-                    <!--<iframe
+                    </span> 
+                    re-Ported by <a href="http://www.huweihuang.com">胡伟煌</a> | 
+                    <iframe
                         style="margin-left: 2px; margin-bottom:-5px;"
                         frameborder="0" scrolling="0" width="91px" height="20px"
-                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
-                    </iframe>--> 
-		</p>
+                        src="https://ghbtns.com/github-btn.html?user=huweihuang&repo=hexo-theme-huweihuang&type=star&count=true" >
+                    </iframe>
+                </p>
             </div>
         </div>
     </div>
@@ -517,12 +546,13 @@
 <!-- Baidu Tongji -->
 
 
-<!-- Side Catalog -->
 
 
 
 
-
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
 <!-- Image to hack wechat -->
 <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
 <!-- Migrate from head to bottom, no longer block render and still work -->

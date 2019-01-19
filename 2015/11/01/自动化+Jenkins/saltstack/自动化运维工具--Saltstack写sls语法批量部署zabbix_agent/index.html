@@ -9,8 +9,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Personal blog, thinking and sharing of technology and life">
     <meta name="keyword"  content="undefined">
-    <link rel="shortcut icon" href="/img/favicon.ico">
-
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
           自动化运维工具--Saltstack写sls语法批量部署zabbix_agent - Yancy&#39;s blog
@@ -22,11 +23,19 @@
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/hux-blog.min.css">
-
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+    
     <!-- Pygments Highlight CSS -->
     <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
 
     <!-- Custom Fonts -->
     <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
@@ -55,7 +64,48 @@
 
 <!-- hack iOS CSS :active style -->
 <body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
 
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Saltstack" title="Saltstack">Saltstack</a>
+                            
+                        </div>
+                        <h1>自动化运维工具--Saltstack写sls语法批量部署zabbix_agent</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Yancy on
+                            2015-11-01
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
     <!-- Navigation -->
 <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
     <div class="container-fluid">
@@ -90,14 +140,14 @@
 
                         
                         <li>
-                            <a href="/ABOUT/About.html">About</a>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/ARCHIVES/archives.html">Archives</a>
+                            <a href="/ABOUT/About.html">About</a>
                         </li>
                         
                     
@@ -147,45 +197,14 @@
 
 
     <!-- Main Content -->
-    
-<!-- Image to hack wechat -->
-<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
-<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
-
-<!-- Post Header -->
-<style type="text/css">
-    header.intro-header{
-        background-image: url('/img/home-bg.jpg')
-    }
-</style>
-<header class="intro-header" >
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <div class="tags">
-                        
-                          <a class="tag" href="/tags/#Saltstack" title="Saltstack">Saltstack</a>
-                        
-                    </div>
-                    <h1>自动化运维工具--Saltstack写sls语法批量部署zabbix_agent</h1>
-                    <h2 class="subheading"></h2>
-                    <span class="meta">
-                        Posted by Yancy on
-                        2015-11-01
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+    <!-- Modify by Yu-Hsuan Yen -->
 
 <!-- Post Content -->
 <article>
     <div class="container">
         <div class="row">
 
-    <!-- Post Container -->
+            <!-- Post Container -->
             <div class="
                 col-lg-8 col-lg-offset-2
                 col-md-10 col-md-offset-1
@@ -193,11 +212,10 @@
 
                 <h1 id="Saltstack批量部署zabbix-agent服务"><a href="#Saltstack批量部署zabbix-agent服务" class="headerlink" title="Saltstack批量部署zabbix_agent服务"></a>Saltstack批量部署zabbix_agent服务</h1><figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div></pre></td><td class="code"><pre><div class="line">epel_install:</div><div class="line">  file.managed:</div><div class="line">    -<span class="ruby"> <span class="symbol">name:</span> /root/zabbix-release-<span class="number">2.4</span>-<span class="number">1</span>.el6.noarch.rpm             <span class="comment">## 指定节点的epel安装包的存放路径</span></span></div><div class="line">    -<span class="ruby"> <span class="symbol">source:</span> <span class="symbol">salt:</span>/<span class="regexp">/epel/zabbix</span>-release-<span class="number">2.4</span>-<span class="number">1</span>.el6.noarch.rpm     <span class="comment">## 指定从master的哪个位置拷贝epel的rpm包</span></span></div><div class="line">    -<span class="ruby"> <span class="symbol">user:</span> root                                                  <span class="comment">## 文件的拥有者</span></span></div><div class="line">    -<span class="ruby"> <span class="symbol">group:</span> root                                                 <span class="comment">## 文件的所属组</span></span></div><div class="line">    -<span class="ruby"> <span class="symbol">mode:</span> <span class="number">777</span></span></div><div class="line">    -<span class="ruby"> <span class="symbol">backup:</span> minion</span></div><div class="line"></div><div class="line">  cmd.run:</div><div class="line">    -<span class="ruby"> <span class="symbol">name:</span> rpm -ivh /root/zabbix-release-<span class="number">2.4</span>-<span class="number">1</span>.el6.noarch.rpm    <span class="comment">## 执行rpm包的安装</span></span></div><div class="line">    -<span class="ruby"> <span class="symbol">unless:</span> test -f /etc/yum.repos.d/epel.repo                  <span class="comment">## 如果存在这个文件就不再执行安装程序</span></span></div><div class="line">    -<span class="ruby"> <span class="symbol">require:</span></span></div><div class="line">      -<span class="ruby"> <span class="symbol">file:</span> epel_install</span></div><div class="line"></div><div class="line">SELINUX:</div><div class="line">  cmd.run:</div><div class="line">    -<span class="ruby"> <span class="symbol">name:</span> service iptables stop &amp;&amp; chkconfig iptables off &amp;&amp; setenforce <span class="number">0</span>      </span></div><div class="line"></div><div class="line">   #sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config</div><div class="line">   </div><div class="line">    -<span class="ruby"> <span class="symbol">require:</span></span></div><div class="line">      -<span class="ruby"> <span class="symbol">file:</span> epel_install</span></div><div class="line"></div><div class="line">cache_yum:</div><div class="line">  cmd.run:</div><div class="line">    -<span class="ruby"> <span class="symbol">name:</span> yum makecache                                 <span class="comment">## 生成yum的缓存</span></span></div><div class="line">    -<span class="ruby"> <span class="symbol">require:</span> </span></div><div class="line">      -<span class="ruby"> <span class="symbol">file:</span> epel_install                              <span class="comment">## 生成缓存要在epel安装之后</span></span></div><div class="line"></div><div class="line">zabbix-agentd:</div><div class="line">  pkg.installed: []</div><div class="line">  service.running:</div><div class="line">#    - name: zabbix-agent</div><div class="line">#    - running</div><div class="line">    -<span class="ruby"> <span class="symbol">enable:</span> True</span></div><div class="line">    -<span class="ruby"> <span class="symbol">reload:</span> True</span></div><div class="line">    -<span class="ruby"> <span class="symbol">watch:</span></span></div><div class="line">      -<span class="ruby"> <span class="symbol">file:</span> /etc/zabbix/zabbix_agentd.conf</span></div><div class="line">    -<span class="ruby"> <span class="symbol">require:</span></span></div><div class="line">      -<span class="ruby"> <span class="symbol">file:</span> epel_install</span></div><div class="line"><span class="comment"></span></div><div class="line"></div><div class="line">/etc/zabbix/zabbix_agentd.conf:</div><div class="line">   file.managed:</div><div class="line">    -<span class="ruby"> <span class="symbol">source:</span> <span class="symbol">salt:</span>/<span class="regexp">/zabbix/zabbix</span>_agentd.conf</span></div><div class="line">    -<span class="ruby"> <span class="symbol">user:</span> zabbix                                          <span class="comment">## 文件的拥有者</span></span></div><div class="line">    -<span class="ruby"> <span class="symbol">group:</span> zabbix                                         <span class="comment">## 文件的所属组</span></span></div><div class="line">    -<span class="ruby"> <span class="symbol">mode:</span> <span class="number">644</span></span></div><div class="line">    -<span class="ruby"> <span class="symbol">backup:</span> minion</span></div><div class="line">    -<span class="ruby"> <span class="symbol">template:</span> jinja</span></div><div class="line">    -<span class="ruby"> <span class="symbol">require:</span></span></div><div class="line">      -<span class="ruby"> <span class="symbol">file:</span> epel_install</span></div><div class="line"></div><div class="line">ntp:</div><div class="line">  pkg.installed: []                                        ## 安装ntp </div><div class="line">#     name: ntp</div><div class="line">  service.running:</div><div class="line">#     name: ntpd</div><div class="line">#     running</div><div class="line">     enable: True</div><div class="line">    reload: True</div><div class="line">    watch:</div><div class="line">    file: /etc/ntp.conf</div><div class="line">    require:                                            ## 安装ntp要在epel安装之后</div><div class="line">    file: epel_install</div><div class="line"><span class="comment"></span></div><div class="line">/etc/ntp.conf:</div><div class="line">  file.managed:</div><div class="line">    -<span class="ruby"> <span class="symbol">source:</span> <span class="symbol">salt:</span>/<span class="regexp">/ntp/ntp</span>.conf</span></div><div class="line">    -<span class="ruby"> <span class="symbol">user:</span> root                                          <span class="comment">## 文件的拥有者</span></span></div><div class="line">    -<span class="ruby"> <span class="symbol">group:</span> root                                         <span class="comment">## 文件的所属组</span></span></div><div class="line">    -<span class="ruby"> <span class="symbol">mode:</span> <span class="number">644</span></span></div><div class="line">    -<span class="ruby"> <span class="symbol">backup:</span> minion</span></div><div class="line">    -<span class="ruby"> <span class="symbol">require:</span></span></div><div class="line">      -<span class="ruby"> <span class="symbol">file:</span> epel_install</span></div></pre></td></tr></table></figure>
 
-
-                <hr>
-
                 
 
+                <hr>
+                <!-- Pager -->
                 <ul class="pager">
                     
                         <li class="previous">
@@ -210,24 +228,37 @@
                         </li>
                     
                 </ul>
-		 
 
+                <br>
+                
+                <!-- require APlayer -->
                 
 
+                <!-- duoshuo Share start -->
                 
-                <!-- disqus 评论框 start -->
-                <div class="comment">
-                    <div id="disqus_thread" class="disqus-thread"></div>
-                </div>
-                <!-- disqus 评论框 end -->
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+
                 
 
             </div>
-    <!-- Side Catalog Container -->
-        
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
 
-    <!-- Sidebar Container -->
-
+                
+            <!-- Sidebar Container -->
             <div class="
                 col-lg-8 col-lg-offset-2
                 col-md-10 col-md-offset-1
@@ -260,7 +291,6 @@
                 </ul>
                 
             </div>
-
         </div>
     </div>
 </article>
@@ -268,8 +298,7 @@
 
 
 
-
-<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<!-- disqus embedded js code start (one page only need to embed once) -->
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "blog-yancy-cc";
@@ -282,7 +311,8 @@
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
 </script>
-<!-- disqus 公共JS代码 end -->
+<!-- disqus embedded js code start end -->
+
 
 
 
@@ -302,9 +332,9 @@
 <script>
     async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
         anchors.options = {
-          visible: 'always',
-          placement: 'right',
-          icon: '#'
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
         };
         anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
     })
@@ -380,20 +410,19 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Yancy&#39;s blog 2019 
+                    Copyright &copy; Yancy 2019 
                     <br>
-                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    Theme by <a href="http://beantech.org">BeanTech</a> 
                     <span style="display: inline-block; margin: 0 5px;">
                         <i class="fa fa-heart"></i>
-                    </span>
-                    Ported by <a href="http://github.com/yangcvo">Github</a>
-
-                    <!--<iframe
+                    </span> 
+                    re-Ported by <a href="http://www.huweihuang.com">胡伟煌</a> | 
+                    <iframe
                         style="margin-left: 2px; margin-bottom:-5px;"
                         frameborder="0" scrolling="0" width="91px" height="20px"
-                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
-                    </iframe>--> 
-		</p>
+                        src="https://ghbtns.com/github-btn.html?user=huweihuang&repo=hexo-theme-huweihuang&type=star&count=true" >
+                    </iframe>
+                </p>
             </div>
         </div>
     </div>
@@ -471,12 +500,13 @@
 <!-- Baidu Tongji -->
 
 
-<!-- Side Catalog -->
 
 
 
 
-
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
 <!-- Image to hack wechat -->
 <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
 <!-- Migrate from head to bottom, no longer block render and still work -->

@@ -9,8 +9,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Personal blog, thinking and sharing of technology and life">
     <meta name="keyword"  content="undefined">
-    <link rel="shortcut icon" href="/img/favicon.ico">
-
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
           Ansible-Playbook高级语法运用 - Yancy&#39;s blog
@@ -22,11 +23,19 @@
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/hux-blog.min.css">
-
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+    
     <!-- Pygments Highlight CSS -->
     <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
 
     <!-- Custom Fonts -->
     <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
@@ -55,7 +64,48 @@
 
 <!-- hack iOS CSS :active style -->
 <body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
 
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Ansible" title="Ansible">Ansible</a>
+                            
+                        </div>
+                        <h1>Ansible-Playbook高级语法运用</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Yancy on
+                            2017-02-10
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
     <!-- Navigation -->
 <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
     <div class="container-fluid">
@@ -90,14 +140,14 @@
 
                         
                         <li>
-                            <a href="/ABOUT/About.html">About</a>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/ARCHIVES/archives.html">Archives</a>
+                            <a href="/ABOUT/About.html">About</a>
                         </li>
                         
                     
@@ -147,45 +197,14 @@
 
 
     <!-- Main Content -->
-    
-<!-- Image to hack wechat -->
-<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
-<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
-
-<!-- Post Header -->
-<style type="text/css">
-    header.intro-header{
-        background-image: url('/img/home-bg.jpg')
-    }
-</style>
-<header class="intro-header" >
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <div class="tags">
-                        
-                          <a class="tag" href="/tags/#Ansible" title="Ansible">Ansible</a>
-                        
-                    </div>
-                    <h1>Ansible-Playbook高级语法运用</h1>
-                    <h2 class="subheading"></h2>
-                    <span class="meta">
-                        Posted by Yancy on
-                        2017-02-10
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+    <!-- Modify by Yu-Hsuan Yen -->
 
 <!-- Post Content -->
 <article>
     <div class="container">
         <div class="row">
 
-    <!-- Post Container -->
+            <!-- Post Container -->
             <div class="
                 col-lg-8 col-lg-offset-2
                 col-md-10 col-md-offset-1
@@ -239,11 +258,10 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">- hosts: all</div><div class="line"></div><div class="line">  environment:</div><div class="line">     LC_ALL: zh_CN.UTF-8</div><div class="line">     LANG : zh_CN.UTF-8</div><div class="line"></div><div class="line">  vars:</div><div class="line"><span class="comment">#jenkins-打包目录</span></div><div class="line">    TESTWAR: /root/java_war/haozhuo-family.war</div><div class="line"><span class="comment">#生产环境中项目的tomcat所在的位置</span></div><div class="line">    OLDHOME: /srv/tomcat/tomcat_family/webapps/ROOT</div><div class="line"><span class="comment">#生产环境中老版本项目所在webapps备份目录的位置</span></div><div class="line">    backupwebapps: /srv/tomcat/tomcat_family/warbackup</div><div class="line"><span class="comment">#从jenkins-打包环境获取的新版本war包所在的位置</span></div><div class="line">    NEWWAR: /root/java_war/</div><div class="line"><span class="comment">#生产环境中项目war包的名字</span></div><div class="line">    WARNAME: haozhuo-family.war</div><div class="line"><span class="comment">#kill服务type路径</span></div><div class="line">    DOWNFILE: /srv/tomcat/tomcat_family</div><div class="line"></div><div class="line">  tasks:</div><div class="line">  - name: copy-war-file</div><div class="line">    copy: src=&#123;&#123; TESTWAR &#125;&#125; dest=&#123;&#123; NEWWAR &#125;&#125;</div><div class="line">  - name: mkdir-bakwar-file</div><div class="line">    file: path=&#123;&#123; backupwebapps &#125;&#125; state=directory owner=tomcat group=tomcat mode=755</div><div class="line">  - name: bakwar-file</div><div class="line">    shell: <span class="string">"cp -r &#123;&#123; OLDHOME &#125;&#125; &#123;&#123; backupwebapps &#125;&#125;"</span></div><div class="line">  - name: unzip war.</div><div class="line">    unarchive: src=&#123;&#123; NEWWAR &#125;&#125;/&#123;&#123; WARNAME &#125;&#125; dest=&#123;&#123; OLDHOME &#125;&#125;</div><div class="line">  - name: stop-tomcat-service</div><div class="line">    shell: <span class="string">"ps -ef |grep &#123;&#123; DOWNFILE &#125;&#125; |grep -v grep |awk '&#123;print <span class="variable">$2</span>&#125;' |xargs kill -9"</span></div><div class="line">    ignore_errors: yes</div><div class="line">    async: 0</div><div class="line">  - name: start-tomcat-service-nohup</div><div class="line">    shell: <span class="built_in">chdir</span>=&#123;&#123; DOWNFILE &#125;&#125;/bin nohup ./startup.sh &amp;</div></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># tree /etc/ansible/</span></div><div class="line">.</div><div class="line">├── ansible.cfg</div><div class="line">├── group_vars                                  <span class="comment"># here we assign variables to particular groups</span></div><div class="line">│   └── tomcat-servers                          <span class="comment"># this filename must the same with the group in the 'hosts'</span></div><div class="line">├── hosts</div><div class="line">├── roles</div><div class="line">│   ├── selinux</div><div class="line">│   └── tomcat</div><div class="line">│       ├── files</div><div class="line">│       │   └── tomcat-initscript.sh            <span class="comment"># &lt;-- script files for use with the script resource</span></div><div class="line">│       ├── handlers</div><div class="line">│       │   └── main.yml                        <span class="comment"># &lt;-- handlers file</span></div><div class="line">│       ├── tasks</div><div class="line">│       │   └── main.yml                        <span class="comment"># &lt;-- tasks file can include smaller files if warranted</span></div><div class="line">│       └── templates                           <span class="comment"># &lt;-- files for use with the template resource</span></div><div class="line">│           ├── iptables-save</div><div class="line">│           ├── server.xml</div><div class="line">│           └── tomcat-users.xml</div><div class="line">├── app2.retry</div><div class="line">└── app2.yml                                    <span class="comment"># master playbook</span></div></pre></td></tr></table></figure>
 
-
-                <hr>
-
                 
 
+                <hr>
+                <!-- Pager -->
                 <ul class="pager">
                     
                         <li class="previous">
@@ -256,24 +274,37 @@
                         </li>
                     
                 </ul>
-		 
 
+                <br>
+                
+                <!-- require APlayer -->
                 
 
+                <!-- duoshuo Share start -->
                 
-                <!-- disqus 评论框 start -->
-                <div class="comment">
-                    <div id="disqus_thread" class="disqus-thread"></div>
-                </div>
-                <!-- disqus 评论框 end -->
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+
                 
 
             </div>
-    <!-- Side Catalog Container -->
-        
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
 
-    <!-- Sidebar Container -->
-
+                
+            <!-- Sidebar Container -->
             <div class="
                 col-lg-8 col-lg-offset-2
                 col-md-10 col-md-offset-1
@@ -306,7 +337,6 @@
                 </ul>
                 
             </div>
-
         </div>
     </div>
 </article>
@@ -314,8 +344,7 @@
 
 
 
-
-<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<!-- disqus embedded js code start (one page only need to embed once) -->
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "blog-yancy-cc";
@@ -328,7 +357,8 @@
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
 </script>
-<!-- disqus 公共JS代码 end -->
+<!-- disqus embedded js code start end -->
+
 
 
 
@@ -348,9 +378,9 @@
 <script>
     async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
         anchors.options = {
-          visible: 'always',
-          placement: 'right',
-          icon: '#'
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
         };
         anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
     })
@@ -426,20 +456,19 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Yancy&#39;s blog 2019 
+                    Copyright &copy; Yancy 2019 
                     <br>
-                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    Theme by <a href="http://beantech.org">BeanTech</a> 
                     <span style="display: inline-block; margin: 0 5px;">
                         <i class="fa fa-heart"></i>
-                    </span>
-                    Ported by <a href="http://github.com/yangcvo">Github</a>
-
-                    <!--<iframe
+                    </span> 
+                    re-Ported by <a href="http://www.huweihuang.com">胡伟煌</a> | 
+                    <iframe
                         style="margin-left: 2px; margin-bottom:-5px;"
                         frameborder="0" scrolling="0" width="91px" height="20px"
-                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
-                    </iframe>--> 
-		</p>
+                        src="https://ghbtns.com/github-btn.html?user=huweihuang&repo=hexo-theme-huweihuang&type=star&count=true" >
+                    </iframe>
+                </p>
             </div>
         </div>
     </div>
@@ -517,12 +546,13 @@
 <!-- Baidu Tongji -->
 
 
-<!-- Side Catalog -->
 
 
 
 
-
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
 <!-- Image to hack wechat -->
 <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
 <!-- Migrate from head to bottom, no longer block render and still work -->
