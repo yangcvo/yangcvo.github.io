@@ -1,199 +1,106 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
-<!-- Head tag -->
+
+
+
+
+
+
+
+
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <link rel="apple-touch-icon" sizes="76x76" href="../img/favicon.png">
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no" name="viewport" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="description" content="Personal blog, thinking and sharing of technology and life">
-    <meta name="keyword"  content="undefined">
-    <link rel="shortcut icon" href="/img/favicon.ico">
-
-    <title>
+    <meta name="author" content="Yancy">
+    <meta name="keywords" content="undefined">
+    <title>记录tomcat进程CPU使用率高排查故障经验 ~ Yancy&#39;s blog</title>
+    <link rel="stylesheet" href="/css/Material_Icons.css">
+    <!-- <link rel="stylesheet" href="/css/font-awesome.css"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    
+        <link rel="stylesheet" href="/css/post.css">
         
-          记录tomcat进程CPU使用率高排查故障经验 - Yancy&#39;s blog
+            <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
         
-    </title>
-
-    <link rel="canonical" href="http://blog.yancy.cc/2016/12/02/Web服务技术/tomcat/记录tomcat进程CPU使用率高排查故障经验/">
-
-    <!-- Bootstrap Core CSS -->
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/hux-blog.min.css">
-
-    <!-- Pygments Highlight CSS -->
-    <link rel="stylesheet" href="/css/highlight.css">
-
-    <!-- Custom Fonts -->
-    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
-    <!-- Hux change font-awesome CDN to qiniu -->
-    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
-
-    <!-- Hux Delete, sad but pending in China
-    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
-    css'>
-    -->
-
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-    <!-- ga & ba script hoook -->
-    <script></script>
+    
 </head>
 
-
-<!-- hack iOS CSS :active style -->
-<body ontouchstart="">
-
-    <!-- Navigation -->
-<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header page-scroll">
-            <button type="button" class="navbar-toggle">
+<body class=" sidebar-collapse">
+<nav class="navbar navbar-transparent navbar-color-on-scroll fixed-top navbar-expand-lg" color-on-scroll="100" id="sectionsNav">
+    <div class="container">
+        <div class="navbar-translate">
+            <a class="navbar-brand" href="/">
+                Yancy&#39;s blog</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
+                <span class="navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon"></span>
             </button>
-            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
         </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <!-- Known Issue, found by Hux:
-            <nav>'s height woule be hold on by its content.
-            so, when navbar scale out, the <nav> will cover tags.
-            also mask any touch event of tags, unfortunately.
-        -->
-        <div id="huxblog_navbar">
-            <div class="navbar-collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="/">Home</a>
-                    </li>
-
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ml-auto">
                     
-
                         
-                    
-
+                            <li class="nav-item">
+                                <a class="nav-link" href="/archives/">
+                                    archives
+                                </a>
+                            </li>
                         
-                        <li>
-                            <a href="/ARCHIVES/archives.html">Archives</a>
-                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/about/">
+                                    about
+                                </a>
+                            </li>
                         
                     
-
-                        
-                        <li>
-                            <a href="/ABOUT/About.html">About</a>
-                        </li>
-                        
                     
-
                         
-                        <li>
-                            <a href="/tags/">Tags</a>
-                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link" rel="tooltip" title="" data-placement="bottom" href="" target="_blank" data-original-title="See me here">
+                                    <i class="fa fa-github"></i>
+                                </a>
+                            </li>
                         
-                    
+                            <li class="nav-item">
+                                <a class="nav-link" rel="tooltip" title="" data-placement="bottom" href="" target="_blank" data-original-title="See me here">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                            </li>
+                        
                     
                 </ul>
             </div>
-        </div>
-        <!-- /.navbar-collapse -->
     </div>
-    <!-- /.container -->
 </nav>
-<script>
-    // Drop Bootstarp low-performance Navbar
-    // Use customize navbar with high-quality material design animation
-    // in high-perf jank-free CSS3 implementation
-    var $body   = document.body;
-    var $toggle = document.querySelector('.navbar-toggle');
-    var $navbar = document.querySelector('#huxblog_navbar');
-    var $collapse = document.querySelector('.navbar-collapse');
-
-    $toggle.addEventListener('click', handleMagic)
-    function handleMagic(e){
-        if ($navbar.className.indexOf('in') > 0) {
-        // CLOSE
-            $navbar.className = " ";
-            // wait until animation end.
-            setTimeout(function(){
-                // prevent frequently toggle
-                if($navbar.className.indexOf('in') < 0) {
-                    $collapse.style.height = "0px"
-                }
-            },400)
-        }else{
-        // OPEN
-            $collapse.style.height = "auto"
-            $navbar.className += " in";
-        }
-    }
-</script>
-
-
-    <!-- Main Content -->
     
-<!-- Image to hack wechat -->
-<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
-<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+  <div class="page-header header-filter" data-parallax="true" style="background-image: url('../img/post-head.jpg')">
+    
+      <div class="container">
+        <h1 class="title text-center">记录tomcat进程CPU使用率高排查故障经验</h1>
+        <p class="text-center"><b>Friday, December 2nd 2016, 5:56 pm</b></p>
+      </div>
+    
+  </div>
 
-<!-- Post Header -->
-<style type="text/css">
-    header.intro-header{
-        background-image: url('/img/home-bg.jpg')
-    }
-</style>
-<header class="intro-header" >
+
+  <div class="main main-raised">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <div class="tags">
-                        
-                          <a class="tag" href="/tags/#performance tuning" title="performance tuning">performance tuning</a>
-                        
-                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
-                        
-                    </div>
-                    <h1>记录tomcat进程CPU使用率高排查故障经验</h1>
-                    <h2 class="subheading"></h2>
-                    <span class="meta">
-                        Posted by Yancy on
-                        2016-12-02
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+      <div class="section">
+        
 
-<!-- Post Content -->
-<article>
-    <div class="container">
-        <div class="row">
 
-    <!-- Post Container -->
-            <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                post-container">
-
-                <h3 id="1、故障现象"><a href="#1、故障现象" class="headerlink" title="1、故障现象"></a>1、故障现象</h3><p>运营同事反馈APP其中体检商城购买订单系统运行缓慢，访问出现超时，多次重启系统后问题依然存在，使用top命令查看服务器情况，发现CPU占用率过高。</p>
+<div class="row">
+    <div class="col-md-7 offset-md-2">
+        <div class="post_content tocbot-content">
+            <h3 id="1、故障现象"><a href="#1、故障现象" class="headerlink" title="1、故障现象"></a>1、故障现象</h3><p>运营同事反馈APP其中体检商城购买订单系统运行缓慢，访问出现超时，多次重启系统后问题依然存在，使用top命令查看服务器情况，发现CPU占用率过高。</p>
 <h3 id="2、CPU占用过高问题定位"><a href="#2、CPU占用过高问题定位" class="headerlink" title="2、CPU占用过高问题定位"></a>2、CPU占用过高问题定位</h3><h5 id="2-1、定位问题进程"><a href="#2-1、定位问题进程" class="headerlink" title="2.1、定位问题进程"></a>2.1、定位问题进程</h5><p>使用top命令查看资源占用情况，发现pid为14063的进程占用了大量的CPU资源，CPU占用率高达229.1%，内存占用率也达到了29.8%</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@account-tomcat-01 ~]$ top</div><div class="line">top - 14:51:10 up 233 days, 11:40,  2 users,  load average: 6.85, 5.62, 3.97</div><div class="line">Tasks: 192 total,   2 running, 190 sleeping,   0 stopped,   0 zombie</div><div class="line">%Cpu(s): 97.3 us,  0.3 sy,  0.0 ni,  2.5 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</div><div class="line">KiB Mem : 16268652 total,  5114392 free,  6907028 used,  4247232 buff/cache</div><div class="line">KiB Swap:  4063228 total,  3989708 free,    73520 used.  8751512 avail Mem </div><div class="line">  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND                                                                                               </div><div class="line"></div><div class="line">14063 root       20   0 9260488 4.627g  11976 S 229.1 29.8 117:41.66 java</div></pre></td></tr></table></figure>
 <h5 id="2-2、定位问题线程"><a href="#2-2、定位问题线程" class="headerlink" title="2.2、定位问题线程"></a>2.2、定位问题线程</h5><p>使用<code>ps -mp pid -o THREAD,tid,time</code>命令查看该进程的线程情况，发现该进程的多个线程占用率很高</p>
@@ -209,296 +116,100 @@
 <p>生产java应用，CPU使用率一直很高，经常达到100%，通过以下步骤完美解决，分享一下。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">1.jps 获取Java进程的PID。</div><div class="line"></div><div class="line">2.top -H -p PID 查看对应进程的哪个线程占用CPU过高。</div><div class="line">2.1 使用 ps -mp pid -o THREAD,tid,time 命令查看该进程的线程情况，发现该进程的多个线程占用率很高。</div><div class="line"></div><div class="line">3.jstack pid &gt;&gt; java.txt 导出CPU占用高进程的线程栈。</div><div class="line">使用jstack命令查看进程的堆栈情况</div><div class="line"></div><div class="line">4.echo “obase=16; PID” | bc 将线程的PID转换为16进制。</div><div class="line"></div><div class="line">5.在第二步导出的Java.txt中查找转换成为16进制的线程PID。找到对应的线程栈。</div><div class="line"></div><div class="line">6.分析负载高的线程栈都是什么业务操作。优化程序并处理问题。</div></pre></td></tr></table></figure>
 
-
-                <hr>
-
-                
-
-                <ul class="pager">
+        </div>
+        <br><br>
+        <div>
+            <p>
+                     
+                    <span class="badge badge-default">#&nbsp;performance tuning</span>
+                    &nbsp;
+                     
+                    <span class="badge badge-default">#&nbsp;Java</span>
+                    &nbsp;
                     
-                        <li class="previous">
-                            <a href="/2016/12/29/日志分析平台/Elasticsearch/搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6) Kafka为消息中心的ELK日志平台/" data-toggle="tooltip" data-placement="top" title="搭建(ElasticSearch-2.x Logstash-2.x Kibana-4.5.x zookeeper3.4.6 Kafka ) Kafka为消息中心的ELK日志平台">&larr; Previous Post</a>
-                        </li>
-                    
-                    
-                        <li class="next">
-                            <a href="/2016/12/02/运维安全/gitlab网站被黑redis被劫持6379端口需要提交认证，如何挽救？/" data-toggle="tooltip" data-placement="top" title="gitlab网站被黑redis被劫持6379端口需要提交认证，如何挽救？">Next Post &rarr;</a>
-                        </li>
-                    
-                </ul>
-		 
+            </p>
+        </div>
+    </div>
+    <!-- TOC -->
+    
+        <div class="col-md-3">
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、故障现象"><span class="toc-text">1、故障现象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、CPU占用过高问题定位"><span class="toc-text">2、CPU占用过高问题定位</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-1、定位问题进程"><span class="toc-text">2.1、定位问题进程</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2、定位问题线程"><span class="toc-text">2.2、定位问题线程</span></a></li></ol></li></ol></li></ol>
+        </div>
+    
+</div>
 
-                
-
-                
-                <!-- disqus 评论框 start -->
-                <div class="comment">
-                    <div id="disqus_thread" class="disqus-thread"></div>
-                </div>
-                <!-- disqus 评论框 end -->
-                
-
-            </div>
-    <!-- Side Catalog Container -->
+<!-- Comments -->
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+    
         
-
-    <!-- Sidebar Container -->
-
-            <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                sidebar-container">
-
-                <!-- Featured Tags -->
-                
-                <section>
-                    <!-- no hr -->
-                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
-                    <div class="tags">
-                       
-                          <a class="tag" href="/tags/#performance tuning" title="performance tuning">performance tuning</a>
-                        
-                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
-                        
-                    </div>
-                </section>
-                
-
-                <!-- Friends Blog -->
-                
-                <hr>
-                <h5>FRIENDS</h5>
-                <ul class="list-inline">
-
-                    
-                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
-                    
-                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
-                    
-                </ul>
-                
-            </div>
-
-        </div>
-    </div>
-</article>
-
-
-
-
-
-<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES * * */
-    var disqus_shortname = "blog-yancy-cc";
-    var disqus_identifier = "http://blog.yancy.cc/2016/12/02/Web服务技术/tomcat/记录tomcat进程CPU使用率高排查故障经验/";
-    var disqus_url = "http://blog.yancy.cc/2016/12/02/Web服务技术/tomcat/记录tomcat进程CPU使用率高排查故障经验/";
-
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<!-- disqus 公共JS代码 end -->
-
-
-
-
-<!-- async load function -->
-<script>
-    function async(u, c) {
-      var d = document, t = 'script',
-          o = d.createElement(t),
-          s = d.getElementsByTagName(t)[0];
-      o.src = u;
-      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
-      s.parentNode.insertBefore(o, s);
-    }
-</script>
-<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
-<script>
-    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
-        anchors.options = {
-          visible: 'always',
-          placement: 'right',
-          icon: '#'
+            <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    <script>               
+        var disqus_shortname = 'null';
+        var disqus_config = function () {
+            this.page.url = 'http://blog.yancy.cc/2016/12/02/Web服务技术/tomcat/记录tomcat进程CPU使用率高排查故障经验/'; 
+            this.page.identifier = '/2016/12/02/Web服务技术/tomcat/记录tomcat进程CPU使用率高排查故障经验/';
         };
-        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
-    })
-</script>
-<style>
-    /* place left on bigger screen */
-    @media all and (min-width: 800px) {
-        .anchorjs-link{
-            position: absolute;
-            left: -0.75em;
-            font-size: 1.1em;
-            margin-top : -0.1em;
-        }
-    }
-</style>
-
-
-
-    <!-- Footer -->
-    <!-- Footer -->
-<footer>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <ul class="list-inline text-center">
-                
-                
-                    <li>
-                        <a target="_blank" href="https://twitter.com/yancyoo">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                
-                
-                    <li>
-                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa  fa-stack-1x fa-inverse">知</i>
-                            </span>
-                        </a>
-                    </li>
-                
-
-                
-                    <li>
-                        <a target="_blank" href="http://weibo.com/yangcvo">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                
-
-                
-
-                
-                    <li>
-                        <a target="_blank"  href="https://github.com/yangcvo">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                
-
-                
-
-                </ul>
-                <p class="copyright text-muted">
-                    Copyright &copy; Yancy&#39;s blog 2019 
-                    <br>
-                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
-                    <span style="display: inline-block; margin: 0 5px;">
-                        <i class="fa fa-heart"></i>
-                    </span>
-                    Ported by <a href="http://github.com/yangcvo">Github</a>
-
-                    <!--<iframe
-                        style="margin-left: 2px; margin-bottom:-5px;"
-                        frameborder="0" scrolling="0" width="91px" height="20px"
-                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
-                    </iframe>--> 
-		</p>
-            </div>
-        </div>
-    </div>
-</footer>
-
-<!-- jQuery -->
-<script src="/js/jquery.min.js"></script>
-
-<!-- Bootstrap Core JavaScript -->
-<script src="/js/bootstrap.min.js"></script>
-
-<!-- Custom Theme JavaScript -->
-<script src="/js/hux-blog.min.js"></script>
-
-
-<!-- async load function -->
-<script>
-    function async(u, c) {
-      var d = document, t = 'script',
-          o = d.createElement(t),
-          s = d.getElementsByTagName(t)[0];
-      o.src = u;
-      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
-      s.parentNode.insertBefore(o, s);
-    }
-</script>
-
-<!-- 
-     Because of the native support for backtick-style fenced code blocks 
-     right within the Markdown is landed in Github Pages, 
-     From V1.6, There is no need for Highlight.js, 
-     so Huxblog drops it officially.
-
-     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
-     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
--->
-<!--
-    <script>
-        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
-            hljs.initHighlightingOnLoad();
-        })
+        (function() { 
+            var d = document, s = d.createElement('script');
+            s.type = 'text/javascript';
+            s.src = '//'+disqus_shortname+'.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
     </script>
-    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
--->
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>                                
+</div>
+        
+    
+    </div>
+</div>
+      </div>
+    </div>
+  </div>
 
 
-<!-- jquery.tagcloud.js -->
-<script>
-    // only load tagcloud.js in tag.html
-    if($('#tag_cloud').length !== 0){
-        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
-            $.fn.tagcloud.defaults = {
-                //size: {start: 1, end: 1, unit: 'em'},
-                color: {start: '#bbbbee', end: '#0085a1'},
-            };
-            $('#tag_cloud a').tagcloud();
-        })
-    }
-</script>
-
-<!--fastClick.js -->
-<script>
-    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
-        var $nav = document.querySelector("nav");
-        if($nav) FastClick.attach($nav);
-    })
-</script>
-
-
-<!-- Google Analytics -->
-
-
-
-
-<!-- Baidu Tongji -->
-
-
-<!-- Side Catalog -->
-
-
-
-
-
-<!-- Image to hack wechat -->
-<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
-<!-- Migrate from head to bottom, no longer block render and still work -->
-
+<footer class="footer footer-default">
+        <div class="container">
+          <nav class="float-left">
+              <b>多喝热水</b>
+          </nav>
+          <div class="copyright float-right">
+            &copy;
+            <script>
+              document.write(new Date().getFullYear())
+            </script>&nbsp;<a href="https://hexo.io/zh-cn/" target="_blank">HEXO</a>&nbsp;<i class="material-icons">favorite_border</i>
+            <a href="https://github.com/invom/Material-T" target="_blank">Material-T</a>
+          </div>
+        </div>
+</footer>
+      <!--   Core JS Files   -->
+      <script src="/js/core/jquery.min.js"></script>
+      
+        <script src="/js/main.js"></script>
+       
+      <script src="/js/core/popper.min.js"></script>
+      <script src="/js/core/bootstrap-material-design.min.js"></script>
+      <script src="/js/plugins/moment.min.js"></script>
+      <!--	Plugin for the Datepicker, full documentation here: https://github.com/Eonasdan/bootstrap-datetimepicker -->
+      <!-- <script src="/js/plugins/bootstrap-datetimepicker.js"></script> -->
+      <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
+      <script src="/js/plugins/nouislider.min.js"></script>
+      <!-- Control Center for Material Kit: parallax effects, scripts for the example pages etc -->
+      <script src="/js/material-kit.min.js?v=2.0.5"></script>
+      
+      
+        <script src="/js/plugins/prettify.js"></script>
+        <script>
+            $(window).on('load',function(){
+                $('pre').addClass('prettyprint linenums');
+                prettyPrint();
+            })
+        </script>
+        
+          
+        
+      
 </body>
-
 </html>
