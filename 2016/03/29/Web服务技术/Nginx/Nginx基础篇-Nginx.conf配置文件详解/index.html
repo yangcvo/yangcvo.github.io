@@ -1,205 +1,494 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 
-
-
-
-
-
-
-
-
+<!-- Head tag -->
 <head>
-    <meta charset="utf-8" />
-    <link rel="apple-touch-icon" sizes="76x76" href="../img/favicon.png">
-    <link rel="icon" type="image/png" href="../img/favicon.png">
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no" name="viewport" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Personal blog, thinking and sharing of technology and life">
-    <meta name="author" content="Yancy">
-    <meta name="keywords" content="undefined">
-    <title>Nginx基础篇-Nginx.conf配置文件详解 ~ Yancy&#39;s blog</title>
-    <link rel="stylesheet" href="/css/Material_Icons.css">
-    <!-- <link rel="stylesheet" href="/css/font-awesome.css"> -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/style.css">
-    
-        <link rel="stylesheet" href="/css/post.css">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
         
-            <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+          Nginx基础篇-Nginx.conf配置文件详解 - Yancy&#39;s blog
         
-    
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2016/03/29/Web服务技术/Nginx/Nginx基础篇-Nginx.conf配置文件详解/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body class=" sidebar-collapse">
-<nav class="navbar navbar-transparent navbar-color-on-scroll fixed-top navbar-expand-lg" color-on-scroll="100" id="sectionsNav">
-    <div class="container">
-        <div class="navbar-translate">
-            <a class="navbar-brand" href="/">
-                Yancy&#39;s blog</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
                 <span class="sr-only">Toggle navigation</span>
-                <span class="navbar-toggler-icon"></span>
-                <span class="navbar-toggler-icon"></span>
-                <span class="navbar-toggler-icon"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
             </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
         </div>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ml-auto">
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
                     
-                        
-                            <li class="nav-item">
-                                <a class="nav-link" href="/archives/">
-                                    archives
-                                </a>
-                            </li>
-                        
-                            <li class="nav-item">
-                                <a class="nav-link" href="/about/">
-                                    about
-                                </a>
-                            </li>
+
                         
                     
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
                     
+
                         
-                            <li class="nav-item">
-                                <a class="nav-link" rel="tooltip" title="" data-placement="bottom" href="" target="_blank" data-original-title="See me here">
-                                    <i class="fa fa-github"></i>
-                                </a>
-                            </li>
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
                         
-                            <li class="nav-item">
-                                <a class="nav-link" rel="tooltip" title="" data-placement="bottom" href="" target="_blank" data-original-title="See me here">
-                                    <i class="fa fa-twitter"></i>
-                                </a>
-                            </li>
+                    
+
                         
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
                     
                 </ul>
             </div>
+        </div>
+        <!-- /.navbar-collapse -->
     </div>
+    <!-- /.container -->
 </nav>
-    
-  <div class="page-header header-filter" data-parallax="true" style="background-image: url('../img/post-head.jpg')">
-    
-      <div class="container">
-        <h1 class="title text-center">Nginx基础篇-Nginx.conf配置文件详解</h1>
-        <p class="text-center"><b>Tuesday, March 29th 2016, 5:25 pm</b></p>
-      </div>
-    
-  </div>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
 
 
-  <div class="main main-raised">
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
     <div class="container">
-      <div class="section">
-        
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Web Service" title="Web Service">Web Service</a>
+                        
+                          <a class="tag" href="/tags/#Nginx" title="Nginx">Nginx</a>
+                        
+                    </div>
+                    <h1>Nginx基础篇-Nginx.conf配置文件详解</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2016-03-29
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
 
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
 
-<div class="row">
-    <div class="col-md-7 offset-md-2">
-        <div class="post_content tocbot-content">
-            <h1 id="Nginx-conf配置文件详解"><a href="#Nginx-conf配置文件详解" class="headerlink" title="Nginx.conf配置文件详解"></a>Nginx.conf配置文件详解</h1><p>Nginx配置文件主要分成四部分：main（全局设置）、server（主机设置）、upstream（上游服务器设置，主要为反向代理、负载均衡相关配置）和 location（URL匹配特定位置后的设置），每部分包含若干个指令。main部分设置的指令将影响其它所有部分的设置；server部分的指令主要用于指定虚拟主机域名、IP和端口；upstream的指令用于设置一系列的后端服务器，设置反向代理及后端服务器的负载均衡；location部分用于匹配网页位置（比如，根目录“/”,“/images”,等等）。他们之间的关系式：server继承main，location继承server；upstream既不会继承指令也不会被继承。它有自己的特殊指令，不需要在其他地方的应用。</p>
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="Nginx-conf配置文件详解"><a href="#Nginx-conf配置文件详解" class="headerlink" title="Nginx.conf配置文件详解"></a>Nginx.conf配置文件详解</h1><p>Nginx配置文件主要分成四部分：main（全局设置）、server（主机设置）、upstream（上游服务器设置，主要为反向代理、负载均衡相关配置）和 location（URL匹配特定位置后的设置），每部分包含若干个指令。main部分设置的指令将影响其它所有部分的设置；server部分的指令主要用于指定虚拟主机域名、IP和端口；upstream的指令用于设置一系列的后端服务器，设置反向代理及后端服务器的负载均衡；location部分用于匹配网页位置（比如，根目录“/”,“/images”,等等）。他们之间的关系式：server继承main，location继承server；upstream既不会继承指令也不会被继承。它有自己的特殊指令，不需要在其他地方的应用。</p>
 <p>当前nginx支持的几个指令上下文：</p>
 <p>2.1 通用<br>下面的nginx.conf简单的实现nginx在前端做反向代理服务器的例子，处理js、png等静态文件，jsp等动态请求转发到其它服务器tomcat：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#定义Nginx运行的用户和用户</span></div><div class="line">user www www;</div><div class="line"></div><div class="line"><span class="comment">#nginx进程数，建议设置为等于CPU总核心数。这里我服务器4核</span></div><div class="line">worker_processes 4;</div><div class="line"></div><div class="line"><span class="comment">#一个1核CPU对应一个进程数管理。这样能很好分配资源。</span></div><div class="line"></div><div class="line">worker_cpu_affinity 00000001 00000010 00000100 00001000; </div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">#全局错误日志定义类型，[ debug | info | notice | warn | error | crit ]</span></div><div class="line">error_log /var/<span class="built_in">log</span>/nginx/error.log info;</div><div class="line"></div><div class="line"><span class="comment">#进程文件</span></div><div class="line">pid /var/run/nginx.pid;</div><div class="line"></div><div class="line"><span class="comment">#一个nginx进程打开的最多文件描述符数目，理论值应该是最多打开文件数（系统的值ulimit -n）与nginx进程数相除，但是nginx分配请求并不均匀，所以建议与ulimit -n的值保持一致。</span></div><div class="line">worker_rlimit_nofile 65535;</div><div class="line"></div><div class="line"><span class="comment">#工作模式与连接数上限</span></div><div class="line">events</div><div class="line">&#123;</div><div class="line"><span class="comment">#参考事件模型，use [ kqueue | rtsig | epoll | /dev/poll | select | poll ]; epoll模型是Linux 2.6以上版本内核中的高性能网络I/O模型，如果跑在FreeBSD上面，就用kqueue模型。</span></div><div class="line">use epoll;</div><div class="line"><span class="comment">#单个进程最大连接数（最大连接数=连接数*进程数）</span></div><div class="line">worker_connections 65535;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">#设定http服务器</span></div><div class="line">http</div><div class="line">&#123;</div><div class="line">include mime.types; <span class="comment">#文件扩展名与文件类型映射表</span></div><div class="line">default_type application/octet-stream; <span class="comment">#默认文件类型</span></div><div class="line">include /usr/<span class="built_in">local</span>/nginx/conf/proxy.conf;  </div><div class="line"><span class="comment">#charset utf-8; #默认编码</span></div><div class="line"></div><div class="line"><span class="comment"># log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '</span></div><div class="line"><span class="comment">#                      '$status $body_bytes_sent "$http_referer" '</span></div><div class="line"><span class="comment">#                      '"$http_user_agent" "$http_x_forwarded_for"';</span></div><div class="line"><span class="comment"># 默认的nginx日志格式                    </span></div><div class="line"></div><div class="line">server_names_hash_bucket_size 128; <span class="comment">#服务器名字的hash表大小</span></div><div class="line">client_header_buffer_size 32k; <span class="comment">#上传文件大小限制</span></div><div class="line">large_client_header_buffers 4 64k; <span class="comment">#设定请求缓</span></div><div class="line">client_max_body_size 8m; <span class="comment">#设定请求缓</span></div><div class="line">sendfile on; <span class="comment">#开启高效文件传输模式，sendfile指令指定nginx是否调用sendfile函数来输出文件，对于普通应用设为 on，如果用来进行下载等应用磁盘IO重负载应用，可设置为off，以平衡磁盘与网络I/O处理速度，降低系统的负载。注意：如果图片显示不正常把这个改成off。</span></div><div class="line">autoindex on; <span class="comment">#开启目录列表访问，合适下载服务器，默认关闭。</span></div><div class="line">tcp_nopush on; <span class="comment">#防止网络阻塞</span></div><div class="line">tcp_nodelay on; <span class="comment">#防止网络阻塞</span></div><div class="line">keepalive_timeout 120; <span class="comment">#长连接超时时间，单位是秒</span></div><div class="line"><span class="comment">#keepalive 超时时间，客户端到服务端的连接持续有效时间当出现对服务器后，继续请求时keepalive_timeout功能可避免建立或者重新。</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">#FastCGI相关参数是为了改善网站的性能：减少资源占用，提高访问速度。下面参数看字面意思都能理解。</span></div><div class="line">fastcgi_connect_timeout 300;</div><div class="line">fastcgi_send_timeout 300;</div><div class="line">fastcgi_read_timeout 300;</div><div class="line">fastcgi_buffer_size 64k;</div><div class="line">fastcgi_buffers 4 64k;</div><div class="line">fastcgi_busy_buffers_size 128k;</div><div class="line">fastcgi_temp_file_write_size 128k;</div><div class="line"></div><div class="line"><span class="comment">#gzip模块设置</span></div><div class="line">gzip on; <span class="comment">#开启gzip压缩输出</span></div><div class="line">gzip_min_length 1k; <span class="comment">#最小压缩文件大小</span></div><div class="line">gzip_buffers 4 16k; <span class="comment">#压缩缓冲区</span></div><div class="line">gzip_http_version 1.0; <span class="comment">#压缩版本（默认1.1，前端如果是squid2.5请使用1.0）</span></div><div class="line">gzip_comp_level 2; <span class="comment">#压缩等级</span></div><div class="line">gzip_types text/plain application/x-javascript text/css application/xml;</div><div class="line"><span class="comment">#压缩类型，默认就已经包含text/html，所以下面就不用再写了，写上去也不会有问题，但是会有一个warn。</span></div><div class="line">gzip_vary on;</div><div class="line"><span class="comment">#limit_zone crawler $binary_remote_addr 10m; #开启限制IP连接数的时候需要使用</span></div><div class="line"></div><div class="line">upstream blog.yangcvo.com &#123;</div><div class="line"><span class="comment">#upstream的负载均衡，weight是权重，可以根据机器配置定义权重。weigth参数表示权值，权值越高被分配到的几率越大。</span></div><div class="line">server 192.168.80.121:80 weight=3 max_fails=2 fail_timeout=30s;</div><div class="line">server 192.168.80.122:80 weight=2 max_fails=2 fail_timeout=30s;</div><div class="line">server 192.168.80.123:80 weight=3 max_fails=2 fail_timeout=30s;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">#虚拟主机的配置</span></div><div class="line">server</div><div class="line">&#123;</div><div class="line"><span class="comment">#监听端口</span></div><div class="line">listen 80;</div><div class="line"><span class="comment">#域名可以有多个，用空格隔开</span></div><div class="line">server_name www.yangcvo.com ;   <span class="comment">##(服务器名)</span></div><div class="line">index index.html index.htm index.php;</div><div class="line">root /data/www/ha97; </div><div class="line">location ~ .*\.(php|php5)?$</div><div class="line">&#123;</div><div class="line">fastcgi_pass 127.0.0.1:9000;</div><div class="line">fastcgi_index index.php;</div><div class="line">include fastcgi.conf;</div><div class="line">&#125;</div><div class="line"><span class="comment">#图片缓存时间设置</span></div><div class="line">location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$</div><div class="line">&#123;</div><div class="line">expires 10d;</div><div class="line">&#125;</div><div class="line"><span class="comment">#JS和CSS缓存时间设置</span></div><div class="line">location ~ .*\.(js|css)?$</div><div class="line">&#123;</div><div class="line">expires 1h;</div><div class="line">&#125;</div><div class="line"><span class="comment">#日志格式设定</span></div><div class="line">log_format access <span class="string">'$remote_addr - $remote_user [$time_local] "$request" '</span></div><div class="line"><span class="string">'$status $body_bytes_sent "$http_referer" '</span></div><div class="line"><span class="string">'"$http_user_agent" $http_x_forwarded_for'</span>;</div><div class="line"><span class="comment">#定义本虚拟主机的访问日志</span></div><div class="line">access_log /var/<span class="built_in">log</span>/nginx/access.log access;</div><div class="line"></div><div class="line"><span class="comment">#对 "/" 启用反向代理</span></div><div class="line">location / &#123;</div><div class="line">proxy_pass http://127.0.0.1:88;</div><div class="line">proxy_redirect off;</div><div class="line">proxy_set_header X-Real-IP <span class="variable">$remote_addr</span>;</div><div class="line"><span class="comment">#后端的Web服务器可以通过X-Forwarded-For获取用户真实IP</span></div><div class="line">proxy_set_header X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</div><div class="line"><span class="comment">#以下是一些反向代理的配置，可选。</span></div><div class="line">proxy_set_header Host <span class="variable">$host</span>;</div><div class="line">client_max_body_size 10m; <span class="comment">#允许客户端请求的最大单文件字节数</span></div><div class="line">client_body_buffer_size 128k; <span class="comment">#缓冲区代理缓冲用户端请求的最大字节数，</span></div><div class="line">proxy_connect_timeout 90; <span class="comment">#nginx跟后端服务器连接超时时间(代理连接超时)</span></div><div class="line">proxy_send_timeout 90; <span class="comment">#后端服务器数据回传时间(代理发送超时)</span></div><div class="line">proxy_read_timeout 90; <span class="comment">#连接成功后，后端服务器响应时间(代理接收超时)</span></div><div class="line">proxy_buffer_size 4k; <span class="comment">#设置代理服务器（nginx）保存用户头信息的缓冲区大小</span></div><div class="line">proxy_buffers 4 32k; <span class="comment">#proxy_buffers缓冲区，网页平均在32k以下的设置</span></div><div class="line">proxy_busy_buffers_size 64k; <span class="comment">#高负荷下缓冲大小（proxy_buffers*2）</span></div><div class="line">proxy_temp_file_write_size 64k;</div><div class="line"><span class="comment">#设定缓存文件夹大小，大于这个值，将从upstream服务器传</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">#设定查看Nginx状态的地址</span></div><div class="line">location /NginxStatus &#123;</div><div class="line">stub_status on;</div><div class="line">access_log on;</div><div class="line">auth_basic <span class="string">"NginxStatus"</span>;</div><div class="line">auth_basic_user_file conf/htpasswd;</div><div class="line"><span class="comment">#htpasswd文件的内容可以用apache提供的htpasswd工具来产生。</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">#本地动静分离反向代理配置</span></div><div class="line"><span class="comment">#所有jsp的页面均交由tomcat或resin处理</span></div><div class="line">location ~ .(jsp|jspx|<span class="keyword">do</span>)?$ &#123;</div><div class="line">proxy_set_header Host <span class="variable">$host</span>;</div><div class="line">proxy_set_header X-Real-IP <span class="variable">$remote_addr</span>;</div><div class="line">proxy_set_header X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</div><div class="line">proxy_pass http://127.0.0.1:8080;</div><div class="line">&#125;</div><div class="line"><span class="comment">#所有静态文件由nginx直接读取不经过tomcat或resin</span></div><div class="line">location ~ .*.(htm|html|gif|jpg|jpeg|png|bmp|swf|ioc|rar|zip|txt|flv|mid|doc|ppt|pdf|xls|mp3|wma)$</div><div class="line">&#123; expires 15d; &#125;</div><div class="line">location ~ .*.(js|css)?$</div><div class="line">&#123; expires 1h; &#125;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div></pre></td><td class="code"><pre><div class="line">user  www www;</div><div class="line">worker_processes  2;</div><div class="line"></div><div class="line">error_log  logs/error.log;</div><div class="line"><span class="comment">#error_log  logs/error.log  notice;</span></div><div class="line"><span class="comment">#error_log  logs/error.log  info;</span></div><div class="line"></div><div class="line">pid        logs/nginx.pid;</div><div class="line"></div><div class="line"></div><div class="line">events &#123;</div><div class="line">    use epoll;</div><div class="line">    worker_connections  65535;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">http &#123;</div><div class="line">    include       mime.types;</div><div class="line">    default_type  application/octet-stream;</div><div class="line">    include /usr/<span class="built_in">local</span>/nginx/conf/proxy.conf;</div><div class="line">    <span class="comment">#log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '</span></div><div class="line">    <span class="comment">#                  '$status $body_bytes_sent "$http_referer" '</span></div><div class="line">    <span class="comment">#                  '"$http_user_agent" "$http_x_forwarded_for"';</span></div><div class="line"></div><div class="line">    <span class="comment">#access_log  logs/access.log  main;</span></div><div class="line"></div><div class="line">    sendfile        on;</div><div class="line">    <span class="comment"># tcp_nopush     on;</span></div><div class="line"></div><div class="line">    keepalive_timeout  65;</div><div class="line"></div><div class="line">  <span class="comment"># gzip压缩功能设置</span></div><div class="line">    gzip on;</div><div class="line">    gzip_min_length 1k;</div><div class="line">    gzip_buffers    4 16k;</div><div class="line">    gzip_http_version 1.0;</div><div class="line">    gzip_comp_level 6;</div><div class="line">    gzip_types text/html text/plain text/css text/javascript application/json application/javascript application/x-javascript application/xml;</div><div class="line">    gzip_vary on;</div><div class="line">  </div><div class="line">  <span class="comment"># http_proxy 设置</span></div><div class="line">    client_max_body_size   10m;</div><div class="line">    client_body_buffer_size   128k;</div><div class="line">    proxy_connect_timeout   75;</div><div class="line">    proxy_send_timeout   75;</div><div class="line">    proxy_read_timeout   75;</div><div class="line">    proxy_buffer_size   4k;</div><div class="line">    proxy_buffers   4 32k;</div><div class="line">    proxy_busy_buffers_size   64k;</div><div class="line">    proxy_temp_file_write_size  64k;</div><div class="line">    proxy_temp_path   /usr/<span class="built_in">local</span>/nginx/proxy_temp 1 2;</div><div class="line"></div><div class="line">  <span class="comment"># 设定负载均衡后台服务器列表 </span></div><div class="line">    upstream  backend  &#123; </div><div class="line">              <span class="comment">#ip_hash; </span></div><div class="line">              server   192.168.10.100:8080 max_fails=2 fail_timeout=30s ;  </div><div class="line">              server   192.168.10.101:8080 max_fails=2 fail_timeout=30s ;  </div><div class="line">    &#125;</div><div class="line"></div><div class="line">  <span class="comment"># 很重要的虚拟主机配置</span></div><div class="line">    server &#123;</div><div class="line">        listen       80;</div><div class="line">        server_name  itoatest.example.com;</div><div class="line">        root   /apps/oaapp;</div><div class="line"></div><div class="line">        charset utf-8;</div><div class="line">        access_log  logs/host.access.log  main;</div><div class="line"></div><div class="line">        <span class="comment">#对 / 所有做负载均衡+反向代理</span></div><div class="line">        location / &#123;</div><div class="line">            root   /apps/oaapp;</div><div class="line">            index  index.jsp index.html index.htm;</div><div class="line"></div><div class="line">            proxy_pass        http://backend;  </div><div class="line">            proxy_redirect off;</div><div class="line">            <span class="comment"># 后端的Web服务器可以通过X-Forwarded-For获取用户真实IP</span></div><div class="line">            proxy_set_header  Host  <span class="variable">$host</span>;</div><div class="line">            proxy_set_header  X-Real-IP  <span class="variable">$remote_addr</span>;  </div><div class="line">            proxy_set_header  X-Forwarded-For  <span class="variable">$proxy_add_x_forwarded_for</span>;</div><div class="line">            proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;</div><div class="line">            </div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">#静态文件，nginx自己处理，不去backend请求tomcat</span></div><div class="line">        location  ~* /download/ &#123;  </div><div class="line">            root /apps/oa/fs;  </div><div class="line">            </div><div class="line">        &#125;</div><div class="line">        location ~ .*\.(gif|jpg|jpeg|bmp|png|ico|txt|js|css)$   </div><div class="line">        &#123;   </div><div class="line">            root /apps/oaapp;   </div><div class="line">            expires      7d; </div><div class="line">        &#125;</div><div class="line">       	location /nginx_status &#123;</div><div class="line">            stub_status on;</div><div class="line">            access_log off;</div><div class="line">            allow 192.168.10.0/24;</div><div class="line">            deny all;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        location ~ ^/(WEB-INF)/ &#123;   </div><div class="line">            deny all;   </div><div class="line">        &#125;</div><div class="line">        <span class="comment">#error_page  404              /404.html;</span></div><div class="line"></div><div class="line">        <span class="comment"># redirect server error pages to the static page /50x.html</span></div><div class="line">        <span class="comment">#</span></div><div class="line">        error_page   500 502 503 504  /50x.html;</div><div class="line">        location = /50x.html &#123;</div><div class="line">            root   html;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
 
-        </div>
-        <br><br>
-        <div>
-            <p>
-                     
-                    <span class="badge badge-default">#&nbsp;Web Service</span>
-                    &nbsp;
-                     
-                    <span class="badge badge-default">#&nbsp;Nginx</span>
-                    &nbsp;
+
+                <hr>
+
+                
+
+                <ul class="pager">
                     
-            </p>
+                        <li class="previous">
+                            <a href="/2016/04/02/Web服务技术/Nginx/http response code 301 和 302分析总结/" data-toggle="tooltip" data-placement="top" title="Http response code 301 和 302分析总结">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/03/29/Web服务技术/Nginx/nginx基础篇-日志管理和切割/" data-toggle="tooltip" data-placement="top" title="Nginx基础篇-日志管理和切割">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Web Service" title="Web Service">Web Service</a>
+                        
+                          <a class="tag" href="/tags/#Nginx" title="Nginx">Nginx</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
         </div>
     </div>
-    <!-- TOC -->
-    
-        <div class="col-md-3">
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Nginx-conf配置文件详解"><span class="toc-text">Nginx.conf配置文件详解</span></a></li></ol>
-        </div>
-    
-</div>
+</article>
 
-<!-- Comments -->
-<div class="row">
-    <div class="col-md-8 offset-md-2">
-    
-        
-            <div class="disqus" style="width:100%">
-    <div id="disqus_thread"></div>
-    <script>               
-        var disqus_shortname = 'null';
-        var disqus_config = function () {
-            this.page.url = 'http://blog.yancy.cc/2016/03/29/Web服务技术/Nginx/Nginx基础篇-Nginx.conf配置文件详解/'; 
-            this.page.identifier = '/2016/03/29/Web服务技术/Nginx/Nginx基础篇-Nginx.conf配置文件详解/';
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yancy-cc";
+    var disqus_identifier = "http://blog.yancy.cc/2016/03/29/Web服务技术/Nginx/Nginx基础篇-Nginx.conf配置文件详解/";
+    var disqus_url = "http://blog.yancy.cc/2016/03/29/Web服务技术/Nginx/Nginx基础篇-Nginx.conf配置文件详解/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
         };
-        (function() { 
-            var d = document, s = d.createElement('script');
-            s.type = 'text/javascript';
-            s.src = '//'+disqus_shortname+'.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>                                
-</div>
-        
-    
-    </div>
-</div>
-      </div>
-    </div>
-  </div>
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
 
 
-<footer class="footer footer-default">
-        <div class="container">
-          <nav class="float-left">
-              <b>多喝热水</b>
-          </nav>
-          <div class="copyright float-right">
-            &copy;
-            <script>
-              document.write(new Date().getFullYear())
-            </script>&nbsp;<a href="https://hexo.io/zh-cn/" target="_blank">HEXO</a>&nbsp;<i class="material-icons">favorite_border</i>
-            <a href="https://github.com/invom/Material-T" target="_blank">Material-T</a>
-          </div>
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
         </div>
+    </div>
 </footer>
-      <!--   Core JS Files   -->
-      <script src="/js/core/jquery.min.js"></script>
-      
-        <script src="/js/main.js"></script>
-       
-      <script src="/js/core/popper.min.js"></script>
-      <script src="/js/core/bootstrap-material-design.min.js"></script>
-      <script src="/js/plugins/moment.min.js"></script>
-      <!--	Plugin for the Datepicker, full documentation here: https://github.com/Eonasdan/bootstrap-datetimepicker -->
-      <!-- <script src="/js/plugins/bootstrap-datetimepicker.js"></script> -->
-      <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
-      <script src="/js/plugins/nouislider.min.js"></script>
-      <!-- Control Center for Material Kit: parallax effects, scripts for the example pages etc -->
-      <script src="/js/material-kit.min.js?v=2.0.5"></script>
-      
-      
-        <script src="/js/plugins/prettify.js"></script>
-        <script>
-            $(window).on('load',function(){
-                $('pre').addClass('prettyprint linenums');
-                prettyPrint();
-            })
-        </script>
-        
-          
-        
-      
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
 </body>
+
 </html>

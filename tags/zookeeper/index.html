@@ -1,1008 +1,312 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 
-
-
-
-
-
-
-
-
+<!-- Head tag -->
 <head>
-    <meta charset="utf-8" />
-    <link rel="apple-touch-icon" sizes="76x76" href="../img/favicon.png">
-    <link rel="icon" type="image/png" href="../img/favicon.png">
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no" name="viewport" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Personal blog, thinking and sharing of technology and life">
-    <meta name="author" content="Yancy">
-    <meta name="keywords" content="undefined">
-    <title>Yancy&#39;s blog</title>
-    <link rel="stylesheet" href="/css/Material_Icons.css">
-    <!-- <link rel="stylesheet" href="/css/font-awesome.css"> -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/style.css">
-    
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Yancy&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/tags/ZooKeeper/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body class=" sidebar-collapse">
-<nav class="navbar navbar-transparent navbar-color-on-scroll fixed-top navbar-expand-lg" color-on-scroll="100" id="sectionsNav">
-    <div class="container">
-        <div class="navbar-translate">
-            <a class="navbar-brand" href="/">
-                Yancy&#39;s blog</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
                 <span class="sr-only">Toggle navigation</span>
-                <span class="navbar-toggler-icon"></span>
-                <span class="navbar-toggler-icon"></span>
-                <span class="navbar-toggler-icon"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
             </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
         </div>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ml-auto">
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
                     
-                        
-                            <li class="nav-item">
-                                <a class="nav-link" href="/archives/">
-                                    archives
-                                </a>
-                            </li>
-                        
-                            <li class="nav-item">
-                                <a class="nav-link" href="/about/">
-                                    about
-                                </a>
-                            </li>
+
                         
                     
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
                     
+
                         
-                            <li class="nav-item">
-                                <a class="nav-link" rel="tooltip" title="" data-placement="bottom" href="" target="_blank" data-original-title="See me here">
-                                    <i class="fa fa-github"></i>
-                                </a>
-                            </li>
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
                         
-                            <li class="nav-item">
-                                <a class="nav-link" rel="tooltip" title="" data-placement="bottom" href="" target="_blank" data-original-title="See me here">
-                                    <i class="fa fa-twitter"></i>
-                                </a>
-                            </li>
+                    
+
                         
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
                     
                 </ul>
             </div>
+        </div>
+        <!-- /.navbar-collapse -->
     </div>
+    <!-- /.container -->
 </nav>
-    
-  <div class="page-header header-filter" data-parallax="true" style="background-image: url('../img/post-head.jpg')">
-    
-      <div class="container">
-        <h1 class="title text-center">Archive</h1>
-      </div>
-    
-  </div>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
 
 
-  <div class="main main-raised">
+    <!-- Main Content -->
+    <!-- Default Archive layout, we use archives instead. -->
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
     <div class="container">
-      <div class="section">
         <div class="row">
-    <div class="col-md-10 offset-md-1">
-        <div class="card">
-            <div class="card-body">
-                <ul class="nav nav-pills nav-pills-rose">
-                    <li class="nav-item"><a class="nav-link active" href="#all" data-toggle="tab">All </a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Node.js" data-toggle="tab">Node.js</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Grunt" data-toggle="tab">Grunt</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Bigdata Hadoop" data-toggle="tab">Bigdata Hadoop</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Ambari" data-toggle="tab">Ambari</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Shell programming" data-toggle="tab">Shell programming</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#OpenLDAP" data-toggle="tab">OpenLDAP</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Operation safety" data-toggle="tab">Operation safety</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Automation Deploy" data-toggle="tab">Automation Deploy</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#CDN" data-toggle="tab">CDN</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Performance monitoring" data-toggle="tab">Performance monitoring</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Operation and maintenance Road" data-toggle="tab">Operation and maintenance Road</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Kafka" data-toggle="tab">Kafka</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Rabbitmq" data-toggle="tab">Rabbitmq</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Prometheus" data-toggle="tab">Prometheus</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Grafana" data-toggle="tab">Grafana</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Zabbix" data-toggle="tab">Zabbix</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Countly" data-toggle="tab">Countly</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Web Service" data-toggle="tab">Web Service</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Nginx" data-toggle="tab">Nginx</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#ZooKeeper" data-toggle="tab">ZooKeeper</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Java+Tomcat notes" data-toggle="tab">Java+Tomcat notes</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#performance tuning" data-toggle="tab">performance tuning</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Java" data-toggle="tab">Java</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Ansible" data-toggle="tab">Ansible</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Saltstack" data-toggle="tab">Saltstack</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Jenkins" data-toggle="tab">Jenkins</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Manven" data-toggle="tab">Manven</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Smokeping" data-toggle="tab">Smokeping</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#IDC监控" data-toggle="tab">IDC监控</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Zabbix monitoring" data-toggle="tab">Zabbix monitoring</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#logstash" data-toggle="tab">logstash</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Phabricator" data-toggle="tab">Phabricator</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Cacti monitoring" data-toggle="tab">Cacti monitoring</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Elasticsearch" data-toggle="tab">Elasticsearch</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Kibana" data-toggle="tab">Kibana</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Log analysis platform" data-toggle="tab">Log analysis platform</a></li>
-                    
-                        <li class="nav-item"><a class="nav-link" href="#Graylog" data-toggle="tab">Graylog</a></li>
-                    
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
                 </ul>
-                <div class="tab-content tab-space">
-                    <div class="tab-pane active" id="all">
-                        <p class="h3">Total: 114</p>
-                        <hr>
-                        
-                            <div class="row">
-                                <div class="col-md-11">
-                                    <p class="h6">2017-08-27&nbsp;--&nbsp;<a href="/2017/08/27/Bigdata-hadoop/zookeeper/Bigdata-Zookeeper集群日志配置详解和清理自定义启动内存 /" class="h3 title">Bigdata-Zookeeper集群日志配置详解和清理自定义启动内存</a></p>
-                                </div>
-                            </div>
-                        
-                            <div class="row">
-                                <div class="col-md-11">
-                                    <p class="h6">2017-05-27&nbsp;--&nbsp;<a href="/2017/05/27/Bigdata-hadoop/zookeeper/Bigdata-ZooKeeper的配置详解优化/" class="h3 title">Bigdata-ZooKeeper的配置详解优化</a></p>
-                                </div>
-                            </div>
-                        
-                            <div class="row">
-                                <div class="col-md-11">
-                                    <p class="h6">2017-05-26&nbsp;--&nbsp;<a href="/2017/05/26/Bigdata-hadoop/zookeeper/Bigdata-ZooKeeper集群快速搭建配置与扩容/" class="h3 title">Bigdata-ZooKeeper集群快速搭建配置与扩容</a></p>
-                                </div>
-                            </div>
-                        
-                            <div class="row">
-                                <div class="col-md-11">
-                                    <p class="h6">2017-05-04&nbsp;--&nbsp;<a href="/2017/05/04/Bigdata-hadoop/zookeeper/Zookeeper 报错：Unable to connect to zookeeper server within timeout: 6000/" class="h3 title">Zookeeper 报错：Unable to connect to zookeeper server within timeout:6000</a></p>
-                                </div>
-                            </div>
-                         
-                    </div>
-                    
-                        <div class="tab-pane" id="Node.js">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Grunt">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Bigdata Hadoop">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Ambari">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Shell programming">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="OpenLDAP">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Operation safety">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Automation Deploy">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="CDN">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Performance monitoring">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Operation and maintenance Road">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Kafka">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Rabbitmq">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Prometheus">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Grafana">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Zabbix">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Countly">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Web Service">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Nginx">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="ZooKeeper">
-                                                            
-                                
-                                
-                                    <div class="row">
-                                        <div class="col-md-11">
-                                            <p class="h6">2017-08-27&nbsp;--&nbsp;<a href="/2017/08/27/Bigdata-hadoop/zookeeper/Bigdata-Zookeeper集群日志配置详解和清理自定义启动内存 /" class="h3 title">Bigdata-Zookeeper集群日志配置详解和清理自定义启动内存</a></p>
-                                        </div>
-                                    </div>
-                                
-                                
-                                                            
-                                
-                                
-                                    <div class="row">
-                                        <div class="col-md-11">
-                                            <p class="h6">2017-05-27&nbsp;--&nbsp;<a href="/2017/05/27/Bigdata-hadoop/zookeeper/Bigdata-ZooKeeper的配置详解优化/" class="h3 title">Bigdata-ZooKeeper的配置详解优化</a></p>
-                                        </div>
-                                    </div>
-                                
-                                
-                                                            
-                                
-                                
-                                    <div class="row">
-                                        <div class="col-md-11">
-                                            <p class="h6">2017-05-26&nbsp;--&nbsp;<a href="/2017/05/26/Bigdata-hadoop/zookeeper/Bigdata-ZooKeeper集群快速搭建配置与扩容/" class="h3 title">Bigdata-ZooKeeper集群快速搭建配置与扩容</a></p>
-                                        </div>
-                                    </div>
-                                
-                                
-                                                            
-                                
-                                
-                                    <div class="row">
-                                        <div class="col-md-11">
-                                            <p class="h6">2017-05-04&nbsp;--&nbsp;<a href="/2017/05/04/Bigdata-hadoop/zookeeper/Zookeeper 报错：Unable to connect to zookeeper server within timeout: 6000/" class="h3 title">Zookeeper 报错：Unable to connect to zookeeper server within timeout:6000</a></p>
-                                        </div>
-                                    </div>
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Java+Tomcat notes">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="performance tuning">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Java">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Ansible">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Saltstack">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Jenkins">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Manven">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Smokeping">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="IDC监控">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Zabbix monitoring">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="logstash">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Phabricator">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Cacti monitoring">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Elasticsearch">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Kibana">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Log analysis platform">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                        <div class="tab-pane" id="Graylog">
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                                                            
-                                
-                                
-                                
-                             
-                        </div>
-                    
-                </div>
-            </div>  
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
         </div>
     </div>
-</div>
-
-      </div>
-    </div>
-  </div>
-
-
-<footer class="footer footer-default">
-        <div class="container">
-          <nav class="float-left">
-              <b>多喝热水</b>
-          </nav>
-          <div class="copyright float-right">
-            &copy;
-            <script>
-              document.write(new Date().getFullYear())
-            </script>&nbsp;<a href="https://hexo.io/zh-cn/" target="_blank">HEXO</a>&nbsp;<i class="material-icons">favorite_border</i>
-            <a href="https://github.com/invom/Material-T" target="_blank">Material-T</a>
-          </div>
-        </div>
 </footer>
-      <!--   Core JS Files   -->
-      <script src="/js/core/jquery.min.js"></script>
-       
-      <script src="/js/core/popper.min.js"></script>
-      <script src="/js/core/bootstrap-material-design.min.js"></script>
-      <script src="/js/plugins/moment.min.js"></script>
-      <!--	Plugin for the Datepicker, full documentation here: https://github.com/Eonasdan/bootstrap-datetimepicker -->
-      <!-- <script src="/js/plugins/bootstrap-datetimepicker.js"></script> -->
-      <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
-      <script src="/js/plugins/nouislider.min.js"></script>
-      <!-- Control Center for Material Kit: parallax effects, scripts for the example pages etc -->
-      <script src="/js/material-kit.min.js?v=2.0.5"></script>
-      
-      
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
 </body>
+
 </html>

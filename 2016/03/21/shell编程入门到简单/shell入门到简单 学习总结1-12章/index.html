@@ -1,106 +1,197 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 
-
-
-
-
-
-
-
-
+<!-- Head tag -->
 <head>
-    <meta charset="utf-8" />
-    <link rel="apple-touch-icon" sizes="76x76" href="../img/favicon.png">
-    <link rel="icon" type="image/png" href="../img/favicon.png">
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no" name="viewport" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Personal blog, thinking and sharing of technology and life">
-    <meta name="author" content="Yancy">
-    <meta name="keywords" content="undefined">
-    <title>shell入门到简单 学习总结1-12章 ~ Yancy&#39;s blog</title>
-    <link rel="stylesheet" href="/css/Material_Icons.css">
-    <!-- <link rel="stylesheet" href="/css/font-awesome.css"> -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/style.css">
-    
-        <link rel="stylesheet" href="/css/post.css">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
         
-            <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+          shell入门到简单 学习总结1-12章 - Yancy&#39;s blog
         
-    
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2016/03/21/shell编程入门到简单/shell入门到简单 学习总结1-12章/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body class=" sidebar-collapse">
-<nav class="navbar navbar-transparent navbar-color-on-scroll fixed-top navbar-expand-lg" color-on-scroll="100" id="sectionsNav">
-    <div class="container">
-        <div class="navbar-translate">
-            <a class="navbar-brand" href="/">
-                Yancy&#39;s blog</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
                 <span class="sr-only">Toggle navigation</span>
-                <span class="navbar-toggler-icon"></span>
-                <span class="navbar-toggler-icon"></span>
-                <span class="navbar-toggler-icon"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
             </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
         </div>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ml-auto">
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
                     
-                        
-                            <li class="nav-item">
-                                <a class="nav-link" href="/archives/">
-                                    archives
-                                </a>
-                            </li>
-                        
-                            <li class="nav-item">
-                                <a class="nav-link" href="/about/">
-                                    about
-                                </a>
-                            </li>
+
                         
                     
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
                     
+
                         
-                            <li class="nav-item">
-                                <a class="nav-link" rel="tooltip" title="" data-placement="bottom" href="" target="_blank" data-original-title="See me here">
-                                    <i class="fa fa-github"></i>
-                                </a>
-                            </li>
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
                         
-                            <li class="nav-item">
-                                <a class="nav-link" rel="tooltip" title="" data-placement="bottom" href="" target="_blank" data-original-title="See me here">
-                                    <i class="fa fa-twitter"></i>
-                                </a>
-                            </li>
+                    
+
                         
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
                     
                 </ul>
             </div>
+        </div>
+        <!-- /.navbar-collapse -->
     </div>
+    <!-- /.container -->
 </nav>
-    
-  <div class="page-header header-filter" data-parallax="true" style="background-image: url('../img/post-head.jpg')">
-    
-      <div class="container">
-        <h1 class="title text-center">shell入门到简单 学习总结1-12章</h1>
-        <p class="text-center"><b>Monday, March 21st 2016, 6:53 pm</b></p>
-      </div>
-    
-  </div>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
 
 
-  <div class="main main-raised">
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
     <div class="container">
-      <div class="section">
-        
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Shell programming" title="Shell programming">Shell programming</a>
+                        
+                    </div>
+                    <h1>shell入门到简单 学习总结1-12章</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2016-03-21
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
 
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
 
-<div class="row">
-    <div class="col-md-7 offset-md-2">
-        <div class="post_content tocbot-content">
-            <h2 id="TOC"><a href="#TOC" class="headerlink" title="TOC"></a>TOC</h2><p>[TOC]</p>
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="TOC"><a href="#TOC" class="headerlink" title="TOC"></a>TOC</h2><p>[TOC]</p>
 <h2 id="第一章Shell前言："><a href="#第一章Shell前言：" class="headerlink" title="第一章Shell前言："></a>第一章Shell前言：</h2><p>Shell本身是一种用C语言编写的程序，从用户的角度来看，Shell是用户与Linux操作系统沟通的桥梁。用户既可以输入命令执行，又可以利用 Shell脚本编程，完成更加复杂的操作。在Linux GUI日益完善的今天在运维领域Shell编程仍然起着不可忽视的作用。深入地了解和熟练地掌握Shell编程，是每一个Linux用户的必修。</p>
 <a id="more"></a>
 <p><strong>1.1 Linux的Shell种类：Bash在日常工作中被广泛使用，同时，Bash也是大多数Linux系统默认的Shell. 经常可以看到<code>#!/bin/sh</code>，它同样也可以改为<code>#!/bin/bash</code>。</strong></p>
@@ -266,97 +357,294 @@
 <h4 id="5-shell-单引号，双引号-区别与使用"><a href="#5-shell-单引号，双引号-区别与使用" class="headerlink" title="5. shell 单引号，双引号 区别与使用"></a>5. shell 单引号，双引号 区别与使用</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">单引号</div><div class="line"></div><div class="line">str=<span class="string">'this is a string'</span></div><div class="line"></div><div class="line">单引号字符串的限制：</div><div class="line">* 单引号里的任何字符都会原样输出，单引号字符串中的变量是无效的；</div><div class="line">* 单引号字串中不能出现单引号（对单引号使用转义符后也不行）。</div></pre></td></tr></table></figure>
 <h4 id="6-shell-中的-gt-dev-null-2-gt-amp-1-是什么鬼？"><a href="#6-shell-中的-gt-dev-null-2-gt-amp-1-是什么鬼？" class="headerlink" title="6. shell 中的&gt;/dev/null 2&gt;&amp;1 是什么鬼？"></a>6. shell 中的&gt;/dev/null 2&gt;&amp;1 是什么鬼？</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">### 这条命令其实分为两命令，一个是&gt;/dev/null，另一个是2&gt;&amp;1。</span></div><div class="line"></div><div class="line">1. &gt;/dev/null</div><div class="line">这条命令的作用是将标准输出1重定向到/dev/null中。/dev/null代表linux的空设备文件，所有往这个文件里面写入的内容都会丢失，俗称“黑洞”。那么执行了&gt;/dev/null之后，标准输出就会不再存在，没有任何地方能够找到输出的内容。</div><div class="line"></div><div class="line">2. 2&gt;&amp;1</div><div class="line">这条命令用到了重定向绑定，采用&amp;可以将两个输出绑定在一起。这条命令的作用是错误输出将和标准输出同用一个文件描述符，说人话就是错误输出将会和标准输出输出到同一个地方。</div><div class="line"></div><div class="line">linux在执行shell命令之前，就会确定好所有的输入输出位置，并且从左到右依次执行重定向的命令，所以&gt;/dev/null 2&gt;&amp;1的作用就是让标准输出重定向到/dev/null中（丢弃标准输出），然后错误输出由于重用了标准输出的描述符，所以错误输出也被定向到了/dev/null中，错误输出同样也被丢弃了。执行了这条命令之后，该条shell命令将不会输出任何信息到控制台，也不会有任何信息输出到文件中。</div><div class="line"></div><div class="line">&gt;/dev/null 2&gt;&amp;1 VS 2&gt;&amp;1 &gt;/dev/null</div><div class="line">再回到文章的开头，我说我弄反了&gt;/dev/null和2&gt;&amp;1拼装的顺序，导致出了一点小问题。乍眼看这两条命令貌似是等同的，但其实大为不同。刚才提到了，linux在执行shell命令之前，就会确定好所有的输入输出位置，并且从左到右依次执行重定向的命令。那么我们同样从左到右地来分析2&gt;&amp;1 &gt;/dev/null：</div><div class="line"></div><div class="line">2&gt;&amp;1，将错误输出绑定到标准输出上。由于此时的标准输出是默认值，也就是输出到屏幕，所以错误输出会输出到屏幕。</div><div class="line">&gt;/dev/null，将标准输出1重定向到/dev/null中。</div><div class="line">&gt;</div><div class="line">&gt;/dev/null 2&gt;&amp;1</div><div class="line"></div><div class="line"><span class="comment">### nohup结合</span></div><div class="line"></div><div class="line">我们经常使用nohup <span class="built_in">command</span> &amp;命令形式来启动一些后台程序，比如一些java服务：</div><div class="line"></div><div class="line"><span class="comment"># nohup java -jar xxxx.jar &gt;/dev/null 2&gt;&amp;1 &amp;</span></div><div class="line">总而言之，在工作中用到最多的就是nohup <span class="built_in">command</span> &gt;/dev/null 2&gt;&amp;1 &amp;命令，希望大家能够好好掌握。</div></pre></td></tr></table></figure>
 
-        </div>
-        <br><br>
-        <div>
-            <p>
-                     
-                    <span class="badge badge-default">#&nbsp;Shell programming</span>
-                    &nbsp;
+
+                <hr>
+
+                
+
+                <ul class="pager">
                     
-            </p>
+                        <li class="previous">
+                            <a href="/2016/03/26/Web服务技术/Nginx/Nginx+Tomcat实现反向代理优化与配置 /" data-toggle="tooltip" data-placement="top" title="Nginx+Tomcat实现反向代理优化与配置">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/03/21/Web服务技术/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/" data-toggle="tooltip" data-placement="top" title="tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Shell programming" title="Shell programming">Shell programming</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
         </div>
     </div>
-    <!-- TOC -->
-    
-        <div class="col-md-3">
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#TOC"><span class="toc-text">TOC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第一章Shell前言："><span class="toc-text">第一章Shell前言：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第二章Shell脚本格式"><span class="toc-text">第二章Shell脚本格式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第三章Shell变量"><span class="toc-text">第三章Shell变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第四章Shell特殊变量：-0-和命令行参数"><span class="toc-text">第四章Shell特殊变量：$0,$#,$*,$@,$?,$$和命令行参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第五章-Shell替换：Shell变量替换，命令替换，转义字符"><span class="toc-text">第五章 Shell替换：Shell变量替换，命令替换，转义字符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第六章Shell注释"><span class="toc-text">第六章Shell注释</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第七章Shell-echo命令和printf命令：格式化输出语句"><span class="toc-text">第七章Shell echo命令和printf命令：格式化输出语句</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第八章-Shell-if-else-判断语句"><span class="toc-text">第八章 Shell if else 判断语句</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第九章-Shell-for循环"><span class="toc-text">第九章 Shell for循环</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第十章-Shell-while循环"><span class="toc-text">第十章 Shell while循环</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第十一章：-Shell输入输出重定向：Shell-Here-Document，-dev-null文件"><span class="toc-text">第十一章： Shell输入输出重定向：Shell Here Document，/dev/null文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Shell个人总结常规使用较多的一些参数语法。"><span class="toc-text">Shell个人总结常规使用较多的一些参数语法。</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Shell脚本中让进程休眠的方法（sleep用法）"><span class="toc-text">1.Shell脚本中让进程休眠的方法（sleep用法）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-SHELL脚本中有exit-0，和exit-1-的区别"><span class="toc-text">2.SHELL脚本中有exit 0，和exit 1 的区别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-shell中获取时间"><span class="toc-text">3.shell中获取时间</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-shell-过滤文件-重复如何去重"><span class="toc-text">4.shell 过滤文件 重复如何去重</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-shell-单引号，双引号-区别与使用"><span class="toc-text">5. shell 单引号，双引号 区别与使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-shell-中的-gt-dev-null-2-gt-amp-1-是什么鬼？"><span class="toc-text">6. shell 中的>/dev/null 2>&1 是什么鬼？</span></a></li></ol></li></ol></li></ol>
-        </div>
-    
-</div>
+</article>
 
-<!-- Comments -->
-<div class="row">
-    <div class="col-md-8 offset-md-2">
-    
-        
-            <div class="disqus" style="width:100%">
-    <div id="disqus_thread"></div>
-    <script>               
-        var disqus_shortname = 'null';
-        var disqus_config = function () {
-            this.page.url = 'http://blog.yancy.cc/2016/03/21/shell编程入门到简单/shell入门到简单 学习总结1-12章/'; 
-            this.page.identifier = '/2016/03/21/shell编程入门到简单/shell入门到简单 学习总结1-12章/';
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yancy-cc";
+    var disqus_identifier = "http://blog.yancy.cc/2016/03/21/shell编程入门到简单/shell入门到简单 学习总结1-12章/";
+    var disqus_url = "http://blog.yancy.cc/2016/03/21/shell编程入门到简单/shell入门到简单 学习总结1-12章/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
         };
-        (function() { 
-            var d = document, s = d.createElement('script');
-            s.type = 'text/javascript';
-            s.src = '//'+disqus_shortname+'.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>                                
-</div>
-        
-    
-    </div>
-</div>
-      </div>
-    </div>
-  </div>
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
 
 
-<footer class="footer footer-default">
-        <div class="container">
-          <nav class="float-left">
-              <b>多喝热水</b>
-          </nav>
-          <div class="copyright float-right">
-            &copy;
-            <script>
-              document.write(new Date().getFullYear())
-            </script>&nbsp;<a href="https://hexo.io/zh-cn/" target="_blank">HEXO</a>&nbsp;<i class="material-icons">favorite_border</i>
-            <a href="https://github.com/invom/Material-T" target="_blank">Material-T</a>
-          </div>
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
         </div>
+    </div>
 </footer>
-      <!--   Core JS Files   -->
-      <script src="/js/core/jquery.min.js"></script>
-      
-        <script src="/js/main.js"></script>
-       
-      <script src="/js/core/popper.min.js"></script>
-      <script src="/js/core/bootstrap-material-design.min.js"></script>
-      <script src="/js/plugins/moment.min.js"></script>
-      <!--	Plugin for the Datepicker, full documentation here: https://github.com/Eonasdan/bootstrap-datetimepicker -->
-      <!-- <script src="/js/plugins/bootstrap-datetimepicker.js"></script> -->
-      <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
-      <script src="/js/plugins/nouislider.min.js"></script>
-      <!-- Control Center for Material Kit: parallax effects, scripts for the example pages etc -->
-      <script src="/js/material-kit.min.js?v=2.0.5"></script>
-      
-      
-        <script src="/js/plugins/prettify.js"></script>
-        <script>
-            $(window).on('load',function(){
-                $('pre').addClass('prettyprint linenums');
-                prettyPrint();
-            })
-        </script>
-        
-          
-        
-      
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
 </body>
+
 </html>

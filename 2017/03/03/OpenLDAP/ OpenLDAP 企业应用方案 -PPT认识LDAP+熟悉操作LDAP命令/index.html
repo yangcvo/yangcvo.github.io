@@ -1,202 +1,490 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 
-
-
-
-
-
-
-
-
+<!-- Head tag -->
 <head>
-    <meta charset="utf-8" />
-    <link rel="apple-touch-icon" sizes="76x76" href="../img/favicon.png">
-    <link rel="icon" type="image/png" href="../img/favicon.png">
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no" name="viewport" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Personal blog, thinking and sharing of technology and life">
-    <meta name="author" content="Yancy">
-    <meta name="keywords" content="undefined">
-    <title>OpenLDAP企业应用方案-PPT认识LDAP+熟悉操作LDAP命令 ~ Yancy&#39;s blog</title>
-    <link rel="stylesheet" href="/css/Material_Icons.css">
-    <!-- <link rel="stylesheet" href="/css/font-awesome.css"> -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/style.css">
-    
-        <link rel="stylesheet" href="/css/post.css">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
         
-            <link rel="stylesheet" href="/css/Prettify/tomorrow-night-eighties.min.css">
+          OpenLDAP企业应用方案-PPT认识LDAP+熟悉操作LDAP命令 - Yancy&#39;s blog
         
-    
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2017/03/03/OpenLDAP/ OpenLDAP 企业应用方案 -PPT认识LDAP+熟悉操作LDAP命令/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-<body class=" sidebar-collapse">
-<nav class="navbar navbar-transparent navbar-color-on-scroll fixed-top navbar-expand-lg" color-on-scroll="100" id="sectionsNav">
-    <div class="container">
-        <div class="navbar-translate">
-            <a class="navbar-brand" href="/">
-                Yancy&#39;s blog</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
                 <span class="sr-only">Toggle navigation</span>
-                <span class="navbar-toggler-icon"></span>
-                <span class="navbar-toggler-icon"></span>
-                <span class="navbar-toggler-icon"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
             </button>
+            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
         </div>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ml-auto">
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
                     
-                        
-                            <li class="nav-item">
-                                <a class="nav-link" href="/archives/">
-                                    archives
-                                </a>
-                            </li>
-                        
-                            <li class="nav-item">
-                                <a class="nav-link" href="/about/">
-                                    about
-                                </a>
-                            </li>
+
                         
                     
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
                     
+
                         
-                            <li class="nav-item">
-                                <a class="nav-link" rel="tooltip" title="" data-placement="bottom" href="" target="_blank" data-original-title="See me here">
-                                    <i class="fa fa-github"></i>
-                                </a>
-                            </li>
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
                         
-                            <li class="nav-item">
-                                <a class="nav-link" rel="tooltip" title="" data-placement="bottom" href="" target="_blank" data-original-title="See me here">
-                                    <i class="fa fa-twitter"></i>
-                                </a>
-                            </li>
+                    
+
                         
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
                     
                 </ul>
             </div>
+        </div>
+        <!-- /.navbar-collapse -->
     </div>
+    <!-- /.container -->
 </nav>
-    
-  <div class="page-header header-filter" data-parallax="true" style="background-image: url('../img/post-head.jpg')">
-    
-      <div class="container">
-        <h1 class="title text-center">OpenLDAP企业应用方案-PPT认识LDAP+熟悉操作LDAP命令</h1>
-        <p class="text-center"><b>Friday, March 3rd 2017, 11:36 am</b></p>
-      </div>
-    
-  </div>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
 
 
-  <div class="main main-raised">
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
     <div class="container">
-      <div class="section">
-        
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#OpenLDAP" title="OpenLDAP">OpenLDAP</a>
+                        
+                    </div>
+                    <h1>OpenLDAP企业应用方案-PPT认识LDAP+熟悉操作LDAP命令</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2017-03-03
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
 
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
 
-<div class="row">
-    <div class="col-md-7 offset-md-2">
-        <div class="post_content tocbot-content">
-            <h4 id="认识LDAP熟悉LDAP配置"><a href="#认识LDAP熟悉LDAP配置" class="headerlink" title="认识LDAP熟悉LDAP配置"></a>认识LDAP熟悉LDAP配置</h4><p>LDAP目录中可以存储各种类型的数据：电子邮件地址、邮件路由信息、人力资源数据、公用密匙、联系人列表，等等<br>但是不是关系型数据库。不象被设计成每分钟需要处理成百上千条数据变化的数据库<br>可以把数据“推”到远程的办公室，以增加数据的安全性<br>复制功能，数据库产商就会要你支付额外的费用，而且也很难管理</p>
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h4 id="认识LDAP熟悉LDAP配置"><a href="#认识LDAP熟悉LDAP配置" class="headerlink" title="认识LDAP熟悉LDAP配置"></a>认识LDAP熟悉LDAP配置</h4><p>LDAP目录中可以存储各种类型的数据：电子邮件地址、邮件路由信息、人力资源数据、公用密匙、联系人列表，等等<br>但是不是关系型数据库。不象被设计成每分钟需要处理成百上千条数据变化的数据库<br>可以把数据“推”到远程的办公室，以增加数据的安全性<br>复制功能，数据库产商就会要你支付额外的费用，而且也很难管理</p>
 <a id="more"></a>
 <h4 id="LDAP组织-目录树的结构"><a href="#LDAP组织-目录树的结构" class="headerlink" title="LDAP组织-目录树的结构"></a>LDAP组织-目录树的结构</h4><figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">LDAP目录中的所有记录项都有一个唯一的“Distinguished Name”</div><div class="line">现在为公司的员工设置一个DN。可以用基于cn或uid（User ID），作为典型的用户帐号</div><div class="line">用uid表示“User ID”，不要把它和UNIX的uid号混淆了 ，大多数公司都会给每一个员工唯一的登录名，因此用这个办法可以很好地保存员工的信息</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">LDIF文件格式例子：一个普通用户都要存哪些信息?</div><div class="line"></div><div class="line">你可以用LDAP存储各种类型的数据对象，只要这些对象可以用属性来表示，下面这些是可以在LDAP中存储的一些信息： </div><div class="line">员工信息：员工的姓名、登录名、口令、员工号、他的经理的登录名，邮件服务器，等等。 </div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">lDAP默认端口：端口为<span class="number">389</span></div><div class="line"></div><div class="line">LDAP同步配置:</div><div class="line"><span class="comment"># Where to store the replica logs for database #1</span></div><div class="line"><span class="comment">#replogfile     /var/lib/ldap/master-slapd.replog</span></div><div class="line"></div><div class="line">replogfile /var/<span class="class"><span class="keyword">lib</span>/<span class="title">ldap</span>/<span class="title">master</span>-<span class="title">slapd</span>.<span class="title">replog</span></span></div><div class="line">replica         host=<span class="number">192.168</span>.<span class="number">7.108</span>:<span class="number">389</span></div><div class="line">                binddn=<span class="string">"cn=admin,dc=ldap,dc=monkey,dc=com,dc=de"</span></div><div class="line">                bindmethod=simple credentials=<span class="string">'password'</span></div></pre></td></tr></table></figure>
 <h5 id="OpenLDAP-包在服务器上安装了很多程序："><a href="#OpenLDAP-包在服务器上安装了很多程序：" class="headerlink" title="OpenLDAP 包在服务器上安装了很多程序："></a>OpenLDAP 包在服务器上安装了很多程序：</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"> 守护进程：</div><div class="line"></div><div class="line"></div><div class="line">- slapd：主 LDAP 服务器</div><div class="line"></div><div class="line">- slurpd：负责与复制 LDAP 服务器保持同步的服务器</div><div class="line"></div><div class="line">- 对网络上的目录进行操作的客户机程序。下面这两个程序是一对儿：</div><div class="line"></div><div class="line">- ldapadd：打开一个到 LDAP 服务器的连接，绑定、修改或增加条目</div><div class="line"></div><div class="line">- ldapsearch：打开一个到 LDAP 服务器的连接，绑定并使用指定的参数进行搜索</div><div class="line"></div><div class="line">- 对本地系统上的数据库进行操作的几个程序：</div><div class="line"></div><div class="line">- slapadd：将以 LDAP 目录交换格式（LDIF）指定的条目添加到 LDAP 数据库中</div><div class="line"></div><div class="line">- slapcat：打开 LDAP 数据库，并将对应的条目输出为 LDIF 格式</div></pre></td></tr></table></figure>
 <h5 id="Openldap命令操作总结："><a href="#Openldap命令操作总结：" class="headerlink" title="Openldap命令操作总结："></a>Openldap命令操作总结：</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line">解读配置文件：</div><div class="line"></div><div class="line">vim /etc/openldap/slapd.conf</div><div class="line"></div><div class="line"></div><div class="line">例子 </div><div class="line"></div><div class="line">创建用户</div><div class="line"></div><div class="line">ldapadd -x -D <span class="string">"cn=Manager,dc=jollychic,dc=com"</span> -w secret <span class="_">-f</span> /root/test.ldif </div><div class="line">ldapadd -x -D <span class="string">"cn=Manager,dc=jollychic,dc=com"</span> -w secret (这样写就是在命令行添加条目)</div><div class="line"></div><div class="line">-x   进行简单认证</div><div class="line">-D   用来绑定服务器的DN</div><div class="line">-w   绑定DN的密码</div><div class="line">-b   指定要查询的根节点</div><div class="line">-H   制定要查询的服务器</div><div class="line">-S   提示的输入密码</div><div class="line"><span class="_">-s</span> pass 把密码设置为pass</div><div class="line"><span class="_">-a</span> pass 设置old passwd为pass</div><div class="line">-A   提示的设置old passwd</div><div class="line">-I   使用sasl会话方式</div><div class="line"></div><div class="line">这样可以访问整个的活动目录结构.</div><div class="line"></div><div class="line">ldapsearch -x -W -D <span class="string">"cn=Manager,dc=jollychic,dc=com"</span> -b <span class="string">"dc=jollychic,dc=com"</span> </div><div class="line">se12pa</div><div class="line"></div><div class="line">ldapsearch -x -W -D <span class="string">"uid=764,ou=users,dc=jollychic,dc=com"</span> -b <span class="string">"uid=764,ou=users,dc=jollychic,dc=com"</span></div><div class="line">使用简单认证，用 <span class="string">"ou=users,dc=jollychic,dc=com"</span> 进行绑定，要查询的根是 <span class="string">"dc=jollychic,dc=com"</span>。这样会把绑定的用户能访问<span class="string">"uid=764,ou=users,dc=jollychic,dc=com"</span>下的</div><div class="line">所有数据显示出来。</div><div class="line"></div><div class="line"></div><div class="line">ldapdelete -x -D <span class="string">"cn=Manager,dc=jollychic,dc=com"</span> -W <span class="string">"uid=900,ou=users,dc=jollychic,dc=com"</span> -S</div><div class="line">ldapmodify命令,在changetype时输入：delete</div><div class="line"></div><div class="line"></div><div class="line">修改用户密码：</div><div class="line"></div><div class="line">ldappasswd -x -D <span class="string">"cn=Manager,dc=jollychic,dc=com"</span> -W <span class="string">"uid=900,ou=users,dc=jollychic,dc=com"</span> -S</div><div class="line">New password:</div><div class="line">Re-enter new password:</div><div class="line">Enter LDAP Password:</div><div class="line">就可以更改密码了，如果原来记录中没有密码，将会自动生成一个userPassword。</div><div class="line"><span class="comment">##Enter LDAP password" 是 "cn=Manager,dc=jollychic,dc=com"管理员的密码.</span></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">管理员密码更改</div><div class="line"><span class="comment">#slappasswd</span></div><div class="line">New password</div><div class="line">Re-enter new password</div></pre></td></tr></table></figure>
 
-        </div>
-        <br><br>
-        <div>
-            <p>
-                     
-                    <span class="badge badge-default">#&nbsp;OpenLDAP</span>
-                    &nbsp;
+
+                <hr>
+
+                
+
+                <ul class="pager">
                     
-            </p>
+                        <li class="previous">
+                            <a href="/2017/03/14/运维笔记/运维自动化总结-记录帮助公司自动化架构演变过程/" data-toggle="tooltip" data-placement="top" title="运维自动化总结-记录帮助公司自动化架构演变过程">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/02/11/Bigdata-hadoop/Kafka/kafka10.0.9版本总是在启动一段时间后自动停止/" data-toggle="tooltip" data-placement="top" title="kafka总是在启动一段时间后自动停止">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#OpenLDAP" title="OpenLDAP">OpenLDAP</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
         </div>
     </div>
-    <!-- TOC -->
-    
-        <div class="col-md-3">
-            <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#认识LDAP熟悉LDAP配置"><span class="toc-text">认识LDAP熟悉LDAP配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#LDAP组织-目录树的结构"><span class="toc-text">LDAP组织-目录树的结构</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#OpenLDAP-包在服务器上安装了很多程序："><span class="toc-text">OpenLDAP 包在服务器上安装了很多程序：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Openldap命令操作总结："><span class="toc-text">Openldap命令操作总结：</span></a></li></ol></li></ol>
-        </div>
-    
-</div>
+</article>
 
-<!-- Comments -->
-<div class="row">
-    <div class="col-md-8 offset-md-2">
-    
-        
-            <div class="disqus" style="width:100%">
-    <div id="disqus_thread"></div>
-    <script>               
-        var disqus_shortname = 'null';
-        var disqus_config = function () {
-            this.page.url = 'http://blog.yancy.cc/2017/03/03/OpenLDAP/ OpenLDAP 企业应用方案 -PPT认识LDAP+熟悉操作LDAP命令/'; 
-            this.page.identifier = '/2017/03/03/OpenLDAP/ OpenLDAP 企业应用方案 -PPT认识LDAP+熟悉操作LDAP命令/';
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yancy-cc";
+    var disqus_identifier = "http://blog.yancy.cc/2017/03/03/OpenLDAP/ OpenLDAP 企业应用方案 -PPT认识LDAP+熟悉操作LDAP命令/";
+    var disqus_url = "http://blog.yancy.cc/2017/03/03/OpenLDAP/ OpenLDAP 企业应用方案 -PPT认识LDAP+熟悉操作LDAP命令/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
         };
-        (function() { 
-            var d = document, s = d.createElement('script');
-            s.type = 'text/javascript';
-            s.src = '//'+disqus_shortname+'.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>                                
-</div>
-        
-    
-    </div>
-</div>
-      </div>
-    </div>
-  </div>
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
 
 
-<footer class="footer footer-default">
-        <div class="container">
-          <nav class="float-left">
-              <b>多喝热水</b>
-          </nav>
-          <div class="copyright float-right">
-            &copy;
-            <script>
-              document.write(new Date().getFullYear())
-            </script>&nbsp;<a href="https://hexo.io/zh-cn/" target="_blank">HEXO</a>&nbsp;<i class="material-icons">favorite_border</i>
-            <a href="https://github.com/invom/Material-T" target="_blank">Material-T</a>
-          </div>
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Yancy&#39;s blog 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
         </div>
+    </div>
 </footer>
-      <!--   Core JS Files   -->
-      <script src="/js/core/jquery.min.js"></script>
-      
-        <script src="/js/main.js"></script>
-       
-      <script src="/js/core/popper.min.js"></script>
-      <script src="/js/core/bootstrap-material-design.min.js"></script>
-      <script src="/js/plugins/moment.min.js"></script>
-      <!--	Plugin for the Datepicker, full documentation here: https://github.com/Eonasdan/bootstrap-datetimepicker -->
-      <!-- <script src="/js/plugins/bootstrap-datetimepicker.js"></script> -->
-      <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
-      <script src="/js/plugins/nouislider.min.js"></script>
-      <!-- Control Center for Material Kit: parallax effects, scripts for the example pages etc -->
-      <script src="/js/material-kit.min.js?v=2.0.5"></script>
-      
-      
-        <script src="/js/plugins/prettify.js"></script>
-        <script>
-            $(window).on('load',function(){
-                $('pre').addClass('prettyprint linenums');
-                prettyPrint();
-            })
-        </script>
-        
-          
-        
-      
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
 </body>
+
 </html>
