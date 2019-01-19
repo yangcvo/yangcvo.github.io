@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="null">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          运维自动化总结-自动化架构演变过程 - Yancy
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2017/03/14/运维文档/运维自动化总结-记录帮助公司自动化架构演变过程/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">运维杂货铺</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Automation Deploy" title="Automation Deploy">Automation Deploy</a>
+                        
+                    </div>
+                    <h1>运维自动化总结-自动化架构演变过程</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2017-03-14
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>记录自己自动化运维技术提升👍</p>
+<a id="more"></a>
+<h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>个人2014年开始玩自动化的也是刚从业<code>自动化运维</code>岗位第一份工作，在一家上市公司做<code>IDC+APM+CDN</code>做云加速的应该很多玩cdn的都听说这家公司－<code>mmtrix.com</code>。</p>
+<p>一开始开始深度学习的是SaltStack所以掌握的比较深更加熟练，其实也是一个好朋友推荐我看了一本书<code>python入门到精通</code> 里面有详细讲到salt安装和使用部署自动化各种操作，的确很方便。后面在测试环境我自己管理几十台服务器－学习使用<code>Ansible</code>去操作，因为salt跟ansible最大的区别，除了ansible快速上手和不需要复杂的安装，主要在内网方面比salt更稳定架构也比salt好。</p>
+<p>在线上我们都是用salt去操作的，可是当时公司还没有运维开发的人员，所以后来salt在终端操作出了很多错：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">第一：人员操作失误一次，可能会导致所有的服务器都会受影响。</div><div class="line">第二：命令太多服务权限需要一一统一分配登陆终端操作。</div></pre></td></tr></table></figure>
+<p>那时候服务器有500多台那时候运维操作起来还是挺费力的。 </p>
+<h3 id="经历："><a href="#经历：" class="headerlink" title="经历："></a>经历：</h3><p>2016年初3月份去参加360的一次运维大会，王浩宇360的运维开发人员分享了一片文章：<code>大规模集群上的多业务线环境部署.</code></p>
+<p>讲的非常好，用的是Puppet去实现3000多台的服务器部署，指定部署安装包等等。非常方便。</p>
+<p>这里也在Infoq上面有他的分享作品我这里粘贴出来了：<a href="http://www.infoq.com/cn/articles/multi-service-line-environment-deployment" target="_blank" rel="external">大规模集群上的多业务线环境部署</a></p>
+<h4 id="个人现在运维自动化演变过程经验："><a href="#个人现在运维自动化演变过程经验：" class="headerlink" title="个人现在运维自动化演变过程经验："></a>个人现在运维自动化演变过程经验：</h4><p>第一个版本公司整体服务架构：</p>
+<p><img src="http://image.chengyangyang.com/yjkjiagoutu.png" alt=""></p>
+<h4 id="2016年2月份脚本形式自动化发布："><a href="#2016年2月份脚本形式自动化发布：" class="headerlink" title="2016年2月份脚本形式自动化发布："></a>2016年2月份脚本形式自动化发布：</h4><p>16年2月份这里的Tomcat自动化 发布我一开始使用shell脚本去实现自动化发布和回滚。 </p>
+<h4 id="2016年4月份salt自动化远程控制脚本发布："><a href="#2016年4月份salt自动化远程控制脚本发布：" class="headerlink" title="2016年4月份salt自动化远程控制脚本发布："></a>2016年4月份salt自动化远程控制脚本发布：</h4><p>16年4月份这里的tomcat服务增多，发现脚本发布手工操作太繁琐，而且出现问题几率大，效率不高。每次一次大版本改动发布会出现很多问题。</p>
+<p>这里跟随服务模块增多，现在服务器90多台，统一salt自动化调用每台对应脚本发布回滚。</p>
+<p>这里贴上我写的salt结合调用脚本命令，写在发布机器上面。这样就不需要进入机器每台执行对应发布脚本。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"><span class="comment">#author chengyangyang</span></div><div class="line"><span class="comment">#2016年5月25日</span></div><div class="line"><span class="comment">#this script is only for CentOS 6</span></div><div class="line"><span class="comment">#check the OS</span></div><div class="line"><span class="comment">#This script is used for the project release, which needs to be run by the root user</span></div><div class="line">platform=`uname -i`</div><div class="line"><span class="keyword">if</span> [ <span class="variable">$platform</span> != <span class="string">"x86_64"</span> ];<span class="keyword">then</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"this script is only for 64bit Operating System !"</span></div><div class="line"><span class="built_in">exit</span> 1</div><div class="line"><span class="keyword">fi</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"the platform is ok"</span></div><div class="line">version=`cat /etc/redhat-release |awk <span class="string">'&#123;print substr($3,1,1)&#125;'</span>`</div><div class="line"><span class="keyword">if</span> [ <span class="variable">$version</span> != 6 ];<span class="keyword">then</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"this script is only for CentOS 6 !"</span></div><div class="line"><span class="built_in">exit</span> 1</div><div class="line"><span class="keyword">fi</span></div><div class="line">cat &lt;&lt; EOF</div><div class="line">+----------------------------------------+</div><div class="line">|   your system is CentOS 6 x86_64       |</div><div class="line">|   start Update release tomcat.......   |</div><div class="line">+----------------------------------------+</div><div class="line">EOF</div><div class="line"></div><div class="line"><span class="comment">#To determine whether the root permissions</span></div><div class="line"></div><div class="line"><span class="keyword">if</span> [ <span class="string">"<span class="variable">$UID</span>"</span> != <span class="string">'0'</span> ]</div><div class="line"><span class="keyword">then</span></div><div class="line">  <span class="built_in">echo</span> <span class="string">'Permission denied, please switch the root tomcat.'</span></div><div class="line">  <span class="built_in">exit</span> 60</div><div class="line"><span class="keyword">fi</span></div><div class="line"></div><div class="line">salt <span class="string">"node"</span> cmd.run <span class="string">"curl -O  http://10.47.100.90/ihaozhuo/war/haozhuo-tomcat.war"</span></div><div class="line">[ $? <span class="_">-ne</span> 0 ] &amp;&amp; <span class="built_in">exit</span> 1</div><div class="line">salt <span class="string">"node"</span> cmd.run <span class="string">"md5sum haozhuo-tomcat.war"</span></div><div class="line">[ $? <span class="_">-ne</span> 0 ] &amp;&amp; <span class="built_in">exit</span> 1</div><div class="line">salt <span class="string">"node"</span> cmd.run <span class="string">"mv haozhuo-tomcat.war java_war/"</span></div><div class="line">[ $? <span class="_">-ne</span> 0 ] &amp;&amp; <span class="built_in">exit</span> 1</div><div class="line">salt <span class="string">"node"</span> cmd.run <span class="string">"sh /root/update/tomcat.sh"</span></div><div class="line">[ $? <span class="_">-ne</span> 0 ] &amp;&amp; <span class="built_in">exit</span> 1</div><div class="line">salt <span class="string">'node'</span> cmd.run <span class="string">'/etc/init.d/tomcat-tomcat stop'</span> env=<span class="string">'&#123;"LC_ALL": "zh_CN.UTF-8"&#125;'</span></div><div class="line">salt <span class="string">'node'</span> cmd.run <span class="string">'/etc/init.d/tomcat-tomcat start'</span> env=<span class="string">'&#123;"LC_ALL": "zh_CN.UTF-8"&#125;'</span></div><div class="line">[ $? <span class="_">-ne</span> 0 ] &amp;&amp; <span class="built_in">exit</span> 1</div></pre></td></tr></table></figure>
+<h4 id="2016年5月份去除了salt替换更新Ansible-Jenkins-Maven＋Nginx搞定自动发布，构建程序的持续集成平台"><a href="#2016年5月份去除了salt替换更新Ansible-Jenkins-Maven＋Nginx搞定自动发布，构建程序的持续集成平台" class="headerlink" title="2016年5月份去除了salt替换更新Ansible + Jenkins+Maven＋Nginx搞定自动发布，构建程序的持续集成平台"></a>2016年5月份去除了salt替换更新Ansible + Jenkins+Maven＋Nginx搞定自动发布，构建程序的持续集成平台</h4><h4 id="Ansible-vs-SaltStack-对比？"><a href="#Ansible-vs-SaltStack-对比？" class="headerlink" title="Ansible vs SaltStack 对比？"></a>Ansible vs SaltStack 对比？</h4><h6 id="1-自身运维"><a href="#1-自身运维" class="headerlink" title="1. 自身运维"></a>1. 自身运维</h6><p><code>SaltStack</code>需要在<code>Master和Minion</code>主机启动守护进程，自身需要检测守护进程的运行状态，增加运维成本。Ansible和远端主机之间的通信是通过标准SSH进行，远程主机上只需要运行SSH进程就可以进行运维操作，SSH是机房主机中一般都安装和启动的进程，所以在Ansible进行运维的时候只需要关注Ansible主机的运行状态。Ansible对机房运维不会增加过多的运维成本。从工具本身的运维角度来说，<code>Ansible</code>要比SaltStack简单很多。</p>
+<h6 id="2-使用语法"><a href="#2-使用语法" class="headerlink" title="2. 使用语法"></a>2. 使用语法</h6><p><code>Ansible</code>的<code>Playbook</code>语法要比SaltStack的State语法具有更好的可读性。在使用的过程中发现<code>Ansible</code>在实现loop的更加的简洁，也可以使用相对路径。</p>
+<p>同样Ansible的Notify模块和Handler模块实现的功能和SaltStack的watch和module.wait的模块实现功能也类似，也比SaltStack要简洁明了。</p>
+<p>总之，<code>Ansible的安全性能比SaltStack好</code>，自身运维简单，使用语法可读性更强，虽然在响应速度方面不如SaltStack，但是在大部分应用场景下Ansible的响应速度能满足需求。因此，在金融行业的自动化运维系统，Ansible工具是最好的选择。</p>
+<p>对应模块 account.yml 在Jenkins自动化写上变量对应.yml前缀名称。<br>这里依然调用脚本去跑。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">- hosts: tomcat-account_01</div><div class="line">  environment:</div><div class="line">    LC_ALL: zh_CN.UTF-8</div><div class="line">    LANG : zh_CN.UTF-8</div><div class="line">  tasks:</div><div class="line">  - name  : cpfile-account</div><div class="line">    copy  : src=/root/.jenkins/workspace/yjk_master/haozhuo/haozhuo-account/target/haozhuo-account.war dest=/root/java_war/haozhuo-account.war</div><div class="line">  - name  : restart</div><div class="line">    shell : /root/update/account.sh</div><div class="line">    async : 0</div><div class="line">  - name  : shutdown</div><div class="line">    shell : /srv/tomcat/tomcat_account/bin/shutdown.sh</div><div class="line">    async : 0</div><div class="line">  - name  : start</div><div class="line">    shell : <span class="built_in">chdir</span>=/srv/tomcat/tomcat_account/bin nohup ./startup.sh &amp;</div><div class="line">    async : 0</div></pre></td></tr></table></figure>
+<h4 id="2016年6月份在ansible改进yml代码语法。去除了每台服务器新增发布脚本，这个过程太过于复杂，统一一台发布机处理即可。"><a href="#2016年6月份在ansible改进yml代码语法。去除了每台服务器新增发布脚本，这个过程太过于复杂，统一一台发布机处理即可。" class="headerlink" title="2016年6月份在ansible改进yml代码语法。去除了每台服务器新增发布脚本，这个过程太过于复杂，统一一台发布机处理即可。"></a>2016年6月份在ansible改进yml代码语法。去除了每台服务器新增发布脚本，这个过程太过于复杂，统一一台发布机处理即可。</h4><p>这里我贴出yml代码 Jenkins直接调用相应模块发布，自然会去执行对应yml代码。每台服务器不需要放发布回滚脚本。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">- hosts: all</div><div class="line"></div><div class="line">  environment:</div><div class="line">     LC_ALL: zh_CN.UTF-8</div><div class="line">     LANG : zh_CN.UTF-8</div><div class="line"></div><div class="line">  vars:</div><div class="line"><span class="comment">#jenkins-打包目录</span></div><div class="line">    TESTWAR: /root/java_war/haozhuo-family.war</div><div class="line"><span class="comment">#生产环境中项目的tomcat所在的位置</span></div><div class="line">    OLDHOME: /srv/tomcat/tomcat_family/webapps/ROOT</div><div class="line"><span class="comment">#生产环境中老版本项目所在webapps备份目录的位置</span></div><div class="line">    backupwebapps: /srv/tomcat/tomcat_family/warbackup</div><div class="line"><span class="comment">#从jenkins-打包环境获取的新版本war包所在的位置</span></div><div class="line">    NEWWAR: /root/java_war/</div><div class="line"><span class="comment">#生产环境中项目war包的名字</span></div><div class="line">    WARNAME: haozhuo-family.war</div><div class="line"><span class="comment">#kill服务type路径</span></div><div class="line">    DOWNFILE: /srv/tomcat/tomcat_family</div><div class="line"></div><div class="line">  tasks:</div><div class="line">  - name: copy-war-file</div><div class="line">    copy: src=&#123;&#123; TESTWAR &#125;&#125; dest=&#123;&#123; NEWWAR &#125;&#125;</div><div class="line">  - name: mkdir-bakwar-file</div><div class="line">    file: path=&#123;&#123; backupwebapps &#125;&#125; state=directory owner=tomcat group=tomcat mode=755</div><div class="line">  - name: bakwar-file</div><div class="line">    shell: <span class="string">"cp -r &#123;&#123; OLDHOME &#125;&#125; &#123;&#123; backupwebapps &#125;&#125;"</span></div><div class="line">  - name: unzip war.</div><div class="line">    unarchive: src=&#123;&#123; NEWWAR &#125;&#125;/&#123;&#123; WARNAME &#125;&#125; dest=&#123;&#123; OLDHOME &#125;&#125;</div><div class="line">  - name: stop-tomcat-service</div><div class="line">    shell: <span class="string">"ps -ef |grep &#123;&#123; DOWNFILE &#125;&#125; |grep -v grep |awk '&#123;print <span class="variable">$2</span>&#125;' |xargs kill -9"</span></div><div class="line">    ignore_errors: yes</div><div class="line">    async: 0</div><div class="line">  - name: start-tomcat-service-nohup</div><div class="line">    shell: <span class="built_in">chdir</span>=&#123;&#123; DOWNFILE &#125;&#125;/bin nohup ./startup.sh &amp;</div></pre></td></tr></table></figure>
+<h6 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h6><p>在金融领域中，安全是最重要的考虑因素，在众多自动化运维工具种，Ansible的安全性能最好，是目前最适合金融领域的自动化运维工具。本文通过将Ansible微服务化，集成到自动化运维平台中，实现自动化运维平台高并发执行运维操作场景和实时收集执行结果。</p>
+<h4 id="2016年7月份Jenkins上面实现持续集成"><a href="#2016年7月份Jenkins上面实现持续集成" class="headerlink" title="2016年7月份Jenkins上面实现持续集成"></a>2016年7月份Jenkins上面实现持续集成</h4><p>这里Jenkins打通gitlab自动发布，审计代码。 这里结合<code>openVPN+谷歌二次动态认证</code>效果给予开发他们开放环境。<br>架构图 ：</p>
+<p><img src="http://image.chengyangyang.com/yjkjiagoutu2.png" alt=""></p>
+<h4 id="2016年9月份公司架构演变从传统架构更换dubbo架构。"><a href="#2016年9月份公司架构演变从传统架构更换dubbo架构。" class="headerlink" title="2016年9月份公司架构演变从传统架构更换dubbo架构。"></a>2016年9月份公司架构演变从传统架构更换dubbo架构。</h4><p>公司应用服务架构图这里贴出来：<a href="http://shiyanjun.cn/archives/325.html" target="_blank" rel="external">Dubbo架构设计详解</a></p>
+<p><img src="http://image.chengyangyang.com/jiagoutu2.png" alt=""><br>系统架构图这里我后期在更新贴出来。</p>
+<h4 id="2017年3月份-公司服务器150台服务自动化发布。"><a href="#2017年3月份-公司服务器150台服务自动化发布。" class="headerlink" title="2017年3月份 公司服务器150台服务自动化发布。"></a>2017年3月份 公司服务器150台服务自动化发布。</h4><p>后面运维开发开发了一套基于salt自动化一套web版的管理平台。对我们后面的做部署初始化的确减轻了很多。<br>现在开始公司用的是ansible基python开发出来一套自动化部署的。发布部署测试一体系：<br>刚开发出来的截了一张图：</p>
+<p><img src="http://image.chengyangyang.com/zidonhua1.png" alt=""></p>
+<h2 id="个人总结："><a href="#个人总结：" class="headerlink" title="个人总结："></a>个人总结：</h2><h4 id="系统标准化："><a href="#系统标准化：" class="headerlink" title="系统标准化："></a>系统标准化：</h4><p>要想自动化，首先第一就是标准化。比如软件的<code>安装位置、版本、脚本，注册</code>到init.d下面，这些应该是标准的，所有服务器都统一的。或者说你使用salt就是为了达到这样的标准化做自动化运维要经历的标准化–&gt;&gt;自动化—-&gt;&gt;服务化—-&gt;&gt;数据化。</p>
+<h4 id="个人意见："><a href="#个人意见：" class="headerlink" title="个人意见："></a>个人意见：</h4><ol>
+<li>只有标准了，才能自动，至少你相同的业务都应该是一样的。</li>
+<li>自动化，这个自动化讲的是工具，所有的操作是工具再做，不是人。也有小公司说我们半自动，的确是有的，就写写脚本然后靠工具去管理。</li>
+<li>服务化，你平台搞的很牛逼了，直接给业务提供接口。DNS、负载均衡、分布式存储、你都封装好了，上层不需要关心，你相当于为上层服务提供服务。各种API都写好了。</li>
+<li>数据化，或者说可视化，运维平台做的很牛逼，直接对业务负责，以业务为导向，今天订单量减少了，通过你的运维平台，直接定位问题，不需要各种查找，因为订单量的减少，肯定有相关的监控指标发生变化。</li>
+</ol>
+<p>那么在工具自动化建设的开始，你需要有一个理论支持，比如ITIL。不能瞎搞。没有流程的自动化运维就是耍流氓如果上线没有走上线流程，动不动，开发自己登录服务器执行了git pull。那还自动化什么呢。</p>
+<p>我个人的概念就是生产就是咱们运维的地盘。谁都不能动。开发想动，你可以提供接口，或者提供平台让开发点点鼠标就可以了。</p>
+<h4 id="题外话："><a href="#题外话：" class="headerlink" title="题外话："></a>题外话：</h4><p>说个很蛋疼的事情，之前刚来这边负责美年大新的运维团队，技术团队开发人员都可以随便要权限，然后解决问题运维不用参与都是开发去操作。所以后来把公司运维整改：运维之间权限这些都是避免了。统一管理，统一分配，不同部门，不同岗位，不同权限。 这里我写过一篇文章：<code>中小公司员工统一用户认证方案</code></p>
+<p>这个是自动化里面最常见的部署自动化，对于ITIL的流程就是发布与部署管理。<br><code>构建---打包---测试---发布</code>都需要是自动的；所以这块需要测试的支持。需要有自动化测试。没有就卡到测试了。<br>最简单的就是发布流程和开发流程分开。</p>
+<p>自动化运维减轻了很多的事情，也让更多的运维小伙伴可以研究更多的知识。<br>这篇文章也是自己对这两年多运维的这一方面的自动化运维的总结。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/03/15/运维文档/多环境重构和迭代流程方案总结/" data-toggle="tooltip" data-placement="top" title="多环境重构和迭代流程方案总结">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/03/03/OpenLDAP/ OpenLDAP 企业应用方案 -PPT认识LDAP+熟悉操作LDAP命令/" data-toggle="tooltip" data-placement="top" title="OpenLDAP企业应用方案-PPT认识LDAP+熟悉操作LDAP命令">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Automation Deploy" title="Automation Deploy">Automation Deploy</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yancy-cc";
+    var disqus_identifier = "http://blog.yancy.cc/2017/03/14/运维文档/运维自动化总结-记录帮助公司自动化架构演变过程/";
+    var disqus_url = "http://blog.yancy.cc/2017/03/14/运维文档/运维自动化总结-记录帮助公司自动化架构演变过程/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 运维杂货铺 2019 
+                    <br>
+                 Theme by <a href="http://blog.yancy.cc">Yancy</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://github.com/yangcvo">Github</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
