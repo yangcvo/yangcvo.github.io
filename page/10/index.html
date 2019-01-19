@@ -184,149 +184,22 @@
 
 <div class="post-preview">
 
-    <a href="/2016/05/24/Web服务技术/Nginx/nginx解决办法-503-Service.Temporarily.Unavailable/">
+    <a href="/2016/03/29/Web服务技术/Nginx/nginx基础篇-日志管理和切割/">
         <h2 class="post-title">
-            NGINX解决办法-503-Service.Temporarily.Unavailable
+            Nginx基础篇-日志管理和切割
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            503 Service Temporarily Unavailable 解决办法-nginx因为最近公司微信抽奖活动项目环境  - ginx做负载均衡限制某个IP同一时间段的访问次数。
-就是防止有人同一个IP不断请求，网站刷新后经常出现503 Service Temporarily Unavailable错误，有时有可以，联想到最近在nginx.conf里做了单ip访问次数限制.
-(limi......
+            前言：公司日志查看有时候不太规范，官网web服务日志这边整理了下Nginx日志输出优化。 
+一、日志分类Nginx日志主要分为两种，访问日志和错误日志。两种日志可以在http和server模块中配置，nginx有一个非常灵活的日志记录模式。每个级别的配置可以有各自独立的访问日志。日志格式通过log_format命令来定义
+1、访问日志访问日志主要记录客户端访问Nginx的每一个请求log_f......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-05-24
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/05/23/Web服务技术/Nginx/Nginx+Tomcat实现负载均衡设置访问控制/">
-        <h2 class="post-title">
-            Nginx+Tomcat实现负载均衡设置访问控制
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            Nginx+Tomcat实现负载均衡设置访问控制一、环境准备
-Tomcat1：10.11.155.26
-Tomcat2：10.11.155.41
-Nginx：192.168.31.154 
-
-在26和41上分别部署相同的Tomcat程序，修改index.jsp页面，把内容改为各自的IP地址.
-
-
-
-二、修改配置文件nginx.confNginx负载均衡，其实主要就是用upstream、ser......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-05-23
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/05/23/Web服务技术/Nginx/Nginx多种安装与配置文件详解/">
-        <h2 class="post-title">
-            Nginx多种安装与配置文件详解
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            安装nginx最近在弄灰度发布环境，之前nginx在测试和线上都有搭建配置。负载均衡配置（包括健康检查）、缓存（包括清空缓存）反向代理。就打算自己整理篇自己操作的文档，各种编译配置，今天自己也整理一份安装文档和nginx.conf配置选项的说明。
-选择稳定版本 我们编译安装nginx来定制自己的模块。
-
-机器CentOS 6.6 x86_64。
-软件版本：Nginx 1.9.9
-nginx最......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-05-23
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/05/22/Web服务技术/Nginx/Nginx+Keepalived实现高可用Web负载均衡 /">
-        <h2 class="post-title">
-            Nginx+Keepalived实现高可用Web负载均衡
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            Nginx+Keepalived实现高可用Web负载均衡一、需求场景：通过之前的一篇文章：
-Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用的负载均衡，但是单个的Nginx会存在单点隐患，如果Nginx挂掉，那么全部的Tomcat应用都将变得不可用，所以实现Nginx的高可用是必不可少的一步。
-
-二、说明
-高可用 HA（High Availability）......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-05-22
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/04/05/Web服务技术/Nginx/Nginx 安全&优化&日志输出规范详细配置/">
-        <h2 class="post-title">
-            Nginx 安全&优化&日志输出规范详细配置
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            ##1.Nginx日志审计
-① 参考配置操作(1)编辑 nginx.conf 配置文件
-将 error_log 前的“#”去掉，记录错误日志将 access_log 前的“#”去掉，记录访问日志(2)设置 access_log，修改配置文件如下：
-1234log_format formatname '$remote_addr - $remote_user [$time_local] '' "......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-04-05
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/04/02/Web服务技术/Nginx/http response code 301 和 302分析总结/">
-        <h2 class="post-title">
-            Http response code 301 和 302分析总结
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            http response code 301 和 302 了解多少呢。一．官方说法最近Nginx访问出现301和302这里就对301 302认真做了一次总结。
-123301，302 都是HTTP状态的编码，都代表着某个URL发生了转移，不同之处在于： 301 redirect: 301 代表永久性转移(Permanently Moved)。302 redirect: 302 代表暂时性转移(......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Yancy on
-        2016-04-02
+        2016-03-29
     </p>
 
 </div>
@@ -355,22 +228,146 @@ Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用�
 
 <div class="post-preview">
 
-    <a href="/2016/03/29/Web服务技术/Nginx/nginx基础篇-日志管理和切割/">
+    <a href="/2016/03/27/Web服务技术/Nginx/确保nginx安全的几个技巧/">
         <h2 class="post-title">
-            Nginx基础篇-日志管理和切割
+            确保Nginx安全的几个技巧
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            前言：公司日志查看有时候不太规范，官网web服务日志这边整理了下Nginx日志输出优化。 
-一、日志分类Nginx日志主要分为两种，访问日志和错误日志。两种日志可以在http和server模块中配置，nginx有一个非常灵活的日志记录模式。每个级别的配置可以有各自独立的访问日志。日志格式通过log_format命令来定义
-1、访问日志访问日志主要记录客户端访问Nginx的每一个请求log_f......
+            
+在配置文件中设置自定义缓存以限制缓冲区溢出攻击的可能性
+
+1234client_body_buffer_size 1K;client_header_buffer_size 1k;client_max_body_size 1k;large_client_header_buffers 2 1k;
+
+将timeout设低来防止DOS攻击所有这些声明都可以放到主配置文件中。
+
+1234client......
         </div>
     </a>
     <p class="post-meta">
         Posted by Yancy on
-        2016-03-29
+        2016-03-27
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/26/Web服务技术/Nginx/Nginx+Tomcat实现反向代理优化与配置 /">
+        <h2 class="post-title">
+            Nginx+Tomcat实现反向代理优化与配置
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Nginx+Tomcat实现反向代理什么是反向代理反向代理（Reverse Proxy）方式是指用代理服务器来接受 internet 上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给 internet 上请求连接的客户端，此时代理服务器对外就表现为一个反向代理服务器。
+举个例子，一个用户访问 http://www.example.com/readme，但是 w......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-26
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/26/Web服务技术/Nginx/ Nginx 和 apache 对比 /">
+        <h2 class="post-title">
+            Nginx-反向代理
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Nginx 和 apache 对比个人理解：存在就是理由,一般来说,需要性能的 web 服务,用 nginx 。如果不需要性能只求稳定, 那就 apache 吧。后者的各种功能模块实现得比前者,例如 ssl 的模块就比前者好,可配 置项多。
+这里要注意一点,epoll(freebsd 上是 kqueue )网络 IO 模型是 nginx 处理性能 高的根本理由,但并不是所有的情况下都是 ep......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-26
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/21/shell编程入门到简单/shell入门到简单 学习总结1-12章/">
+        <h2 class="post-title">
+            shell入门到简单 学习总结1-12章
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            TOC[TOC]
+第一章Shell前言：Shell本身是一种用C语言编写的程序，从用户的角度来看，Shell是用户与Linux操作系统沟通的桥梁。用户既可以输入命令执行，又可以利用 Shell脚本编程，完成更加复杂的操作。在Linux GUI日益完善的今天在运维领域Shell编程仍然起着不可忽视的作用。深入地了解和熟练地掌握Shell编程，是每一个Linux用户的必修。
+
+1.1 Linux......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-21
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/21/Web服务技术/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/">
+        <h2 class="post-title">
+            tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            tomcat性能优化：Java HotSpot(TM) 64-Bit Server VM warning: ignoring option PermSize=512m; support was removed in 8.0这个提示应该是升级JDK1.8以上 在Java的8命令行标志MaxPermSize已被删除。其原因是，持久代从热点堆中取出并转移到本机内存。所以为了消除这种信息编辑java......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-21
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/10/自动化+Jenkins/Ansible/ansible 脚本(Playbook基本语法)远程控制/">
+        <h2 class="post-title">
+            Ansible 脚本(Playbook基本语法)远程控制
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            ansible 脚本(Playbook基本语法)远程控制Playbook基本语法
+
+本节列举了写第一个Playbook，你必须了解基本语法。随着你面临的机器越多，配属的需求越复杂，你可能需要了解后面介绍的一些稍微复杂逻辑语句。
+
+
+执行Playbook语法
+
+这里先
+vim deploy.yml
+12345678910111213141516171819deploy.yml文件---- ho......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Yancy on
+        2016-03-10
     </p>
 
 </div>
@@ -415,7 +412,13 @@ Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用�
                     <div class="tags">
                         
                             
+                            <a href="/tags/#OpenLDAP" title="OpenLDAP" rel="5">OpenLDAP</a>
+                            
+                        
+                            
                             <a href="/tags/#Bigdata Hadoop" title="Bigdata Hadoop" rel="3">Bigdata Hadoop</a>
+                            
+                        
                             
                         
                             
@@ -427,35 +430,15 @@ Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用�
                             
                         
                             
-                            <a href="/tags/#OpenLDAP" title="OpenLDAP" rel="5">OpenLDAP</a>
-                            
-                        
-                            
                         
                             
                             <a href="/tags/#Operation safety" title="Operation safety" rel="4">Operation safety</a>
                             
                         
                             
-                            <a href="/tags/#Automation Deploy" title="Automation Deploy" rel="2">Automation Deploy</a>
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Performance monitoring" title="Performance monitoring" rel="2">Performance monitoring</a>
-                            
-                        
-                            
-                            <a href="/tags/#Operation and maintenance Road" title="Operation and maintenance Road" rel="2">Operation and maintenance Road</a>
-                            
-                        
-                            
-                            <a href="/tags/#Countly" title="Countly" rel="2">Countly</a>
-                            
-                        
-                            
                             <a href="/tags/#Kafka" title="Kafka" rel="16">Kafka</a>
+                            
+                        
                             
                         
                             
@@ -466,6 +449,16 @@ Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用�
                         
                             
                         
+                            
+                            <a href="/tags/#Countly" title="Countly" rel="2">Countly</a>
+                            
+                        
+                            
+                            <a href="/tags/#Web Service" title="Web Service" rel="17">Web Service</a>
+                            
+                        
+                            
+                            <a href="/tags/#Nginx" title="Nginx" rel="17">Nginx</a>
                             
                         
                             
@@ -481,11 +474,7 @@ Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用�
                             
                         
                             
-                            <a href="/tags/#Web Service" title="Web Service" rel="17">Web Service</a>
-                            
-                        
-                            
-                            <a href="/tags/#Nginx" title="Nginx" rel="17">Nginx</a>
+                            <a href="/tags/#Ansible" title="Ansible" rel="9">Ansible</a>
                             
                         
                             
@@ -493,13 +482,9 @@ Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用�
                             
                         
                             
+                        
+                            
                             <a href="/tags/#Saltstack" title="Saltstack" rel="6">Saltstack</a>
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#Ansible" title="Ansible" rel="9">Ansible</a>
                             
                         
                             
@@ -512,6 +497,12 @@ Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用�
                             <a href="/tags/#Zabbix monitoring" title="Zabbix monitoring" rel="15">Zabbix monitoring</a>
                             
                         
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Graylog" title="Graylog" rel="2">Graylog</a>
                             
                         
                             
@@ -528,10 +519,6 @@ Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用�
                         
                             
                         
-                            
-                            <a href="/tags/#Graylog" title="Graylog" rel="2">Graylog</a>
-                            
-                        
                     </div>
                 </section>
                 
@@ -546,7 +533,7 @@ Nginx+Tomcat实现负载均衡,我们已经能通过Nginx来实现Tomcat应用�
                         
 
                         
-                            <p>Yancy，担任金融公司运维负责人，客居深圳。个人技术博客：blog.yangcy.cc 可关注个人生活博客：chengyangyang.com</p>
+                            <p>Yancy，担任金融公司运维负责人，客居深圳。个人技术博客：blog.yangcy.cc              ⛴可 关注个人生活博客：chengyangyang.com</p>
                         
 
                         <!-- SNS Link -->

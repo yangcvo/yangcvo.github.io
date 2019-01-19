@@ -13,11 +13,11 @@
 
     <title>
         
-          tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0 - Yancy&#39;s blog
+          CDN加速助力高并发网站架构 - Yancy&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="http://blog.yancy.cc/2016/03/21/Web服务技术/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/">
+    <link rel="canonical" href="http://blog.yancy.cc/2015/07/23/自动化+Jenkins/CDN加速助力高并发网站架构/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -165,14 +165,14 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes">Java+Tomcat notes</a>
+                          <a class="tag" href="/tags/#CDN" title="CDN">CDN</a>
                         
                     </div>
-                    <h1>tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0</h1>
+                    <h1>CDN加速助力高并发网站架构</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by Yancy on
-                        2016-03-21
+                        2015-07-23
                     </span>
                 </div>
             </div>
@@ -191,14 +191,23 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h4 id="tomcat性能优化：Java-HotSpot-TM-64-Bit-Server-VM-warning-ignoring-option-PermSize-512m-support-was-removed-in-8-0"><a href="#tomcat性能优化：Java-HotSpot-TM-64-Bit-Server-VM-warning-ignoring-option-PermSize-512m-support-was-removed-in-8-0" class="headerlink" title="tomcat性能优化：Java HotSpot(TM) 64-Bit Server VM warning: ignoring option PermSize=512m; support was removed in 8.0"></a>tomcat性能优化：Java HotSpot(TM) 64-Bit Server VM warning: ignoring option PermSize=512m; support was removed in 8.0</h4><p>这个提示应该是升级JDK1.8以上 在Java的8命令行标志<code>MaxPermSize</code>已被删除。其原因是，持久代从热点堆中取出并转移到本机内存。所以为了消除这种信息编辑java_OPTS环境用户变量。</p>
-<p>在网上查询到：</p>
-<p>-XX：<code>MaxPermSize =size</code>设置最大永久代空间的大小（以字节为单位）。此选项是不赞成使用JDK 8，并通过-XX取代：MaxMetaspaceSize选项。</p>
-<p>-XX：<code>PermSize = size</code>设置分配给永久代如果超过触发垃圾收集的空间（以字节为单位）。该选项已被否决JDK 8，并通过-XX取代：<code>MetaspaceSize</code>选项。</p>
-<p>我所在</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">JAVA_OPTS==<span class="string">"-Xmx512m -XX:MaxPermSize=256m"</span></div></pre></td></tr></table></figure>
-<p>在我的系统的.bashrc，将其更改为</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">JAVA_OPTS=<span class="string">"-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms1024m -Xmx1024m -XX:NewSize=512m -XX:MaxNewSize=512m  -XX:+DisableExplicitGC"</span></div></pre></td></tr></table></figure>
+                <h2 id="CDN加速助力高并发网站架构"><a href="#CDN加速助力高并发网站架构" class="headerlink" title="CDN加速助力高并发网站架构"></a>CDN加速助力高并发网站架构</h2><p><img src="http://image.chengyangyang.com/CDN1.png" alt=""></p>
+<h2 id="架构说明："><a href="#架构说明：" class="headerlink" title="架构说明："></a>架构说明：</h2><p>用户通过互联网访问网站需要经过的节点如下：</p>
+<h4 id="一、要通过域名解析"><a href="#一、要通过域名解析" class="headerlink" title="一、要通过域名解析"></a>一、要通过域名解析</h4><p>在域名解析处有两种方式<br>1、自建，自建需要在域名解析前架设防火墙。</p>
+<p>2、使用现有的域名解析提供商，需要设置成CNAME,其实就是另一个域名解析，进行跳转。在刚开始的时候建议先用CNAME方式，部署不影响用户现有方式，容易被用户接受，而且不用暂时不用担心第一级dns的问题。</p>
+<p>总之，如果要建设idc加速，防止ddos攻击之类的服务，域名解析服务一定要提供，不管是直接提供dns服务还是间接通过cname转发。<br>里面的主要技术，是通过用户请求的ip来得到离用户最近的服务器的地址，并通过它来提供服务。如果要进行安全防护，比如sql注入检查，js跨站脚本等可以在这一层进行处理。</p>
+<h4 id="二、提供虚拟机"><a href="#二、提供虚拟机" class="headerlink" title="二、提供虚拟机"></a>二、提供虚拟机</h4><p>虚拟机现在主流有两种方式，一是虚拟主机，主要的软件有开源的openvz，商用的Virtuozzo等,另一类是虚拟机如vmware、xen、kvm等，这类提供虚拟操作系统，可以是异构的。他们两个的对比主要是虚拟主机的利用率比较高，可以一台主流pcserver可以虚拟几十个到上百个虚拟主机，但只能是同一类操作系统。虚拟机的运行效率相对低很多，一般主流pcserver也就十几个左右。他的有点是异构操作系统，备份管理比较方便。当然在建设的时候可以先用虚拟机，然后在虚拟机上建设虚拟主机。</p>
+<p>如果要提供对外服务，ip地址是比不可少的，对于一个用户来说，一个域名需要几个点，就需要几个ip。</p>
+<h4 id="三、LVS集群"><a href="#三、LVS集群" class="headerlink" title="三、LVS集群"></a>三、LVS集群</h4><p>由于要提供加速等服务，用户直接使用的openvz虚拟主机的性能和效率一般不大，又要提供高可用性，所以需要通过虚拟主机访问lvs集群的数据，通过lvs集群来提供服务。</p>
+<h4 id="四、Squid"><a href="#四、Squid" class="headerlink" title="四、Squid"></a>四、Squid</h4><p>Squid是缓存，尤其是对静态页面和文件有很好加速效果。sina、sohu等都用它来做缓存加速。</p>
+<h4 id="五、Nginx​"><a href="#五、Nginx​" class="headerlink" title="五、Nginx​"></a>五、Nginx​</h4><p>Nginx主要提供反向代理功能，当通过修改或者更新了页面，由nginx来负责更新缓存。还有就是动态网站，也是由nginx来提供服务。</p>
+<p>Nginx和sqid都可以提供静态缓存功能，两者还要结合起来发挥最大效果。如果要进行安全防护，比如sql注入检查，js跨站脚本等可以在这一层进行处理。<br>防DDOS</p>
+<h4 id="六、自动化工具-Docker运行"><a href="#六、自动化工具-Docker运行" class="headerlink" title="六、自动化工具+Docker运行"></a>六、自动化工具+Docker运行</h4><p>Saltstask 自动化工具批量初始化脚本更新监控脚本，增删改查添加缓存机制。上百台服务器节省我们操作时间，物理机运行Docker程序。</p>
+<h2 id="防ddos的主要内容由两个方面："><a href="#防ddos的主要内容由两个方面：" class="headerlink" title="防ddos的主要内容由两个方面："></a>防ddos的主要内容由两个方面：</h2><h4 id="一、带宽"><a href="#一、带宽" class="headerlink" title="一、带宽"></a>一、带宽</h4><p>这个是很重要的地方，据我现在从网上得到的资料，现在主流的idc机房一般最大提供独立百兆端口，而且价格不菲。在这种情况下可以机柜租用。这个还需要调研是否可以提供更大的带宽。</p>
+<h4 id="二、防火墙设备"><a href="#二、防火墙设备" class="headerlink" title="二、防火墙设备"></a>二、防火墙设备</h4><p>需要在接入口部署防火墙，需要根据idc接口端口来确定容量，有的idc机房也提供此服务。</p>
+<h4 id="三、流量牵引设备"><a href="#三、流量牵引设备" class="headerlink" title="三、流量牵引设备"></a>三、流量牵引设备</h4><p>这个一般idc机房会提供此服务，这个根据需要是否需要购买。</p>
+<h4 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h4><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
+<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
 
 
                 <hr>
@@ -208,12 +217,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2016/03/21/shell编程入门到简单/shell入门到简单 学习总结1-12章/" data-toggle="tooltip" data-placement="top" title="shell入门到简单 学习总结1-12章">&larr; Previous Post</a>
+                            <a href="/2015/09/10/自动化+Jenkins/saltstack/自动化运维工具-Saltstack的详细介绍安装与使用以及语法开发操作/" data-toggle="tooltip" data-placement="top" title="自动化运维工具-Saltstack的详细介绍安装与使用以及语法开发操作">&larr; Previous Post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2016/03/10/自动化+Jenkins/Ansible/ansible 脚本(Playbook基本语法)远程控制/" data-toggle="tooltip" data-placement="top" title="Ansible 脚本(Playbook基本语法)远程控制">Next Post &rarr;</a>
+                            <a href="/2015/04/01/运维安全/使用AIDE做Linux高级入侵检测文件监控/" data-toggle="tooltip" data-placement="top" title="使用AIDE做Linux高级入侵检测文件监控">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -247,7 +256,7 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#Java+Tomcat notes" title="Java+Tomcat notes">Java+Tomcat notes</a>
+                          <a class="tag" href="/tags/#CDN" title="CDN">CDN</a>
                         
                     </div>
                 </section>
@@ -280,8 +289,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "blog-yancy-cc";
-    var disqus_identifier = "http://blog.yancy.cc/2016/03/21/Web服务技术/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/";
-    var disqus_url = "http://blog.yancy.cc/2016/03/21/Web服务技术/tomcat/tomcat优化遇到jdk1.8出现⚠️警告：warning:ignoring option PermSize=512msupport was removed in 8.0/";
+    var disqus_identifier = "http://blog.yancy.cc/2015/07/23/自动化+Jenkins/CDN加速助力高并发网站架构/";
+    var disqus_url = "http://blog.yancy.cc/2015/07/23/自动化+Jenkins/CDN加速助力高并发网站架构/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
