@@ -1,220 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<!-- Head tag -->
+<html>
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
-    <meta name="keyword"  content="undefined">
-    <link rel="shortcut icon" href="/img/ironman-draw.png">
-    <!-- Place this tag in your head or just before your close body tag. -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <title>
-        
-          KafKa从0.8.2.1升级到0.9.0.1变化方案与步骤 - Yancy&#39;s blog
-        
-    </title>
-
-    <link rel="canonical" href="http://blog.yancy.cc/2017/11/04/Bigdata-hadoop/Kafka/KafKa从0.8.2.1升级到0.9.0.1变化方案与步骤/">
-
-    <!-- Bootstrap Core CSS -->
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-
-    <!-- Custom CSS --> 
-    <link rel="stylesheet" href="/css/beantech.min.css">
-    
-    <!-- Pygments Highlight CSS -->
-    <link rel="stylesheet" href="/css/highlight.css">
-
-    <link rel="stylesheet" href="/css/widget.css">
-
-    <link rel="stylesheet" href="/css/rocket.css">
-
-    <link rel="stylesheet" href="/css/signature.css">
-
-    <link rel="stylesheet" href="/css/toc.css">
-
-    <!-- Custom Fonts -->
-    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
-    <!-- Hux change font-awesome CDN to qiniu -->
-    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
-
-    <!-- Hux Delete, sad but pending in China
-    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
-    css'>
-    -->
-
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-    <!-- ga & ba script hoook -->
-    <script></script>
+  <meta charset="utf-8">
+  
+  <title>KafKa从0.8.2.1升级到0.9.0.1变化方案与步骤 | Yancy&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="🍊我这里是采用,群集升级,全部更新停止老版本zk和kafka更新服务。 9.0.0有潜在的中断更改风险（在升级之前需要知道），并且与之前版本的broker之间的协议改变。这意味着此次升级可能和客户端旧版本不兼容。因此在升级客户端之前，先升级kafka集群。如果你使用MirrorMaker下游集群，则同样应首先升级。">
+<meta name="keywords" content="Kafka">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KafKa从0.8.2.1升级到0.9.0.1变化方案与步骤">
+<meta property="og:url" content="http://blog.yancy.cc/2017/11/04/Bigdata-hadoop/Kafka/KafKa从0.8.2.1升级到0.9.0.1变化方案与步骤/index.html">
+<meta property="og:site_name" content="Yancy&#39;s blog">
+<meta property="og:description" content="🍊我这里是采用,群集升级,全部更新停止老版本zk和kafka更新服务。 9.0.0有潜在的中断更改风险（在升级之前需要知道），并且与之前版本的broker之间的协议改变。这意味着此次升级可能和客户端旧版本不兼容。因此在升级客户端之前，先升级kafka集群。如果你使用MirrorMaker下游集群，则同样应首先升级。">
+<meta property="og:image" content="https://blogs.apache.org/hbase/mediaresource/0b77f435-da5c-4696-a1b5-f35bc4139b7b">
+<meta property="og:updated_time" content="2017-12-03T06:29:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="KafKa从0.8.2.1升级到0.9.0.1变化方案与步骤">
+<meta name="twitter:description" content="🍊我这里是采用,群集升级,全部更新停止老版本zk和kafka更新服务。 9.0.0有潜在的中断更改风险（在升级之前需要知道），并且与之前版本的broker之间的协议改变。这意味着此次升级可能和客户端旧版本不兼容。因此在升级客户端之前，先升级kafka集群。如果你使用MirrorMaker下游集群，则同样应首先升级。">
+<meta name="twitter:image" content="https://blogs.apache.org/hbase/mediaresource/0b77f435-da5c-4696-a1b5-f35bc4139b7b">
+  
+  <link rel="stylesheet" href="/css/index.css">
 </head>
 
+<body style="
 
-<!-- hack iOS CSS :active style -->
-<body ontouchstart="">
-	<!-- Modified by Yu-Hsuan Yen -->
-<!-- Post Header -->
-<style type="text/css">
-    header.intro-header{
+
+  background-color: #eff0f6
+
+">
+  <div id="container">
+    <nav id="nav">
+  <header class="header">
+    <a href="/" class="title">Clover Tuan</a>
+  </header>
+  <div class="ctnWrap">
+    <div class="icons">
+      
         
-            background-image: url('undefined')
-            /*post*/
+          
+            <a href="https://dribbble.com/clovertuan" target="_blank" class="nav-icn iconfont icon-dribbble"></a>
+          
         
-    }
-    
-</style>
-
-<header class="intro-header" >
-    <!-- Signature -->
-    <div id="signature">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                
-                    <div class="post-heading">
-                        <div class="tags">
-                            
-                              <a class="tag" href="/tags/#Kafka" title="Kafka">Kafka</a>
-                            
-                        </div>
-                        <h1>KafKa从0.8.2.1升级到0.9.0.1变化方案与步骤</h1>
-                        <h2 class="subheading"></h2>
-                        <span class="meta">
-                            Posted by Yancy on
-                            2017-11-04
-                        </span>
-                    </div>
-                
-
-
-                </div>
-            </div>
-        </div>
+          
+            <a href="https://www.behance.net/clovertuan" target="_blank" class="nav-icn iconfont icon-behance"></a>
+          
+        
+          
+            <a href="http://clovertuan.lofter.com/" target="_blank" class="nav-icn iconfont icon-lofter"></a>
+          
+        
+          
+            <a href="https://www.instagram.com/clovertuan/" target="_blank" class="nav-icn iconfont icon-instagram"></a>
+          
+        
+          
+            <a href="https://github.com/cloverTuan" target="_blank" class="nav-icn iconfont icon-github"></a>
+          
+        
+      
     </div>
-</header>
-
-	
-    <!-- Navigation -->
-<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header page-scroll">
-            <button type="button" class="navbar-toggle">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
-        </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <!-- Known Issue, found by Hux:
-            <nav>'s height woule be hold on by its content.
-            so, when navbar scale out, the <nav> will cover tags.
-            also mask any touch event of tags, unfortunately.
-        -->
-        <div id="huxblog_navbar">
-            <div class="navbar-collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="/">Home</a>
-                    </li>
-
-                    
-
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/ARCHIVES/archives.html">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/ABOUT/About.html">About</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/tags/">Tags</a>
-                        </li>
-                        
-                    
-                    
-                </ul>
-            </div>
-        </div>
-        <!-- /.navbar-collapse -->
+    <div class="menu">
+      
+        
+            <a href="/" class="nav-menu ">HOME</a>
+          
+        
+            <a href="/archives" class="nav-menu ">ARCHIVE</a>
+          
+        
+            <a href="/about" class="nav-menu ">ABOUT</a>
+          
+        
+      
     </div>
-    <!-- /.container -->
+  </div>
 </nav>
-<script>
-    // Drop Bootstarp low-performance Navbar
-    // Use customize navbar with high-quality material design animation
-    // in high-perf jank-free CSS3 implementation
-    var $body   = document.body;
-    var $toggle = document.querySelector('.navbar-toggle');
-    var $navbar = document.querySelector('#huxblog_navbar');
-    var $collapse = document.querySelector('.navbar-collapse');
-
-    $toggle.addEventListener('click', handleMagic)
-    function handleMagic(e){
-        if ($navbar.className.indexOf('in') > 0) {
-        // CLOSE
-            $navbar.className = " ";
-            // wait until animation end.
-            setTimeout(function(){
-                // prevent frequently toggle
-                if($navbar.className.indexOf('in') < 0) {
-                    $collapse.style.height = "0px"
-                }
-            },400)
-        }else{
-        // OPEN
-            $collapse.style.height = "auto"
-            $navbar.className += " in";
-        }
-    }
-</script>
-
-
-    <!-- Main Content -->
-    <!-- Modify by Yu-Hsuan Yen -->
-
-<!-- Post Content -->
-<article>
-    <div class="container">
-        <div class="row">
-
-            <!-- Post Container -->
-            <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                post-container">
-
-                <p>🍊我这里是采用,群集升级,全部更新停止老版本zk和kafka更新服务。</p>
-<p>9.0.0有潜在的中断更改风险（在升级之前需要知道），并且与之前版本的broker之间的协议改变。这意味着此次升级可能和客户端旧版本不兼容。因此在升级客户端之前，先升级kafka集群。如果你使用MirrorMaker下游集群，则同样应首先升级。</p>
-<p><img src="https://blogs.apache.org/hbase/mediaresource/0b77f435-da5c-4696-a1b5-f35bc4139b7b" alt=""></p>
-<a id="more"></a>
-<h3 id="滚动升级"><a href="#滚动升级" class="headerlink" title="滚动升级"></a>滚动升级</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">升级所有broker的server<span class="selector-class">.properties</span>,并在其中添加</div><div class="line">inter<span class="selector-class">.broker</span><span class="selector-class">.protocol</span><span class="selector-class">.version</span> = <span class="number">0.8</span>.<span class="number">2</span><span class="selector-class">.X</span></div><div class="line">每次升级一个broker：关闭broker，替换新版本，然后重新启动。</div></pre></td></tr></table></figure>
+    <div id="main"><section class="article">
+  <h2 class="title">KafKa从0.8.2.1升级到0.9.0.1变化方案与步骤</h2>
+  <p class="sub">Nov 4, 2017</p>
+  <article class="content">
+    <h3 id="滚动升级"><a href="#滚动升级" class="headerlink" title="滚动升级"></a>滚动升级</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">升级所有broker的server<span class="selector-class">.properties</span>,并在其中添加</div><div class="line">inter<span class="selector-class">.broker</span><span class="selector-class">.protocol</span><span class="selector-class">.version</span> = <span class="number">0.8</span>.<span class="number">2</span><span class="selector-class">.X</span></div><div class="line">每次升级一个broker：关闭broker，替换新版本，然后重新启动。</div></pre></td></tr></table></figure>
 <h3 id="群集升级"><a href="#群集升级" class="headerlink" title="群集升级"></a>群集升级</h3><p>一旦整个群集升级，通过编辑inter.broker.protocol.version并将其设置为0.9.0.0来转换所有协议。<br>逐个重新启动broker，使新协议版本生效。<br>注意 ：如果你可接受停机，你可以简单地将所有broker关闭，更新版本并重启启动，协议将默认从新版本开始。<br>注意 ：变换协议版本和重启启动可以在broker升级完成后的任何时间去做，不必马上做。</p>
 <h4 id="0-9-0-0潜在的中断变化"><a href="#0-9-0-0潜在的中断变化" class="headerlink" title="0.9.0.0潜在的中断变化"></a>0.9.0.0潜在的中断变化</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">Java 1.6不再支持，需要Jdk1.7版本以上。</div><div class="line">Scala 2.9不再支持。</div><div class="line"></div><div class="line">默认情况下，1000以上的Broker ID为自动分配。如果你的集群高于该阈值，需相应地增加</div><div class="line">reserved.broker.max.id配置。</div><div class="line"></div><div class="line">replica.lag.max.messages配置已经移除。分区leader在决定哪些副本处于同步时将不再考虑落后的消息的数。</div><div class="line"></div><div class="line">配置参数replica.lag.time.max.ms现在不仅指自上次从副本获取请求后经过的时间，还指自副本上次被捕获以来的时间。 副本仍然从leader获取消息，但超过replica.lag.time.max.ms配置的最新消息将被认为不同步的。</div><div class="line"></div><div class="line">压缩的topic不再接受没有key的消息，如果出现，生产者将抛出异常。 在0.8.x中，没有key的消息将导致日志压缩线程退出（并停止所有压缩的topic）。</div><div class="line"></div><div class="line">MirrorMaker不再支持多个目标集群。 它只接受一个--consumer.config。 要镜像多个源集群，每个源集群至少需要一个MirrorMaker实例，每个源集群都有自己的消费者配置。</div><div class="line"></div><div class="line">在org.apache.kafka.clients.tools。包下的Tools已移至org.apache.kafka.tools。。 所有包含的脚本仍将照常工作，只有直接导入这些类的自定义代码将受到影响。</div><div class="line"></div><div class="line">在kafka-run-class.sh中更改了默认的Kafka JVM性能选项（KAFKA_JVM_PERFORMANCE_OPTS）。</div><div class="line"></div><div class="line">kafka-topics.sh脚本（kafka.admin.TopicCommand）现在退出，失败时出现非零退出代码。</div><div class="line"></div><div class="line">kafka-topics.sh脚本（kafka.admin.TopicCommand）现在将在topic名称由于使用“.”或“_”而导致风险度量标准冲突时打印警告。以及冲突的情况下的错误。</div><div class="line"></div><div class="line">kafka-console-producer.sh脚本（kafka.tools.ConsoleProducer）将默认使用新的Java Producer，用户必须指定“old-producer”才能使用旧生产者。</div><div class="line">默认情况下，所有命令行工具都会将所有日志消息打印到stderr而不是stdout。</div></pre></td></tr></table></figure>
 <h4 id="0-9-0-1中的显著变化"><a href="#0-9-0-1中的显著变化" class="headerlink" title="0.9.0.1中的显著变化"></a>0.9.0.1中的显著变化</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">可以通过将broker.id.generation.enable设置为<span class="literal">false</span>来禁用新的broker ID生成功能。</div><div class="line"></div><div class="line">默认情况下，配置参数log.cleaner.enable为<span class="literal">true</span>。 这意味着topic会清理。</div><div class="line">policy = compact现在将被默认压缩，并且128MB的堆（通过log.cleaner.dedupe.buffer.size）分配给清洗进程。你可能需要根据你对压缩topic的使用情况，查看log.cleaner.dedupe.buffer.size和其他log.cleaner配置值。</div><div class="line"></div><div class="line">默认情况下，新消费者的配置参数fetch.min.bytes的默认值为1。</div></pre></td></tr></table></figure>
@@ -226,306 +91,43 @@
 <p>🎉 kafka升级，调配内网访问地址，内存，日志输出类型调优，监控更新配置。<br>🎉 参考官网文档 <a href="https://kafka.apache.org/0101/documentation.html#upgrade_9" target="_blank" rel="external">Apache Kafka 从 0.8.0, 0.8.1.X 或 0.8.2.X 升级到 0.9.0.0</a></p>
 <h3 id="Communicative-learning"><a href="#Communicative-learning" class="headerlink" title="Communicative learning:"></a>Communicative learning:</h3><p>🐧  Linux shell_ senior operation and maintenance faction: QQ group <code>459096184</code> circle (system operation and maintenance - application operation and maintenance - automation operation and maintenance - virtualization technology research, welcome to join)<br>🐧  BigData-Exchange School:QQ group <code>521621407</code> circles (big data Yun Wei) (Hadoop developer) (big data research enthusiasts) welcome to join</p>
 <p>Bidata have internal WeChat exchange group, learn from each other, join QQ group has links.</p>
-
-                
-
-                <hr>
-                <!-- Pager -->
-                <ul class="pager">
-                    
-                        <li class="previous">
-                            <a href="/2017/11/13/日志分析平台/Elasticsearch/Logstash分享,online生产环境的使用,online日志规范。/" data-toggle="tooltip" data-placement="top" title="Logstash分享,online生产环境的使用,online日志规范。">&larr; Previous Post</a>
-                        </li>
-                    
-                    
-                        <li class="next">
-                            <a href="/2017/09/21/性能监控/Zabbix/ZABBIX monitoring Flume/" data-toggle="tooltip" data-placement="top" title="ZABBIX monitoring Flume">Next Post &rarr;</a>
-                        </li>
-                    
-                </ul>
-
-                <br>
-                
-                <!-- require APlayer -->
-                
-
-                <!-- duoshuo Share start -->
-                
-                <!-- 多说 Share end-->
-
-                <!-- 多说评论框 start -->
-                
-                <!-- 多说评论框 end -->
-
-                <!-- disqus comment start -->
-                
-                    <div class="comment">
-                        <div id="disqus_thread" class="disqus-thread"></div>
-                    </div>
-                
-                <!-- disqus comment end -->
-
-                
-
-            </div>
-            
-            <!-- Tabe of Content -->
-            <!-- Table of Contents -->
-
-                
-            <!-- Sidebar Container -->
-            <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                sidebar-container">
-
-                <!-- Featured Tags -->
-                
-                <section>
-                    <!-- no hr -->
-                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
-                    <div class="tags">
-                       
-                          <a class="tag" href="/tags/#Kafka" title="Kafka">Kafka</a>
-                        
-                    </div>
-                </section>
-                
-
-                <!-- Friends Blog -->
-                
-                <hr>
-                <h5>FRIENDS</h5>
-                <ul class="list-inline">
-
-                    
-                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
-                    
-                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
-                    
-                </ul>
-                
-            </div>
-        </div>
-    </div>
-</article>
-
-
-
-
-<!-- disqus embedded js code start (one page only need to embed once) -->
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES * * */
-    var disqus_shortname = "blog-yancy-cc";
-    var disqus_identifier = "http://blog.yancy.cc/2017/11/04/Bigdata-hadoop/Kafka/KafKa从0.8.2.1升级到0.9.0.1变化方案与步骤/";
-    var disqus_url = "http://blog.yancy.cc/2017/11/04/Bigdata-hadoop/Kafka/KafKa从0.8.2.1升级到0.9.0.1变化方案与步骤/";
-
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<!-- disqus embedded js code start end -->
-
-
-
-
-
-<!-- async load function -->
-<script>
-    function async(u, c) {
-      var d = document, t = 'script',
-          o = d.createElement(t),
-          s = d.getElementsByTagName(t)[0];
-      o.src = u;
-      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
-      s.parentNode.insertBefore(o, s);
-    }
-</script>
-<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
-<script>
-    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
-        anchors.options = {
-          visible: 'hover',
-          placement: 'left',
-          icon: 'ℬ'
-        };
-        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
-    })
-</script>
-<style>
-    /* place left on bigger screen */
-    @media all and (min-width: 800px) {
-        .anchorjs-link{
-            position: absolute;
-            left: -0.75em;
-            font-size: 1.1em;
-            margin-top : -0.1em;
-        }
-    }
-</style>
-
-
-
-    <!-- Footer -->
-    <!-- Footer -->
-<footer>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <ul class="list-inline text-center">
-                
-                
-                    <li>
-                        <a target="_blank" href="https://twitter.com/yancyoo">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                
-                
-                    <li>
-                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa  fa-stack-1x fa-inverse">知</i>
-                            </span>
-                        </a>
-                    </li>
-                
-
-                
-                    <li>
-                        <a target="_blank" href="http://weibo.com/yangcvo">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                
-
-                
-
-                
-                    <li>
-                        <a target="_blank"  href="https://github.com/yangcvo">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                
-
-                
-
-                </ul>
-                <p class="copyright text-muted">
-                    Copyright &copy; Yancy 2019 
-                    <br>
-                    Theme by <a href="http://beantech.org">BeanTech</a> 
-                    <span style="display: inline-block; margin: 0 5px;">
-                        <i class="fa fa-heart"></i>
-                    </span> 
-                    re-Ported by <a href="http://www.huweihuang.com">胡伟煌</a> | 
-                    <iframe
-                        style="margin-left: 2px; margin-bottom:-5px;"
-                        frameborder="0" scrolling="0" width="91px" height="20px"
-                        src="https://ghbtns.com/github-btn.html?user=huweihuang&repo=hexo-theme-huweihuang&type=star&count=true" >
-                    </iframe>
-                </p>
-            </div>
-        </div>
-    </div>
+  </article>
+  <footer class="f-cf">
+    
+      <a href="/2017/11/13/日志分析平台/Elasticsearch/Logstash分享,online生产环境的使用,online日志规范。/" class="link f-fl">⟵Logstash分享,online生产环境的使用,online日志规范。</a>
+    
+    
+      <a href="/2017/09/21/性能监控/Zabbix/ZABBIX monitoring Flume/" class="link f-fr">ZABBIX monitoring Flume⟶</a>
+    
+  </footer>
+</section></div>
+    <footer id="footer" class="f-cf">
+  d.guangying@foxmail.com
+  
+    
+      
+        · <a href="https://dribbble.com/clovertuan" target="_blank" class="nav-icn">Dribbble</a>
+      
+    
+      
+        · <a href="https://www.behance.net/clovertuan" target="_blank" class="nav-icn">Behance</a>
+      
+    
+      
+        · <a href="http://clovertuan.lofter.com/" target="_blank" class="nav-icn">Lofter</a>
+      
+    
+      
+        · <a href="https://www.instagram.com/clovertuan/" target="_blank" class="nav-icn">Instagram</a>
+      
+    
+      
+        · <a href="https://github.com/cloverTuan" target="_blank" class="nav-icn">GitHub</a>
+      
+    
+  
+  <span class="copyright">All rights reserved @Clover Tuan</span>
 </footer>
-
-<!-- jQuery -->
-<script src="/js/jquery.min.js"></script>
-
-<!-- Bootstrap Core JavaScript -->
-<script src="/js/bootstrap.min.js"></script>
-
-<!-- Custom Theme JavaScript -->
-<script src="/js/hux-blog.min.js"></script>
-
-
-<!-- async load function -->
-<script>
-    function async(u, c) {
-      var d = document, t = 'script',
-          o = d.createElement(t),
-          s = d.getElementsByTagName(t)[0];
-      o.src = u;
-      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
-      s.parentNode.insertBefore(o, s);
-    }
-</script>
-
-<!-- 
-     Because of the native support for backtick-style fenced code blocks 
-     right within the Markdown is landed in Github Pages, 
-     From V1.6, There is no need for Highlight.js, 
-     so Huxblog drops it officially.
-
-     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
-     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
--->
-<!--
-    <script>
-        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
-            hljs.initHighlightingOnLoad();
-        })
-    </script>
-    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
--->
-
-
-<!-- jquery.tagcloud.js -->
-<script>
-    // only load tagcloud.js in tag.html
-    if($('#tag_cloud').length !== 0){
-        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
-            $.fn.tagcloud.defaults = {
-                //size: {start: 1, end: 1, unit: 'em'},
-                color: {start: '#bbbbee', end: '#0085a1'},
-            };
-            $('#tag_cloud a').tagcloud();
-        })
-    }
-</script>
-
-<!--fastClick.js -->
-<script>
-    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
-        var $nav = document.querySelector("nav");
-        if($nav) FastClick.attach($nav);
-    })
-</script>
-
-
-<!-- Google Analytics -->
-
-
-
-
-<!-- Baidu Tongji -->
-
-
-
-
-
-
-	<a id="rocket" href="#top" class=""></a>
-	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
-    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
-<!-- Image to hack wechat -->
-<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
-<!-- Migrate from head to bottom, no longer block render and still work -->
-
+  </div>
 </body>
-
 </html>

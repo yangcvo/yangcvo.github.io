@@ -1,216 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<!-- Head tag -->
+<html>
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Personal blog, thinking and sharing of technology and life">
-    <meta name="keyword"  content="undefined">
-    <link rel="shortcut icon" href="/img/ironman-draw.png">
-    <!-- Place this tag in your head or just before your close body tag. -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <title>
-        
-          Ansible小结（三）ansible.cfg与默认配置 - Yancy&#39;s blog
-        
-    </title>
-
-    <link rel="canonical" href="http://blog.yancy.cc/2016/03/07/自动化+Jenkins/Ansible/Ansible小结（三）ansible.cfg与默认配置 /">
-
-    <!-- Bootstrap Core CSS -->
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-
-    <!-- Custom CSS --> 
-    <link rel="stylesheet" href="/css/beantech.min.css">
-    
-    <!-- Pygments Highlight CSS -->
-    <link rel="stylesheet" href="/css/highlight.css">
-
-    <link rel="stylesheet" href="/css/widget.css">
-
-    <link rel="stylesheet" href="/css/rocket.css">
-
-    <link rel="stylesheet" href="/css/signature.css">
-
-    <link rel="stylesheet" href="/css/toc.css">
-
-    <!-- Custom Fonts -->
-    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
-    <!-- Hux change font-awesome CDN to qiniu -->
-    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
-
-    <!-- Hux Delete, sad but pending in China
-    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
-    css'>
-    -->
-
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-    <!-- ga & ba script hoook -->
-    <script></script>
+  <meta charset="utf-8">
+  
+  <title>Ansible小结（三）ansible.cfg与默认配置 | Yancy&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="#Ansible小结（四）ansible.cfg与默认配置 Ansible默认安装好后有一个配置文件/etc/ansible/ansible.cfg，该配置文件中定义了ansible的主机的默认配置部分，如默认是否需要输入密码、是否开启sudo认证、action_plugins插件的位置、hosts主机组的位置、是否开启log功能、默认端口、key文件位置等等。 具体如下： 12345678910">
+<meta name="keywords" content="Ansible">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ansible小结（三）ansible.cfg与默认配置">
+<meta property="og:url" content="http://blog.yancy.cc/2016/03/07/自动化+Jenkins/Ansible/Ansible小结（三）ansible.cfg与默认配置 /index.html">
+<meta property="og:site_name" content="Yancy&#39;s blog">
+<meta property="og:description" content="#Ansible小结（四）ansible.cfg与默认配置 Ansible默认安装好后有一个配置文件/etc/ansible/ansible.cfg，该配置文件中定义了ansible的主机的默认配置部分，如默认是否需要输入密码、是否开启sudo认证、action_plugins插件的位置、hosts主机组的位置、是否开启log功能、默认端口、key文件位置等等。 具体如下： 12345678910">
+<meta property="og:updated_time" content="2017-10-24T14:19:41.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ansible小结（三）ansible.cfg与默认配置">
+<meta name="twitter:description" content="#Ansible小结（四）ansible.cfg与默认配置 Ansible默认安装好后有一个配置文件/etc/ansible/ansible.cfg，该配置文件中定义了ansible的主机的默认配置部分，如默认是否需要输入密码、是否开启sudo认证、action_plugins插件的位置、hosts主机组的位置、是否开启log功能、默认端口、key文件位置等等。 具体如下： 12345678910">
+  
+  <link rel="stylesheet" href="/css/index.css">
 </head>
 
+<body style="
 
-<!-- hack iOS CSS :active style -->
-<body ontouchstart="">
-	<!-- Modified by Yu-Hsuan Yen -->
-<!-- Post Header -->
-<style type="text/css">
-    header.intro-header{
+
+  background-color: #eff0f6
+
+">
+  <div id="container">
+    <nav id="nav">
+  <header class="header">
+    <a href="/" class="title">Clover Tuan</a>
+  </header>
+  <div class="ctnWrap">
+    <div class="icons">
+      
         
-            background-image: url('undefined')
-            /*post*/
+          
+            <a href="https://dribbble.com/clovertuan" target="_blank" class="nav-icn iconfont icon-dribbble"></a>
+          
         
-    }
-    
-</style>
-
-<header class="intro-header" >
-    <!-- Signature -->
-    <div id="signature">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                
-                    <div class="post-heading">
-                        <div class="tags">
-                            
-                              <a class="tag" href="/tags/#Ansible" title="Ansible">Ansible</a>
-                            
-                        </div>
-                        <h1>Ansible小结（三）ansible.cfg与默认配置</h1>
-                        <h2 class="subheading"></h2>
-                        <span class="meta">
-                            Posted by Yancy on
-                            2016-03-07
-                        </span>
-                    </div>
-                
-
-
-                </div>
-            </div>
-        </div>
+          
+            <a href="https://www.behance.net/clovertuan" target="_blank" class="nav-icn iconfont icon-behance"></a>
+          
+        
+          
+            <a href="http://clovertuan.lofter.com/" target="_blank" class="nav-icn iconfont icon-lofter"></a>
+          
+        
+          
+            <a href="https://www.instagram.com/clovertuan/" target="_blank" class="nav-icn iconfont icon-instagram"></a>
+          
+        
+          
+            <a href="https://github.com/cloverTuan" target="_blank" class="nav-icn iconfont icon-github"></a>
+          
+        
+      
     </div>
-</header>
-
-	
-    <!-- Navigation -->
-<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header page-scroll">
-            <button type="button" class="navbar-toggle">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">Yancy&#39;s blog</a>
-        </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <!-- Known Issue, found by Hux:
-            <nav>'s height woule be hold on by its content.
-            so, when navbar scale out, the <nav> will cover tags.
-            also mask any touch event of tags, unfortunately.
-        -->
-        <div id="huxblog_navbar">
-            <div class="navbar-collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="/">Home</a>
-                    </li>
-
-                    
-
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/ARCHIVES/archives.html">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/ABOUT/About.html">About</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/tags/">Tags</a>
-                        </li>
-                        
-                    
-                    
-                </ul>
-            </div>
-        </div>
-        <!-- /.navbar-collapse -->
+    <div class="menu">
+      
+        
+            <a href="/" class="nav-menu ">HOME</a>
+          
+        
+            <a href="/archives" class="nav-menu ">ARCHIVE</a>
+          
+        
+            <a href="/about" class="nav-menu ">ABOUT</a>
+          
+        
+      
     </div>
-    <!-- /.container -->
+  </div>
 </nav>
-<script>
-    // Drop Bootstarp low-performance Navbar
-    // Use customize navbar with high-quality material design animation
-    // in high-perf jank-free CSS3 implementation
-    var $body   = document.body;
-    var $toggle = document.querySelector('.navbar-toggle');
-    var $navbar = document.querySelector('#huxblog_navbar');
-    var $collapse = document.querySelector('.navbar-collapse');
-
-    $toggle.addEventListener('click', handleMagic)
-    function handleMagic(e){
-        if ($navbar.className.indexOf('in') > 0) {
-        // CLOSE
-            $navbar.className = " ";
-            // wait until animation end.
-            setTimeout(function(){
-                // prevent frequently toggle
-                if($navbar.className.indexOf('in') < 0) {
-                    $collapse.style.height = "0px"
-                }
-            },400)
-        }else{
-        // OPEN
-            $collapse.style.height = "auto"
-            $navbar.className += " in";
-        }
-    }
-</script>
-
-
-    <!-- Main Content -->
-    <!-- Modify by Yu-Hsuan Yen -->
-
-<!-- Post Content -->
-<article>
-    <div class="container">
-        <div class="row">
-
-            <!-- Post Container -->
-            <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                post-container">
-
-                <p>#Ansible小结（四）ansible.cfg与默认配置</p>
+    <div id="main"><section class="article">
+  <h2 class="title">Ansible小结（三）ansible.cfg与默认配置</h2>
+  <p class="sub">Mar 7, 2016</p>
+  <article class="content">
+    <p>#Ansible小结（四）ansible.cfg与默认配置</p>
 <p>Ansible默认安装好后有一个配置文件<code>/etc/ansible/ansible.cfg</code>，该配置文件中定义了ansible的主机的默认配置部分，如默认是否需要输入密码、是否开启sudo认证、action_plugins插件的位置、hosts主机组的位置、是否开启log功能、默认端口、key文件位置等等。</p>
 <p>具体如下：</p>
 <figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="section">[defaults]</span></div><div class="line"><span class="comment"># some basic default values...</span></div><div class="line"><span class="attr">hostfile</span>       = /etc/ansible/hosts   \\指定默认hosts配置的位置</div><div class="line"><span class="comment"># library_path = /usr/share/my_modules/</span></div><div class="line"><span class="attr">remote_tmp</span>     = <span class="variable">$HOME</span>/.ansible/tmp</div><div class="line"><span class="attr">pattern</span>        = *</div><div class="line"><span class="attr">forks</span>          = <span class="number">5</span></div><div class="line"><span class="attr">poll_interval</span>  = <span class="number">15</span></div><div class="line"><span class="attr">sudo_user</span>      = root  \\远程sudo用户</div><div class="line"><span class="comment">#ask_sudo_pass = True  \\每次执行ansible命令是否询问ssh密码</span></div><div class="line"><span class="comment">#ask_pass      = True  \\每次执行ansible命令时是否询问sudo密码</span></div><div class="line"><span class="attr">transport</span>      = smart</div><div class="line"><span class="attr">remote_port</span>    = <span class="number">22</span></div><div class="line"><span class="attr">module_lang</span>    = C</div><div class="line"><span class="attr">gathering</span> = implicit</div><div class="line"><span class="attr">host_key_checking</span> = <span class="literal">False</span>    \\关闭第一次使用ansible连接客户端是输入命令提示</div><div class="line"><span class="attr">log_path</span>    = /var/log/ansible.log \\需要时可以自行添加。chown -R root:root ansible.log</div><div class="line"><span class="attr">system_warnings</span> = <span class="literal">False</span>    \\关闭运行ansible时系统的提示信息，一般为提示升级</div><div class="line"><span class="comment"># set plugin path directories here, separate with colons</span></div><div class="line"><span class="attr">action_plugins</span>     = /usr/share/ansible_plugins/action_plugins</div><div class="line"><span class="attr">callback_plugins</span>   = /usr/share/ansible_plugins/callback_plugins</div><div class="line"><span class="attr">connection_plugins</span> = /usr/share/ansible_plugins/connection_plugins</div><div class="line"><span class="attr">lookup_plugins</span>     = /usr/share/ansible_plugins/lookup_plugins</div><div class="line"><span class="attr">vars_plugins</span>       = /usr/share/ansible_plugins/vars_plugins</div><div class="line"><span class="attr">filter_plugins</span>     = /usr/share/ansible_plugins/filter_plugins</div><div class="line"><span class="attr">fact_caching</span> = memory</div><div class="line"><span class="section">[accelerate]</span></div><div class="line"><span class="attr">accelerate_port</span> = <span class="number">5099</span></div><div class="line"><span class="attr">accelerate_timeout</span> = <span class="number">30</span></div><div class="line"><span class="attr">accelerate_connect_timeout</span> = <span class="number">5.0</span></div><div class="line"><span class="comment"># The daemon timeout is measured in minutes. This time is measured</span></div><div class="line"><span class="comment"># from the last activity to the accelerate daemon.</span></div><div class="line"><span class="attr">accelerate_daemon_timeout</span> = <span class="number">30</span></div></pre></td></tr></table></figure>
@@ -221,305 +88,43 @@
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">[root@docker ~]<span class="comment"># ansible tomcat_C1 -a "uptime"</span></div><div class="line"><span class="meta">192.168.1.177 | SUCCESS | rc=0 &gt;</span>&gt;</div><div class="line"> 09<span class="symbol">:</span><span class="number">28</span><span class="symbol">:</span><span class="number">03</span> up <span class="number">24</span> days, <span class="number">15</span><span class="symbol">:</span><span class="number">39</span>,  <span class="number">4</span> users,  load <span class="symbol">average:</span> <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span></div><div class="line"></div><div class="line">[root@docker ~]<span class="comment">#</span></div><div class="line">[root@docker ~]<span class="comment">#</span></div><div class="line">[root@docker ~]<span class="comment">#  cat /var/log/ansible.log</span></div><div class="line"><span class="number">2016</span>-09-<span class="number">05</span> 09<span class="symbol">:</span><span class="number">19</span><span class="symbol">:</span><span class="number">23</span>,<span class="number">235</span> p=<span class="number">1412</span> u=root <span class="params">|  ERROR! Missing target hosts</span></div><div class="line">2016-09-05 09:19:54,580 p=1417 u=root |  <span class="number">192.168</span>.<span class="number">1.177</span> <span class="params">| SUCCESS |</span> rc=<span class="number">0</span> <span class="meta">&gt;&gt;</span></div><div class="line"> 09<span class="symbol">:</span><span class="number">20</span><span class="symbol">:</span><span class="number">24</span> up <span class="number">24</span> days, <span class="number">15</span><span class="symbol">:</span><span class="number">31</span>,  <span class="number">4</span> users,  load <span class="symbol">average:</span> <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span></div><div class="line"></div><div class="line"><span class="number">2016</span>-09-<span class="number">05</span> 09<span class="symbol">:</span><span class="number">20</span><span class="symbol">:</span><span class="number">07</span>,<span class="number">206</span> p=<span class="number">1440</span> u=root <span class="params">|  192.168.1.177 |</span> SUCCESS <span class="params">| rc=0 &gt;&gt;</span></div><div class="line"> 09:20:37 up 24 days, 15:31,  4 users,  load average: 0.00, 0.00, 0.00</div><div class="line"></div><div class="line">2016-09-05 09:27:31,607 p=1460 u=root |  <span class="number">192.168</span>.<span class="number">1.177</span> <span class="params">| SUCCESS |</span> rc=<span class="number">0</span> <span class="meta">&gt;&gt;</span></div><div class="line"> 09<span class="symbol">:</span><span class="number">28</span><span class="symbol">:</span><span class="number">01</span> up <span class="number">24</span> days, <span class="number">15</span><span class="symbol">:</span><span class="number">39</span>,  <span class="number">4</span> users,  load <span class="symbol">average:</span> <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span>, <span class="number">0</span>.<span class="number">00</span></div><div class="line"></div><div class="line"><span class="number">2016</span>-09-<span class="number">05</span> 09<span class="symbol">:</span><span class="number">27</span><span class="symbol">:</span><span class="number">33</span>,<span class="number">800</span> p=<span class="number">1482</span> u=root <span class="params">|  192.168.1.177 |</span> SUCCESS <span class="params">| rc=0 &gt;&gt;</span></div><div class="line"> 09:28:03 up 24 days, 15:39,  4 users,  load average: 0.00, 0.00, 0.00</div></pre></td></tr></table></figure>
 <p>更多部分可以参看<a href="http://docs.ansible.com/intro_configuration.html" target="_blank" rel="external">官方文档</a></p>
 
-                
-
-                <hr>
-                <!-- Pager -->
-                <ul class="pager">
-                    
-                        <li class="previous">
-                            <a href="/2016/03/07/自动化+Jenkins/Ansible/ Ansible 学习入门 /" data-toggle="tooltip" data-placement="top" title="Ansible 学习入门">&larr; Previous Post</a>
-                        </li>
-                    
-                    
-                        <li class="next">
-                            <a href="/2016/03/07/自动化+Jenkins/Ansible/ansible小结（二）ansible架构 /" data-toggle="tooltip" data-placement="top" title="Ansible小结（二）ansible架构">Next Post &rarr;</a>
-                        </li>
-                    
-                </ul>
-
-                <br>
-                
-                <!-- require APlayer -->
-                
-
-                <!-- duoshuo Share start -->
-                
-                <!-- 多说 Share end-->
-
-                <!-- 多说评论框 start -->
-                
-                <!-- 多说评论框 end -->
-
-                <!-- disqus comment start -->
-                
-                    <div class="comment">
-                        <div id="disqus_thread" class="disqus-thread"></div>
-                    </div>
-                
-                <!-- disqus comment end -->
-
-                
-
-            </div>
-            
-            <!-- Tabe of Content -->
-            <!-- Table of Contents -->
-
-                
-            <!-- Sidebar Container -->
-            <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                sidebar-container">
-
-                <!-- Featured Tags -->
-                
-                <section>
-                    <!-- no hr -->
-                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
-                    <div class="tags">
-                       
-                          <a class="tag" href="/tags/#Ansible" title="Ansible">Ansible</a>
-                        
-                    </div>
-                </section>
-                
-
-                <!-- Friends Blog -->
-                
-                <hr>
-                <h5>FRIENDS</h5>
-                <ul class="list-inline">
-
-                    
-                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
-                    
-                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
-                    
-                </ul>
-                
-            </div>
-        </div>
-    </div>
-</article>
-
-
-
-
-<!-- disqus embedded js code start (one page only need to embed once) -->
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES * * */
-    var disqus_shortname = "blog-yancy-cc";
-    var disqus_identifier = "http://blog.yancy.cc/2016/03/07/自动化+Jenkins/Ansible/Ansible小结（三）ansible.cfg与默认配置 /";
-    var disqus_url = "http://blog.yancy.cc/2016/03/07/自动化+Jenkins/Ansible/Ansible小结（三）ansible.cfg与默认配置 /";
-
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<!-- disqus embedded js code start end -->
-
-
-
-
-
-<!-- async load function -->
-<script>
-    function async(u, c) {
-      var d = document, t = 'script',
-          o = d.createElement(t),
-          s = d.getElementsByTagName(t)[0];
-      o.src = u;
-      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
-      s.parentNode.insertBefore(o, s);
-    }
-</script>
-<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
-<script>
-    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
-        anchors.options = {
-          visible: 'hover',
-          placement: 'left',
-          icon: 'ℬ'
-        };
-        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
-    })
-</script>
-<style>
-    /* place left on bigger screen */
-    @media all and (min-width: 800px) {
-        .anchorjs-link{
-            position: absolute;
-            left: -0.75em;
-            font-size: 1.1em;
-            margin-top : -0.1em;
-        }
-    }
-</style>
-
-
-
-    <!-- Footer -->
-    <!-- Footer -->
-<footer>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <ul class="list-inline text-center">
-                
-                
-                    <li>
-                        <a target="_blank" href="https://twitter.com/yancyoo">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                
-                
-                    <li>
-                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa  fa-stack-1x fa-inverse">知</i>
-                            </span>
-                        </a>
-                    </li>
-                
-
-                
-                    <li>
-                        <a target="_blank" href="http://weibo.com/yangcvo">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                
-
-                
-
-                
-                    <li>
-                        <a target="_blank"  href="https://github.com/yangcvo">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                
-
-                
-
-                </ul>
-                <p class="copyright text-muted">
-                    Copyright &copy; Yancy 2019 
-                    <br>
-                    Theme by <a href="http://beantech.org">BeanTech</a> 
-                    <span style="display: inline-block; margin: 0 5px;">
-                        <i class="fa fa-heart"></i>
-                    </span> 
-                    re-Ported by <a href="http://www.huweihuang.com">胡伟煌</a> | 
-                    <iframe
-                        style="margin-left: 2px; margin-bottom:-5px;"
-                        frameborder="0" scrolling="0" width="91px" height="20px"
-                        src="https://ghbtns.com/github-btn.html?user=huweihuang&repo=hexo-theme-huweihuang&type=star&count=true" >
-                    </iframe>
-                </p>
-            </div>
-        </div>
-    </div>
+  </article>
+  <footer class="f-cf">
+    
+      <a href="/2016/03/07/自动化+Jenkins/Ansible/ansible小结（二）ansible架构 /" class="link f-fl">⟵Ansible小结（二）ansible架构</a>
+    
+    
+      <a href="/2016/02/25/Web服务技术/Nginx/Nginx限制IP访问权限或限制某个IP同一时间段的访问次数/" class="link f-fr">Nginx限制IP访问权限或限制某个IP同一时间段的访问次数⟶</a>
+    
+  </footer>
+</section></div>
+    <footer id="footer" class="f-cf">
+  d.guangying@foxmail.com
+  
+    
+      
+        · <a href="https://dribbble.com/clovertuan" target="_blank" class="nav-icn">Dribbble</a>
+      
+    
+      
+        · <a href="https://www.behance.net/clovertuan" target="_blank" class="nav-icn">Behance</a>
+      
+    
+      
+        · <a href="http://clovertuan.lofter.com/" target="_blank" class="nav-icn">Lofter</a>
+      
+    
+      
+        · <a href="https://www.instagram.com/clovertuan/" target="_blank" class="nav-icn">Instagram</a>
+      
+    
+      
+        · <a href="https://github.com/cloverTuan" target="_blank" class="nav-icn">GitHub</a>
+      
+    
+  
+  <span class="copyright">All rights reserved @Clover Tuan</span>
 </footer>
-
-<!-- jQuery -->
-<script src="/js/jquery.min.js"></script>
-
-<!-- Bootstrap Core JavaScript -->
-<script src="/js/bootstrap.min.js"></script>
-
-<!-- Custom Theme JavaScript -->
-<script src="/js/hux-blog.min.js"></script>
-
-
-<!-- async load function -->
-<script>
-    function async(u, c) {
-      var d = document, t = 'script',
-          o = d.createElement(t),
-          s = d.getElementsByTagName(t)[0];
-      o.src = u;
-      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
-      s.parentNode.insertBefore(o, s);
-    }
-</script>
-
-<!-- 
-     Because of the native support for backtick-style fenced code blocks 
-     right within the Markdown is landed in Github Pages, 
-     From V1.6, There is no need for Highlight.js, 
-     so Huxblog drops it officially.
-
-     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
-     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
--->
-<!--
-    <script>
-        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
-            hljs.initHighlightingOnLoad();
-        })
-    </script>
-    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
--->
-
-
-<!-- jquery.tagcloud.js -->
-<script>
-    // only load tagcloud.js in tag.html
-    if($('#tag_cloud').length !== 0){
-        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
-            $.fn.tagcloud.defaults = {
-                //size: {start: 1, end: 1, unit: 'em'},
-                color: {start: '#bbbbee', end: '#0085a1'},
-            };
-            $('#tag_cloud a').tagcloud();
-        })
-    }
-</script>
-
-<!--fastClick.js -->
-<script>
-    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
-        var $nav = document.querySelector("nav");
-        if($nav) FastClick.attach($nav);
-    })
-</script>
-
-
-<!-- Google Analytics -->
-
-
-
-
-<!-- Baidu Tongji -->
-
-
-
-
-
-
-	<a id="rocket" href="#top" class=""></a>
-	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
-    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
-<!-- Image to hack wechat -->
-<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
-<!-- Migrate from head to bottom, no longer block render and still work -->
-
+  </div>
 </body>
-
 </html>
