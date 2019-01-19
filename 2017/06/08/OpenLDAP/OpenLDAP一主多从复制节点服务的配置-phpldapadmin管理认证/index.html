@@ -253,7 +253,7 @@
 <p>下载：<a href="https://sourceforge.net/projects/phpldapadmin/files/phpldapadmin-php5/1.2.3/phpldapadmin-1.2.3.tgz" target="_blank" rel="external">phpldapadmin</a></p>
 <p>或者这里用我下载好的链接wget.</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#1. 下载安装</span></div><div class="line">    <span class="built_in">cd</span> /var/www/html/</div><div class="line">    wget http://oak0aohum.bkt.clouddn.com/phpldapadmin-1.2.3.tgz</div><div class="line">    tar -zxvf phpldapadmin-1.2.3.tgz</div><div class="line">    mv phpldapadmin-1.2.3 phpldapadmin</div><div class="line">    <span class="built_in">cd</span> phpldapadmin/config/</div><div class="line">    cp config.php.example config.php</div><div class="line">    vim config.php</div><div class="line"></div><div class="line"><span class="comment">#2. 修改配置文件：vim /var/www/html/phpldapadmin/config/config.php</span></div><div class="line">/*</div><div class="line"><span class="variable">$servers</span>-&gt;newServer(<span class="string">'ldap_pla'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'name'</span>,<span class="string">'LDAP Server'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'host'</span>,<span class="string">'192.168.17.145'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'port'</span>,389);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'base'</span>,array(<span class="string">'dc=jollychic,dc=com'</span>));</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'login'</span>,<span class="string">'auth_type'</span>,<span class="string">'cookie'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'login'</span>,<span class="string">'bind_id'</span>,<span class="string">'cn=Manager,dc=jollychic,dc=com'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'login'</span>,<span class="string">'bind_pass'</span>,<span class="string">'&#123;SSHA&#125;SlPVguw1zrxCkTnGXLM2jZpDZio9Btyt'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'tls'</span>,<span class="literal">false</span>);</div><div class="line"></div><div class="line"><span class="comment">#apache-http修改</span></div><div class="line"></div><div class="line">    vim /etc/httpd/conf/httpd.conf</div><div class="line">    &lt;Directory <span class="string">"/var/www/html/phpldapadmin"</span>&gt;</div><div class="line">    DirectoryIndex index.html index.html.var index.php</div><div class="line"><span class="comment">#重启服务。</span></div><div class="line"> service httpd restart</div><div class="line"></div><div class="line"><span class="comment">#防火墙端口开启</span></div><div class="line"> -A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT</div><div class="line"></div><div class="line"><span class="comment">#重启iptables </span></div><div class="line">service iptables restart</div></pre></td></tr></table></figure>
-<h4 id="登录PHPldapadmin"><a href="#登录PHPldapadmin" class="headerlink" title="登录PHPldapadmin"></a>登录PHPldapadmin</h4><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/openldapsalve1.png" alt=""><br><img src="http://7xrthw.com1.z0.glb.clouddn.com/openldapsalve2.png" alt=""></p>
+<h4 id="登录PHPldapadmin"><a href="#登录PHPldapadmin" class="headerlink" title="登录PHPldapadmin"></a>登录PHPldapadmin</h4><p><img src="http://image.chengyangyang.com/openldapsalve1.png" alt=""><br><img src="http://image.chengyangyang.com/openldapsalve2.png" alt=""></p>
 <h3 id="slave1-Centos6-6安装OpenLDAP"><a href="#slave1-Centos6-6安装OpenLDAP" class="headerlink" title="slave1 | Centos6.6安装OpenLDAP"></a>slave1 | Centos6.6安装OpenLDAP</h3><p><code>OpenLDAP slave1服务器|  openldap-slave1 | 192.168.3.15</code></p>
 <p>前面安装全部一样，只需要在slave配置上面做下修改：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># syncprov配置</span></div><div class="line"><span class="comment"># #######################################################################</span></div><div class="line">overlay syncprov</div><div class="line">syncprov-checkpoint 100 10</div><div class="line">syncprov-sessionlog 100</div><div class="line"></div><div class="line">syncrepl rid=123</div><div class="line">    provider=ldap://192.168.17.145:389</div><div class="line">    <span class="built_in">type</span>=refreshAndPersist</div><div class="line">    searchbase=<span class="string">"dc=jollychic,dc=com"</span></div><div class="line">    interval=00:00:00:10</div><div class="line">    schemachecking=off</div><div class="line">    searchbase=<span class="string">"dc=jollychic,dc=com"</span></div><div class="line">    bindmethod=simple</div><div class="line">    scope=sub</div><div class="line">    binddn=<span class="string">"cn=Manager,dc=jollychic,dc=com"</span></div><div class="line">    retry=<span class="string">"60 +"</span></div><div class="line">    attrs=<span class="string">"*,+"</span></div><div class="line">    credentials=se12pa</div><div class="line">    </div><div class="line">mirrormode on</div></pre></td></tr></table></figure>
@@ -263,9 +263,9 @@
 <p>解释说明：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># syncrepl特有的索引  </span></div><div class="line">index entryCSN eq  </div><div class="line">index entryUUID eq  </div><div class="line">   </div><div class="line"><span class="comment"># syncrepl参数  </span></div><div class="line">syncrepl rid=203  </div><div class="line">provider=ldap://IP地址:端口 <span class="comment">#提供者的IP和端口号  provider项填写主服务器的ldap地址</span></div><div class="line">bindmethod=simple <span class="comment">#认证方式，默认选择简单认证  </span></div><div class="line">interval=00:00:00:00 <span class="comment">#同步时间间隔 天：小时：分钟：秒  interval表示从服务器多久跟主服务器进行一次数据同步</span></div><div class="line">binddn=<span class="string">"cn=Manager,dc=jollychic,dc=com"</span> <span class="comment">#登陆的ldap账号  </span></div><div class="line">credentials=登陆密码  </div><div class="line">searchbase=<span class="string">"dc=jollychic,dc=com"</span> <span class="comment">#同步的根路径  </span></div><div class="line">filter=<span class="string">"(objectClass=*)"</span>  </div><div class="line">scope=sub  </div><div class="line">attrs=<span class="string">"*,+"</span>  </div><div class="line"><span class="built_in">type</span>=refreshAndPersist <span class="comment">#同步方式：有refreshAndPersist和  </span></div><div class="line">retry=<span class="string">"60 10 600 +"</span>  <span class="comment"># retry表示失败重试策略</span></div></pre></td></tr></table></figure>
 <h3 id="PS-在phpldapadmin添加从LDAP服务器、便于管理"><a href="#PS-在phpldapadmin添加从LDAP服务器、便于管理" class="headerlink" title="PS:在phpldapadmin添加从LDAP服务器、便于管理"></a>PS:在phpldapadmin添加从LDAP服务器、便于管理</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">/* A convenient name that will appear <span class="keyword">in</span> the tree viewer and throughout</div><div class="line">   phpLDAPadmin to identify this LDAP server to users. */</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'name'</span>,<span class="string">'My LDAP Server'</span>);</div><div class="line"></div><div class="line"><span class="variable">$servers</span>-&gt;newServer(<span class="string">'ldap_pla'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'name'</span>,<span class="string">'192.168.3.15:389'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'host'</span>,<span class="string">'192.168.3.15'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'port'</span>,<span class="string">'389'</span>);</div><div class="line"></div><div class="line"><span class="variable">$servers</span>-&gt;newServer(<span class="string">'ldap_pla'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'name'</span>,<span class="string">'192.168.3.82:389'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'host'</span>,<span class="string">'192.168.3.82'</span>);</div><div class="line"><span class="variable">$servers</span>-&gt;<span class="built_in">set</span>Value(<span class="string">'server'</span>,<span class="string">'port'</span>,<span class="string">'389'</span>);</div></pre></td></tr></table></figure>
-<h3 id="登录测试数据是否同步："><a href="#登录测试数据是否同步：" class="headerlink" title="登录测试数据是否同步："></a>登录测试数据是否同步：</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/openldapsalve3.png" alt=""></p>
-<h3 id="slave1-数据同步成功图："><a href="#slave1-数据同步成功图：" class="headerlink" title="slave1 数据同步成功图："></a>slave1 数据同步成功图：</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/openldapsalve4.png" alt=""></p>
-<h3 id="slave2-数据同步成功图："><a href="#slave2-数据同步成功图：" class="headerlink" title="slave2 数据同步成功图："></a>slave2 数据同步成功图：</h3><p><img src="http://7xrthw.com1.z0.glb.clouddn.com/openldapsalve5.png" alt=""></p>
+<h3 id="登录测试数据是否同步："><a href="#登录测试数据是否同步：" class="headerlink" title="登录测试数据是否同步："></a>登录测试数据是否同步：</h3><p><img src="http://image.chengyangyang.com/openldapsalve3.png" alt=""></p>
+<h3 id="slave1-数据同步成功图："><a href="#slave1-数据同步成功图：" class="headerlink" title="slave1 数据同步成功图："></a>slave1 数据同步成功图：</h3><p><img src="http://image.chengyangyang.com/openldapsalve4.png" alt=""></p>
+<h3 id="slave2-数据同步成功图："><a href="#slave2-数据同步成功图：" class="headerlink" title="slave2 数据同步成功图："></a>slave2 数据同步成功图：</h3><p><img src="http://image.chengyangyang.com/openldapsalve5.png" alt=""></p>
 <p>遇到故障问题：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@ldap-master ~]<span class="comment"># ldapsearch -x -LLL</span></div><div class="line">No such object (32)</div><div class="line"></div><div class="line">打开并修改为如下两行即可</div><div class="line">vim /etc/openldap/ldap.conf</div><div class="line"><span class="comment">#-----------------------------------------------------------------</span></div><div class="line">BASE dc=jollychic,dc=com</div><div class="line">URI ldap://192.168.17.145</div><div class="line"><span class="comment">#-----------------------------------------------------------------</span></div></pre></td></tr></table></figure>
 <p>测试结果，主从配置成功。</p>
@@ -276,6 +276,29 @@
 
                 <hr>
 
+                
+                <!-- 多说 Share start -->
+                </style>
+                <div class="ds-share"
+                    style="text-align: right"
+                    data-thread-key="2017/06/08/OpenLDAP/OpenLDAP一主多从复制节点服务的配置-phpldapadmin管理认证/"
+                    data-title="OpenLDAP一主多从复制节点服务的配置-phpldapadmin管理认证"
+                    data-url="http://blog.yancy.cc/2017/06/08/OpenLDAP/OpenLDAP一主多从复制节点服务的配置-phpldapadmin管理认证/"
+                    data-images=""
+                    data-content="OpenLDAP主从复制节点配置线上版本公司服务器上搭建了一个OpenLDAP服务，为了避免出... | Yancy&#39;s blog " >
+                    <div class="ds-share-inline">
+                      <ul  class="ds-share-icons-16">
+                        <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
+                        <li><a class="ds-wechat flat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+                        <li><a class="ds-weibo flat" href="javascript:void(0);" data-service="weibo">微博</a></li>
+                        <li><a class="ds-douban flat" href="javascript:void(0);" data-service="douban">豆瓣</a></li>
+                      </ul>
+                      <div class="ds-share-icons-more">
+                      </div>
+                    </div>
+                <hr>
+                </div>
+                <!-- 多说 Share end-->
                 
 
                 <ul class="pager">
@@ -292,6 +315,16 @@
                 </ul>
 		 
 
+                
+                <!-- 多说评论框 start -->
+                <div class="comment">
+                    <div class="ds-thread"
+                        data-thread-key="2017/06/08/OpenLDAP/OpenLDAP一主多从复制节点服务的配置-phpldapadmin管理认证/"
+                        data-title="OpenLDAP一主多从复制节点服务的配置-phpldapadmin管理认证"
+                        data-url="http://blog.yancy.cc/2017/06/08/OpenLDAP/OpenLDAP一主多从复制节点服务的配置-phpldapadmin管理认证/" >
+                    </div>
+                </div>
+                <!-- 多说评论框 end -->
                 
 
                 
@@ -340,6 +373,24 @@
 </article>
 
 
+
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    // dynamic User by Hux
+    var _user = 'kaijun';
+
+    // duoshuo comment query.
+    var duoshuoQuery = {short_name: _user };
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+</script>
+<!-- 多说公共JS代码 end -->
 
 
 
