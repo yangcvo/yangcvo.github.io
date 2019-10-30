@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="null">
+    <meta name="keyword"  content="undefined">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Bigdata-开源的Kafka集群管理器(Kafka Manager) - Yancy
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.yancy.cc/2018/01/28/Bigdata-hadoop/Kafka/开源的Kafka集群管理器(Kafka Manager)/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Grocery store</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ABOUT/About.html">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/ARCHIVES/archives.html">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Kafka" title="Kafka">Kafka</a>
+                        
+                    </div>
+                    <h1>Bigdata-开源的Kafka集群管理器(Kafka Manager)</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Yancy on
+                        2018-01-28
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="Kafka-Manager"><a href="#Kafka-Manager" class="headerlink" title="Kafka Manager"></a>Kafka Manager</h2><p>A tool for managing <a href="http://kafka.apache.org/" target="_blank" rel="external">Apache Kafka.</a></p>
+<h4 id="It-supports-the-following"><a href="#It-supports-the-following" class="headerlink" title="It supports the following:"></a>It supports the following:</h4><ul>
+<li>管理多个群集</li>
+<li>容易检查集群状态（主题，消费者，偏移量，经纪人，副本分发，分区分配）</li>
+<li>运行首选副本选举</li>
+<li>使用选项生成分区分配，以选择要使用的代理</li>
+<li>运行分区的重新分配（基于生成的分配）</li>
+<li>创建可选主题配置的主题（0.8.1.1具有不同于0.8.2+的配置）</li>
+<li>删除主题（仅支持0.8.2+，并记住在代理配 置中设置delete.topic.enable = true）</li>
+<li>主题列表现在表示标记为删除的主题（仅支持0.8.2+）</li>
+<li>批量生成多个主题的分区分配，并选择要使用的代理</li>
+<li>批量运行多个主题的分区重新分配</li>
+<li>将分区添加到现有主题</li>
+<li>更新现有主题的配置</li>
+<li>可选地，启用JMX轮询代理级和主题级度量。</li>
+<li>可选地筛选出在zookeeper中没有ids / owner /＆offset /目录的消费者。</li>
+</ul>
+<a id="more"></a>
+<p>参考开源地址：<a href="https://github.com/yahoo/kafka-manager" target="_blank" rel="external">https://github.com/yahoo/kafka-manager</a></p>
+<h4 id="Requirements"><a href="#Requirements" class="headerlink" title="Requirements"></a>Requirements</h4><p>Kafka 0.8.1.1 or 0.8.2.<em> or 0.9.0.</em> or 0.10.0.*<br>Java 8+</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">sudo wget --header <span class="string">"Cookie: oraclelicense=accept-securebackup-cookie”   http://download.oracle.com/otn-pub/java/jdk/8u144-b01/090f390dda5b47b9b721c7dfaa008135/jdk-8u144-linux-x64.tar.gz</span></div><div class="line"></div><div class="line">sudo vim /etc/profile</div><div class="line">export JAVA_HOME=/home/jollybi/tools/jdk1.8.0_144</div><div class="line">export LASSPATH=.:<span class="variable">$JAVA_HOME</span>/lib/tools.jar:<span class="variable">$JAVA_HOME</span>/lib/dt.jar:<span class="variable">$JAVA_HOME</span>/lib:<span class="variable">$JAVA_HOME</span>/jre/lib:<span class="variable">$JAVA_HOME</span>/bin</div><div class="line">export PATH=<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$JAVA_HOME</span>/jre/bin:<span class="variable">$TOMCAT_HOME</span>/bin:<span class="variable">$PATH</span></div></pre></td></tr></table></figure>
+<h4 id="Deployment"><a href="#Deployment" class="headerlink" title="Deployment"></a>Deployment</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">git <span class="built_in">clone</span> https://github.com/yahoo/kafka-manager.git</div><div class="line">./sbt clean dist</div><div class="line"></div><div class="line">[info]   Compilation completed <span class="keyword">in</span> 13.366 s</div><div class="line">model contains 672 documentable templates</div><div class="line">[info] Main Scala API documentation successful.</div><div class="line">[info] Packaging /home/jollybi/kafka-manager/target/scala-2.11/kafka-manager_2.11-1.3.3.8-javadoc.jar ...</div><div class="line">[info] Done packaging.</div><div class="line">[info] Packaging /home/jollybi/kafka-manager/target/scala-2.11/kafka-manager_2.11-1.3.3.8.jar ...</div><div class="line">[info] Done packaging.</div><div class="line">[info] Packaging /home/jollybi/kafka-manager/target/scala-2.11/kafka-manager_2.11-1.3.3.8-sans-externalized.jar ...</div><div class="line">[info] Done packaging.</div><div class="line">[info]</div><div class="line">[info] Your package is ready <span class="keyword">in</span> /home/jollybi/kafka-manager/target/universal/kafka-manager-1.3.3.8.zip</div><div class="line">[info]</div><div class="line">[success] Total time: 142 s, completed Jul 27, 2017 3:48:35 PM</div><div class="line">完成</div></pre></td></tr></table></figure>
+<h4 id="Starting-the-service"><a href="#Starting-the-service" class="headerlink" title="Starting the service"></a>Starting the service</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">解压缩生成的zip文件后，将工作目录更改为可以运行的服务：</div><div class="line"></div><div class="line">unzip /home/jollybi/kafka-manager/target/universal/kafka-manager-1.3.3.8.zip</div><div class="line"></div><div class="line"></div><div class="line">修改zk地址和管理员账号和密码：</div><div class="line"></div><div class="line">vim kafka-manager-1.3.3.8/conf/application.conf</div><div class="line"></div><div class="line"><span class="comment">#kafka-manager.zkhosts="kafka-manager-zookeeper:2181"</span></div><div class="line"><span class="comment">#zk集群可以这么配置：</span></div><div class="line">kafka-manager.zkhosts=<span class="string">"kafka1.jollychic.com:2281,kafka2.jollychic.com:2281,kafka3.jollychic.com:2281"</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">#根据个人公司这里可以开启true 设置账号和密码</span></div><div class="line">basicAuthentication.enabled=<span class="literal">true</span></div><div class="line">basicAuthentication.username=<span class="string">"admin"</span></div><div class="line">basicAuthentication.password=<span class="string">"admin"</span></div><div class="line"></div><div class="line"></div><div class="line">默认情况下，它将选择端口9000.这是可以覆盖的，配置文件的位置也是如此。例如：</div><div class="line"></div><div class="line">$ ./bin/kafka-manager -Dconfig.file=conf/application.conf -Dhttp.port=8080</div><div class="line"></div><div class="line">后台生效：</div><div class="line"></div><div class="line">$ ./bin/kafka-manager -Dconfig.file=conf/application.conf -Dhttp.port=8080 &amp;</div><div class="line"></div><div class="line">再次，如果java不在您的路径中，或者您需要针对不同版本的Java运行，请按如下所示添加-java-home选项：</div><div class="line"></div><div class="line">$ bin/kafka-manager -java-home /usr/<span class="built_in">local</span>/oracle-java-8</div></pre></td></tr></table></figure>
+<h4 id="Packaging"><a href="#Packaging" class="headerlink" title="Packaging"></a>Packaging</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">If you<span class="string">'d like to create a Debian or RPM package instead, you can run one of:</span></div><div class="line"></div><div class="line">sbt debian:packageBin</div><div class="line"></div><div class="line">sbt rpm:packageBin</div></pre></td></tr></table></figure>
+<h4 id="查看端口："><a href="#查看端口：" class="headerlink" title="查看端口："></a>查看端口：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[jollybi@kafka1 conf]$ netstat -ntulp | grep 8080</div><div class="line">(Not all processes could be identified, non-owned process info</div><div class="line"> will not be shown, you would have to be root to see it all.)</div><div class="line">tcp6       0      0 :::8080                 :::*                    LISTEN      70517/java</div></pre></td></tr></table></figure>
+<p>四、安装配置中的两个小坑</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="number">1</span>、安装配置上面已经有说明介绍步骤。</div><div class="line"><span class="number">2</span>、kafka的服务器必须添加hostname对应的host域名解析，并重启kafka</div><div class="line">这个是java本身处理的一个机制问题，通过代码修改和绑定host都可以解决，如果不处理，报出来的错误如下：</div><div class="line"><span class="meta">at</span> org.apache.kafka.clients.consumer.KafkaConsumer.pollOnce(KafkaConsumer.java:<span class="number">974</span>) ~[org.apache.kafka.kafka-clients-<span class="number">0.10</span><span class="meta">.0</span><span class="meta">.1</span>.jar:na]</div><div class="line">[error] k.m.j.KafkaJMX$ - Failed to connect to service:jmx:rmi:///jndi/rmi://<span class="number">10.143</span><span class="meta">.40</span><span class="meta">.239</span>:<span class="number">9999</span>/jmxrmi</div><div class="line"><span class="symbol">java.rmi.ConnectException:</span> Connection refused to host: <span class="number">127.0</span><span class="meta">.0</span><span class="meta">.1</span><span class="comment">; nested exception is:</span></div><div class="line"><span class="symbol">	java.net.ConnectException:</span> Connection refused</div><div class="line">从一个运维人员的角度出发，改host解析是最得心应手的，登录kafka的服务器，打开/etc/hosts文件，将主机名对应的解析记录修改为本机对外通信的<span class="built_in">ip</span>地址，另外将<span class="number">127.0</span><span class="meta">.0</span><span class="meta">.1</span>和::<span class="number">1</span>对应的主机名删掉，修改如下，修改后必须重启kafka才能生效。</div><div class="line"></div><div class="line"></div><div class="line"><span class="number">127.0</span><span class="meta">.0</span><span class="meta">.1</span> localhost.localdomain localhost</div><div class="line"><span class="number">169.44</span><span class="meta">.62</span><span class="meta">.19</span> kafka1.jollychic.com kafka1</div><div class="line"><span class="number">169.44</span><span class="meta">.59</span><span class="meta">.18</span> kafka2.jollychic.com kafka2</div><div class="line"><span class="number">169.44</span><span class="meta">.62</span><span class="meta">.17</span> kafka3.jollychic.com kafka3</div><div class="line"><span class="number">169.55</span><span class="meta">.32</span><span class="meta">.22</span> kafka4.jollychic.com kafka4</div><div class="line"><span class="number">10.155</span><span class="meta">.90</span><span class="meta">.13</span> zk1.jollychic.com</div><div class="line"><span class="number">10.155</span><span class="meta">.90</span><span class="meta">.15</span> zk2.jollychic.com</div><div class="line"><span class="number">10.155</span><span class="meta">.90</span><span class="meta">.18</span> zk3.jollychic.com</div></pre></td></tr></table></figure>
+<h3 id="网站访问kafka-Manger"><a href="#网站访问kafka-Manger" class="headerlink" title="网站访问kafka Manger"></a>网站访问kafka Manger</h3><p>这里我设置了登录账号和密码： admin admin</p>
+<p><img src="media/15014722977191.jpg" alt=""></p>
+<p>创建kafka名字;<br>选择kafka版本号;<br>JMX这个不需要;<br>下面选择默认点击确认即可.</p>
+<p><img src="media/15014724051756.jpg" alt=""></p>
+<blockquote>
+<p>(2)kafka 启用 JMX端口</p>
+</blockquote>
+<p><img src="media/15020729297106.jpg" alt=""></p>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">以如下命令重新启动kafka</div><div class="line"></div><div class="line">JMX_PORT=<span class="number">9999</span> bin/kafka-<span class="built_in">server</span>-start.sh config/<span class="built_in">server</span>.properties</div><div class="line">或者修改kafka-<span class="built_in">server</span>-start.sh 文件，追加JMX_PORT=<span class="string">"9999"</span></div><div class="line"></div><div class="line"> <span class="keyword">if</span> [ <span class="string">"x$KAFKA_HEAP_OPTS"</span> = <span class="string">"x"</span> ]; <span class="keyword">then</span></div><div class="line">    export KAFKA_HEAP_OPTS=<span class="string">"-Xmx1G -Xms1G"</span></div><div class="line">    export JMX_PORT=<span class="string">"9999"</span></div><div class="line">fi</div><div class="line">然后重新启动kafka</div><div class="line">bin/kafka-<span class="built_in">server</span>-start.sh config/<span class="built_in">server</span>.properties</div><div class="line"></div><div class="line">但是Metrics中数据都是零</div><div class="line">查看 kafka manager 报错，无法连接jxm</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">解决方法 修改每个kafka broker的 kafka_2.11-0.10.1.0/bin/kafka-run-class.sh文件</div><div class="line">​</div><div class="line"><span class="comment"># JMX settings</span></div><div class="line"><span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$KAFKA_JMX_OPTS</span>"</span> ]; <span class="keyword">then</span></div><div class="line">  KAFKA_JMX_OPTS=<span class="string">"-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false  -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=75.126.5.162"</span></div><div class="line"><span class="keyword">fi</span></div><div class="line"></div><div class="line"></div><div class="line">-Djava.rmi.server.hostname 的值为当前kafka服务器ip</div><div class="line"></div><div class="line">这里说明下集群kafka都需要修改</div></pre></td></tr></table></figure>
+<p><img src="media/15020745879851.jpg" alt=""></p>
+<p><img src="media/15014725443386.jpg" alt=""></p>
+<p><img src="media/15014725288425.jpg" alt=""></p>
+<p><img src="media/15014725659340.jpg" alt=""></p>
+<p><img src="media/15014725864134.jpg" alt=""></p>
+<p><img src="media/15014726361909.jpg" alt=""></p>
+<p><img src="media/15014727525618.jpg" alt=""></p>
+<p><img src="media/15014727932029.jpg" alt=""></p>
+<h3 id="交流学习："><a href="#交流学习：" class="headerlink" title="交流学习："></a>交流学习：</h3><p>🐧  Linux shell_高级运维派: <code>459096184</code>    圈子 (系统运维-应用运维-自动化运维-虚拟化技术研究欢迎加入)<br>🐧  BigData-Exchange School : <code>521621407</code>  圈子（大数据运维)（Hadoop开发人员)（大数据研究爱好者) 欢迎加入</p>
+<p>相应Bidata有内部微信交流群互相学习，加入QQ群有链接。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/01/29/Bigdata-hadoop/Kafka/Bigdata-Kafka三款监控工具比较/" data-toggle="tooltip" data-placement="top" title="Bigdata-Kafka三款监控工具比较">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/01/11/Bigdata-hadoop/Kafka/KafKa扩容群集(Topic.partitions迁移)/" data-toggle="tooltip" data-placement="top" title="KafKa动态扩容群集-(Topic.partitions迁移)">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+		 
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Kafka" title="Kafka">Kafka</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://openskill.cn/" target="_blank">openskill.cn</a></li>
+                    
+                        <li><a href="http://yuzhouwan.com/" target="_blank">Benedict Jin&#39;s Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "blog-yancy-cc";
+    var disqus_identifier = "http://blog.yancy.cc/2018/01/28/Bigdata-hadoop/Kafka/开源的Kafka集群管理器(Kafka Manager)/";
+    var disqus_url = "http://blog.yancy.cc/2018/01/28/Bigdata-hadoop/Kafka/开源的Kafka集群管理器(Kafka Manager)/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/yancyoo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/benet1006">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/yangcvo">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Grocery store 2019 
+                    <br>
+                 Theme by <a href="http://chengyangyang.com">Chengyangyang.com</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://chengyangyang.com">Yancy.blog</a>
+
+                    <!--<iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>--> 
+		</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.yancy.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.yancy.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
